@@ -1,0 +1,30 @@
+package inspections.domains
+
+import com.fasterxml.jackson.annotation.JsonIgnore
+import grails.gorm.annotation.Entity
+import inspections.domains.items.Item
+import org.grails.datastore.gorm.GormEntity
+
+@Entity
+class GaragePosition implements GormEntity<GaragePosition> {
+
+	String code
+	String name
+
+	@JsonIgnore
+	Set<Item> items
+
+	static hasMany = [items: Item]
+
+	static belongsTo = Item
+
+	static constraints = {
+		code maxSize: 15
+		name maxSize: 45
+	}
+
+	static mapping = {
+		items lazy: false
+	}
+
+}

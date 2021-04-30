@@ -37,6 +37,10 @@ dependencies {
     compile "io.micronaut.configuration:micronaut-hibernate-gorm"
     compile "io.micronaut.configuration:micronaut-jdbc-tomcat"
     runtime "mysql:mysql-connector-java:5.1.47"
+
+    annotationProcessor "io.micronaut.configuration:micronaut-openapi:1.5.3"
+    compile "io.swagger.core.v3:swagger-annotations"
+    compileOnly "io.micronaut.configuration:micronaut-openapi:1.5.3"
 }
 
 mainClassName = "inspections.Application"
@@ -63,6 +67,12 @@ tasks.withType(JavaExec) {
 processResources {
     from 'build/resources/client'
 }
+
+tasks.withType(GroovyCompile) {
+    groovyOptions.forkOptions.jvmArgs.add('-Dgroovy.parameters=true')
+    groovyOptions.forkOptions.jvmArgs.add('-Dmicronaut.openapi.views.spec=redoc.enabled=true,rapidoc.enabled=true,swagger-ui.enabled=true,swagger-ui.theme=flattop')
+}
+
 
 
 

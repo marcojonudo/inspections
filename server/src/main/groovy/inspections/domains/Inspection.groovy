@@ -1,0 +1,28 @@
+package inspections.domains
+
+
+import grails.gorm.annotation.Entity
+import groovy.transform.TupleConstructor
+import inspections.domains.items.Item
+import org.grails.datastore.gorm.GormEntity
+
+@Entity
+@TupleConstructor
+class Inspection implements GormEntity<Inspection> {
+
+	String code
+	String name
+	Set<Item> items
+
+	static hasMany = [items: Item]
+
+	static constraints = {
+		code maxSize: 15
+		name maxSize: 45
+	}
+
+	static mapping = {
+		items lazy: false
+	}
+
+}

@@ -10,6 +10,18 @@ micronaut:
             default:
                 mapping: /**
                 paths: [classpath:static]
+            swagger:
+                paths: classpath:META-INF/swagger
+                mapping: /swagger/**
+            redoc:
+                paths: classpath:META-INF/swagger/views/redoc
+                mapping: /redoc/**
+            rapidoc:
+                paths: classpath:META-INF/swagger/views/rapidoc
+                mapping: /rapidoc/**
+            swagger-ui:
+                paths: classpath:META-INF/swagger/views/swagger-ui
+                mapping: /swagger-ui/**
 
 endpoints:
     beans:
@@ -54,7 +66,7 @@ dataSource:
     dbCreate: validate
     driverClassName: com.mysql.jdbc.Driver
     dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-    url: jdbc:mysql://${host.ip}:${host.local-mysql-port}/inspections?useSSL=false&serverTimezone=Europe/Madrid
+    url: jdbc:mysql://${host.ip}:${host.local-mysql-port}/inspection?useSSL=false&serverTimezone=Europe/Madrid
     username: ${database.credentials.username}
     password: ${database.credentials.password}
     logSql: true
