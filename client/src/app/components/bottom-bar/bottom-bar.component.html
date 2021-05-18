@@ -1,26 +1,14 @@
 <div class="item">
 	<i class="fas fa-user"></i>
 	<div id="employee-info">
-		<div class="input-item">
-			<input type="text" [placeholder]="userCodePlaceholder" (keyup)="searchEmployee($event.target.value)">
-			<!--		<button (click)="searchEmployee()">-->
-			<!--			<i class="fas fa-search"></i>-->
-			<!--		</button>-->
-		</div>
-		<div>
-			{{employee ? employee.completeName : '-'}}
-		</div>
+		<div>{{employee ? employee.code : ''}}</div>
+		<div>{{employee ? employee.completeName : ''}}</div>
 	</div>
 </div>
 <div class="item">
 	<i class="fas fa-clipboard"></i>
 	<div id="order-info">
-		<div class="input-item">
-			<input type="text" [placeholder]="orderCodePlaceholder" [(ngModel)]="orderCode">
-			<button (click)="searchOrder()">
-				<i class="fas fa-search"></i>
-			</button>
-		</div>
-		<div>0112233</div>
+		<div>{{order ? order.code : ''}}</div>
+		<div>{{order ? order.number : ''}}</div>
 	</div>
 </div>

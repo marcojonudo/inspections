@@ -1,4 +1,4 @@
-<app-initial-data></app-initial-data>
-<!--<app-bottom-bar></app-bottom-bar>-->
+<app-initial-data (inspectionsEmitter)="setInspections($event)"></app-initial-data>
+<app-bottom-bar [inspections]="inspections"></app-bottom-bar>
 <app-toasts></app-toasts>
 <router-outlet></router-outlet>

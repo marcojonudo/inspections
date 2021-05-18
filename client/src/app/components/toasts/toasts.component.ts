@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {Subscription} from "rxjs";
-import {Toast} from "../../objects/toasts/toast";
-import {Dayjs} from "dayjs";
-import * as dayjs from "dayjs";
-import {Constants} from "../../objects/constants";
-import {NotificationService} from "../../services/notification.service";
+import {animate, style, transition, trigger} from '@angular/animations';
+import {Subscription} from 'rxjs';
+import {Toast} from '../../objects/toasts/toast';
+import {Dayjs} from 'dayjs';
+import * as dayjs from 'dayjs';
+import {Constants} from '../../objects/constants';
+import {NotificationService} from '../../services/notification.service';
 
 @Component({
 	selector: 'app-toasts',
@@ -51,8 +51,8 @@ export class ToastsComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.toastSubscription = NotificationService.toast$.subscribe((toast: Toast) => {
-			let existentIndex = this.toasts.indexOf(toast);
-			if (existentIndex != -1) {
+			const existentIndex = this.toasts.indexOf(toast);
+			if (existentIndex !== -1) {
 				this.toasts.splice(existentIndex, 1);
 			} else {
 				toast.index = this.toasts.length;
@@ -83,10 +83,9 @@ export class ToastsComponent implements OnInit, OnDestroy {
 	}
 
 	remove(toast: Toast): void {
-		let existentIndex = this.toasts.indexOf(toast);
+		const existentIndex = this.toasts.indexOf(toast);
 		const diff = dayjs().diff(this.lastDeletedDate, Constants.DAY_JS.ms);
 		if (diff < this.TOAST_DELETE_THRESHOLD_MS) {
-			console.log(2);
 			/* Si la notificación anterior se ha borrado menos de 50ms antes, se retrasa un poco la eliminación de la
 			 * actual para que de tiempo a que se complete la transición al índice 0 */
 			setTimeout(
@@ -95,9 +94,8 @@ export class ToastsComponent implements OnInit, OnDestroy {
 					this.cdRef.detectChanges();
 				},
 				this.TOAST_DELETE_DELAY_MS
-			)
+			);
 		} else {
-			console.log(1);
 			this.removeFromList(existentIndex);
 			this.cdRef.detectChanges();
 		}

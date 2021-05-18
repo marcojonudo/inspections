@@ -19,7 +19,7 @@ class InspectionService {
 
 	List<Inspection> findAll(int orderNumber) {
 		List<Integer> articles = orderLineDataService.findArticles(orderNumber)
-		return []
+		return [new Inspection(code: 'A', name: 'Test')]
 	}
 
 	List<Inspection> findAll(String shortCode) {

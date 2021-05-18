@@ -1,9 +1,13 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {EmployeeService} from "../../services/employee.service";
-import {Constants} from "../../objects/constants";
-import {Employee} from "../../objects/employee";
-import {concatMap, finalize} from "rxjs/operators";
-import {InspectionService} from "../../services/inspection.service";
+import {
+	ChangeDetectionStrategy,
+	Component,
+	HostBinding,
+	Input,
+} from '@angular/core';
+import {EmployeeService} from '../../services/employee.service';
+import {Employee} from '../../objects/employee';
+import {InspectionService} from '../../services/inspection.service';
+import {Order} from '../../objects/order';
 
 @Component({
 	selector: 'app-bottom-bar',
@@ -13,44 +17,19 @@ import {InspectionService} from "../../services/inspection.service";
 })
 export class BottomBarComponent {
 
-	employee: Employee;
-	orderCode: string;
-	searchingInspections: boolean;
+	@Input() inspections: any;
 
-	constructor(private cdRef: ChangeDetectorRef, private inspectionService: InspectionService) {}
-
-	get userCodePlaceholder(): string {
-		return Constants.USER_CODE_PLACEHOLDER;
+	@HostBinding('style.transform') get translateY(): string {
+		return `translateY(${this.inspections ? 0 : '100%'})`;
 	}
 
-	get orderCodePlaceholder(): string {
-		return Constants.ORDER_CODE_PLACEHOLDER;
+	get employee(): Employee {
+		return EmployeeService.employee;
 	}
 
-	searchEmployee(employeeCode: string): void {
-		const employee = EmployeeService.findEmployee(employeeCode);
-		if (employee) {
-			this.employee = employee;
-			this.cdRef.detectChanges();
-		}
-	}
-
-	searchOrder(shortCode: string = this.orderCode): void {
-		this.searchingInspections = true;
-		this.cdRef.detectChanges();
-
-		this.inspectionService.findOrderNumber(shortCode).pipe(
-			concatMap((orderNumber: number) => {
-				console.log(1, orderNumber);
-				return this.inspectionService.findInspections(orderNumber);
-			}),
-			finalize(() => {
-				this.searchingInspections = false;
-				this.cdRef.detectChanges();
-			})
-		).subscribe((data) => {
-			console.log(data);
-		});
+	get order(): Order {
+		console.log(InspectionService.order);
+		return InspectionService.order;
 	}
 
 }

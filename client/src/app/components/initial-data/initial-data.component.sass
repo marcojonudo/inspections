@@ -6,7 +6,6 @@
 	height: 100%
 	@include flex-column
 	align-items: center
-	//justify-content: flex-start
 
 	.item
 		width: 75%
@@ -59,21 +58,9 @@
 					border-radius: 100%
 					transition: background-color $fast-transition
 
-			//button
-				position: relative
-				width: 25%
-				@include flex-center
-				@include ripple
-
-				& > i
-					font-size: $medium-font
-					position: absolute
-
 			.disabled
 				pointer-events: none
 				background-color: $grey
 
 	#loading-icon
 		font-size: $big-font
-		//position: absolute
-		//bottom: $giant-gap
