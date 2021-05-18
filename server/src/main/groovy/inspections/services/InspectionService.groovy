@@ -17,6 +17,11 @@ class InspectionService {
 	@Inject OrderTimeDataService orderTimeDataService
 	@Inject OrderLineDataService orderLineDataService
 
+	List<Inspection> findAll(int orderNumber) {
+		List<Integer> articles = orderLineDataService.findArticles(orderNumber)
+		return []
+	}
+
 	List<Inspection> findAll(String shortCode) {
 		List<Integer> articles = findArticleCodes(shortCode)
 		return []

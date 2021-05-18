@@ -10,8 +10,14 @@ export class InspectionService {
 
     constructor(private http: HttpClient) {}
 
-    findInspections(shortCode: string): Observable<any> {
-        const url = `${Url.inspections()}?shortCode=${shortCode}`
+    findOrderNumber(shortCode: string): Observable<any> {
+        const url = `${Url.orderNumber()}?shortCode=${shortCode}`
         return this.http.get(url);
     }
+
+    findInspections(orderNumber: number): Observable<any> {
+        const url = `${Url.inspections()}?orderNumber=${orderNumber}`
+        return this.http.get(url);
+    }
+
 }

@@ -1,0 +1,17 @@
+<ngb-toast
+	*ngFor="let toast of toasts; let i = index"
+	class="toast"
+	[class]="toast.className"
+	[ngStyle]="{'height.rem': toastHeight, 'transform': 'translateY(' + findToastToTranslateY(i) + '%)'}"
+	[autohide]="toast.autohide"
+	[delay]="toast.delay"
+	(hide)="remove(toast)"
+	[@inOutTranslateAnimation]="{
+        value: true,
+        params: {enterFromValue: findToastFromTranslateY(i), enterToValue: findToastToTranslateY(i), leaveToValue: findToastLeaveToTranslateY(i)}
+    }">
+	<div class="d-flex align-items-center">
+		{{toast.text}}
+		<i *ngIf="toast.spinner" class="fas fa-2x fa-circle-notch fa-spin ml-3"></i>
+	</div>
+</ngb-toast>

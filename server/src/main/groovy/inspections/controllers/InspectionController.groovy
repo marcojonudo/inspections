@@ -4,7 +4,7 @@ import groovy.transform.CompileStatic
 import inspections.domains.Inspection
 import inspections.services.InspectionService
 import inspections.services.data.InspectionDataService
-import io.micronaut.http.HttpResponse
+import inspections.services.data.OrderTimeDataService
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.QueryValue
@@ -20,6 +20,7 @@ import javax.inject.Inject
 @Controller("/inspections")
 class InspectionController {
 
+	@Inject private OrderTimeDataService orderTimeDataService
 	@Inject private InspectionService inspectionService
 	@Inject private InspectionDataService inspectionDataService
 
@@ -38,6 +39,24 @@ class InspectionController {
 		return inspectionDataService.findAll()
     }
 
+	@Get("/orderNumber")
+	@Operation(
+		summary = "Obtiene el número de orden a partir del código corto",
+		description = "Obtiene el número de orden a partir del código corto"
+	)
+	@ApiResponse(content = @Content(mediaType = "text/plain", schema = @Schema(type = "integer")))
+	@ApiResponse(
+		responseCode = "200",
+		description = "Número de orden encontrado",
+		content = @Content(mediaType = "text/plain", schema = @Schema(type = "integer"))
+	)
+	@ApiResponse(
+		responseCode = "404", description = "Número de orden no encontrado"
+	)
+	Integer findInspections(@QueryValue String shortCode) {
+		return orderTimeDataService.findOrderTimeOrderNumber(shortCode, [sort: 'orderNumber', order: 'desc', max: 1])
+	}
+
 	@Get("/inspection")
 	@Operation(
 		summary = "Obtiene las revisiones asociadas",
@@ -49,9 +68,8 @@ class InspectionController {
 		description = "Lista de revisiones",
 		content = @Content(array = @ArraySchema(schema = @Schema(implementation = Inspection)))
 	)
-	HttpResponse<List<Inspection>> findInspections(@QueryValue String shortCode) {
-		List<Inspection> inspections = inspectionService.findAll(shortCode)
-		return inspections ? HttpResponse.ok(inspections) : HttpResponse.notFound(inspections)
+	List<Inspection> findInspections(@QueryValue int orderNumber) {
+		return inspectionService.findAll(orderNumber) ?: null
     }
 
 }

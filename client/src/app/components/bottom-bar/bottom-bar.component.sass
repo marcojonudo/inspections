@@ -1,0 +1,35 @@
+@import "abstracts/variables"
+@import "abstracts/mixins"
+
+\:host
+	position: absolute
+	bottom: 0
+	width: 100%
+	height: $unitary-height
+	display: flex
+	background-color: $primary
+	color: $white
+
+	.item
+		width: 50%
+		position: relative
+		display: flex
+		align-items: center
+
+		& > i
+			width: 25%
+			@include flex-center
+			font-size: 1.5em
+
+		& > div
+			width: 75%
+			padding-right: $medium-gap
+
+		.input-item
+			@include input-item
+			height: 30%
+
+	#employee-info
+		@include flex-column
+		justify-content: center
+

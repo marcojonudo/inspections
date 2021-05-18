@@ -1,20 +1,4 @@
-<div id="order-number-input" class="form-group">
-    <label for="username-input">Número de orden</label>
-    <div class="input-group">
-        <input
-            id="username-input"
-            type="text"
-            class="form-control"
-            [(ngModel)]="orderShortCode">
-            <div class="invalid-feedback">
-                No se ha encontrado la OR
-            </div>
-        <div class="input-group-append">
-            <button id="search-order-button" class="btn" (click)="searchOrder()">
-                <i *ngIf="!searchingInspections" class="fas fa-search" [@inOutAnimation]></i>
-                <i *ngIf="searchingInspections" class="fas fa-spinner fa-spin" [@inOutAnimation]></i>
-            </button>
-        </div>
-    </div>
-</div>
+<app-initial-data></app-initial-data>
+<!--<app-bottom-bar></app-bottom-bar>-->
+<app-toasts></app-toasts>
 <router-outlet></router-outlet>

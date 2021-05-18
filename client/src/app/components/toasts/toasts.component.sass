@@ -1,0 +1,14 @@
+@import "abstracts/variables"
+@import "abstracts/mixins"
+
+\:host
+	width: 100%
+	@include flex-center
+	z-index: 1
+
+	.toast
+		position: absolute
+		width: 75%
+		max-width: 100%
+		@include flex-center
+		transition: transform .3s

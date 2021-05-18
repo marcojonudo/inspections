@@ -1,7 +1,8 @@
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {InspectionService} from "./services/inspection.service";
-import {finalize} from "rxjs/operators";
+import {EmployeeService} from "./services/employee.service";
+import {NotificationService} from "./services/notification.service";
 
 @Component({
     selector: 'app-root',
@@ -33,24 +34,13 @@ export class AppComponent implements AfterViewInit {
     orderShortCode: string;
     searchingInspections: boolean;
 
-    constructor(private cdRef: ChangeDetectorRef, private inspectionService: InspectionService) {}
+    constructor(private cdRef: ChangeDetectorRef, private inspectionService: InspectionService) {
+    	EmployeeService.init();
+		NotificationService.init();
+	}
 
     ngAfterViewInit(): void {
         this.cdRef.detach();
-    }
-
-    searchOrder(shortCode: string = this.orderShortCode): void {
-        this.searchingInspections = true;
-        this.cdRef.detectChanges();
-
-        this.inspectionService.findInspections(shortCode).pipe(
-            finalize(() => {
-                this.searchingInspections = false;
-                this.cdRef.detectChanges();
-            })
-        ).subscribe((data) => {
-            console.log(data);
-        })
     }
 
 }

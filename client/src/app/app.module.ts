@@ -6,17 +6,25 @@ import {AppComponent} from './app.component';
 import {FormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { BottomBarComponent } from './components/bottom-bar/bottom-bar.component';
+import { InitialDataComponent } from './components/initial-data/initial-data.component';
+import { ToastsComponent } from './components/toasts/toasts.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        BottomBarComponent,
+        InitialDataComponent,
+        ToastsComponent
     ],
     imports: [
         BrowserModule,
         AppRoutingModule,
         FormsModule,
         HttpClientModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        NgbModule
     ],
     providers: [],
     bootstrap: [AppComponent]

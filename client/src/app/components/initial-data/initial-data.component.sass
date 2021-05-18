@@ -1,0 +1,79 @@
+@import "abstracts/variables"
+@import "abstracts/mixins"
+
+\:host
+	width: 100%
+	height: 100%
+	@include flex-column
+	align-items: center
+	//justify-content: flex-start
+
+	.item
+		width: 75%
+		height: 25%
+		position: relative
+		@include flex-column-center
+
+		&:nth-child(3)
+			@include flex-1
+
+		label
+			text-align: center
+			font-size: $medium-font
+
+		.input-item
+			width: 50%
+			position: relative
+			display: flex
+
+			input
+				min-width: 0
+				@include flex-1
+				border-radius: $border-radius
+				padding-left: $tiny-gap
+				border: 1px solid $grey
+				text-align: center
+
+				&:focus
+					box-shadow: 0 0 $small-gap $grey
+
+				&.validated
+
+					&.correct
+						box-shadow: 0 0 $small-gap $primary-alpha
+
+					&.wrong
+						box-shadow: 0 0 $small-gap $red-alpha
+
+			&-button
+				position: relative
+
+				& > i
+					@include ripple
+					position: absolute
+					left: $medium-gap
+					transform: scale(1.3)
+					background-color: $primary
+					color: $white
+					padding: $small-gap
+					border-radius: 100%
+					transition: background-color $fast-transition
+
+			//button
+				position: relative
+				width: 25%
+				@include flex-center
+				@include ripple
+
+				& > i
+					font-size: $medium-font
+					position: absolute
+
+			.disabled
+				pointer-events: none
+				background-color: $grey
+
+	#loading-icon
+		font-size: $big-font
+		//position: absolute
+		//bottom: $giant-gap

@@ -8,7 +8,7 @@ import org.grails.datastore.gorm.GormEntity
 @Entity
 class OrderTime implements GormEntity<OrderTime> {
 
-	int orderNumber
+	Integer orderNumber
 	String shortCode
 
 	static mapping = {

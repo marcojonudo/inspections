@@ -1,0 +1,27 @@
+<div class="item" [@inOutTranslateAnimation]>
+	<label for="employee-code-input">Introduce tu código de empleado</label>
+	<div class="input-item">
+		<input
+			id="employee-code-input"
+			type="text"
+			[(ngModel)]="employeeCode"
+			(keyup)="searchEmployee()"
+			[ngClass]="{
+				'validated': checkEmployeeCodeLength(),
+				'correct': employee,
+				'wrong': !employee
+			}">
+	</div>
+</div>
+<div *ngIf="employee" class="item" [@inOutTranslateAnimation]>
+	<label for="order-input">Introduce el código corto de la orden</label>
+	<div class="input-item">
+		<input id="order-input" type="text" [(ngModel)]="orderCode" (keyup)="triggerCd()">
+		<div class="input-item-button">
+			<i class="fas fa-search" [class.disabled]="checkDisableSearchOrderButton()" (click)="searchOrder()"></i>
+		</div>
+	</div>
+</div>
+<div *ngIf="searchingInspections" class="item" [@inOutAnimation]>
+	<i id="loading-icon" class="fas fa-spinner fa-spin"></i>
+</div>
