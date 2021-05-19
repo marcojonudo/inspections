@@ -5,7 +5,6 @@
 	position: absolute
 	bottom: 0
 	width: 100%
-	height: $unitary-height
 	display: flex
 	background-color: $primary
 	color: $white
@@ -16,6 +15,7 @@
 		position: relative
 		display: flex
 		align-items: center
+		@include ripple
 
 		& > i
 			width: 3rem

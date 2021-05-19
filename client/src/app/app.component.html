@@ -1,4 +1,8 @@
 <app-initial-data (inspectionsEmitter)="setInspections($event)"></app-initial-data>
-<app-bottom-bar [inspections]="inspections"></app-bottom-bar>
+<app-bottom-panel [info]="panelInfo"></app-bottom-panel>
+<app-bottom-bar
+	[inspections]="inspections"
+	(orderEmitter)="setOrderPanelInfo($event)">
+</app-bottom-bar>
 <app-toasts></app-toasts>
 <router-outlet></router-outlet>

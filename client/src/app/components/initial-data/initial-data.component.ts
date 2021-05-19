@@ -8,6 +8,7 @@ import {throwError} from 'rxjs';
 import {NotificationService} from '../../services/notification.service';
 import {WarningToast} from '../../objects/toasts/warning-toast';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {Order} from '../../objects/orders/order';
 
 @Component({
 	selector: 'app-initial-data',
@@ -85,14 +86,14 @@ export class InitialDataComponent {
 		this.cdRef.detectChanges();
 
 		let errorText;
-		this.inspectionService.findOrderNumber(shortCode).pipe(
+		this.inspectionService.findOrder(shortCode).pipe(
 			catchError(error => {
 				errorText = Constants.MESSAGE.NONEXISTENT_ORDER;
 				return throwError(error);
 			}),
-			concatMap((orderNumber: number) => {
-				InspectionService.setOrder(orderNumber, shortCode);
-				return this.inspectionService.findInspections(orderNumber);
+			concatMap((order: any) => {
+				const or = InspectionService.setOrder(new Order(order, shortCode));
+				return this.inspectionService.findInspections(or.number);
 			}),
 			catchError(error => {
 				errorText = Constants.MESSAGE.NONEXISTENT_INSPECTIONS;

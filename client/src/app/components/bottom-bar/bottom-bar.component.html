@@ -1,14 +1,14 @@
 <div class="item">
 	<i class="fas fa-user"></i>
 	<div id="employee-info">
-		<div>{{employee ? employee.code : ''}}</div>
-		<div>{{employee ? employee.completeName : ''}}</div>
+		<div>{{employee?.code}}</div>
+		<div>{{employee?.completeName}}</div>
 	</div>
 </div>
-<div class="item">
+<div class="item" (click)="openOrder()">
 	<i class="fas fa-clipboard"></i>
 	<div id="order-info">
-		<div>{{order ? order.code : ''}}</div>
-		<div>{{order ? order.number : ''}}</div>
+		<div>{{order?.code}}</div>
+		<div>{{order?.number}}</div>
 	</div>
 </div>

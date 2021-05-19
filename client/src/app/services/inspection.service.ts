@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Url} from '../objects/url';
-import {Order} from '../objects/order';
+import {Order} from '../objects/orders/order';
 
 @Injectable({
 	providedIn: 'root'
@@ -13,12 +13,13 @@ export class InspectionService {
 
 	static order: Order;
 
-	static setOrder(orderNumber: number, code: string): void {
-		this.order = new Order(orderNumber, code);
+	static setOrder(order: Order): Order {
+		this.order = order;
+		return this.order;
 	}
 
-	findOrderNumber(shortCode: string): Observable<any> {
-		const url = `${Url.orderNumber()}?shortCode=${shortCode}`;
+	findOrder(shortCode: string): Observable<any> {
+		const url = `${Url.order()}?shortCode=${shortCode}`;
 		return this.http.get(url);
 	}
 

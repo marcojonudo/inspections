@@ -1,25 +1,41 @@
 package inspections.domains.fviberi
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore
 import grails.gorm.annotation.Entity
 import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
-class OrderLine implements GormEntity<OrderLine> {
+class OrderLine implements GormEntity<OrderLine>, Serializable {
 
-    int orderNumber
-	int article
+	@JsonIgnore
+	Order order
+	int line
+	int articleCode
+	String articleName
 
 	static mapping = {
 		datasource Constants.DataSource.FVIBERI
 		table 'fvlinord'
 
-		orderNumber column: 'nuordrep'
-		article column: 'coarticu'
+		order column: 'nuordrep'
+		line column: 'nulinord'
+		articleCode column: 'coarticu'
+		articleName column: 'noarticu'
 
-		id generator: 'assigned', name: 'orderNumber'
+		id composite: ['order', 'line'], generator: 'assigned'
 		version false
+	}
+
+	@Override
+	boolean equals(Object object) {
+		OrderLine obj = (OrderLine) object
+		return this.order.id == obj.order.id && this.line == obj.line
+	}
+
+	@Override
+	int hashCode() {
+		return Objects.hash(order.id, line)
 	}
 
 }

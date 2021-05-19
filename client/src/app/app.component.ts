@@ -2,6 +2,9 @@ import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component} fr
 import {animate, style, transition, trigger} from '@angular/animations';
 import {EmployeeService} from './services/employee.service';
 import {NotificationService} from './services/notification.service';
+import {PanelInfo} from './objects/panel-info/panel-info';
+import {Order} from './objects/orders/order';
+import {OrderPanelInfo} from './objects/panel-info/order-info';
 
 @Component({
 	selector: 'app-root',
@@ -32,6 +35,7 @@ export class AppComponent implements AfterViewInit {
 	title = 'Revisiones';
 
 	inspections: any;
+	panelInfo: PanelInfo;
 
 	constructor(private cdRef: ChangeDetectorRef) {
 		EmployeeService.init();
@@ -44,6 +48,11 @@ export class AppComponent implements AfterViewInit {
 
 	setInspections(inspections: any): void {
 		this.inspections = inspections;
+		this.cdRef.detectChanges();
+	}
+
+	setOrderPanelInfo(order: Order): void {
+		this.panelInfo = order ? new OrderPanelInfo(order) : undefined;
 		this.cdRef.detectChanges();
 	}
 

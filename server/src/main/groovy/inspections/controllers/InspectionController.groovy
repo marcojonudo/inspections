@@ -2,6 +2,7 @@ package inspections.controllers
 
 import groovy.transform.CompileStatic
 import inspections.domains.Inspection
+import inspections.domains.fviberi.Order
 import inspections.services.InspectionService
 import inspections.services.data.InspectionDataService
 import inspections.services.data.OrderTimeDataService
@@ -39,7 +40,7 @@ class InspectionController {
 		return inspectionDataService.findAll()
     }
 
-	@Get("/orderNumber")
+	@Get("/order")
 	@Operation(
 		summary = "Obtiene el número de orden a partir del código corto",
 		description = "Obtiene el número de orden a partir del código corto"
@@ -53,8 +54,8 @@ class InspectionController {
 	@ApiResponse(
 		responseCode = "404", description = "Número de orden no encontrado"
 	)
-	Integer findInspections(@QueryValue String shortCode) {
-		return orderTimeDataService.findOrderTimeOrderNumber(shortCode, [sort: 'orderNumber', order: 'desc', max: 1])
+	Order findInspections(@QueryValue String shortCode) {
+		return inspectionService.findOrder(shortCode)
 	}
 
 	@Get("/inspection")
