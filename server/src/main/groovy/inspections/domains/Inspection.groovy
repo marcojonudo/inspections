@@ -14,7 +14,7 @@ class Inspection implements GormEntity<Inspection> {
 	String name
 	Set<Item> items
 
-	static hasMany = [items: Item]
+	static hasMany = [items: Item, internalCodes: InspectionInternalCode]
 
 	static constraints = {
 		code maxSize: 15
@@ -22,7 +22,8 @@ class Inspection implements GormEntity<Inspection> {
 	}
 
 	static mapping = {
-		items lazy: false
+		items fetch: 'join'
+		internalCodes fetch: 'join'
 	}
 
 }

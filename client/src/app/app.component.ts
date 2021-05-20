@@ -5,6 +5,7 @@ import {NotificationService} from './services/notification.service';
 import {PanelInfo} from './objects/panel-info/panel-info';
 import {Order} from './objects/orders/order';
 import {OrderPanelInfo} from './objects/panel-info/order-info';
+import {Inspection} from './objects/inspections/inspection';
 
 @Component({
 	selector: 'app-root',
@@ -34,7 +35,7 @@ export class AppComponent implements AfterViewInit {
 
 	title = 'Revisiones';
 
-	inspections: any;
+	inspection: Inspection;
 	panelInfo: PanelInfo;
 
 	constructor(private cdRef: ChangeDetectorRef) {
@@ -46,8 +47,8 @@ export class AppComponent implements AfterViewInit {
 		this.cdRef.detach();
 	}
 
-	setInspections(inspections: any): void {
-		this.inspections = inspections;
+	setInspection(inspection: Inspection): void {
+		this.inspection = inspection;
 		this.cdRef.detectChanges();
 	}
 

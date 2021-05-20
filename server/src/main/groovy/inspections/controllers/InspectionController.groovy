@@ -60,17 +60,17 @@ class InspectionController {
 
 	@Get("/inspection")
 	@Operation(
-		summary = "Obtiene las revisiones asociadas",
-		description = "Obtiene todas las revisiones"
+		summary = "Obtiene la revision asociada",
+		description = "Obtiene la revisión con todos los items asociados al número de ordern"
 	)
-	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(type = "array")))
+	@ApiResponse(content = @Content(mediaType = "application/json"))
 	@ApiResponse(
 		responseCode = "200",
 		description = "Lista de revisiones",
-		content = @Content(array = @ArraySchema(schema = @Schema(implementation = Inspection)))
+		content = @Content(schema = @Schema(implementation = Inspection))
 	)
-	List<Inspection> findInspections(@QueryValue int orderNumber) {
-		return inspectionService.findAll(orderNumber) ?: null
+	Inspection findInspection(@QueryValue int orderNumber) {
+		return inspectionService.findInspection(orderNumber)
     }
 
 }

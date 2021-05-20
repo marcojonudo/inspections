@@ -1,0 +1,40 @@
+@import "abstracts/variables"
+@import "abstracts/mixins"
+
+\:host
+	width: 100%
+	display: flex
+	flex-direction: column
+
+	#inspection-title
+		@include flex-center
+		padding: $small-gap 0
+		background-color: $primary
+		color: $white
+		font-size: $bigger-font
+		font-weight: 600
+
+	.inspection-item
+		display: flex
+		justify-content: space-between
+		padding: $small-gap
+
+		& > div:last-child
+			width: $big-gap
+			@include flex-center
+
+			& > i
+				position: absolute
+				transition: transform $fast-transition, opacity $fast-transition
+				backface-visibility: hidden
+				//opacity: 0
+
+				&.front
+					transform: rotateY(0)
+
+				&.left
+					transform: rotateY(-180deg)
+
+				&.right
+					transform: rotateY(180deg)
+

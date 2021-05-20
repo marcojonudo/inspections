@@ -12,6 +12,7 @@ import { ToastsComponent } from './components/toasts/toasts.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BottomPanelComponent } from './components/bottom-panel/bottom-panel.component';
 import {OrderInfoComponent} from './components/bottom-panel/order-info/order-info.component';
+import { InspectionComponent } from './components/inspection/inspection.component';
 
 @NgModule({
 	declarations: [
@@ -20,7 +21,8 @@ import {OrderInfoComponent} from './components/bottom-panel/order-info/order-inf
 		InitialDataComponent,
 		ToastsComponent,
 		BottomPanelComponent,
-		OrderInfoComponent
+		OrderInfoComponent,
+		InspectionComponent
 	],
 	imports: [
 		BrowserModule,

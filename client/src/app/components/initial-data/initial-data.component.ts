@@ -9,6 +9,9 @@ import {NotificationService} from '../../services/notification.service';
 import {WarningToast} from '../../objects/toasts/warning-toast';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {Order} from '../../objects/orders/order';
+import {TextItem} from '../../objects/inspections/items/text-item';
+import {SelectItem} from '../../objects/inspections/items/select-item';
+import {Inspection} from '../../objects/inspections/inspection';
 
 @Component({
 	selector: 'app-initial-data',
@@ -52,18 +55,25 @@ import {Order} from '../../objects/orders/order';
 })
 export class InitialDataComponent {
 
+	@Output() inspectionsEmitter: EventEmitter<Inspection>;
+
 	employeeCode: string;
 	employee: Employee;
 
 	orderCode: string;
 	searchingInspections: boolean;
 
-	@Output() inspectionsEmitter: EventEmitter<any>;
+	itemBuilder: any;
 
 	constructor(private cdRef: ChangeDetectorRef, private inspectionService: InspectionService) {
 		this.employeeCode = '';
 		this.orderCode = '';
-		this.inspectionsEmitter = new EventEmitter<any>();
+		this.inspectionsEmitter = new EventEmitter<Inspection>();
+
+		this.itemBuilder = {
+			TEXT: (item: any) => new TextItem(item),
+			SELECT: (item: any) => new SelectItem(item)
+		};
 	}
 
 	checkEmployeeCodeLength(employeeCode: string = this.employeeCode): boolean {
@@ -106,12 +116,13 @@ export class InitialDataComponent {
 				}
 				this.cdRef.detectChanges();
 			})
-		).subscribe(
-			(data) => {
-				console.log('Inspections', data);
-				this.inspectionsEmitter.emit(data);
-			}
-		);
+		).subscribe((inspection: any) => {
+			console.log('Received inspection', inspection);
+			const items = inspection.items.map(item => this.itemBuilder[item.type](item));
+			const builtInspection = new Inspection(inspection, items);
+			console.log('Inspection', builtInspection);
+			this.inspectionsEmitter.emit(builtInspection);
+		});
 	}
 
 	triggerCd(): void {

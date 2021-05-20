@@ -1,6 +1,7 @@
 package inspections.domains.items
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
 import grails.gorm.annotation.Entity
 import inspections.domains.GaragePosition
 import inspections.domains.Inspection
@@ -18,6 +19,9 @@ class Item implements GormEntity<Item> {
 
 	@JsonIgnore
 	Set<Inspection> inspections
+
+	@JsonInclude
+	Set<VehiclePosition> vehiclePositions
 
 	static hasMany = [inspections: Inspection, garagePositions: GaragePosition, vehiclePositions: VehiclePosition]
 

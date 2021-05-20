@@ -9,6 +9,7 @@ import {Employee} from '../../objects/employee';
 import {InspectionService} from '../../services/inspection.service';
 import {Order} from '../../objects/orders/order';
 import {Constants} from '../../objects/constants';
+import {Inspection} from '../../objects/inspections/inspection';
 
 @Component({
 	selector: 'app-bottom-bar',
@@ -18,7 +19,7 @@ import {Constants} from '../../objects/constants';
 })
 export class BottomBarComponent {
 
-	@Input() inspections: any;
+	@Input() inspection: Inspection;
 	@Output() orderEmitter: EventEmitter<Order>;
 
 	openedOrder: Order;
@@ -28,7 +29,7 @@ export class BottomBarComponent {
 	}
 
 	@HostBinding('style.transform') get translateY(): string {
-		return `translateY(${this.inspections ? 0 : '100%'})`;
+		return `translateY(${this.inspection ? 0 : '100%'})`;
 	}
 
 	constructor() {

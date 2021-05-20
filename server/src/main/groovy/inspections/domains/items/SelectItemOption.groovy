@@ -11,6 +11,7 @@ class SelectItemOption implements GormEntity<SelectItemOption> {
 	SelectItem item
 
 	String name
+	String icon
 	boolean selected
 
 }

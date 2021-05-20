@@ -30,4 +30,9 @@ export class Constants {
 		ORDER: 'ORDER'
 	};
 
+	static ITEM_TYPE: any = {
+		SELECT: 'SELECT',
+		TEXT: 'TEXT'
+	};
+
 }

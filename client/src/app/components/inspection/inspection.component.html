@@ -1,0 +1,20 @@
+<div id="inspection-title">{{inspection.name}}</div>
+<div *ngFor="let item of inspection.items">
+	<div
+		*ngIf="checkItemType(item.type, selectType)"
+		class="inspection-item"
+		(click)="toggle(findSelectItem(item).options)">
+		<div>{{item.name}}</div>
+		<div>
+			<i
+				*ngFor="let option of findSelectItem(item).options; let i = index"
+				class="fas fa-{{option.icon}}"
+				[ngClass]="{
+					'front': option.selected,
+					'left': checkLeftOption(findSelectItem(item).options, i),
+					'right': checkRightOption(findSelectItem(item).options, i)
+				}">
+			</i>
+		</div>
+	</div>
+</div>
