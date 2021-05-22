@@ -48,9 +48,17 @@
 					@include flex-center
 
 					& > i
+						@include rounded-icon
+						color: $white
 						position: absolute
 						transition: transform $fast-transition, opacity $fast-transition
 						backface-visibility: hidden
+
+						&.fa-check
+							background-color: green
+
+						&.fa-exclamation
+							background-color: yellow
 
 						&.front
 							transform: rotateY(0)

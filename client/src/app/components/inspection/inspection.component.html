@@ -14,7 +14,7 @@
 					<div>{{item.name}}</div>
 					<div>
 						<i
-							*ngFor="let option of findSelectItem(item).options; let i = index"
+							*ngFor="let option of findSelectItem(item).options | order; let i = index"
 							class="fas fa-{{option.icon}}"
 							[ngClass]="{
 							'front': option.selected,

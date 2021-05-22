@@ -14,6 +14,7 @@ import { BottomPanelComponent } from './components/bottom-panel/bottom-panel.com
 import {OrderInfoComponent} from './components/bottom-panel/order-info/order-info.component';
 import { InspectionComponent } from './components/inspection/inspection.component';
 import { LongPressDirective } from './directives/long-press.directive';
+import { OrderPipe } from './pipes/order.pipe';
 
 @NgModule({
 	declarations: [
@@ -24,7 +25,8 @@ import { LongPressDirective } from './directives/long-press.directive';
 		BottomPanelComponent,
 		OrderInfoComponent,
 		InspectionComponent,
-		LongPressDirective
+		LongPressDirective,
+		OrderPipe
 	],
 	imports: [
 		BrowserModule,

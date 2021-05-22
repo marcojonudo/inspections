@@ -12,6 +12,11 @@ class SelectItemOption implements GormEntity<SelectItemOption> {
 
 	String name
 	String icon
+	int order
 	boolean selected
+
+	static mapping = {
+		order column: '`order`'
+	}
 
 }
