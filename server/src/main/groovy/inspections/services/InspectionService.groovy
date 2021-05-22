@@ -7,7 +7,6 @@ import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
 import inspections.services.data.InspectionDataService
 import inspections.services.data.OrderDataService
-import inspections.services.data.OrderLineDataService
 import inspections.services.data.OrderTimeDataService
 import inspections.utils.Constants
 
@@ -19,7 +18,6 @@ import javax.inject.Singleton
 class InspectionService {
 
 	@Inject OrderTimeDataService orderTimeDataService
-	@Inject OrderLineDataService orderLineDataService
 	@Inject OrderDataService orderDataService
 	@Inject InspectionDataService inspectionDataService
 

@@ -13,6 +13,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BottomPanelComponent } from './components/bottom-panel/bottom-panel.component';
 import {OrderInfoComponent} from './components/bottom-panel/order-info/order-info.component';
 import { InspectionComponent } from './components/inspection/inspection.component';
+import { LongPressDirective } from './directives/long-press.directive';
 
 @NgModule({
 	declarations: [
@@ -22,7 +23,8 @@ import { InspectionComponent } from './components/inspection/inspection.componen
 		ToastsComponent,
 		BottomPanelComponent,
 		OrderInfoComponent,
-		InspectionComponent
+		InspectionComponent,
+		LongPressDirective
 	],
 	imports: [
 		BrowserModule,

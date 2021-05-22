@@ -1,20 +1,51 @@
 <div id="inspection-title">{{inspection.name}}</div>
-<div *ngFor="let item of inspection.items">
-	<div
-		*ngIf="checkItemType(item.type, selectType)"
-		class="inspection-item"
-		(click)="toggle(findSelectItem(item).options)">
-		<div>{{item.name}}</div>
-		<div>
-			<i
-				*ngFor="let option of findSelectItem(item).options; let i = index"
-				class="fas fa-{{option.icon}}"
-				[ngClass]="{
-					'front': option.selected,
-					'left': checkLeftOption(findSelectItem(item).options, i),
-					'right': checkRightOption(findSelectItem(item).options, i)
-				}">
-			</i>
+<div id="items-list">
+	<div *ngFor="let items of groupedItems | keyvalue" class="grouped-items">
+		<div class="group-title">{{items.key}}</div>
+		<div *ngFor="let item of items.value">
+			<div
+				*ngIf="checkItemType(item.type, selectType)"
+				class="inspection-item select-item"
+				(click)="toggleSelectOption(findSelectItem(item).options, findSelectItem(item))">
+				<div
+					class="inspection-item-main-info"
+					appLongPress
+					(longPressEmitter)="toggleLegend(findSelectItem(item))">
+					<div>{{item.name}}</div>
+					<div>
+						<i
+							*ngFor="let option of findSelectItem(item).options; let i = index"
+							class="fas fa-{{option.icon}}"
+							[ngClass]="{
+							'front': option.selected,
+							'left': checkLeftOption(findSelectItem(item).options, i),
+							'right': checkRightOption(findSelectItem(item).options, i)
+						}">
+						</i>
+					</div>
+				</div>
+				<div class="select-item-options" [style.height.rem]="findOptionsHeight(findSelectItem(item))">
+					<div *ngFor="let option of findSelectItem(item).options">
+						<i class="fas fa-{{option.icon}}"></i>
+						<div>{{option.name}}</div>
+					</div>
+				</div>
+			</div>
+			<div
+				*ngIf="checkItemType(item.type, textType)" class="inspection-item text-item">
+				<div class="inspection-item-main-info">
+					{{item.name}}
+				</div>
+				<div class="text-item-input-row">
+					<input *ngFor="let section of findTextItem(item).sections" type="text">
+				</div>
+<!--				<div class="inspection-text-row" [style.height.rem]="findOptionsHeight(findSelectItem(item))">-->
+<!--					<div *ngFor="let option of findSelectItem(item).options">-->
+<!--						<i class="fas fa-{{option.icon}}"></i>-->
+<!--						<div>{{option.name}}</div>-->
+<!--					</div>-->
+<!--				</div>-->
+			</div>
 		</div>
 	</div>
 </div>

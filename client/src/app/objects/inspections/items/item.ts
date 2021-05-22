@@ -7,14 +7,14 @@ export class Item {
 	type: string;
 	name: string;
 	category: ItemCategory;
-	garagePositions: GaragePosition[];
+	garagePosition: GaragePosition;
 	vehiclePositions: VehiclePosition[];
 
 	constructor(item: any) {
 		this.type = item.type;
 		this.name = item.name;
 		this.category = new ItemCategory(item.category);
-		this.garagePositions = item.garagePositions.map(p => new GaragePosition(p));
+		this.garagePosition = new GaragePosition(item.garagePosition);
 		this.vehiclePositions = item.vehiclePositions.map(p => new VehiclePosition(p));
 	}
 

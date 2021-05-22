@@ -14,27 +14,73 @@
 		font-size: $bigger-font
 		font-weight: 600
 
-	.inspection-item
-		display: flex
-		justify-content: space-between
-		padding: $small-gap
+	#items-list
+		@include flex-1
+		overflow-y: auto
 
-		& > div:last-child
-			width: $big-gap
-			@include flex-center
+		.grouped-items
+			//padding: 0 $small-gap
+			background-color: $white
 
-			& > i
-				position: absolute
-				transition: transform $fast-transition, opacity $fast-transition
-				backface-visibility: hidden
-				//opacity: 0
+			.group-title
+				height: 3.5rem
+				display: flex
+				align-items: center
+				background-color: $light-green
+				font-weight: 600
 
-				&.front
-					transform: rotateY(0)
+			.inspection-item
+				padding: 0 $small-gap
+				overflow: hidden
+				background-color: $white
 
-				&.left
-					transform: rotateY(-180deg)
+				&-main-info
+					height: 3rem
+					@include flex-center
+					justify-content: space-between
 
-				&.right
-					transform: rotateY(180deg)
+			.select-item
 
+				.inspection-item-main-info > div:last-child
+					width: $big-gap
+					height: 100%
+					position: relative
+					@include flex-center
+
+					& > i
+						position: absolute
+						transition: transform $fast-transition, opacity $fast-transition
+						backface-visibility: hidden
+
+						&.front
+							transform: rotateY(0)
+
+						&.left
+							transform: rotateY(-180deg)
+
+						&.right
+							transform: rotateY(180deg)
+
+				&-options
+					@include flex-column
+					padding-left: $medium-gap
+					transition: height $fast-transition
+
+					& > div
+						@include flex-1
+						display: flex
+						align-items: center
+
+						& > i
+							width: $big-gap
+							height: 100%
+							@include flex-center
+
+			.text-item
+
+				&-input-row
+					height: 2.5rem
+					display: flex
+
+					& > input
+						@include input

@@ -16,6 +16,7 @@ class Item implements GormEntity<Item> {
 	Type type
 	String name
 	ItemCategory category
+	GaragePosition garagePosition
 
 	@JsonIgnore
 	Set<Inspection> inspections
@@ -23,7 +24,7 @@ class Item implements GormEntity<Item> {
 	@JsonInclude
 	Set<VehiclePosition> vehiclePositions
 
-	static hasMany = [inspections: Inspection, garagePositions: GaragePosition, vehiclePositions: VehiclePosition]
+	static hasMany = [inspections: Inspection, vehiclePositions: VehiclePosition]
 
 	static belongsTo = Inspection
 
@@ -36,7 +37,7 @@ class Item implements GormEntity<Item> {
 		tablePerHierarchy false
 
 		category lazy: false
-		garagePositions fetch: 'join'
+		garagePosition lazy: false
 		vehiclePositions fetch: 'join'
 	}
 

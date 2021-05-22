@@ -2,6 +2,7 @@ export class Constants {
 
 	static readonly EMPLOYEE_CODE_LENGTH: number = 7;
 	static readonly BOTTOM_BAR_HEIGHT_REM: number = 5;
+	static readonly SELECT_OPTION_HEIGHT_REM: number = 2.5;
 
 	static readonly DAY_JS: any = {
 		M: 'M',
