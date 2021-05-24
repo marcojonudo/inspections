@@ -8,7 +8,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { BottomBarComponent } from './components/bottom-bar/bottom-bar.component';
 import { InitialDataComponent } from './components/initial-data/initial-data.component';
-import { ToastsComponent } from './components/toasts/toasts.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {OrderInfoComponent} from './components/bottom-panel/order-info/order-info.component';
 import { InspectionComponent } from './components/inspection/inspection.component';
@@ -25,13 +24,13 @@ import {MatListModule} from '@angular/material/list';
 import {MatRippleModule} from '@angular/material/core';
 import { LegendComponent } from './components/bottom-panel/legend/legend.component';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		BottomBarComponent,
 		InitialDataComponent,
-		ToastsComponent,
 		OrderInfoComponent,
 		InspectionComponent,
 		LongPressDirective,
@@ -55,7 +54,8 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 		MatProgressSpinnerModule,
 		MatListModule,
 		MatRippleModule,
-		MatBottomSheetModule
+		MatBottomSheetModule,
+		MatSnackBarModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

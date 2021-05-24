@@ -5,8 +5,6 @@ import {Constants} from '../../objects/constants';
 import {catchError, concatMap, finalize} from 'rxjs/operators';
 import {InspectionService} from '../../services/inspection.service';
 import {throwError} from 'rxjs';
-import {NotificationService} from '../../services/notification.service';
-import {WarningToast} from '../../objects/toasts/warning-toast';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {Order} from '../../objects/orders/order';
 import {TextItem} from '../../objects/inspections/items/text-item';
@@ -14,6 +12,7 @@ import {SelectItem} from '../../objects/inspections/items/select-item';
 import {Inspection} from '../../objects/inspections/inspection';
 import {FormControl, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
 	selector: 'app-initial-data',
@@ -57,26 +56,21 @@ import {Router} from '@angular/router';
 })
 export class InitialDataComponent {
 
-	@Output() inspectionsEmitter: EventEmitter<Inspection>;
-
 	employeeCode: FormControl;
 	orderCode: FormControl;
 
-	// employeeCode: string;
 	employee: Employee;
 
-	// orderCode: string;
 	searchingInspections: boolean;
 
 	itemBuilder: any;
 
 	constructor(
-		private cdRef: ChangeDetectorRef, private inspectionService: InspectionService, private router: Router
+		private inspectionService: InspectionService,
+		private router: Router,
+		private snackBar: MatSnackBar,
+		private cdRef: ChangeDetectorRef
 	) {
-		// this.employeeCode = '';
-		// this.orderCode = '';
-		this.inspectionsEmitter = new EventEmitter<Inspection>();
-
 		this.employeeCode = new FormControl(
 			'', [Validators.required, Validators.minLength(this.employeeCodeLength)]
 		);
@@ -94,29 +88,21 @@ export class InitialDataComponent {
 
 	getEmployeeCodeErrorMessage(employeeCode: FormControl = this.employeeCode) {
 		if (employeeCode.hasError('required')) {
-			return 'Debes introducir un código';
+			return 'Debes introducir un código de empleado';
 		}
 		return 'Longitud mínima de 7 dígitos';
 	}
 
-	// checkEmployeeCodeLength(employeeCode: string = this.employeeCode): boolean {
-	// 	return employeeCode.length >= Constants.EMPLOYEE_CODE_LENGTH;
-	// }
-
-	// checkDisableSearchOrderButton(
-	// 	orderCode: string = this.orderCode, searching: boolean = this.searchingInspections
-	// ): boolean {
-	// 	return orderCode === '' || searching;
-	// }
+	getOrderCodeErrorMessage(employeeCode: FormControl = this.employeeCode) {
+		return 'Debes introducir un código de orden';
+	}
 
 	searchEmployee(employeeCode: FormControl = this.employeeCode): void {
 		this.employee = EmployeeService.setEmployee(employeeCode.value);
-		// this.cdRef.detectChanges();
 	}
 
 	searchOrder(orderCode: FormControl = this.orderCode): void {
 		this.searchingInspections = true;
-		// this.cdRef.detectChanges();
 
 		let errorText;
 		this.inspectionService.findOrder(orderCode.value).pipe(
@@ -129,15 +115,17 @@ export class InitialDataComponent {
 				return this.inspectionService.findInspections(or.number);
 			}),
 			catchError(error => {
-				errorText = Constants.MESSAGE.NONEXISTENT_INSPECTIONS;
+				errorText = errorText ? errorText : Constants.MESSAGE.NONEXISTENT_INSPECTIONS;
 				return throwError(error);
 			}),
 			finalize(() => {
 				this.searchingInspections = false;
-				if (errorText) {
-					NotificationService.notifyToast(new WarningToast(errorText));
-				}
 				this.cdRef.detectChanges();
+				if (errorText) {
+					this.snackBar.open(
+						errorText, '', {verticalPosition: 'top', duration: Constants.SNACK_BAR.DURATION, panelClass: 'warning-snack-bar'}
+					);
+				}
 			})
 		).subscribe((inspection: any) => {
 			console.log('Received inspection', inspection);
@@ -146,13 +134,7 @@ export class InitialDataComponent {
 			console.log('Inspection', builtInspection);
 			InspectionService.setInspection(builtInspection);
 			this.router.navigate([Constants.PATH.INSPECTION]);
-
-			// this.inspectionsEmitter.emit(builtInspection);
 		});
-	}
-
-	triggerCd(): void {
-		this.cdRef.detectChanges();
 	}
 
 }

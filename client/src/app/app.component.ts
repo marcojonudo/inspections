@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {EmployeeService} from './services/employee.service';
-import {NotificationService} from './services/notification.service';
 import 'hammerjs';
 import {RouterOutlet} from '@angular/router';
 import {routeAnimations} from './animations';
@@ -18,7 +17,6 @@ export class AppComponent {
 
 	constructor() {
 		EmployeeService.init();
-		NotificationService.init();
 	}
 
 	prepareRoute(outlet: RouterOutlet): void {
