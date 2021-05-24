@@ -36,4 +36,9 @@ export class Constants {
 		TEXT: 'TEXT'
 	};
 
+	static PATH: any = {
+		INIT: '/init',
+		INSPECTION: '/inspection'
+	};
+
 }

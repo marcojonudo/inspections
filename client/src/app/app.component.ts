@@ -6,6 +6,9 @@ import {PanelInfo} from './objects/panel-info/panel-info';
 import {Order} from './objects/orders/order';
 import {OrderPanelInfo} from './objects/panel-info/order-info';
 import {Inspection} from './objects/inspections/inspection';
+import 'hammerjs';
+import {Employee} from './objects/employee';
+import {InspectionService} from './services/inspection.service';
 
 @Component({
 	selector: 'app-root',
@@ -31,30 +34,13 @@ import {Inspection} from './objects/inspections/inspection';
 		])
 	]
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
 
 	title = 'Revisiones';
 
-	inspection: Inspection;
-	panelInfo: PanelInfo;
-
-	constructor(private cdRef: ChangeDetectorRef) {
+	constructor() {
 		EmployeeService.init();
 		NotificationService.init();
-	}
-
-	ngAfterViewInit(): void {
-		this.cdRef.detach();
-	}
-
-	setInspection(inspection: Inspection): void {
-		this.inspection = inspection;
-		this.cdRef.detectChanges();
-	}
-
-	setOrderPanelInfo(order: Order): void {
-		this.panelInfo = order ? new OrderPanelInfo(order) : undefined;
-		this.cdRef.detectChanges();
 	}
 
 }

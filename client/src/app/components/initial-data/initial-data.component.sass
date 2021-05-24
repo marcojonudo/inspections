@@ -4,56 +4,82 @@
 \:host
 	width: 100%
 	height: 100%
+	position: absolute
 	@include flex-column
 	align-items: center
 
-	.item
-		width: 75%
-		height: 25%
-		position: relative
-		@include flex-column-center
+	mat-card
+		width: 90%
+		margin: $medium-gap 0 0 0
 
-		&:nth-child(3)
-			@include flex-1
-
-		label
-			text-align: center
-			font-size: $medium-font
-
-		.input-item
-			width: 50%
-			position: relative
+		.custom-card-header
 			display: flex
+			align-items: center
 
-			input
-				@include input
-				text-align: center
+			mat-icon.mat-card-avatar
+				width: 40px
+				height: 40px
+				font-size: 40px
 
-				&.validated
+			.mat-card-title
+				margin-bottom: 0 !important
 
-					&.correct
-						box-shadow: 0 0 $small-gap $primary-alpha
+		mat-form-field
+			width: 100%
 
-					&.wrong
-						box-shadow: 0 0 $small-gap $red-alpha
+		mat-card-actions
+			@include flex-center
 
-			&-button
-				position: relative
+			button
+				@include flex-center
 
-				& > i
-					@include ripple
-					position: absolute
-					left: $medium-gap
-					transform: scale(1.3)
-					background-color: $primary
-					color: $white
-					padding: $small-gap
-					border-radius: 100%
-					transition: background-color $fast-transition
-
-			.disabled
-				pointer-events: none
-				background-color: $grey
+	//.item
+	//	width: 75%
+	//	height: 25%
+	//	position: relative
+	//	@include flex-column-center
+	//
+	//	&:nth-child(3)
+	//		@include flex-1
+	//
+	//	label
+	//		text-align: center
+	//		font-size: $medium-font
+	//
+	//	.input-item
+	//		width: 50%
+	//		position: relative
+	//		display: flex
+	//
+	//		input
+	//			@include input
+	//			text-align: center
+	//
+	//			&.validated
+	//
+	//				&.correct
+	//					box-shadow: 0 0 $small-gap $primary-alpha
+	//
+	//				&.wrong
+	//					box-shadow: 0 0 $small-gap $red-alpha
+	//
+	//		&-button
+	//			position: relative
+	//
+	//			& > i
+	//				@include ripple
+	//				position: absolute
+	//				left: $medium-gap
+	//				transform: scale(1.3)
+	//				background-color: $primary
+	//				color: $white
+	//				padding: $small-gap
+	//				border-radius: 100%
+	//				transition: background-color $fast-transition
+	//
+	//		.disabled
+	//			pointer-events: none
+	//			background-color: $grey
 
 	#loading-icon
 		font-size: $big-font

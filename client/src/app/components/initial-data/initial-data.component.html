@@ -1,27 +1,39 @@
-<div class="item" [@inOutTranslateAnimation]>
-	<label for="employee-code-input">Introduce tu código de empleado</label>
-	<div class="input-item">
-		<input
-			id="employee-code-input"
-			type="text"
-			[(ngModel)]="employeeCode"
-			(keyup)="searchEmployee()"
-			[ngClass]="{
-				'validated': checkEmployeeCodeLength(),
-				'correct': employee,
-				'wrong': !employee
-			}">
-	</div>
-</div>
-<div *ngIf="employee" class="item" [@inOutTranslateAnimation]>
-	<label for="order-input">Introduce el código corto de la orden</label>
-	<div class="input-item">
-		<input id="order-input" type="text" [(ngModel)]="orderCode" (keyup)="triggerCd()">
-		<div class="input-item-button">
-			<i class="fas fa-search" [class.disabled]="checkDisableSearchOrderButton()" (click)="searchOrder()"></i>
-		</div>
-	</div>
-</div>
-<div *ngIf="searchingInspections" class="item" [@inOutAnimation]>
-	<i id="loading-icon" class="fas fa-spinner fa-spin"></i>
-</div>
+<mat-card>
+	<mat-card-header class="custom-card-header">
+		<mat-icon mat-card-avatar>account_circle</mat-icon>
+		<mat-card-title>¿Cuál es tu código de empleado?</mat-card-title>
+	</mat-card-header>
+	<mat-card-content>
+		<mat-form-field>
+			<mat-label>Código de empleado</mat-label>
+			<input
+				matInput
+				placeholder="1234567"
+				[formControl]="employeeCode"
+				[maxLength]="employeeCodeLength"
+				(keyup)="searchEmployee()">
+			<mat-error *ngIf="employeeCode.invalid">{{getEmployeeCodeErrorMessage()}}</mat-error>
+		</mat-form-field>
+	</mat-card-content>
+</mat-card>
+<mat-card [@inOutTranslateAnimation] *ngIf="employee">
+	<mat-card-header class="custom-card-header">
+		<mat-icon mat-card-avatar>assignment</mat-icon>
+		<mat-card-title>¿Cuál es el código corto de la orden?</mat-card-title>
+	</mat-card-header>
+	<mat-card-content>
+		<mat-form-field>
+			<mat-label>Código corto</mat-label>
+			<input
+				matInput
+				placeholder="C4"
+				[formControl]="orderCode">
+		</mat-form-field>
+	</mat-card-content>
+	<mat-card-actions>
+		<button mat-fab (click)="searchOrder()" [disabled]="searchingInspections">
+			<mat-icon *ngIf="!searchingInspections">search</mat-icon>
+			<mat-spinner diameter="30" *ngIf="searchingInspections"></mat-spinner>
+		</button>
+	</mat-card-actions>
+</mat-card>

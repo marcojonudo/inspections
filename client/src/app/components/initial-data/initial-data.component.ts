@@ -12,6 +12,8 @@ import {Order} from '../../objects/orders/order';
 import {TextItem} from '../../objects/inspections/items/text-item';
 import {SelectItem} from '../../objects/inspections/items/select-item';
 import {Inspection} from '../../objects/inspections/inspection';
+import {FormControl, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 
 @Component({
 	selector: 'app-initial-data',
@@ -57,18 +59,28 @@ export class InitialDataComponent {
 
 	@Output() inspectionsEmitter: EventEmitter<Inspection>;
 
-	employeeCode: string;
+	employeeCode: FormControl;
+	orderCode: FormControl;
+
+	// employeeCode: string;
 	employee: Employee;
 
-	orderCode: string;
+	// orderCode: string;
 	searchingInspections: boolean;
 
 	itemBuilder: any;
 
-	constructor(private cdRef: ChangeDetectorRef, private inspectionService: InspectionService) {
-		this.employeeCode = '';
-		this.orderCode = '';
+	constructor(
+		private cdRef: ChangeDetectorRef, private inspectionService: InspectionService, private router: Router
+	) {
+		// this.employeeCode = '';
+		// this.orderCode = '';
 		this.inspectionsEmitter = new EventEmitter<Inspection>();
+
+		this.employeeCode = new FormControl(
+			'', [Validators.required, Validators.minLength(this.employeeCodeLength)]
+		);
+		this.orderCode = new FormControl('', [Validators.required]);
 
 		this.itemBuilder = {
 			TEXT: (item: any) => new TextItem(item),
@@ -76,33 +88,44 @@ export class InitialDataComponent {
 		};
 	}
 
-	checkEmployeeCodeLength(employeeCode: string = this.employeeCode): boolean {
-		return employeeCode.length >= Constants.EMPLOYEE_CODE_LENGTH;
+	get employeeCodeLength(): number {
+		return Constants.EMPLOYEE_CODE_LENGTH;
 	}
 
-	checkDisableSearchOrderButton(
-		orderCode: string = this.orderCode, searching: boolean = this.searchingInspections
-	): boolean {
-		return orderCode === '' || searching;
+	getEmployeeCodeErrorMessage(employeeCode: FormControl = this.employeeCode) {
+		if (employeeCode.hasError('required')) {
+			return 'Debes introducir un código';
+		}
+		return 'Longitud mínima de 7 dígitos';
 	}
 
-	searchEmployee(employeeCode: string = this.employeeCode): void {
-		this.employee = EmployeeService.setEmployee(employeeCode);
-		this.cdRef.detectChanges();
+	// checkEmployeeCodeLength(employeeCode: string = this.employeeCode): boolean {
+	// 	return employeeCode.length >= Constants.EMPLOYEE_CODE_LENGTH;
+	// }
+
+	// checkDisableSearchOrderButton(
+	// 	orderCode: string = this.orderCode, searching: boolean = this.searchingInspections
+	// ): boolean {
+	// 	return orderCode === '' || searching;
+	// }
+
+	searchEmployee(employeeCode: FormControl = this.employeeCode): void {
+		this.employee = EmployeeService.setEmployee(employeeCode.value);
+		// this.cdRef.detectChanges();
 	}
 
-	searchOrder(shortCode: string = this.orderCode): void {
+	searchOrder(orderCode: FormControl = this.orderCode): void {
 		this.searchingInspections = true;
-		this.cdRef.detectChanges();
+		// this.cdRef.detectChanges();
 
 		let errorText;
-		this.inspectionService.findOrder(shortCode).pipe(
+		this.inspectionService.findOrder(orderCode.value).pipe(
 			catchError(error => {
 				errorText = Constants.MESSAGE.NONEXISTENT_ORDER;
 				return throwError(error);
 			}),
 			concatMap((order: any) => {
-				const or = InspectionService.setOrder(new Order(order, shortCode));
+				const or = InspectionService.setOrder(new Order(order, orderCode.value));
 				return this.inspectionService.findInspections(or.number);
 			}),
 			catchError(error => {
@@ -121,7 +144,10 @@ export class InitialDataComponent {
 			const items = inspection.items.map(item => this.itemBuilder[item.type](item));
 			const builtInspection = new Inspection(inspection, items);
 			console.log('Inspection', builtInspection);
-			this.inspectionsEmitter.emit(builtInspection);
+			InspectionService.setInspection(builtInspection);
+			this.router.navigate([Constants.PATH.INSPECTION]);
+
+			// this.inspectionsEmitter.emit(builtInspection);
 		});
 	}
 

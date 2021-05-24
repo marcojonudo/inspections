@@ -1,24 +1,13 @@
 @import "abstracts/variables"
 @import "abstracts/mixins"
 
-\:host
-	position: absolute
-	bottom: 0
-	width: 100%
-	display: flex
-	background-color: $primary
-	color: $white
+mat-toolbar
 	transition: transform $fast-transition
 
-	.item
+	& > section
 		width: 50%
-		position: relative
 		display: flex
 		align-items: center
-		@include ripple
 
-		& > i
-			@include rounded-icon
-			background-color: $white
-			color: $primary
-			margin: 0 $small-gap
+		& > div
+			@include flex-column

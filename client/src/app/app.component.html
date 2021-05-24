@@ -1,19 +1,2 @@
-<app-initial-data
-	*ngIf="!inspection"
-	[@inOutAnimation]
-	class="main-screen-item"
-	(inspectionsEmitter)="setInspection($event)">
-</app-initial-data>
-<app-inspection
-	*ngIf="inspection"
-	[@inOutAnimation]
-	class="main-screen-item"
-	[inspection]="inspection">
-</app-inspection>
-<app-bottom-panel [info]="panelInfo"></app-bottom-panel>
-<app-bottom-bar
-	[inspection]="inspection"
-	(orderEmitter)="setOrderPanelInfo($event)">
-</app-bottom-bar>
 <app-toasts></app-toasts>
 <router-outlet></router-outlet>

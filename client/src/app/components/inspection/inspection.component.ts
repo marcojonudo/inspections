@@ -5,6 +5,7 @@ import {SelectItem} from '../../objects/inspections/items/select-item';
 import {SelectItemOption} from '../../objects/inspections/items/select-item-option';
 import {Item} from '../../objects/inspections/items/item';
 import {TextItem} from '../../objects/inspections/items/text-item';
+import {InspectionService} from '../../services/inspection.service';
 
 @Component({
 	selector: 'app-inspection',
@@ -13,12 +14,6 @@ import {TextItem} from '../../objects/inspections/items/text-item';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InspectionComponent implements OnInit {
-
-	@Input() inspection: Inspection;
-
-	@HostBinding('style.height') get height(): string {
-		return `calc(100% - ${Constants.BOTTOM_BAR_HEIGHT_REM}rem`;
-	}
 
 	groupedItems: { [key: string]: Item[] };
 	openedLegendItems: SelectItem[];
@@ -38,6 +33,10 @@ export class InspectionComponent implements OnInit {
 			}
 		});
 		this.itemDimensions = this.inspection.items.map(() => 0);
+	}
+
+	get inspection(): Inspection {
+		return InspectionService.inspection;
 	}
 
 	get selectType(): string {
@@ -69,7 +68,6 @@ export class InspectionComponent implements OnInit {
 	}
 
 	toggleSelectOption(options: SelectItemOption[], item: SelectItem): void {
-		console.log('togglin');
 		const selectedIndex = options.findIndex(o => o.selected);
 		options[selectedIndex].selected = false;
 		options[(selectedIndex + 1) % options.length].selected = true;

@@ -24,13 +24,13 @@ export class BottomBarComponent {
 
 	openedOrder: Order;
 
-	@HostBinding('style.height.rem') get height(): number {
-		return Constants.BOTTOM_BAR_HEIGHT_REM;
-	}
-
-	@HostBinding('style.transform') get translateY(): string {
-		return `translateY(${this.inspection ? 0 : '100%'})`;
-	}
+	// @HostBinding('style.height.rem') get height(): number {
+	// 	return Constants.BOTTOM_BAR_HEIGHT_REM;
+	// }
+	//
+	// @HostBinding('style.transform') get translateY(): string {
+	// 	return `translateY(${this.inspection ? 0 : '100%'})`;
+	// }
 
 	constructor() {
 		this.orderEmitter = new EventEmitter<Order>();

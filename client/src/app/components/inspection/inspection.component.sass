@@ -3,53 +3,41 @@
 
 \:host
 	width: 100%
+	@include flex-1
+	position: relative
 	display: flex
 	flex-direction: column
+	background-color: $white
 
 	#inspection-title
 		@include flex-center
 		padding: $small-gap 0
-		background-color: $primary
-		color: $white
+		//background-color: $primary
+		//color: $white
 		font-size: $bigger-font
 		font-weight: 600
+		z-index: 1
 
 	#items-list
 		@include flex-1
 		overflow-y: auto
 
-		.grouped-items
-			//padding: 0 $small-gap
-			background-color: $white
+		.select-item
 
-			.group-title
-				height: 3.5rem
+			&-content
+				width: 100%
+				height: 100%
 				display: flex
 				align-items: center
-				background-color: $light-green
-				font-weight: 600
+				justify-content: space-between
 
-			.inspection-item
-				padding: 0 $small-gap
-				overflow: hidden
-				background-color: $white
-
-				&-main-info
-					height: 3rem
-					@include flex-center
-					justify-content: space-between
-
-			.select-item
-
-				.inspection-item-main-info > div:last-child
-					width: $big-gap
+				.select-item-icon-container
 					height: 100%
 					position: relative
-					@include flex-center
+					display: flex
+					align-items: center
 
-					& > i
-						@include rounded-icon
-						color: $white
+					.select-item-icon
 						position: absolute
 						transition: transform $fast-transition, opacity $fast-transition
 						backface-visibility: hidden
@@ -61,34 +49,15 @@
 							background-color: yellow
 
 						&.front
-							transform: rotateY(0)
+							transform: translateX(-100%) rotateY(0)
 
 						&.left
-							transform: rotateY(-180deg)
+							transform: translateX(-100%) rotateY(-180deg)
 
 						&.right
-							transform: rotateY(180deg)
+							transform: translateX(-100%) rotateY(180deg)
 
-				&-options
-					@include flex-column
-					padding-left: $medium-gap
-					transition: height $fast-transition
+		.text-item
 
-					& > div
-						@include flex-1
-						display: flex
-						align-items: center
-
-						& > i
-							width: $big-gap
-							height: 100%
-							@include flex-center
-
-			.text-item
-
-				&-input-row
-					height: 2.5rem
-					display: flex
-
-					& > input
-						@include input
+			&-input
+				width: 100%
