@@ -1,22 +1,15 @@
-import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
+import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
+import {OrderLine} from '../../../objects/orders/order-line';
 import {Order} from '../../../objects/orders/order';
 
 @Component({
 	selector: 'app-order-info',
 	templateUrl: './order-info.component.html',
-	styleUrls: ['./order-info.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrderInfoComponent implements OnChanges {
+export class OrderInfoComponent {
 
-	@Input() order: Order;
-
-	or: Order;
-
-	ngOnChanges(changes: SimpleChanges) {
-		if (changes.order.currentValue) {
-			this.or = changes.order.currentValue;
-		}
-	}
+	constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public order: Order) {}
 
 }

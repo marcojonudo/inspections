@@ -4,12 +4,14 @@
 <mat-list id="items-list">
 	<div *ngFor="let items of groupedItems | keyvalue">
 		<div mat-subheader>{{items.key}}</div>
-		<div *ngFor="let item of items.value">
+		<div *ngFor="let item of items.value | order">
 			<mat-list-item
 				*ngIf="checkItemType(item.type, selectType)"
 				class="select-item"
 				matRipple
-				(click)="toggleSelectOption(findSelectItem(item).options, findSelectItem(item))">
+				(click)="toggleSelectOption(findSelectItem(item).options, findSelectItem(item))"
+				appLongPress
+				(longPressEmitter)="openLegend(findSelectItem(item).options)">
 				<div class="select-item-content">
 					<div>{{item.name}}</div>
 					<div class="select-item-icon-container">
@@ -34,68 +36,5 @@
 			</mat-list-item>
 		</div>
 	</div>
-<!--	<div mat-subheader>Folders</div>-->
-<!--	<mat-list-item *ngFor="let folder of folders">-->
-<!--		<mat-icon mat-list-icon>folder</mat-icon>-->
-<!--		<div mat-line>{{folder.name}}</div>-->
-<!--		<div mat-line> {{folder.updated | date}} </div>-->
-<!--	</mat-list-item>-->
-<!--	<mat-divider></mat-divider>-->
-<!--	<div mat-subheader>Notes</div>-->
-<!--	<mat-list-item *ngFor="let note of notes">-->
-<!--		<mat-icon mat-list-icon>note</mat-icon>-->
-<!--		<div mat-line>{{note.name}}</div>-->
-<!--		<div mat-line> {{note.updated | date}} </div>-->
-<!--	</mat-list-item>-->
 </mat-list>
-<!--<div id="items-list">-->
-<!--	<div *ngFor="let items of groupedItems | keyvalue" class="grouped-items">-->
-<!--		<div class="group-title">{{items.key}}</div>-->
-<!--		<div *ngFor="let item of items.value">-->
-<!--			<div-->
-<!--				*ngIf="checkItemType(item.type, selectType)"-->
-<!--				class="inspection-item select-item"-->
-<!--				(click)="toggleSelectOption(findSelectItem(item).options, findSelectItem(item))">-->
-<!--				<div-->
-<!--					class="inspection-item-main-info"-->
-<!--					appLongPress-->
-<!--					(longPressEmitter)="toggleLegend(findSelectItem(item))">-->
-<!--					<div>{{item.name}}</div>-->
-<!--					<div>-->
-<!--						<i-->
-<!--							*ngFor="let option of findSelectItem(item).options | order; let i = index"-->
-<!--							class="fas fa-{{option.icon}}"-->
-<!--							[ngClass]="{-->
-<!--								'front': option.selected,-->
-<!--								'left': checkLeftOption(findSelectItem(item).options, i),-->
-<!--								'right': checkRightOption(findSelectItem(item).options, i)-->
-<!--							}">-->
-<!--						</i>-->
-<!--					</div>-->
-<!--				</div>-->
-<!--				<div class="select-item-options" [style.height.rem]="findOptionsHeight(findSelectItem(item))">-->
-<!--					<div *ngFor="let option of findSelectItem(item).options">-->
-<!--						<i class="fas fa-{{option.icon}}"></i>-->
-<!--						<div>{{option.name}}</div>-->
-<!--					</div>-->
-<!--				</div>-->
-<!--			</div>-->
-<!--			<div-->
-<!--				*ngIf="checkItemType(item.type, textType)" class="inspection-item text-item">-->
-<!--				<div class="inspection-item-main-info">-->
-<!--					{{item.name}}-->
-<!--				</div>-->
-<!--				<div class="text-item-input-row">-->
-<!--					<input *ngFor="let section of findTextItem(item).sections" type="text">-->
-<!--				</div>-->
-<!--&lt;!&ndash;				<div class="inspection-text-row" [style.height.rem]="findOptionsHeight(findSelectItem(item))">&ndash;&gt;-->
-<!--&lt;!&ndash;					<div *ngFor="let option of findSelectItem(item).options">&ndash;&gt;-->
-<!--&lt;!&ndash;						<i class="fas fa-{{option.icon}}"></i>&ndash;&gt;-->
-<!--&lt;!&ndash;						<div>{{option.name}}</div>&ndash;&gt;-->
-<!--&lt;!&ndash;					</div>&ndash;&gt;-->
-<!--&lt;!&ndash;				</div>&ndash;&gt;-->
-<!--			</div>-->
-<!--		</div>-->
-<!--	</div>-->
-<!--</div>-->
 <app-bottom-bar></app-bottom-bar>

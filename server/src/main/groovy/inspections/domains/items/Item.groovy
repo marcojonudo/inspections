@@ -15,6 +15,7 @@ class Item implements GormEntity<Item> {
 	String code
 	Type type
 	String name
+	int order
 	ItemCategory category
 	GaragePosition garagePosition
 
@@ -36,6 +37,7 @@ class Item implements GormEntity<Item> {
 	static mapping = {
 		tablePerHierarchy false
 
+		order column: '`order`'
 		category lazy: false
 		garagePosition lazy: false
 		vehiclePositions fetch: 'join'

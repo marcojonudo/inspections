@@ -10,7 +10,6 @@ import { BottomBarComponent } from './components/bottom-bar/bottom-bar.component
 import { InitialDataComponent } from './components/initial-data/initial-data.component';
 import { ToastsComponent } from './components/toasts/toasts.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { BottomPanelComponent } from './components/bottom-panel/bottom-panel.component';
 import {OrderInfoComponent} from './components/bottom-panel/order-info/order-info.component';
 import { InspectionComponent } from './components/inspection/inspection.component';
 import { LongPressDirective } from './directives/long-press.directive';
@@ -24,6 +23,8 @@ import {MatCardModule} from '@angular/material/card';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatListModule} from '@angular/material/list';
 import {MatRippleModule} from '@angular/material/core';
+import { LegendComponent } from './components/bottom-panel/legend/legend.component';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 
 @NgModule({
 	declarations: [
@@ -31,11 +32,11 @@ import {MatRippleModule} from '@angular/material/core';
 		BottomBarComponent,
 		InitialDataComponent,
 		ToastsComponent,
-		BottomPanelComponent,
 		OrderInfoComponent,
 		InspectionComponent,
 		LongPressDirective,
-		OrderPipe
+		OrderPipe,
+		LegendComponent
 	],
 	imports: [
 		BrowserModule,
@@ -53,7 +54,8 @@ import {MatRippleModule} from '@angular/material/core';
 		ReactiveFormsModule,
 		MatProgressSpinnerModule,
 		MatListModule,
-		MatRippleModule
+		MatRippleModule,
+		MatBottomSheetModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

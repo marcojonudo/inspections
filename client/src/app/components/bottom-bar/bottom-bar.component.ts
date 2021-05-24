@@ -8,8 +8,8 @@ import {EmployeeService} from '../../services/employee.service';
 import {Employee} from '../../objects/employee';
 import {InspectionService} from '../../services/inspection.service';
 import {Order} from '../../objects/orders/order';
-import {Constants} from '../../objects/constants';
-import {Inspection} from '../../objects/inspections/inspection';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {OrderInfoComponent} from '../bottom-panel/order-info/order-info.component';
 
 @Component({
 	selector: 'app-bottom-bar',
@@ -19,22 +19,7 @@ import {Inspection} from '../../objects/inspections/inspection';
 })
 export class BottomBarComponent {
 
-	@Input() inspection: Inspection;
-	@Output() orderEmitter: EventEmitter<Order>;
-
-	openedOrder: Order;
-
-	// @HostBinding('style.height.rem') get height(): number {
-	// 	return Constants.BOTTOM_BAR_HEIGHT_REM;
-	// }
-	//
-	// @HostBinding('style.transform') get translateY(): string {
-	// 	return `translateY(${this.inspection ? 0 : '100%'})`;
-	// }
-
-	constructor() {
-		this.orderEmitter = new EventEmitter<Order>();
-	}
+	constructor(private bottomSheet: MatBottomSheet) {}
 
 	get employee(): Employee {
 		return EmployeeService.employee;
@@ -44,9 +29,8 @@ export class BottomBarComponent {
 		return InspectionService.order;
 	}
 
-	openOrder(order: Order = InspectionService.order): void {
-		this.openedOrder = this.openedOrder ? undefined : order;
-		this.orderEmitter.emit(this.openedOrder);
+	openOrder(order: Order = this.order): void {
+		this.bottomSheet.open(OrderInfoComponent, {data: order});
 	}
 
 }

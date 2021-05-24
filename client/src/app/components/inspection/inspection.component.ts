@@ -6,6 +6,8 @@ import {SelectItemOption} from '../../objects/inspections/items/select-item-opti
 import {Item} from '../../objects/inspections/items/item';
 import {TextItem} from '../../objects/inspections/items/text-item';
 import {InspectionService} from '../../services/inspection.service';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {LegendComponent} from '../bottom-panel/legend/legend.component';
 
 @Component({
 	selector: 'app-inspection',
@@ -13,17 +15,11 @@ import {InspectionService} from '../../services/inspection.service';
 	styleUrls: ['./inspection.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InspectionComponent implements OnInit {
+export class InspectionComponent {
 
 	groupedItems: { [key: string]: Item[] };
-	openedLegendItems: SelectItem[];
-	itemDimensions: number[];
 
-	constructor(private cdRef: ChangeDetectorRef) {
-		this.openedLegendItems = [];
-	}
-
-	ngOnInit(): void {
+	constructor(private bottomSheet: MatBottomSheet) {
 		this.groupedItems = {};
 		this.inspection.items.forEach(item => {
 			if (this.groupedItems[item.garagePosition.name]) {
@@ -32,7 +28,6 @@ export class InspectionComponent implements OnInit {
 				this.groupedItems[item.garagePosition.name] = [];
 			}
 		});
-		this.itemDimensions = this.inspection.items.map(() => 0);
 	}
 
 	get inspection(): Inspection {
@@ -71,22 +66,10 @@ export class InspectionComponent implements OnInit {
 		const selectedIndex = options.findIndex(o => o.selected);
 		options[selectedIndex].selected = false;
 		options[(selectedIndex + 1) % options.length].selected = true;
-		this.cdRef.detectChanges();
 	}
 
-	toggleLegend(item: SelectItem, openedLegendItems: SelectItem[] = this.openedLegendItems): void {
-		const openedIndex = openedLegendItems.findIndex(i => i.name === item.name);
-		if (openedIndex === -1) {
-			openedLegendItems.push(item);
-		} else {
-			openedLegendItems.splice(openedIndex, 1);
-		}
-		this.cdRef.detectChanges();
-	}
-
-	findOptionsHeight(item: SelectItem, openedLegendItems: SelectItem[] = this.openedLegendItems): number {
-		const opened = openedLegendItems.find(i => i.name === item.name);
-		return opened ? item.options.length * Constants.SELECT_OPTION_HEIGHT_REM : 0;
+	openLegend(options: SelectItemOption[]): void {
+		this.bottomSheet.open(LegendComponent, {data: options});
 	}
 
 }
