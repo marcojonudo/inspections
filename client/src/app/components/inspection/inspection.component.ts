@@ -14,6 +14,13 @@ import {TextItem} from '../../objects/inspections/items/text-item';
 import {InspectionService} from '../../services/inspection.service';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {LegendComponent} from '../bottom-panel/legend/legend.component';
+import {SavedInspection} from '../../objects/inspections/saved-inspection';
+import {TextSavedItem} from '../../objects/inspections/saved-items/text-saved-item';
+import {SelectSavedItem} from '../../objects/inspections/saved-items/select-saved-item';
+import {Employee} from '../../objects/employee';
+import {EmployeeService} from '../../services/employee.service';
+import {Order} from '../../objects/orders/order';
+import {finalize} from 'rxjs/operators';
 
 @Component({
 	selector: 'app-inspection',
@@ -27,8 +34,20 @@ export class InspectionComponent implements AfterViewInit {
 
 	bottomBarHeight: number;
 	groupedItems: { [key: string]: Item[] };
+	savedInspection: SavedInspection;
+	savedItemBuilder: any;
+	saving: boolean;
 
-	constructor(private bottomSheet: MatBottomSheet, private cdRef: ChangeDetectorRef) {
+	constructor(
+		private inspectionService: InspectionService,
+		private bottomSheet: MatBottomSheet,
+		private cdRef: ChangeDetectorRef
+	) {
+		this.savedItemBuilder = {
+			TEXT: (item: TextItem, employeeCode: string) => new TextSavedItem(item, employeeCode),
+			SELECT: (item: SelectItem, employeeCode: string) => new SelectSavedItem(item, employeeCode)
+		};
+
 		this.groupedItems = {};
 		this.inspection.items.forEach(item => {
 			if (this.groupedItems[item.garagePosition.name]) {
@@ -37,6 +56,8 @@ export class InspectionComponent implements AfterViewInit {
 				this.groupedItems[item.garagePosition.name] = [];
 			}
 		});
+		const savedItems = this.inspection.items.map(item => this.savedItemBuilder[item.type](item, this.employee.code));
+		this.savedInspection = new SavedInspection(this.inspection.name, this.order.number, savedItems);
 	}
 
 	ngAfterViewInit(): void {
@@ -46,6 +67,14 @@ export class InspectionComponent implements AfterViewInit {
 
 	get inspection(): Inspection {
 		return InspectionService.inspection;
+	}
+
+	get employee(): Employee {
+		return EmployeeService.employee;
+	}
+
+	get order(): Order {
+		return InspectionService.order;
 	}
 
 	get selectType(): string {
@@ -80,14 +109,31 @@ export class InspectionComponent implements AfterViewInit {
 		return i > options.findIndex(o => o.selected);
 	}
 
-	toggleSelectOption(options: SelectItemOption[], item: SelectItem): void {
-		const selectedIndex = options.findIndex(o => o.selected);
-		options[selectedIndex].selected = false;
-		options[(selectedIndex + 1) % options.length].selected = true;
+	toggleSelectOption(item: SelectItem): void {
+		const selectedIndex = item.options.findIndex(o => o.selected);
+		item.options[selectedIndex].selected = false;
+		item.options[(selectedIndex + 1) % item.options.length].selected = true;
+
+		const savedItem = this.savedInspection.items.find(i => i.item.name === item.name) as SelectSavedItem;
+		savedItem.update(item.options[(selectedIndex + 1) % item.options.length].name);
+	}
+
+	updateText(item: TextItem, text: string): void {
+		const savedItem = this.savedInspection.items.find(i => i.item.name === item.name) as TextSavedItem;
+		savedItem.update(text);
 	}
 
 	openLegend(options: SelectItemOption[]): void {
 		this.bottomSheet.open(LegendComponent, {data: options});
+	}
+
+	saveInspection(inspection: SavedInspection = this.savedInspection): void {
+		this.saving = true;
+		this.inspectionService.saveInspection(inspection).pipe(
+			finalize(() => {
+				this.saving = false;
+			})
+		).subscribe();
 	}
 
 }

@@ -1,6 +1,5 @@
 package inspections.services
 
-import grails.gorm.transactions.Transactional
 import groovy.transform.CompileStatic
 import inspections.domains.Inspection
 import inspections.domains.fviberi.Order
@@ -8,7 +7,6 @@ import inspections.domains.items.Item
 import inspections.services.data.InspectionDataService
 import inspections.services.data.OrderDataService
 import inspections.services.data.OrderTimeDataService
-import inspections.utils.Constants
 
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -50,20 +48,8 @@ class InspectionService {
 		return inspection
 	}
 
-	List<Inspection> findAll(int orderNumber) {
-		List<Integer> articles = orderDataService.find(orderNumber).lines*.articleCode.toList()
-		return inspectionDataService.findAll(articles)
-	}
-
-	List<Inspection> findAll(String shortCode) {
-		List<Integer> articles = findArticleCodes(shortCode)
-		return []
-	}
-
-	@Transactional(connection = Constants.DataSource.FVIBERI)
-	List<Integer> findArticleCodes(String shortCode) {
-		int orderNumber = orderTimeDataService.findOrderTimeOrderNumber(shortCode, [sort: 'orderNumber', order: 'desc', max: 1])
-		return []//orderLineDataService.findArticles(orderNumber)
-	}
+//	SavedInspection saveInspection(SavedInspection inspection) {
+//
+//	}
 
 }

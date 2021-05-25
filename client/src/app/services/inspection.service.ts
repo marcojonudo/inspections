@@ -4,6 +4,8 @@ import {HttpClient} from '@angular/common/http';
 import {Url} from '../objects/url';
 import {Order} from '../objects/orders/order';
 import {Inspection} from '../objects/inspections/inspection';
+import {SavedInspection} from '../objects/inspections/saved-inspection';
+import * as dayjs from 'dayjs';
 
 @Injectable({
 	providedIn: 'root'
@@ -31,8 +33,13 @@ export class InspectionService {
 	}
 
 	findInspections(orderNumber: number): Observable<any> {
-		const url = `${Url.inspections()}?orderNumber=${orderNumber}`;
+		const url = `${Url.inspection()}?orderNumber=${orderNumber}`;
 		return this.http.get(url);
+	}
+
+	saveInspection(inspection: SavedInspection): Observable<any> {
+		inspection.saved = dayjs();
+		return this.http.post(Url.inspection(), inspection);
 	}
 
 }

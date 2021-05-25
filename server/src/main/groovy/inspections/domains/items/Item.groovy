@@ -7,12 +7,13 @@ import inspections.domains.GaragePosition
 import inspections.domains.Inspection
 import inspections.domains.ItemCategory
 import inspections.domains.VehiclePosition
+import inspections.domains.savedItems.SavedItem
+import inspections.pogos.Builder
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
 class Item implements GormEntity<Item> {
 
-	String code
 	Type type
 	String name
 	int order
@@ -30,7 +31,6 @@ class Item implements GormEntity<Item> {
 	static belongsTo = Inspection
 
 	static constraints = {
-		code maxSize: 15
 		type maxSize: 25
 	}
 
@@ -45,8 +45,18 @@ class Item implements GormEntity<Item> {
 
 	enum Type {
 
-		TEXT,
-		SELECT
+		TEXT({ Map<String, Object> item ->
+			return Builder.buildTextSavedItem(item)
+		}),
+		SELECT({ Map<String, Object> item ->
+			return Builder.buildSelectSavedItem(item)
+		})
+
+		Closure<SavedItem> buildSavedItem
+
+		Type(Closure<SavedItem> buildSavedItem) {
+			this.buildSavedItem = buildSavedItem
+		}
 
 	}
 
