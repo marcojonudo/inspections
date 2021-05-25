@@ -93,7 +93,7 @@ export class InitialDataComponent {
 		return 'Longitud mínima de 7 dígitos';
 	}
 
-	getOrderCodeErrorMessage(employeeCode: FormControl = this.employeeCode) {
+	getOrderCodeErrorMessage() {
 		return 'Debes introducir un código de orden';
 	}
 

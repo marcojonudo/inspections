@@ -34,4 +34,10 @@ export class Constants {
 		INSPECTION: '/inspection'
 	};
 
+	static LOCAL_STORAGE: any = {
+		INSPECTION: 'inspection',
+		ORDER: 'order',
+		EMPLOYEE: 'employee'
+	};
+
 }

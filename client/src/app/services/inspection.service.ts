@@ -6,6 +6,9 @@ import {Order} from '../objects/orders/order';
 import {Inspection} from '../objects/inspections/inspection';
 import {SavedInspection} from '../objects/inspections/saved-inspection';
 import * as dayjs from 'dayjs';
+import {LocalStorageService} from './local-storage.service';
+import {Constants} from '../objects/constants';
+import {EmployeeService} from './employee.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -19,12 +22,20 @@ export class InspectionService {
 
 	static setOrder(order: Order): Order {
 		this.order = order;
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.ORDER, order);
 		return this.order;
 	}
 
 	static setInspection(inspection: Inspection): Inspection {
 		this.inspection = inspection;
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.INSPECTION, inspection);
 		return this.inspection;
+	}
+
+	static loadInfo(): void {
+		this.inspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION);
+		this.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
+		EmployeeService.employee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEE);
 	}
 
 	findOrder(shortCode: string): Observable<any> {

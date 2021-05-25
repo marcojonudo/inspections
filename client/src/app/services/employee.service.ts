@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Employee} from '../objects/employee';
+import {LocalStorageService} from './local-storage.service';
+import {Constants} from '../objects/constants';
 
 @Injectable({
 	providedIn: 'root'
@@ -21,6 +23,7 @@ export class EmployeeService {
 
 	static setEmployee(employeeCode: string): Employee {
 		this.employee = this.findEmployee(employeeCode);
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.EMPLOYEE, this.employee);
 		return this.employee;
 	}
 
