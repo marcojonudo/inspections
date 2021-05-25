@@ -1,8 +1,6 @@
 import {
 	ChangeDetectionStrategy,
-	Component, EventEmitter,
-	HostBinding,
-	Input, Output,
+	Component,
 } from '@angular/core';
 import {EmployeeService} from '../../services/employee.service';
 import {Employee} from '../../objects/employee';

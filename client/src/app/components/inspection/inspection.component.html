@@ -37,4 +37,13 @@
 		</div>
 	</div>
 </mat-list>
-<app-bottom-bar></app-bottom-bar>
+<button
+	id="save-inspection-button"
+	mat-fab
+	[style.bottom]="findSaveButtonBottom()">
+	<mat-icon>save</mat-icon>
+<!--	<mat-spinner diameter="30" *ngIf="searchingInspections"></mat-spinner>-->
+</button>
+<div #toolBar>
+	<app-bottom-bar></app-bottom-bar>
+</div>

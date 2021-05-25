@@ -1,4 +1,10 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnInit} from '@angular/core';
+import {
+	AfterViewInit,
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+	Component, ElementRef,
+	ViewChild
+} from '@angular/core';
 import {Inspection} from '../../objects/inspections/inspection';
 import {Constants} from '../../objects/constants';
 import {SelectItem} from '../../objects/inspections/items/select-item';
@@ -15,11 +21,14 @@ import {LegendComponent} from '../bottom-panel/legend/legend.component';
 	styleUrls: ['./inspection.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InspectionComponent {
+export class InspectionComponent implements AfterViewInit {
 
+	@ViewChild('toolBar') toolBar: ElementRef;
+
+	bottomBarHeight: number;
 	groupedItems: { [key: string]: Item[] };
 
-	constructor(private bottomSheet: MatBottomSheet) {
+	constructor(private bottomSheet: MatBottomSheet, private cdRef: ChangeDetectorRef) {
 		this.groupedItems = {};
 		this.inspection.items.forEach(item => {
 			if (this.groupedItems[item.garagePosition.name]) {
@@ -28,6 +37,11 @@ export class InspectionComponent {
 				this.groupedItems[item.garagePosition.name] = [];
 			}
 		});
+	}
+
+	ngAfterViewInit(): void {
+		this.bottomBarHeight = this.toolBar.nativeElement.getBoundingClientRect().height;
+		this.cdRef.detectChanges();
 	}
 
 	get inspection(): Inspection {
@@ -40,6 +54,10 @@ export class InspectionComponent {
 
 	get textType(): string {
 		return Constants.ITEM_TYPE.TEXT;
+	}
+
+	findSaveButtonBottom(): string {
+		return `calc(${this.bottomBarHeight}px + 1rem)`;
 	}
 
 	checkItemType(optionType: string, type: string): boolean {
