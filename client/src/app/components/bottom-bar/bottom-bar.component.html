@@ -1,20 +1,19 @@
 <mat-toolbar class="mat-elevation-z3" color="primary">
-	<section>
-		<button mat-icon-button>
-			<mat-icon>account_circle</mat-icon>
-		</button>
+	<section matRipple (click)="openEmployee()">
+		<mat-icon>account_circle</mat-icon>
 		<div>
 			<span>{{employee?.code}}</span>
 			<span>{{employee?.completeName}}</span>
 		</div>
 	</section>
 	<section matRipple (click)="openOrder()">
-		<button mat-icon-button>
-			<mat-icon>assignment</mat-icon>
-		</button>
+		<mat-icon>assignment</mat-icon>
 		<div>
 			<span>{{order?.code}}</span>
 			<span>{{order?.number}}</span>
 		</div>
+	</section>
+	<section matRipple (click)="openToolsMenu()">
+		<mat-icon>expand_more</mat-icon>
 	</section>
 </mat-toolbar>

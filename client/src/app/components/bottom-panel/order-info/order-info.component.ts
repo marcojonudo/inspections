@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
-import {OrderLine} from '../../../objects/orders/order-line';
 import {Order} from '../../../objects/orders/order';
 
 @Component({

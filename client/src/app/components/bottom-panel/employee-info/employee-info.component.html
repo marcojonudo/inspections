@@ -1,0 +1,4 @@
+<mat-form-field>
+	<mat-label>Introduce un nuevo código de empleado</mat-label>
+	<input matInput placeholder="1234567" [formControl]="employeeCodeControl" (keyup)="searchEmployee()">
+</mat-form-field>

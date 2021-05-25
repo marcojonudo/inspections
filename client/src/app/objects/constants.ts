@@ -17,24 +17,25 @@ export class Constants {
 
 	static readonly MESSAGE: any = {
 		NONEXISTENT_ORDER: 'No se encuentra ninguna orden asociada al código corto',
-		NONEXISTENT_INSPECTIONS: 'No se encuentran revisiones asociadas a la orden'
+		NONEXISTENT_INSPECTIONS: 'No se encuentran revisiones asociadas a la orden',
+		UPDATE_EMPLOYEE_MESSAGE: (newCode: string, code: string) => `¿Quieres cambiar el empleado ${code} por el ${newCode}?`
 	};
 
-	static PANEL_INFO_TYPE: any = {
+	static readonly PANEL_INFO_TYPE: any = {
 		ORDER: 'ORDER'
 	};
 
-	static ITEM_TYPE: any = {
+	static readonly ITEM_TYPE: any = {
 		SELECT: 'SELECT',
 		TEXT: 'TEXT'
 	};
 
-	static PATH: any = {
+	static readonly PATH: any = {
 		INIT: '/init',
 		INSPECTION: '/inspection'
 	};
 
-	static LOCAL_STORAGE: any = {
+	static readonly LOCAL_STORAGE: any = {
 		INSPECTION: 'inspection',
 		ORDER: 'order',
 		EMPLOYEE: 'employee'

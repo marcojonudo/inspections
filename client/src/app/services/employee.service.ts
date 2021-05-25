@@ -13,7 +13,8 @@ export class EmployeeService {
 
 	static init(): void {
 		this.employees = [
-			new Employee({code: '1', name: 'Marco', surname1: 'Martínez', surname2: 'Avila'})
+			new Employee({code: '1', name: 'Marco', surname1: 'Martínez', surname2: 'Avila'}),
+			new Employee({code: '2', name: 'Alberto', surname1: 'García', surname2: 'García'}),
 		];
 	}
 
