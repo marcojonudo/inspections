@@ -21,6 +21,7 @@ import {Employee} from '../../objects/employee';
 import {EmployeeService} from '../../services/employee.service';
 import {Order} from '../../objects/orders/order';
 import {finalize} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Component({
 	selector: 'app-inspection',
@@ -41,6 +42,7 @@ export class InspectionComponent implements AfterViewInit {
 	constructor(
 		private inspectionService: InspectionService,
 		private bottomSheet: MatBottomSheet,
+		private router: Router,
 		private cdRef: ChangeDetectorRef
 	) {
 		this.savedItemBuilder = {
@@ -75,6 +77,10 @@ export class InspectionComponent implements AfterViewInit {
 
 	get textType(): string {
 		return Constants.ITEM_TYPE.TEXT;
+	}
+
+	goBack(): void {
+		this.router.navigate([Constants.PATH.INIT]);
 	}
 
 	findGroupedItems(inspection: Inspection = this.inspection): { [key: string]: Item[] } {

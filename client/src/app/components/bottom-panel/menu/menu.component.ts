@@ -19,14 +19,8 @@ export class MenuComponent {
 	constructor(
 		private bottomSheetRef: MatBottomSheetRef<MenuComponent>,
 		private inspectionService: InspectionService,
-		private router: Router,
 		private cdRef: ChangeDetectorRef
 	) {}
-
-	goBack(): void {
-		this.router.navigate([Constants.PATH.INIT]);
-		this.bottomSheetRef.dismiss();
-	}
 
 	searchOrder(orderCode: string = this.orderCode): void {
 		this.searchingInspections = true;

@@ -8,7 +8,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { BottomBarComponent } from './components/bottom-bar/bottom-bar.component';
 import { InitialDataComponent } from './components/initial-data/initial-data.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {OrderInfoComponent} from './components/bottom-panel/order-info/order-info.component';
 import { InspectionComponent } from './components/inspection/inspection.component';
 import { LongPressDirective } from './directives/long-press.directive';
@@ -50,7 +49,6 @@ import { MenuComponent } from './components/bottom-panel/menu/menu.component';
 		FormsModule,
 		HttpClientModule,
 		BrowserAnimationsModule,
-		NgbModule,
 		MatToolbarModule,
 		MatIconModule,
 		MatButtonModule,
