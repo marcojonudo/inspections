@@ -1,4 +1,7 @@
-import {Directive, EventEmitter, HostListener, Output} from '@angular/core';
+import {Directive, ElementRef, EventEmitter, HostListener, Output} from '@angular/core';
+import {from, fromEvent} from 'rxjs';
+import {Constants} from '../objects/constants';
+import {mergeMap} from 'rxjs/operators';
 
 @Directive({
 	selector: '[appLongPress]'
@@ -11,21 +14,25 @@ export class LongPressDirective {
 
 	timeout: any;
 
-	@HostListener('touchstart', ['$event'])
-	@HostListener('mousedown', ['$event'])
-	onMouseDown(event) {
-		this.timeout = setTimeout(
-			() => this.longPressEmitter.emit(event),
-			this.LONG_PRESS_DELAY
-		);
-	}
+	constructor(private element: ElementRef) {
+		const startEvents = [Constants.EVENT.TOUCH_START, Constants.EVENT.MOUSE_DOWN];
+		const endEvents = [Constants.EVENT.TOUCHE_END, Constants.EVENT.MOUSE_UP, Constants.EVENT.MOUSE_LEAVE];
 
-	@HostListener('touchend', ['$event'])
-	@HostListener('mouseup', ['$event'])
-	@HostListener('mouseleave', ['$event'])
-	onMouseUp(event: Event) {
-		// event.preventDefault();
-		clearTimeout(this.timeout);
+		from(startEvents).pipe(
+			mergeMap(event => fromEvent(element.nativeElement, event, {passive: true}))
+		).subscribe(event => {
+			this.timeout = setTimeout(
+				() => this.longPressEmitter.emit(event),
+				this.LONG_PRESS_DELAY
+			);
+		});
+
+		from(endEvents).pipe(
+			mergeMap(event => fromEvent(element.nativeElement, event))
+		).subscribe(() => {
+			clearTimeout(this.timeout);
+		});
+
 	}
 
 }

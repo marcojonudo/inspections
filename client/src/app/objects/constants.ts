@@ -41,4 +41,12 @@ export class Constants {
 		EMPLOYEE: 'employee'
 	};
 
+	static readonly EVENT: any = {
+		TOUCH_START: 'touchstart',
+		MOUSE_DOWN: 'mousedown',
+		TOUCHE_END: 'touchend',
+		MOUSE_UP: 'mouseup',
+		MOUSE_LEAVE: 'mouseleave'
+	};
+
 }
