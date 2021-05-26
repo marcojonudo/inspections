@@ -2,14 +2,9 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Out
 import {EmployeeService} from '../../services/employee.service';
 import {Employee} from '../../objects/employee';
 import {Constants} from '../../objects/constants';
-import {catchError, concatMap, finalize} from 'rxjs/operators';
+import {finalize} from 'rxjs/operators';
 import {InspectionService} from '../../services/inspection.service';
-import {throwError} from 'rxjs';
 import {animate, style, transition, trigger} from '@angular/animations';
-import {Order} from '../../objects/orders/order';
-import {TextItem} from '../../objects/inspections/items/text-item';
-import {SelectItem} from '../../objects/inspections/items/select-item';
-import {Inspection} from '../../objects/inspections/inspection';
 import {FormControl, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -63,8 +58,6 @@ export class InitialDataComponent {
 
 	searchingInspections: boolean;
 
-	itemBuilder: any;
-
 	constructor(
 		private inspectionService: InspectionService,
 		private router: Router,
@@ -75,11 +68,6 @@ export class InitialDataComponent {
 			'', [Validators.required, Validators.minLength(this.employeeCodeLength)]
 		);
 		this.orderCode = new FormControl('', [Validators.required]);
-
-		this.itemBuilder = {
-			TEXT: (item: any) => new TextItem(item),
-			SELECT: (item: any) => new SelectItem(item)
-		};
 	}
 
 	get employeeCodeLength(): number {
@@ -104,35 +92,12 @@ export class InitialDataComponent {
 	searchOrder(orderCode: FormControl = this.orderCode): void {
 		this.searchingInspections = true;
 
-		let errorText;
-		this.inspectionService.findOrder(orderCode.value).pipe(
-			catchError(error => {
-				errorText = Constants.MESSAGE.NONEXISTENT_ORDER;
-				return throwError(error);
-			}),
-			concatMap((order: any) => {
-				const or = InspectionService.setOrder(new Order(order, orderCode.value));
-				return this.inspectionService.findInspections(or.number);
-			}),
-			catchError(error => {
-				errorText = errorText ? errorText : Constants.MESSAGE.NONEXISTENT_INSPECTIONS;
-				return throwError(error);
-			}),
+		this.inspectionService.findInspection(orderCode.value).pipe(
 			finalize(() => {
 				this.searchingInspections = false;
 				this.cdRef.detectChanges();
-				if (errorText) {
-					this.snackBar.open(
-						errorText, '', {verticalPosition: 'top', duration: Constants.SNACK_BAR.DURATION, panelClass: 'warning-snack-bar'}
-					);
-				}
 			})
-		).subscribe((inspection: any) => {
-			console.log('Received inspection', inspection);
-			const items = inspection.items.map(item => this.itemBuilder[item.type](item));
-			const builtInspection = new Inspection(inspection, items);
-			console.log('Inspection', builtInspection);
-			InspectionService.setInspection(builtInspection);
+		).subscribe(() => {
 			this.router.navigate([Constants.PATH.INSPECTION]);
 		});
 	}

@@ -1,5 +1,4 @@
 import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
 import {Constants} from '../../../objects/constants';
 import {EmployeeService} from '../../../services/employee.service';
 import {MatDialog} from '@angular/material/dialog';
@@ -14,18 +13,16 @@ import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material/bottom
 })
 export class EmployeeInfoComponent {
 
-	employeeCodeControl: FormControl;
+	newEmployeeCode: string;
 
 	constructor(
 		private bottomSheetRef: MatBottomSheetRef<EmployeeInfoComponent>,
 		@Inject(MAT_BOTTOM_SHEET_DATA) private employeeCode: string,
 		private dialog: MatDialog
-	) {
-		this.employeeCodeControl = new FormControl('');
-	}
+	) {}
 
-	searchEmployee(employeeCodeControl: FormControl = this.employeeCodeControl): void {
-		const employee = EmployeeService.findEmployee(employeeCodeControl.value);
+	searchEmployee(newEmployeeCode: string = this.newEmployeeCode): void {
+		const employee = EmployeeService.findEmployee(newEmployeeCode);
 		if (employee) {
 			this.openDialog(employee.code);
 		}

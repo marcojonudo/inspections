@@ -47,15 +47,7 @@ export class InspectionComponent implements AfterViewInit {
 			TEXT: (item: TextItem, employeeCode: string) => new TextSavedItem(item, employeeCode),
 			SELECT: (item: SelectItem, employeeCode: string) => new SelectSavedItem(item, employeeCode)
 		};
-
-		this.groupedItems = {};
-		this.inspection.items.forEach(item => {
-			if (this.groupedItems[item.garagePosition.name]) {
-				this.groupedItems[item.garagePosition.name].push(item);
-			} else {
-				this.groupedItems[item.garagePosition.name] = [];
-			}
-		});
+		this.groupedItems = this.findGroupedItems();
 		const savedItems = this.inspection.items.map(item => this.savedItemBuilder[item.type](item, this.employee.code));
 		this.savedInspection = new SavedInspection(this.inspection.name, this.order.number, savedItems);
 	}
@@ -83,6 +75,18 @@ export class InspectionComponent implements AfterViewInit {
 
 	get textType(): string {
 		return Constants.ITEM_TYPE.TEXT;
+	}
+
+	findGroupedItems(inspection: Inspection = this.inspection): { [key: string]: Item[] } {
+		const groupedItems = {};
+		inspection.items.forEach(item => {
+			if (groupedItems[item.garagePosition.name]) {
+				groupedItems[item.garagePosition.name].push(item);
+			} else {
+				groupedItems[item.garagePosition.name] = [];
+			}
+		});
+		return groupedItems;
 	}
 
 	findSaveButtonBottom(): string {
@@ -134,6 +138,10 @@ export class InspectionComponent implements AfterViewInit {
 				this.saving = false;
 			})
 		).subscribe();
+	}
+
+	updateGroupedItems(): void {
+		this.groupedItems = this.findGroupedItems();
 	}
 
 }

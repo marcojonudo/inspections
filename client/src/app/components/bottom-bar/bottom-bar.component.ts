@@ -1,6 +1,6 @@
 import {
 	ChangeDetectionStrategy, ChangeDetectorRef,
-	Component,
+	Component, EventEmitter, Output,
 } from '@angular/core';
 import {EmployeeService} from '../../services/employee.service';
 import {Employee} from '../../objects/employee';
@@ -9,6 +9,7 @@ import {Order} from '../../objects/orders/order';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {OrderInfoComponent} from '../bottom-panel/order-info/order-info.component';
 import {EmployeeInfoComponent} from '../bottom-panel/employee-info/employee-info.component';
+import {MenuComponent} from '../bottom-panel/menu/menu.component';
 
 @Component({
 	selector: 'app-bottom-bar',
@@ -18,7 +19,13 @@ import {EmployeeInfoComponent} from '../bottom-panel/employee-info/employee-info
 })
 export class BottomBarComponent {
 
-	constructor(private bottomSheet: MatBottomSheet, private cdRef: ChangeDetectorRef) {}
+	@Output() foundInspectionEmitter: EventEmitter<boolean>;
+
+	openedMenu: boolean;
+
+	constructor(private bottomSheet: MatBottomSheet, private cdRef: ChangeDetectorRef) {
+		this.foundInspectionEmitter = new EventEmitter<boolean>();
+	}
 
 	get employee(): Employee {
 		return EmployeeService.employee;
@@ -42,7 +49,16 @@ export class BottomBarComponent {
 	}
 
 	openToolsMenu(): void {
-		this.bottomSheet.open(EmployeeInfoComponent);
+		this.openedMenu = true;
+
+		const bottomSheetRef = this.bottomSheet.open(MenuComponent);
+		bottomSheetRef.afterDismissed().subscribe((foundInspection: boolean) => {
+			this.openedMenu = false;
+			this.cdRef.detectChanges();
+			if (foundInspection) {
+				this.foundInspectionEmitter.emit(foundInspection);
+			}
+		});
 	}
 
 }

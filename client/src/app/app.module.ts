@@ -25,6 +25,10 @@ import {MatRippleModule} from '@angular/material/core';
 import { LegendComponent } from './components/bottom-panel/legend/legend.component';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { EmployeeInfoComponent } from './components/bottom-panel/employee-info/employee-info.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { MenuComponent } from './components/bottom-panel/menu/menu.component';
 
 @NgModule({
 	declarations: [
@@ -35,7 +39,10 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 		InspectionComponent,
 		LongPressDirective,
 		OrderPipe,
-		LegendComponent
+		LegendComponent,
+		EmployeeInfoComponent,
+		ConfirmDialogComponent,
+		MenuComponent
 	],
 	imports: [
 		BrowserModule,
@@ -55,7 +62,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 		MatListModule,
 		MatRippleModule,
 		MatBottomSheetModule,
-		MatSnackBarModule
+		MatSnackBarModule,
+		MatDialogModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]
