@@ -7,11 +7,15 @@ mat-toolbar
 	& > section
 		@include flex-1
 		height: 100%
-		@include flex-center
-		flex-direction: column
+		@include flex-column-center
+
+		& > mat-icon
+			padding-bottom: $super-tiny-gap
 
 		& > div
 			display: flex
+			font-size: $small-font
+			line-height: 1
 
 		#expand-menu-icon
 			transition: transform $fast-transition

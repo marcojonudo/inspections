@@ -13,7 +13,7 @@
 			<span>{{order?.number}}</span>
 		</div>
 	</section>
-	<section matRipple (click)="openToolsMenu()">
+	<button mat-icon-button (click)="openToolsMenu()">
 		<mat-icon id="expand-menu-icon" [style.transform]="'rotate(' + (openedMenu ? '180deg' : 0) + ')'">expand_more</mat-icon>
-	</section>
+	</button>
 </mat-toolbar>
