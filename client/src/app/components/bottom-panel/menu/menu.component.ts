@@ -24,6 +24,7 @@ export class MenuComponent {
 
 	resetInspection(): void {
 		InspectionService.resetInspection();
+		this.bottomSheetRef.dismiss(true);
 	}
 
 	searchOrder(orderCode: string = this.orderCode): void {

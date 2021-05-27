@@ -57,7 +57,7 @@ export class InspectionService {
 	}
 
 	static resetInspection(savedInspection: SavedInspection = this.savedInspection): void {
-		savedInspection.items.forEach(item => item.reset());
+		savedInspection.items.forEach(item => item.reset(item.item));
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 

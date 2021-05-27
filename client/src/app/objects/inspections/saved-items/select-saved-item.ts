@@ -16,8 +16,8 @@ export class SelectSavedItem extends SavedItem {
 		this.filled = dayjs();
 	}
 
-	reset(): void {
-		this.value = '';
+	reset(item: SelectItem): void {
+		this.value = item.options.find(o => o.selected).name;
 		this.filled = undefined;
 	}
 

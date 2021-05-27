@@ -16,6 +16,6 @@ export abstract class SavedItem {
 
 	abstract update(value: string): void;
 
-	abstract reset(): void;
+	abstract reset(item: Item): void;
 
 }
