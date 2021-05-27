@@ -1,4 +1,13 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
+import {
+	AfterViewInit,
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+	Component,
+	ElementRef,
+	EventEmitter,
+	Output,
+	ViewChild
+} from '@angular/core';
 import {EmployeeService} from '../../services/employee.service';
 import {Employee} from '../../objects/employee';
 import {Constants} from '../../objects/constants';
@@ -8,6 +17,8 @@ import {animate, style, transition, trigger} from '@angular/animations';
 import {FormControl, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatFormField} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
 
 @Component({
 	selector: 'app-initial-data',
@@ -49,7 +60,10 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 		])
 	]
 })
-export class InitialDataComponent {
+export class InitialDataComponent implements AfterViewInit {
+
+	@ViewChild('employeeCodeInput') employeeCodeInput: MatInput;
+	@ViewChild('orderCodeInput') orderCodeInput: MatInput;
 
 	employeeCode: FormControl;
 	orderCode: FormControl;
@@ -70,8 +84,21 @@ export class InitialDataComponent {
 		this.orderCode = new FormControl('', [Validators.required]);
 	}
 
+	ngAfterViewInit(): void {
+		this.employeeCodeInput.focus();
+	}
+
+
 	get employeeCodeLength(): number {
 		return Constants.EMPLOYEE_CODE_LENGTH;
+	}
+
+	setEmployeeFocus(): void {
+		this.employeeCodeInput.focus();
+	}
+
+	setOrderCodeFocus(): void {
+		this.orderCodeInput.focus();
 	}
 
 	getEmployeeCodeErrorMessage(employeeCode: FormControl = this.employeeCode) {
@@ -86,7 +113,14 @@ export class InitialDataComponent {
 	}
 
 	searchEmployee(employeeCode: FormControl = this.employeeCode): void {
-		this.employee = EmployeeService.setEmployee(employeeCode.value);
+		const employee = EmployeeService.setEmployee(employeeCode.value);
+		if (employee) {
+			this.employee = employee;
+			setTimeout(
+				() => this.orderCodeInput.focus(),
+				0
+			);
+		}
 	}
 
 	searchOrder(orderCode: FormControl = this.orderCode): void {

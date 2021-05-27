@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card (click)="setEmployeeFocus()">
 	<mat-card-header class="custom-card-header">
 		<mat-icon mat-card-avatar color="primary">account_circle</mat-icon>
 		<mat-card-title>¿Cuál es tu código de empleado?</mat-card-title>
@@ -8,6 +8,7 @@
 			<mat-label>Código de empleado</mat-label>
 			<input
 				matInput
+				#employeeCodeInput="matInput"
 				placeholder="1234567"
 				[formControl]="employeeCode"
 				[maxLength]="employeeCodeLength"
@@ -16,7 +17,7 @@
 		</mat-form-field>
 	</mat-card-content>
 </mat-card>
-<mat-card [@inOutTranslateAnimation] *ngIf="employee">
+<mat-card [@inOutTranslateAnimation] *ngIf="employee" (click)="setOrderCodeFocus()">
 	<mat-card-header class="custom-card-header">
 		<mat-icon mat-card-avatar color="primary">assignment</mat-icon>
 		<mat-card-title>¿Cuál es el código corto de la orden?</mat-card-title>
@@ -26,6 +27,7 @@
 			<mat-label>Código corto</mat-label>
 			<input
 				matInput
+				#orderCodeInput="matInput"
 				placeholder="C4"
 				[formControl]="orderCode"
 				(keydown.enter)="searchOrder()">
