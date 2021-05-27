@@ -37,6 +37,7 @@ export class Constants {
 
 	static readonly LOCAL_STORAGE: any = {
 		INSPECTION: 'inspection',
+		SAVED_INSPECTION: 'savedInspection',
 		ORDER: 'order',
 		EMPLOYEE: 'employee'
 	};

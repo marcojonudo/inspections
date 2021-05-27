@@ -12,6 +12,9 @@ export class InspectionGuard implements CanActivate {
 	constructor(private router: Router) {}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+		if (InspectionService.inspection) {
+			return true;
+		}
 		const inspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION);
 		if (inspection) {
 			InspectionService.loadInfo();

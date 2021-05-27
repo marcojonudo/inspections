@@ -1,6 +1,5 @@
 import {SavedItem} from './saved-items/saved-item';
 import {Dayjs} from 'dayjs';
-import * as dayjs from 'dayjs';
 
 export class SavedInspection {
 
@@ -13,7 +12,6 @@ export class SavedInspection {
 		this.name = name;
 		this.orderNumber = orderNumber;
 		this.items = items;
-		this.saved = dayjs();
 	}
 
 }

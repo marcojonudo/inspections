@@ -5,8 +5,8 @@ export class Inspection {
 	name: string;
 	items: Item[];
 
-	constructor(inspection: any, items: Item[]) {
-		this.name = inspection.name;
+	constructor(inspectionName: string, items: Item[]) {
+		this.name = inspectionName;
 		this.items = items;
 	}
 

@@ -8,12 +8,14 @@ export abstract class SavedItem {
 	employeeCode: string;
 	filled: Dayjs;
 
-	protected constructor(item: Item, employeeCode: string) {
+	protected constructor(item: Item, employeeCode: string, savedItem: SavedItem) {
 		this.item = item;
 		this.employeeCode = employeeCode;
-		this.filled = dayjs();
+		this.filled = savedItem ? dayjs(savedItem.filled) : dayjs();
 	}
 
 	abstract update(value: string): void;
+
+	abstract reset(): void;
 
 }

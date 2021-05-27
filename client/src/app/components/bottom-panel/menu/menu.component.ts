@@ -22,6 +22,10 @@ export class MenuComponent {
 		private cdRef: ChangeDetectorRef
 	) {}
 
+	resetInspection(): void {
+		InspectionService.resetInspection();
+	}
+
 	searchOrder(orderCode: string = this.orderCode): void {
 		this.searchingInspections = true;
 

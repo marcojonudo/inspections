@@ -35,8 +35,6 @@ export class InspectionComponent implements AfterViewInit {
 
 	bottomBarHeight: number;
 	groupedItems: { [key: string]: Item[] };
-	savedInspection: SavedInspection;
-	savedItemBuilder: any;
 	saving: boolean;
 
 	constructor(
@@ -45,13 +43,7 @@ export class InspectionComponent implements AfterViewInit {
 		private router: Router,
 		private cdRef: ChangeDetectorRef
 	) {
-		this.savedItemBuilder = {
-			TEXT: (item: TextItem, employeeCode: string) => new TextSavedItem(item, employeeCode),
-			SELECT: (item: SelectItem, employeeCode: string) => new SelectSavedItem(item, employeeCode)
-		};
 		this.groupedItems = this.findGroupedItems();
-		const savedItems = this.inspection.items.map(item => this.savedItemBuilder[item.type](item, this.employee.code));
-		this.savedInspection = new SavedInspection(this.inspection.name, this.order.number, savedItems);
 	}
 
 	ngAfterViewInit(): void {
@@ -59,8 +51,14 @@ export class InspectionComponent implements AfterViewInit {
 		this.cdRef.detectChanges();
 	}
 
+	// region Getters / setters
+
 	get inspection(): Inspection {
 		return InspectionService.inspection;
+	}
+
+	get savedInspection(): SavedInspection {
+		return InspectionService.savedInspection;
 	}
 
 	get employee(): Employee {
@@ -79,9 +77,7 @@ export class InspectionComponent implements AfterViewInit {
 		return Constants.ITEM_TYPE.TEXT;
 	}
 
-	goBack(): void {
-		this.router.navigate([Constants.PATH.INIT]);
-	}
+	// endregion
 
 	findGroupedItems(inspection: Inspection = this.inspection): { [key: string]: Item[] } {
 		const groupedItems = {};
@@ -93,6 +89,10 @@ export class InspectionComponent implements AfterViewInit {
 			}
 		});
 		return groupedItems;
+	}
+
+	goBack(): void {
+		this.router.navigate([Constants.PATH.INIT]);
 	}
 
 	findSaveButtonBottom(): string {
@@ -107,39 +107,54 @@ export class InspectionComponent implements AfterViewInit {
 		return item as SelectItem;
 	}
 
-	findTextItem(item: Item): TextItem {
-		return item as TextItem;
+	// findSelectItemSelected(itemName: string): SelectItem {
+	// 	const savedItem = this.findSelectSavedItem(itemName);
+	// 	return item as SelectItem;
+	// }
+
+	findSelectSavedItem(itemName: string, savedInspection: SavedInspection = this.savedInspection): SelectSavedItem {
+		return savedInspection.items.find(savedItem => savedItem.item.name === itemName) as SelectSavedItem;
 	}
 
-	checkLeftOption(options: SelectItemOption[], i: number): boolean {
-		return i < options.findIndex(o => o.selected);
+	findTextSavedItem(itemName: string, savedInspection: SavedInspection = this.savedInspection): TextSavedItem {
+		return savedInspection.items.find(savedItem => savedItem.item.name === itemName) as TextSavedItem;
 	}
 
-	checkRightOption(options: SelectItemOption[], i: number): boolean {
-		return i > options.findIndex(o => o.selected);
+	checkSelectedOption(itemName: string, optionName: string): boolean {
+		return this.findSelectSavedItem(itemName).value === optionName;
+	}
+
+	checkLeftOption(itemName: string, options: SelectItemOption[], i: number): boolean {
+		const selectedValue = this.findSelectSavedItem(itemName).value;
+		return i < options.findIndex(o => o.name === selectedValue);
+	}
+
+	checkRightOption(itemName: string, options: SelectItemOption[], i: number): boolean {
+		const selectedValue = this.findSelectSavedItem(itemName).value;
+		return i > options.findIndex(o => o.name === selectedValue);
 	}
 
 	toggleSelectOption(item: SelectItem): void {
 		const selectedIndex = item.options.findIndex(o => o.selected);
+		const newIndex = (selectedIndex + 1) % item.options.length;
 		item.options[selectedIndex].selected = false;
-		item.options[(selectedIndex + 1) % item.options.length].selected = true;
+		item.options[newIndex].selected = true;
 
-		const savedItem = this.savedInspection.items.find(i => i.item.name === item.name) as SelectSavedItem;
-		savedItem.update(item.options[(selectedIndex + 1) % item.options.length].name);
+		InspectionService.updateSelectItem(item.name, item.options[newIndex].name);
 	}
 
-	updateText(item: TextItem, text: string): void {
-		const savedItem = this.savedInspection.items.find(i => i.item.name === item.name) as TextSavedItem;
-		savedItem.update(text);
+	updateText(itemName: string): void {
+		const text = this.findTextSavedItem(itemName).text;
+		InspectionService.updateTextItem(itemName, text);
 	}
 
 	openLegend(options: SelectItemOption[]): void {
 		this.bottomSheet.open(LegendComponent, {data: options});
 	}
 
-	saveInspection(inspection: SavedInspection = this.savedInspection): void {
+	saveInspection(savedInspection: SavedInspection = this.savedInspection): void {
 		this.saving = true;
-		this.inspectionService.saveInspection(inspection).pipe(
+		this.inspectionService.saveInspection(savedInspection).pipe(
 			finalize(() => {
 				this.saving = false;
 			})

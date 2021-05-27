@@ -22,9 +22,9 @@
 							*ngFor="let option of findSelectItem(item).options | order; let i = index"
 							class="select-item-icon"
 							[ngClass]="{
-								'front': option.selected,
-								'left': checkLeftOption(findSelectItem(item).options, i),
-								'right': checkRightOption(findSelectItem(item).options, i)
+								'front': checkSelectedOption(item.name, option.name),
+								'left': checkLeftOption(item.name, findSelectItem(item).options, i),
+								'right': checkRightOption(item.name, findSelectItem(item).options, i)
 							}">
 							{{option.icon}}
 						</mat-icon>
@@ -34,7 +34,10 @@
 			<mat-list-item *ngIf="checkItemType(item.type, textType)" class="text-item">
 				<mat-form-field class="text-item-input">
 					<mat-label>{{item.name}}</mat-label>
-					<input matInput (change)="updateText(findTextItem(item), $event.target.value)">
+					<input
+						matInput
+						[(ngModel)]="findTextSavedItem(item.name).text"
+						(change)="updateText(item.name)">
 				</mat-form-field>
 			</mat-list-item>
 		</div>
