@@ -119,18 +119,21 @@ export class InspectionComponent implements AfterViewInit {
 		return this.findSelectSavedItem(itemName).value === optionName;
 	}
 
-	checkLeftOption(itemName: string, options: SelectItemOption[], i: number): boolean {
+	findOptionIndex(itemName: string, options: SelectItemOption[]): number {
 		const selectedValue = this.findSelectSavedItem(itemName).value;
-		return i < options.findIndex(o => o.name === selectedValue);
+		return options.findIndex(o => o.name === selectedValue);
+	}
+
+	checkLeftOption(itemName: string, options: SelectItemOption[], i: number): boolean {
+		return i < this.findOptionIndex(itemName, options);
 	}
 
 	checkRightOption(itemName: string, options: SelectItemOption[], i: number): boolean {
-		const selectedValue = this.findSelectSavedItem(itemName).value;
-		return i > options.findIndex(o => o.name === selectedValue);
+		return i > this.findOptionIndex(itemName, options);
 	}
 
 	toggleSelectOption(item: SelectItem): void {
-		const selectedIndex = item.options.findIndex(o => o.selected);
+		const selectedIndex = this.findOptionIndex(item.name, item.options);
 		const newIndex = (selectedIndex + 1) % item.options.length;
 		item.options[selectedIndex].selected = false;
 		item.options[newIndex].selected = true;
