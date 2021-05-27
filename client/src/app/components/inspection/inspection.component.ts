@@ -107,11 +107,6 @@ export class InspectionComponent implements AfterViewInit {
 		return item as SelectItem;
 	}
 
-	// findSelectItemSelected(itemName: string): SelectItem {
-	// 	const savedItem = this.findSelectSavedItem(itemName);
-	// 	return item as SelectItem;
-	// }
-
 	findSelectSavedItem(itemName: string, savedInspection: SavedInspection = this.savedInspection): SelectSavedItem {
 		return savedInspection.items.find(savedItem => savedItem.item.name === itemName) as SelectSavedItem;
 	}

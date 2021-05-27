@@ -27,7 +27,8 @@
 			<input
 				matInput
 				placeholder="C4"
-				[formControl]="orderCode">
+				[formControl]="orderCode"
+				(keydown.enter)="searchOrder()">
 			<mat-error *ngIf="orderCode.invalid">{{getOrderCodeErrorMessage()}}</mat-error>
 		</mat-form-field>
 	</mat-card-content>
