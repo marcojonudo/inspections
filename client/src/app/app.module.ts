@@ -28,6 +28,12 @@ import { EmployeeInfoComponent } from './components/bottom-panel/employee-info/e
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { MenuComponent } from './components/bottom-panel/menu/menu.component';
+import localeEs from '@angular/common/locales/es';
+import {registerLocaleData} from '@angular/common';
+registerLocaleData(localeEs);
+import * as dayjs from 'dayjs';
+import * as es from 'dayjs/locale/es';
+import {Constants} from './objects/constants';
 
 @NgModule({
 	declarations: [
@@ -66,4 +72,13 @@ import { MenuComponent } from './components/bottom-panel/menu/menu.component';
 	providers: [],
 	bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+
+	constructor() {
+		dayjs.locale(es);
+		dayjs.prototype.toJSON = function() {
+			return this.format(Constants.DATE_TIME_FORMAT.yyyy_MM_dd_HH_mm_ss);
+		};
+	}
+
+}

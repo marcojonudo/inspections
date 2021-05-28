@@ -11,8 +11,6 @@ import {Constants} from '../objects/constants';
 import {EmployeeService} from './employee.service';
 import {catchError, concatMap, finalize, map} from 'rxjs/operators';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {TextItem} from '../objects/inspections/items/text-item';
-import {SelectItem} from '../objects/inspections/items/select-item';
 import {TextSavedItem} from '../objects/inspections/saved-items/text-saved-item';
 import {SelectSavedItem} from '../objects/inspections/saved-items/select-saved-item';
 import {Builder} from '../objects/builder';
@@ -34,11 +32,11 @@ export class InspectionService {
 		return this.order;
 	}
 
-	static initInspection(inspection: any): void {
+	static initInspection(inspection: any, savedInspection: any): void {
 		this.inspection = Builder.buildInspection(inspection);
-		this.savedInspection = Builder.buildSavedInspection(
-			inspection, EmployeeService.employee.code, this.order.number
-		);
+		this.savedInspection = savedInspection ?
+			Builder.loadSavedInspection(savedInspection) :
+			Builder.buildSavedInspection(inspection, EmployeeService.employee.code, this.order.number);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.INSPECTION, inspection);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, this.savedInspection);
 		console.log('Inspection', this.inspection);
@@ -92,9 +90,9 @@ export class InspectionService {
 				errorText = errorText ? errorText : Constants.MESSAGE.NONEXISTENT_INSPECTIONS;
 				return throwError(error);
 			}),
-			map((inspection: any) => {
-				console.log('Received inspection', inspection);
-				InspectionService.initInspection(inspection);
+			map((inspectionInfo: any) => {
+				console.log('Received inspection info', inspectionInfo);
+				InspectionService.initInspection(inspectionInfo.inspection, inspectionInfo.savedInspection);
 			}),
 			finalize(() => {
 				if (errorText) {
@@ -116,9 +114,11 @@ export class InspectionService {
 		return this.http.get(url);
 	}
 
-	saveInspection(inspection: SavedInspection): Observable<any> {
+	saveInspection(inspection: SavedInspection, orderNumber: number): Observable<any> {
 		inspection.saved = dayjs();
-		return this.http.post(Url.inspection(), inspection);
+		console.log('Saving inspection', inspection);
+		const url = `${Url.inspection()}?orderNumber=${orderNumber}`;
+		return this.http.post(url, inspection);
 	}
 
 }

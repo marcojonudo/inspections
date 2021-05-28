@@ -10,6 +10,10 @@ abstract class SavedInspectionDataService {
 
 	@Inject ItemDataService itemDataService
 
+	abstract SavedInspection find(int orderNumber)
+
+	abstract void delete(Serializable id)
+
 	abstract SavedInspection saveSavedInspection(SavedInspection savedInspection)
 
 	SavedInspection save(SavedInspection savedInspection) {

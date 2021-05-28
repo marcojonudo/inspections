@@ -1,9 +1,9 @@
 package inspections.pogos
 
-
 import groovy.transform.CompileStatic
 import inspections.domains.GaragePosition
 import inspections.domains.ItemCategory
+import inspections.domains.SavedInspection
 import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.SelectSavedItem
@@ -27,7 +27,7 @@ class Builder {
 		)
 		savedItem.employeeCode = item.employeeCode
 		savedItem.filled = LocalDateTime.parse(
-			(String) item.filled, DateTimeFormatter.ofPattern(Constants.DateTimeFormat.yyyy_MM_dd_T_HH_mm_ss_SSSS_Z)
+			(String) item.filled, DateTimeFormatter.ofPattern(Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss)
 		)
 		return savedItem
 	}
@@ -40,6 +40,12 @@ class Builder {
 	static SelectSavedItem buildSelectSavedItem(Map<String, Object> item) {
 		SelectSavedItem savedItem = new SelectSavedItem(value: (String) item.value)
 		return (SelectSavedItem) fillSavedItem(savedItem, item)
+	}
+
+	static SavedInspection buildSavedInspection(SavedInspection inspection) {
+		return new SavedInspection(
+			name: inspection.name, orderNumber: inspection.orderNumber, saved: inspection.saved, items: inspection.items
+		)
 	}
 
 }

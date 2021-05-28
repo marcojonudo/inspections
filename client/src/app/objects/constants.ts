@@ -50,4 +50,8 @@ export class Constants {
 		MOUSE_LEAVE: 'mouseleave'
 	};
 
+	static readonly DATE_TIME_FORMAT: any = {
+		yyyy_MM_dd_HH_mm_ss: 'YYYY-MM-DD HH:mm:ss'
+	};
+
 }

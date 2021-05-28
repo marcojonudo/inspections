@@ -150,11 +150,14 @@ export class InspectionComponent implements AfterViewInit {
 		this.bottomSheet.open(LegendComponent, {data: options});
 	}
 
-	saveInspection(savedInspection: SavedInspection = this.savedInspection): void {
+	saveInspection(
+		savedInspection: SavedInspection = this.savedInspection, orderNumber: number = this.order.number
+	): void {
 		this.saving = true;
-		this.inspectionService.saveInspection(savedInspection).pipe(
+		this.inspectionService.saveInspection(savedInspection, orderNumber).pipe(
 			finalize(() => {
 				this.saving = false;
+				this.cdRef.detectChanges();
 			})
 		).subscribe();
 	}

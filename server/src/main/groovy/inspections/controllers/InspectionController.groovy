@@ -4,6 +4,7 @@ import groovy.transform.CompileStatic
 import inspections.domains.Inspection
 import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Order
+import inspections.pogos.InspectionInfo
 import inspections.services.InspectionService
 import inspections.services.data.InspectionDataService
 import inspections.services.data.OrderTimeDataService
@@ -22,8 +23,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 
 import javax.inject.Inject
 
-@CompileStatic
 @Controller("/inspections")
+@CompileStatic
 class InspectionController {
 
 	@Inject private OrderTimeDataService orderTimeDataService
@@ -75,8 +76,8 @@ class InspectionController {
 		description = "Lista de revisiones",
 		content = @Content(schema = @Schema(implementation = Inspection))
 	)
-	Inspection findInspection(@QueryValue int orderNumber) {
-		return inspectionService.findInspection(orderNumber)
+	InspectionInfo findInspection(@QueryValue int orderNumber) {
+		return inspectionService.findInspectionInfo(orderNumber)
     }
 
 	@Post("/inspection")
@@ -90,8 +91,8 @@ class InspectionController {
 		description = "Revisión creada",
 		content = @Content(schema = @Schema(implementation = SavedInspection))
 	)
-	HttpResponse saveInspection(@Body SavedInspection inspection) {
-		SavedInspection savedInspection = savedInspectionDataService.save(inspection)
+	HttpResponse saveInspection(@Body SavedInspection inspection, @QueryValue int orderNumber) {
+		SavedInspection savedInspection = inspectionService.saveInspection(inspection, orderNumber)
 		return HttpResponse.created(savedInspection)
     }
 
