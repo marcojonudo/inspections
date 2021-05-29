@@ -1,15 +1,15 @@
 export class SelectItemOption {
 
+	code: string;
 	name: string;
 	icon: string;
 	order: number;
-	selected: boolean;
 
 	constructor(option: any) {
+		this.code = option.code;
 		this.name = option.name;
 		this.icon = option.icon;
 		this.order = option.order;
-		this.selected = option.selected;
 	}
 
 }

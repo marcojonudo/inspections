@@ -25,7 +25,8 @@
 								'front': checkSelectedOption(item.name, option.name),
 								'left': checkLeftOption(item.name, findSelectItem(item).options, i),
 								'right': checkRightOption(item.name, findSelectItem(item).options, i)
-							}">
+							}"
+							[style.color]="findIconColor(option.code)">
 							{{option.icon}}
 						</mat-icon>
 					</div>

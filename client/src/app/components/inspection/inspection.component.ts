@@ -10,7 +10,6 @@ import {Constants} from '../../objects/constants';
 import {SelectItem} from '../../objects/inspections/items/select-item';
 import {SelectItemOption} from '../../objects/inspections/items/select-item-option';
 import {Item} from '../../objects/inspections/items/item';
-import {TextItem} from '../../objects/inspections/items/text-item';
 import {InspectionService} from '../../services/inspection.service';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {LegendComponent} from '../bottom-panel/legend/legend.component';
@@ -36,6 +35,14 @@ export class InspectionComponent implements AfterViewInit {
 	bottomBarHeight: number;
 	groupedItems: { [key: string]: Item[] };
 	saving: boolean;
+
+	selectIconColor: { [key: string]: string } = {
+		C: '#36d23d',
+		PS: '#ffb47e',
+		SN: '#d23636',
+		RA: '#3681d2',
+		RR: '#3681d2'
+	};
 
 	constructor(
 		private inspectionService: InspectionService,
@@ -91,6 +98,10 @@ export class InspectionComponent implements AfterViewInit {
 		return groupedItems;
 	}
 
+	findIconColor(code: string, selectIconColor: { [key: string]: string } = this.selectIconColor): string {
+		return selectIconColor[code];
+	}
+
 	goBack(): void {
 		this.router.navigate([Constants.PATH.INIT]);
 	}
@@ -135,8 +146,6 @@ export class InspectionComponent implements AfterViewInit {
 	toggleSelectOption(item: SelectItem): void {
 		const selectedIndex = this.findOptionIndex(item.name, item.options);
 		const newIndex = (selectedIndex + 1) % item.options.length;
-		item.options[selectedIndex].selected = false;
-		item.options[newIndex].selected = true;
 
 		InspectionService.updateSelectItem(item.name, item.options[newIndex].name);
 	}

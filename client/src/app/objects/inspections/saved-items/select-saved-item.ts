@@ -1,6 +1,7 @@
 import {SavedItem} from './saved-item';
 import {SelectItem} from '../items/select-item';
 import * as dayjs from 'dayjs';
+import {Constants} from '../../constants';
 
 export class SelectSavedItem extends SavedItem {
 
@@ -8,7 +9,9 @@ export class SelectSavedItem extends SavedItem {
 
 	constructor(item: SelectItem, employeeCode: string, savedItem: SelectSavedItem) {
 		super(item, employeeCode, savedItem);
-		this.value = savedItem ? savedItem.value : item.options.find(o => o.selected).name;
+		this.value = savedItem ?
+			savedItem.value :
+			item.options.find(o => o.order === Constants.SELECT_ITEM_OPTION_MIN_ORDER).name;
 	}
 
 	update(value: string): void {
@@ -17,7 +20,7 @@ export class SelectSavedItem extends SavedItem {
 	}
 
 	reset(item: SelectItem): void {
-		this.value = item.options.find(o => o.selected).name;
+		this.value = item.options.find(o => o.order === Constants.SELECT_ITEM_OPTION_MIN_ORDER).name;
 		this.filled = undefined;
 	}
 

@@ -1,6 +1,7 @@
 export class Constants {
 
 	static readonly EMPLOYEE_CODE_LENGTH: number = 7;
+	static readonly SELECT_ITEM_OPTION_MIN_ORDER: number = 1;
 
 	static readonly DAY_JS: any = {
 		M: 'M',

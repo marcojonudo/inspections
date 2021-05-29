@@ -7,16 +7,20 @@ import org.grails.datastore.gorm.GormEntity
 @Entity
 class SelectItemOption implements GormEntity<SelectItemOption> {
 
-	@JsonIgnore
-	SelectItem item
-
+	String code
 	String name
 	String icon
 	int order
-	boolean selected
+
+	@JsonIgnore
+	Set<SelectItem> items
+
+	static hasMany = [items: SelectItem]
+	static belongsTo = SelectItem
 
 	static mapping = {
 		order column: '`order`'
+		items joinTable: [name: 'select_item_options', key: 'option_id']
 	}
 
 }

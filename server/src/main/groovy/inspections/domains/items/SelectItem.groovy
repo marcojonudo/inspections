@@ -10,7 +10,7 @@ class SelectItem extends Item implements GormEntity<SelectItem> {
 	static hasMany = [options: SelectItemOption]
 
 	static mapping = {
-		options fetch: 'join'
+		options fetch: 'join', joinTable: [name: 'select_item_options']
 	}
 
 }
