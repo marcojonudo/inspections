@@ -2,7 +2,6 @@
 	<section matRipple (click)="openEmployee()">
 		<mat-icon>account_circle</mat-icon>
 		<div>
-			<span>{{employee?.code}}</span>
 			<span>{{employee?.completeName}}</span>
 		</div>
 	</section>
@@ -10,6 +9,7 @@
 		<mat-icon>assignment</mat-icon>
 		<div>
 			<span>{{order?.code}}</span>
+			<span>·</span>
 			<span>{{order?.number}}</span>
 		</div>
 	</section>

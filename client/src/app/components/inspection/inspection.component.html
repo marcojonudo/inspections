@@ -6,7 +6,7 @@
 </mat-toolbar>
 <mat-list id="items-list">
 	<div *ngFor="let items of groupedItems | keyvalue">
-		<div mat-subheader>{{items.key}}</div>
+		<div mat-subheader class="sub-header">{{items.key}}</div>
 		<div *ngFor="let item of items.value | order">
 			<mat-list-item
 				*ngIf="checkItemType(item.type, selectType)"
