@@ -13,13 +13,20 @@ export class Constants {
 	};
 
 	static readonly SNACK_BAR: any = {
-		DURATION: 5000
+		DURATION: 5000,
+		TYPE: {
+			SUCCESS: 'SUCCESS',
+			WARNING: 'WARNING',
+			ERROR: 'ERROR'
+		}
 	};
 
 	static readonly MESSAGE: any = {
 		NONEXISTENT_ORDER: 'No se encuentra ninguna orden asociada al código corto',
 		NONEXISTENT_INSPECTIONS: 'No se encuentran revisiones asociadas a la orden',
-		UPDATE_EMPLOYEE_MESSAGE: (newCode: string, code: string) => `¿Quieres cambiar el empleado ${code} por el ${newCode}?`
+		UPDATE_EMPLOYEE_MESSAGE: (newCode: string, code: string) => `¿Quieres cambiar el empleado ${code} por el ${newCode}?`,
+		ERROR_SAVING_INSPECTION: 'Error al guardar la revisión. Por favor, inténtalo de nuevo',
+		SAVED_INSPECTION: 'Revisión guardada correctamente'
 	};
 
 	static readonly PANEL_INFO_TYPE: any = {

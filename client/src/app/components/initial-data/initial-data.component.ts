@@ -75,7 +75,6 @@ export class InitialDataComponent implements AfterViewInit {
 	constructor(
 		private inspectionService: InspectionService,
 		private router: Router,
-		private snackBar: MatSnackBar,
 		private cdRef: ChangeDetectorRef
 	) {
 		this.employeeCode = new FormControl(
@@ -87,7 +86,6 @@ export class InitialDataComponent implements AfterViewInit {
 	ngAfterViewInit(): void {
 		this.employeeCodeInput.focus();
 	}
-
 
 	get employeeCodeLength(): number {
 		return Constants.EMPLOYEE_CODE_LENGTH;

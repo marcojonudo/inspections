@@ -93,7 +93,7 @@ class InspectionController {
 	)
 	HttpResponse saveInspection(@Body SavedInspection inspection, @QueryValue int orderNumber) {
 		SavedInspection savedInspection = inspectionService.saveInspection(inspection, orderNumber)
-		return HttpResponse.created(savedInspection)
+		return savedInspection ? HttpResponse.created(savedInspection) : HttpResponse.serverError()
     }
 
 }

@@ -21,6 +21,7 @@ import {EmployeeService} from '../../services/employee.service';
 import {Order} from '../../objects/orders/order';
 import {finalize} from 'rxjs/operators';
 import {Router} from '@angular/router';
+import {SnackBarService} from '../../services/snack-bar.service';
 
 @Component({
 	selector: 'app-inspection',
@@ -36,7 +37,7 @@ export class InspectionComponent implements AfterViewInit {
 	groupedItems: { [key: string]: Item[] };
 	saving: boolean;
 
-	selectIconColor: { [key: string]: string } = {
+	private readonly SELECT_ICON_COLOR: { [key: string]: string } = {
 		C: '#36d23d',
 		PS: '#ffb47e',
 		SN: '#d23636',
@@ -47,6 +48,7 @@ export class InspectionComponent implements AfterViewInit {
 	constructor(
 		private inspectionService: InspectionService,
 		private bottomSheet: MatBottomSheet,
+		private snackBarService: SnackBarService,
 		private router: Router,
 		private cdRef: ChangeDetectorRef
 	) {
@@ -98,7 +100,7 @@ export class InspectionComponent implements AfterViewInit {
 		return groupedItems;
 	}
 
-	findIconColor(code: string, selectIconColor: { [key: string]: string } = this.selectIconColor): string {
+	findIconColor(code: string, selectIconColor: { [key: string]: string } = this.SELECT_ICON_COLOR): string {
 		return selectIconColor[code];
 	}
 
@@ -168,7 +170,10 @@ export class InspectionComponent implements AfterViewInit {
 				this.saving = false;
 				this.cdRef.detectChanges();
 			})
-		).subscribe();
+		).subscribe(
+			() => this.snackBarService.open(Constants.MESSAGE.SAVED_INSPECTION),
+			() => this.snackBarService.open(Constants.MESSAGE.ERROR_SAVING_INSPECTION, Constants.SNACK_BAR.TYPE.ERROR)
+		);
 	}
 
 	updateGroupedItems(): void {
