@@ -55,7 +55,7 @@ export class Constants {
 		MOUSE_DOWN: 'mousedown',
 		TOUCHE_END: 'touchend',
 		MOUSE_UP: 'mouseup',
-		MOUSE_LEAVE: 'mouseleave'
+		SCROLL: 'scroll'
 	};
 
 	static readonly DATE_TIME_FORMAT: any = {

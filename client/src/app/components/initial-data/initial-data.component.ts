@@ -3,9 +3,6 @@ import {
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
 	Component,
-	ElementRef,
-	EventEmitter,
-	Output,
 	ViewChild
 } from '@angular/core';
 import {EmployeeService} from '../../services/employee.service';
@@ -16,8 +13,6 @@ import {InspectionService} from '../../services/inspection.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {FormControl, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {MatFormField} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 
 @Component({

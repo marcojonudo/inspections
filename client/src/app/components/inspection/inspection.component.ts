@@ -19,9 +19,11 @@ import {SelectSavedItem} from '../../objects/inspections/saved-items/select-save
 import {Employee} from '../../objects/employee';
 import {EmployeeService} from '../../services/employee.service';
 import {Order} from '../../objects/orders/order';
-import {finalize} from 'rxjs/operators';
+import {debounceTime, finalize, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {SnackBarService} from '../../services/snack-bar.service';
+import {MatList} from '@angular/material/list';
+import {fromEvent} from 'rxjs';
 
 @Component({
 	selector: 'app-inspection',
@@ -32,10 +34,13 @@ import {SnackBarService} from '../../services/snack-bar.service';
 export class InspectionComponent implements AfterViewInit {
 
 	@ViewChild('toolBar') toolBar: ElementRef;
+	@ViewChild(MatList, { read: ElementRef }) itemsList: ElementRef;
 
 	bottomBarHeight: number;
 	groupedItems: { [key: string]: Item[] };
 	saving: boolean;
+	pressingItem: Item;
+	scroll: boolean;
 
 	private readonly SELECT_ICON_COLOR: { [key: string]: string } = {
 		C: '#36d23d',
@@ -53,9 +58,20 @@ export class InspectionComponent implements AfterViewInit {
 		private cdRef: ChangeDetectorRef
 	) {
 		this.groupedItems = this.findGroupedItems();
+		this.scroll = false;
 	}
 
 	ngAfterViewInit(): void {
+		fromEvent(this.itemsList.nativeElement, Constants.EVENT.SCROLL).pipe(
+			tap(() => {
+				this.scroll = true;
+				this.cdRef.detectChanges();
+			}),
+			debounceTime(500)
+		).subscribe(() => {
+			this.scroll = false;
+			this.cdRef.detectChanges();
+		});
 		this.bottomBarHeight = this.toolBar.nativeElement.getBoundingClientRect().height;
 		this.cdRef.detectChanges();
 	}
@@ -178,6 +194,14 @@ export class InspectionComponent implements AfterViewInit {
 
 	updateGroupedItems(): void {
 		this.groupedItems = this.findGroupedItems();
+	}
+
+	setPressingItem(item: Item): void {
+		this.pressingItem = item;
+	}
+
+	checkScrolledItem(item: Item, pressingItem: Item = this.pressingItem, scroll: boolean = this.scroll): boolean {
+		return pressingItem && scroll ? item.name === pressingItem.name : false;
 	}
 
 }

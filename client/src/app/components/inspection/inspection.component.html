@@ -14,6 +14,8 @@
 				matRipple
 				(click)="toggleSelectOption(findSelectItem(item))"
 				appLongPress
+				[scrolled]="checkScrolledItem(item)"
+				(pressingEmitter)="setPressingItem(item)"
 				(longPressEmitter)="openLegend(findSelectItem(item).options)">
 				<div class="select-item-content">
 					<div>{{item.name}}</div>
