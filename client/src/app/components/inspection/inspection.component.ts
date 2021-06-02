@@ -38,6 +38,7 @@ export class InspectionComponent implements AfterViewInit {
 	@ViewChild('toolBar') toolBar: ElementRef;
 	@ViewChild(MatList, { read: ElementRef }) itemsList: ElementRef;
 	@ViewChild(MatAccordion) accordion: MatAccordion;
+	@ViewChild(MatAccordion, { read: ElementRef }) accordionElementRef: ElementRef;
 
 	bottomBarHeight: number;
 	groupedItems: { [key: string]: Item[] };
@@ -68,7 +69,7 @@ export class InspectionComponent implements AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		fromEvent(this.itemsList.nativeElement, Constants.EVENT.SCROLL).pipe(
+		fromEvent(this.accordionElementRef.nativeElement, Constants.EVENT.SCROLL).pipe(
 			tap(() => {
 				this.scroll = true;
 				this.cdRef.detectChanges();
