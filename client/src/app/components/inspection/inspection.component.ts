@@ -25,6 +25,7 @@ import {SnackBarService} from '../../services/snack-bar.service';
 import {MatList} from '@angular/material/list';
 import {fromEvent} from 'rxjs';
 import {MatAccordion} from '@angular/material/expansion';
+import {LoadingService} from '../../services/loading.service';
 
 @Component({
 	selector: 'app-inspection',
@@ -56,6 +57,7 @@ export class InspectionComponent implements AfterViewInit {
 	constructor(
 		private inspectionService: InspectionService,
 		private bottomSheet: MatBottomSheet,
+		private loadingService: LoadingService,
 		private snackBarService: SnackBarService,
 		private router: Router,
 		private cdRef: ChangeDetectorRef
@@ -77,7 +79,7 @@ export class InspectionComponent implements AfterViewInit {
 			this.cdRef.detectChanges();
 		});
 		this.bottomBarHeight = this.toolBar.nativeElement.getBoundingClientRect().height;
-		this.cdRef.detectChanges();
+		this.loadingService.stop();
 	}
 
 	// region Getters / setters

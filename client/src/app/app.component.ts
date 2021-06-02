@@ -1,27 +1,17 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import 'hammerjs';
 import {RouterOutlet} from '@angular/router';
-import {routeAnimations} from './animations';
+import {leaveAnimation, routeAnimations} from './animations';
 import {LoadingService} from './services/loading.service';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {InspectionService} from './services/inspection.service';
 
 @Component({
 	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	animations: [
-		routeAnimations,
-		trigger('leaveAnimation', [
-			transition(
-				':leave',
-				[
-					style({ opacity: 1 }),
-					animate('.3s', style({ opacity: 0 }))
-				]
-			)
-		])
-	]
+	animations: [routeAnimations, leaveAnimation]
 })
 export class AppComponent implements OnInit {
 

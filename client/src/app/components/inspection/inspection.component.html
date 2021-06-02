@@ -1,4 +1,4 @@
-<mat-toolbar id="inspection-title" color="primary" class="mat-elevation-z3">
+<mat-toolbar id="inspection-title" class="mat-elevation-z3">
 	<button id="back-icon-button" mat-icon-button (click)="goBack()">
 		<mat-icon>chevron_left</mat-icon>
 	</button>
@@ -10,9 +10,10 @@
 <mat-accordion id="items-accordion" multi>
 	<mat-expansion-panel
 		*ngFor="let items of groupedItems | keyvalue"
+		class="category"
 		(opened)="addOpenedCategory(items.key)"
 		(closed)="removeOpenedCategory(items.key)">
-		<mat-expansion-panel-header>
+		<mat-expansion-panel-header class="category-title">
 			<mat-panel-title>{{items.key}}</mat-panel-title>
 		</mat-expansion-panel-header>
 		<mat-list>

@@ -12,6 +12,8 @@
 	#inspection-title
 		@include flex-center
 		padding: $small-gap 0
+		background-color: $primary
+		color: $white
 		z-index: 1
 
 		button
@@ -29,6 +31,17 @@
 	#items-accordion
 		@include flex-1
 		overflow-y: auto
+
+		.category
+			margin-bottom: $tiny-gap
+			border-radius: 0
+
+			.category-title
+				background-color: $secondary
+				color: $white
+
+				.mat-expansion-panel-header-title
+					color: $white !important
 
 		.item
 			width: 100%
@@ -79,3 +92,4 @@
 		position: absolute
 		right: 1rem
 		@include flex-center
+		background-color: $highlight

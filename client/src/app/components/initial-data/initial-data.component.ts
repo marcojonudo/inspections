@@ -15,46 +15,14 @@ import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatInput} from '@angular/material/input';
 import {LoadingService} from '../../services/loading.service';
+import {inOutAnimation, inOutTranslateAnimation} from '../../animations';
 
 @Component({
 	selector: 'app-initial-data',
 	templateUrl: './initial-data.component.html',
 	styleUrls: ['./initial-data.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	animations: [
-		trigger('inOutTranslateAnimation', [
-			transition(
-				':enter',
-				[
-					style({ opacity: 0, transform: 'translateY(25px)' }),
-					animate('.2s', style({ opacity: 1, transform: 'translateY(0)' }))
-				]
-			),
-			transition(
-				':leave',
-				[
-					style({ opacity: 1, transform: 'translateY(0)' }),
-					animate('.2s', style({ opacity: 0, transform: 'translateY(25px)' }))
-				]
-			)
-		]),
-		trigger('inOutAnimation', [
-			transition(
-				':enter',
-				[
-					style({ opacity: 0 }),
-					animate('.2s', style({ opacity: 1 }))
-				]
-			),
-			transition(
-				':leave',
-				[
-					style({ opacity: 1 }),
-					animate('.2s', style({ opacity: 0 }))
-				]
-			)
-		])
-	]
+	animations: [inOutTranslateAnimation, inOutAnimation]
 })
 export class InitialDataComponent implements OnInit, AfterViewInit {
 
@@ -87,7 +55,6 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 			this.loadingService.stop();
 		});
 	}
-
 
 	ngAfterViewInit(): void {
 		this.employeeCodeInput.focus();
