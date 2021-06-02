@@ -4,4 +4,4 @@ database:
         password: dCe1zJQccSRk043@K&o@jA8JN8zEdPSx
 
 dataSource:
-#    logSql: false
+    logSql: false

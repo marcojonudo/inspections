@@ -4,8 +4,10 @@ import groovy.transform.CompileStatic
 import inspections.domains.Inspection
 import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Order
+import inspections.domains.schedules.EmployeeData
 import inspections.pogos.InspectionInfo
 import inspections.services.InspectionService
+import inspections.services.data.EmployeeDataDataService
 import inspections.services.data.InspectionDataService
 import inspections.services.data.OrderTimeDataService
 import inspections.services.data.SavedInspectionDataService
@@ -31,6 +33,22 @@ class InspectionController {
 	@Inject private InspectionService inspectionService
 	@Inject private InspectionDataService inspectionDataService
 	@Inject private SavedInspectionDataService savedInspectionDataService
+	@Inject private EmployeeDataDataService employeeDataDataService
+
+	@Get("/employees")
+	@Operation(
+		summary = "Obtiene los empleados",
+		description = "Obtiene todos los empleados"
+	)
+	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(type = "array")))
+	@ApiResponse(
+		responseCode = "200",
+		description = "Lista de empleados",
+		content = @Content(array = @ArraySchema(schema = @Schema(implementation = EmployeeData)))
+	)
+    List<EmployeeData> getEmployees() {
+		return employeeDataDataService.findAll()
+    }
 
 	@Get
 	@Operation(

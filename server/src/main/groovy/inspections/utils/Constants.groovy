@@ -10,6 +10,7 @@ class Constants {
     static class DataSource {
 
         static final String FVIBERI = "fviberi"
+        static final String SCHEDULES = "schedules"
 
     }
 

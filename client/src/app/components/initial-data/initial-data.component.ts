@@ -2,7 +2,7 @@ import {
 	AfterViewInit,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
-	Component,
+	Component, OnInit,
 	ViewChild
 } from '@angular/core';
 import {EmployeeService} from '../../services/employee.service';
@@ -12,8 +12,9 @@ import {finalize} from 'rxjs/operators';
 import {InspectionService} from '../../services/inspection.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {FormControl, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MatInput} from '@angular/material/input';
+import {LoadingService} from '../../services/loading.service';
 
 @Component({
 	selector: 'app-initial-data',
@@ -55,7 +56,7 @@ import {MatInput} from '@angular/material/input';
 		])
 	]
 })
-export class InitialDataComponent implements AfterViewInit {
+export class InitialDataComponent implements OnInit, AfterViewInit {
 
 	@ViewChild('employeeCodeInput') employeeCodeInput: MatInput;
 	@ViewChild('orderCodeInput') orderCodeInput: MatInput;
@@ -69,14 +70,24 @@ export class InitialDataComponent implements AfterViewInit {
 
 	constructor(
 		private inspectionService: InspectionService,
+		private loadingService: LoadingService,
 		private router: Router,
-		private cdRef: ChangeDetectorRef
+		private cdRef: ChangeDetectorRef,
+		private activatedRoute: ActivatedRoute
 	) {
 		this.employeeCode = new FormControl(
 			'', [Validators.required, Validators.minLength(this.employeeCodeLength)]
 		);
 		this.orderCode = new FormControl('', [Validators.required]);
 	}
+
+	ngOnInit(): void {
+		this.activatedRoute.data.subscribe((data: { employees: any }) => {
+			EmployeeService.setEmployees(data.employees);
+			this.loadingService.stop();
+		});
+	}
+
 
 	ngAfterViewInit(): void {
 		this.employeeCodeInput.focus();

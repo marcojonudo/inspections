@@ -10,4 +10,8 @@ export class Url {
 		return `${environment.serverUrl}/inspections/order`;
 	}
 
+	static employees(): string {
+		return `${environment.serverUrl}/inspections/employees`;
+	}
+
 }
