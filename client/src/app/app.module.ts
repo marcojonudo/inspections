@@ -34,6 +34,8 @@ registerLocaleData(localeEs);
 import * as dayjs from 'dayjs';
 import * as es from 'dayjs/locale/es';
 import {Constants} from './objects/constants';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
 
 @NgModule({
 	declarations: [
@@ -47,7 +49,8 @@ import {Constants} from './objects/constants';
 		LegendComponent,
 		EmployeeInfoComponent,
 		ConfirmDialogComponent,
-		MenuComponent
+		MenuComponent,
+		SplashScreenComponent
 	],
 	imports: [
 		BrowserModule,
@@ -67,7 +70,8 @@ import {Constants} from './objects/constants';
 		MatRippleModule,
 		MatBottomSheetModule,
 		MatSnackBarModule,
-		MatDialogModule
+		MatDialogModule,
+		MatExpansionModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

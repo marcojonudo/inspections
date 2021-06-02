@@ -16,15 +16,24 @@
 
 		button
 			position: absolute
-			left: 0
 
-	#items-list
+			&#back-icon-button
+				left: 0
+
+			&#expand-icon-button
+				right: 0
+
+				#expand-icon
+					transition: transform $fast-transition
+
+	#items-accordion
 		@include flex-1
 		overflow-y: auto
 
-		.sub-header
-			margin-bottom: $small-gap
-			background-color: #81c784
+		.item
+			width: 100%
+			height: 100%
+			padding: 0 1rem
 
 		.select-item
 

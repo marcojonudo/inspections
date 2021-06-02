@@ -24,6 +24,7 @@ import {Router} from '@angular/router';
 import {SnackBarService} from '../../services/snack-bar.service';
 import {MatList} from '@angular/material/list';
 import {fromEvent} from 'rxjs';
+import {MatAccordion} from '@angular/material/expansion';
 
 @Component({
 	selector: 'app-inspection',
@@ -35,12 +36,14 @@ export class InspectionComponent implements AfterViewInit {
 
 	@ViewChild('toolBar') toolBar: ElementRef;
 	@ViewChild(MatList, { read: ElementRef }) itemsList: ElementRef;
+	@ViewChild(MatAccordion) accordion: MatAccordion;
 
 	bottomBarHeight: number;
 	groupedItems: { [key: string]: Item[] };
 	saving: boolean;
 	pressingItem: Item;
 	scroll: boolean;
+	openedCategories: string[];
 
 	private readonly SELECT_ICON_COLOR: { [key: string]: string } = {
 		C: '#36d23d',
@@ -59,6 +62,7 @@ export class InspectionComponent implements AfterViewInit {
 	) {
 		this.groupedItems = this.findGroupedItems();
 		this.scroll = false;
+		this.openedCategories = [];
 	}
 
 	ngAfterViewInit(): void {
@@ -110,7 +114,7 @@ export class InspectionComponent implements AfterViewInit {
 			if (groupedItems[item.garagePosition.name]) {
 				groupedItems[item.garagePosition.name].push(item);
 			} else {
-				groupedItems[item.garagePosition.name] = [];
+				groupedItems[item.garagePosition.name] = [item];
 			}
 		});
 		return groupedItems;
@@ -122,6 +126,28 @@ export class InspectionComponent implements AfterViewInit {
 
 	goBack(): void {
 		this.router.navigate([Constants.PATH.INIT]);
+	}
+
+	expandAll(accordion: MatAccordion = this.accordion): void {
+		const openedItem = this.checkOpenedCategory();
+		if (openedItem) {
+			accordion.closeAll();
+		} else {
+			accordion.openAll();
+		}
+	}
+
+	addOpenedCategory(name: string, openedCategories: string[] = this.openedCategories): void {
+		openedCategories.push(name);
+	}
+
+	removeOpenedCategory(name: string, openedCategories: string[] = this.openedCategories): void {
+		const index = openedCategories.indexOf(name);
+		openedCategories.splice(index, 1);
+	}
+
+	checkOpenedCategory(openedCategories: string[] = this.openedCategories): boolean {
+		return openedCategories.length > 0;
 	}
 
 	findSaveButtonBottom(): string {
