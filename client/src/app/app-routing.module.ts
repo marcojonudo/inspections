@@ -3,10 +3,16 @@ import {Routes, RouterModule} from '@angular/router';
 import {InitialDataComponent} from './components/initial-data/initial-data.component';
 import {InspectionComponent} from './components/inspection/inspection.component';
 import {InspectionGuard} from './auth/inspection-guard';
+import {EmployeesResolver} from './resolvers/employees-resolver';
 
 
 const routes: Routes = [
-	{path: 'init', component: InitialDataComponent, data: {animation: 'InitPage'}},
+	{
+		path: 'init',
+		component: InitialDataComponent,
+		data: {animation: 'InitPage'},
+		resolve: {employees: EmployeesResolver}
+	},
 	{
 		path: 'inspection',
 		component: InspectionComponent,
@@ -17,8 +23,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-	imports: [RouterModule.forRoot(routes)],
+	imports: [RouterModule.forRoot(routes, {useHash: true})],
 	exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

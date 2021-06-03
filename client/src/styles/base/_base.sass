@@ -2,10 +2,10 @@ html, body
 	font-size: 150% !important
 	height: 100%
 	user-select: none
+	overflow-y: hidden
 
 ::-webkit-scrollbar
-	height: 9px
-	width: 9px
+	width: 4px
 	border: 1px solid #d5d5d5
 	background-color: #f1f1f1
 
@@ -17,9 +17,21 @@ html, body
 	background: #a8a8a8
 	color: $primary
 
+.mat-snack-bar-container
+	min-width: 0 !important
+	max-width: 100% !important
+
 .warning-snack-bar
 	color: $white
 	background-color: mat-color($warning)
+
+.success-snack-bar
+	color: $white
+	background-color: $light-green
+
+.error-snack-bar
+	color: $white
+	background-color: mat-color($error)
 
 .mat-bottom-sheet-container
 	max-height: 50vh !important
@@ -31,3 +43,18 @@ html, body
 
 .mat-fab.mat-accent[disabled]
 	background-color: $grey
+
+.mat-simple-snackbar
+	justify-content: center !important
+
+.mat-expansion-panel-header
+	padding: 0 $small-gap !important
+
+.mat-expansion-panel-body
+	padding: 0 0 $small-gap !important
+
+	.mat-list-item-content
+		padding: 0 !important
+
+.mat-expansion-indicator::after
+	color: $white !important

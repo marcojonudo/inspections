@@ -19,8 +19,13 @@ import {SelectSavedItem} from '../../objects/inspections/saved-items/select-save
 import {Employee} from '../../objects/employee';
 import {EmployeeService} from '../../services/employee.service';
 import {Order} from '../../objects/orders/order';
-import {finalize} from 'rxjs/operators';
+import {debounceTime, finalize, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
+import {SnackBarService} from '../../services/snack-bar.service';
+import {MatList} from '@angular/material/list';
+import {fromEvent} from 'rxjs';
+import {MatAccordion} from '@angular/material/expansion';
+import {LoadingService} from '../../services/loading.service';
 
 @Component({
 	selector: 'app-inspection',
@@ -31,12 +36,18 @@ import {Router} from '@angular/router';
 export class InspectionComponent implements AfterViewInit {
 
 	@ViewChild('toolBar') toolBar: ElementRef;
+	@ViewChild(MatList, { read: ElementRef }) itemsList: ElementRef;
+	@ViewChild(MatAccordion) accordion: MatAccordion;
+	@ViewChild(MatAccordion, { read: ElementRef }) accordionElementRef: ElementRef;
 
 	bottomBarHeight: number;
 	groupedItems: { [key: string]: Item[] };
 	saving: boolean;
+	pressingItem: Item;
+	scroll: boolean;
+	openedCategories: string[];
 
-	selectIconColor: { [key: string]: string } = {
+	private readonly SELECT_ICON_COLOR: { [key: string]: string } = {
 		C: '#36d23d',
 		PS: '#ffb47e',
 		SN: '#d23636',
@@ -47,15 +58,29 @@ export class InspectionComponent implements AfterViewInit {
 	constructor(
 		private inspectionService: InspectionService,
 		private bottomSheet: MatBottomSheet,
+		private loadingService: LoadingService,
+		private snackBarService: SnackBarService,
 		private router: Router,
 		private cdRef: ChangeDetectorRef
 	) {
 		this.groupedItems = this.findGroupedItems();
+		this.scroll = false;
+		this.openedCategories = [];
 	}
 
 	ngAfterViewInit(): void {
+		fromEvent(this.accordionElementRef.nativeElement, Constants.EVENT.SCROLL).pipe(
+			tap(() => {
+				this.scroll = true;
+				this.cdRef.detectChanges();
+			}),
+			debounceTime(500)
+		).subscribe(() => {
+			this.scroll = false;
+			this.cdRef.detectChanges();
+		});
 		this.bottomBarHeight = this.toolBar.nativeElement.getBoundingClientRect().height;
-		this.cdRef.detectChanges();
+		this.loadingService.stop();
 	}
 
 	// region Getters / setters
@@ -92,18 +117,40 @@ export class InspectionComponent implements AfterViewInit {
 			if (groupedItems[item.garagePosition.name]) {
 				groupedItems[item.garagePosition.name].push(item);
 			} else {
-				groupedItems[item.garagePosition.name] = [];
+				groupedItems[item.garagePosition.name] = [item];
 			}
 		});
 		return groupedItems;
 	}
 
-	findIconColor(code: string, selectIconColor: { [key: string]: string } = this.selectIconColor): string {
+	findIconColor(code: string, selectIconColor: { [key: string]: string } = this.SELECT_ICON_COLOR): string {
 		return selectIconColor[code];
 	}
 
 	goBack(): void {
 		this.router.navigate([Constants.PATH.INIT]);
+	}
+
+	expandAll(accordion: MatAccordion = this.accordion): void {
+		const openedItem = this.checkOpenedCategory();
+		if (openedItem) {
+			accordion.closeAll();
+		} else {
+			accordion.openAll();
+		}
+	}
+
+	addOpenedCategory(name: string, openedCategories: string[] = this.openedCategories): void {
+		openedCategories.push(name);
+	}
+
+	removeOpenedCategory(name: string, openedCategories: string[] = this.openedCategories): void {
+		const index = openedCategories.indexOf(name);
+		openedCategories.splice(index, 1);
+	}
+
+	checkOpenedCategory(openedCategories: string[] = this.openedCategories): boolean {
+		return openedCategories.length > 0;
 	}
 
 	findSaveButtonBottom(): string {
@@ -168,11 +215,22 @@ export class InspectionComponent implements AfterViewInit {
 				this.saving = false;
 				this.cdRef.detectChanges();
 			})
-		).subscribe();
+		).subscribe(
+			() => this.snackBarService.open(Constants.MESSAGE.SAVED_INSPECTION),
+			() => this.snackBarService.open(Constants.MESSAGE.ERROR_SAVING_INSPECTION, Constants.SNACK_BAR.TYPE.ERROR)
+		);
 	}
 
 	updateGroupedItems(): void {
 		this.groupedItems = this.findGroupedItems();
+	}
+
+	setPressingItem(item: Item): void {
+		this.pressingItem = item;
+	}
+
+	checkScrolledItem(item: Item, pressingItem: Item = this.pressingItem, scroll: boolean = this.scroll): boolean {
+		return pressingItem && scroll ? item.name === pressingItem.name : false;
 	}
 
 }

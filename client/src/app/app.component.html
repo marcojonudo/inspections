@@ -1,3 +1,4 @@
 <div id="route-container" [@routeAnimations]="prepareRoute(outlet)">
 	<router-outlet #outlet="outlet"></router-outlet>
 </div>
+<app-splash-screen [@leaveAnimation] *ngIf="checkShowSplash()"></app-splash-screen>

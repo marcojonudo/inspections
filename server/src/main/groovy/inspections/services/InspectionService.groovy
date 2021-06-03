@@ -81,14 +81,19 @@ class InspectionService {
 	 * @return Revisión guardada
 	 */
 	SavedInspection saveInspection(SavedInspection inspection, int orderNumber) {
-		SavedInspection savedInspection = inspection
-		SavedInspection existent = savedInspectionDataService.find(orderNumber)
-		/* Si existe una revisión para ese número de serie, se actualizan los elementos en lugar de crear otra */
-		if (existent) {
-			savedInspectionDataService.delete(existent.id)
-			savedInspection = Builder.buildSavedInspection(inspection)
+		SavedInspection savedInspection = null
+		try {
+			SavedInspection existent = savedInspectionDataService.find(orderNumber)
+			/* Si existe una revisión para ese número de serie, se actualizan los elementos en lugar de crear otra */
+			if (existent) {
+				savedInspectionDataService.delete(existent.id)
+				savedInspection = Builder.buildSavedInspection(inspection)
+			}
+			savedInspection = savedInspectionDataService.save(savedInspection ?: inspection)
+		} catch (all) {
+			all.printStackTrace()
 		}
-		return savedInspectionDataService.save(savedInspection)
+		return savedInspection
 	}
 
 }

@@ -12,19 +12,41 @@
 	#inspection-title
 		@include flex-center
 		padding: $small-gap 0
+		background-color: $primary
+		color: $white
 		z-index: 1
 
 		button
 			position: absolute
-			left: 0
 
-	#items-list
+			&#back-icon-button
+				left: 0
+
+			&#expand-icon-button
+				right: 0
+
+				#expand-icon
+					transition: transform $fast-transition
+
+	#items-accordion
 		@include flex-1
 		overflow-y: auto
 
-		.sub-header
-			margin-bottom: $small-gap
-			background-color: #81c784
+		.category
+			margin-bottom: $tiny-gap
+			border-radius: 0
+
+			.category-title
+				background-color: $secondary
+				color: $white
+
+				.mat-expansion-panel-header-title
+					color: $white !important
+
+		.item
+			width: 100%
+			height: 100%
+			padding: 0 1rem
 
 		.select-item
 
@@ -70,3 +92,4 @@
 		position: absolute
 		right: 1rem
 		@include flex-center
+		background-color: $highlight
