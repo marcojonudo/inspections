@@ -35,7 +35,7 @@
 		</mat-form-field>
 	</mat-card-content>
 	<mat-card-actions>
-		<button mat-fab (click)="searchOrder()" [disabled]="searchingInspections">
+		<button mat-fab (click)="searchOrder()" [disabled]="checkDisableSearchOrderButton()">
 			<mat-icon *ngIf="!searchingInspections">search</mat-icon>
 			<mat-spinner diameter="30" *ngIf="searchingInspections"></mat-spinner>
 		</button>

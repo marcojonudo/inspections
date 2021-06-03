@@ -44,7 +44,7 @@ class InspectionService {
 	InspectionInfo findInspectionInfo(int orderNumber) {
 		Inspection inspection = buildInspection(orderNumber)
 		SavedInspection existent = savedInspectionDataService.find(orderNumber)
-		return new InspectionInfo(inspection, existent)
+		return inspection ? new InspectionInfo(inspection, existent) : null
 	}
 
 	/**
