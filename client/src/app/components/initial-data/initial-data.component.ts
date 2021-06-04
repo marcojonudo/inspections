@@ -94,6 +94,12 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		}
 	}
 
+	checkDisableSearchOrderButton(
+		orderCode: FormControl = this.orderCode, searchingInspection: boolean = this.searchingInspections
+	): boolean {
+		return orderCode.invalid || searchingInspection;
+	}
+
 	searchOrder(orderCode: FormControl = this.orderCode): void {
 		this.searchingInspections = true;
 
