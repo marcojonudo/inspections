@@ -18,6 +18,7 @@ class InspectionService {
 
 	@Inject OrderTimeDataService orderTimeDataService
 	@Inject OrderDataService orderDataService
+	@Inject VehicleInfoDataService vehicleInfoDataService
 	@Inject InspectionDataService inspectionDataService
 	@Inject SavedInspectionDataService savedInspectionDataService
 	@Inject SavedItemDataService savedItemDataService
@@ -31,7 +32,12 @@ class InspectionService {
 		Integer orderNumber = orderTimeDataService.findOrderTimeOrderNumber(
 			shortCode, [sort: 'orderNumber', order: 'desc', max: 1]
 		)
-		return orderNumber ? orderDataService.find(orderNumber) : null
+		Order order = null
+		if (orderNumber) {
+			order = orderDataService.find(orderNumber)
+			order.vehicle.extraInfo = vehicleInfoDataService.find(order.vehicle.numberPlate)
+		}
+		return order
 	}
 
 	/**
