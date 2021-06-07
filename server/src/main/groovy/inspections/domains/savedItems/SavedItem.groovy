@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 
 @Entity
 @JsonDeserialize(using = SavedItemDeserializer)
-class SavedItem implements GormEntity<SavedItem> {
+abstract class SavedItem implements GormEntity<SavedItem> {
 
 	@JsonIgnore
 	SavedInspection savedInspection
@@ -31,5 +31,7 @@ class SavedItem implements GormEntity<SavedItem> {
 		tablePerHierarchy false
 		item fetch: 'join'
 	}
+
+	abstract boolean equals(SavedItem savedItem)
 
 }

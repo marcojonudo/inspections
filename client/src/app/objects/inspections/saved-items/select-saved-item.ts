@@ -1,6 +1,5 @@
 import {SavedItem} from './saved-item';
 import {SelectItem} from '../items/select-item';
-import * as dayjs from 'dayjs';
 import {Constants} from '../../constants';
 
 export class SelectSavedItem extends SavedItem {
@@ -14,14 +13,14 @@ export class SelectSavedItem extends SavedItem {
 			item.options.find(o => o.order === Constants.SELECT_ITEM_OPTION_MIN_ORDER).name;
 	}
 
-	update(value: string): void {
+	update(value: string, employeeCode: string): void {
 		this.value = value;
-		this.filled = dayjs();
+		this.updateCommonFields(employeeCode);
 	}
 
-	reset(item: SelectItem): void {
+	reset(employeeCode: string, item: SelectItem): void {
 		this.value = item.options.find(o => o.order === Constants.SELECT_ITEM_OPTION_MIN_ORDER).name;
-		this.filled = undefined;
+		this.updateCommonFields(employeeCode);
 	}
 
 }

@@ -47,7 +47,8 @@ export class Constants {
 		INSPECTION: 'inspection',
 		SAVED_INSPECTION: 'savedInspection',
 		ORDER: 'order',
-		EMPLOYEE: 'employee'
+		EMPLOYEE: 'employee',
+		EMPLOYEES: 'employees'
 	};
 
 	static readonly EVENT: any = {
