@@ -87,15 +87,16 @@ class InspectionService {
 	SavedInspection saveInspection(SavedInspection inspection, int orderNumber) {
 		SavedInspection savedInspection = null
 		try {
-			savedInspection = savedInspectionDataService.find(orderNumber)
+			SavedInspection existent = savedInspectionDataService.find(orderNumber)
 			/* Si existe una revisión para ese número de serie, se actualizan los elementos */
-			if (savedInspection) {
-				savedInspection.items.each { SavedItem existentSavedItem ->
+			if (existent) {
+				existent.items.each { SavedItem existentSavedItem ->
 					SavedItem savedItem = inspection.items.find { it.item.name == existentSavedItem.item.name }
 					if (existentSavedItem != savedItem) {
 						savedItemDataService.update(existentSavedItem.id, savedItem)
 					}
 				}
+				savedInspection = existent
 			} else {
 				savedInspection = savedInspectionDataService.save(inspection)
 			}

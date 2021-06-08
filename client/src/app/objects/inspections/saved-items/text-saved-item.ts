@@ -16,7 +16,7 @@ export class TextSavedItem extends SavedItem {
 	}
 
 	reset(employeeCode: string): void {
-		this.text = '';
+		this.text = undefined;
 		this.updateCommonFields(employeeCode);
 	}
 

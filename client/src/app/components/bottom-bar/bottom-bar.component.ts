@@ -1,6 +1,6 @@
 import {
 	ChangeDetectionStrategy, ChangeDetectorRef,
-	Component, EventEmitter, Output,
+	Component, EventEmitter, Input, Output,
 } from '@angular/core';
 import {EmployeeService} from '../../services/employee.service';
 import {Employee} from '../../objects/employee';
@@ -19,16 +19,13 @@ import {MenuComponent} from '../bottom-panel/menu/menu.component';
 })
 export class BottomBarComponent {
 
+	@Input() employee: Employee;
 	@Output() foundInspectionEmitter: EventEmitter<boolean>;
 
 	openedMenu: boolean;
 
 	constructor(private bottomSheet: MatBottomSheet, private cdRef: ChangeDetectorRef) {
 		this.foundInspectionEmitter = new EventEmitter<boolean>();
-	}
-
-	get employee(): Employee {
-		return EmployeeService.employee;
 	}
 
 	get order(): Order {
@@ -43,6 +40,7 @@ export class BottomBarComponent {
 		const bottomSheetRef = this.bottomSheet.open(EmployeeInfoComponent, {data: employee.code});
 		bottomSheetRef.afterDismissed().subscribe((triggerCd: boolean) => {
 			if (triggerCd) {
+				this.employee = EmployeeService.employee;
 				this.cdRef.detectChanges();
 			}
 		});

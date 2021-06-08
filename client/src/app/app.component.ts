@@ -1,10 +1,13 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnInit} from '@angular/core';
 import 'hammerjs';
 import {RouterOutlet} from '@angular/router';
 import {leaveAnimation, routeAnimations} from './animations';
 import {LoadingService} from './services/loading.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {InspectionService} from './services/inspection.service';
+import {Constants} from './objects/constants';
+import {MatDialog} from '@angular/material/dialog';
+import {ResetEmployeeDialogComponent} from './components/reset-employee-dialog/reset-employee-dialog.component';
 
 @Component({
 	selector: 'app-root',
@@ -16,8 +19,6 @@ import {InspectionService} from './services/inspection.service';
 export class AppComponent implements OnInit {
 
 	title = 'Revisiones';
-
-	private readonly SPLASH_SCREEN_DURATION: number = 1.5;
 
 	showSplashScreen: boolean;
 	loading: boolean;
@@ -33,7 +34,7 @@ export class AppComponent implements OnInit {
 				this.showSplashScreen = false;
 				this.cdRef.detectChanges();
 			},
-			this.SPLASH_SCREEN_DURATION * 1000
+			Constants.SPLASH_SCREEN_DURATION * 1000
 		);
 		this.loadingService.subscribe((loading: boolean) => {
 			this.loading = loading;

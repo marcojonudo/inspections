@@ -36,6 +36,7 @@ import * as es from 'dayjs/locale/es';
 import {Constants} from './objects/constants';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
+import { ResetEmployeeDialogComponent } from './components/reset-employee-dialog/reset-employee-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -50,7 +51,8 @@ import { SplashScreenComponent } from './components/splash-screen/splash-screen.
 		EmployeeInfoComponent,
 		ConfirmDialogComponent,
 		MenuComponent,
-		SplashScreenComponent
+		SplashScreenComponent,
+		ResetEmployeeDialogComponent
 	],
 	imports: [
 		BrowserModule,

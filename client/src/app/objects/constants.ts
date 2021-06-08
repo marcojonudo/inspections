@@ -2,6 +2,8 @@ export class Constants {
 
 	static readonly EMPLOYEE_CODE_LENGTH: number = 7;
 	static readonly SELECT_ITEM_OPTION_MIN_ORDER: number = 1;
+	static readonly SPLASH_SCREEN_DURATION: number = 1.5;
+	static readonly RESET_EMPLOYEE_INTERVAL: number = 24;
 
 	static readonly DAY_JS: any = {
 		M: 'M',
