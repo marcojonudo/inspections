@@ -28,6 +28,7 @@ import {MatAccordion} from '@angular/material/expansion';
 import {LoadingService} from '../../services/loading.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ResetEmployeeDialogComponent} from '../reset-employee-dialog/reset-employee-dialog.component';
+import {LocalStorageService} from '../../services/local-storage.service';
 
 @Component({
 	selector: 'app-inspection',
@@ -74,7 +75,12 @@ export class InspectionComponent implements AfterViewInit {
 		this.groupedItems = this.findGroupedItems();
 		this.scroll = false;
 		this.openedCategories = [];
-		this.setResetEmployeeTimeout();
+		const resetEmployee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE);
+		if (resetEmployee) {
+			this.handleEmployeeDialog();
+		} else {
+			this.setResetEmployeeTimeout();
+		}
 	}
 
 	ngAfterViewInit(): void {
@@ -129,8 +135,11 @@ export class InspectionComponent implements AfterViewInit {
 	}
 
 	handleEmployeeDialog(): void {
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, true);
 		const dialogRef = this.dialog.open(ResetEmployeeDialogComponent);
 		dialogRef.afterClosed().subscribe(() => {
+			LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, false);
+			this.setResetEmployeeTimeout();
 			this.cdRef.detectChanges();
 		});
 	}
