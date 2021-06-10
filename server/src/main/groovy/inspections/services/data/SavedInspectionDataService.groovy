@@ -13,8 +13,6 @@ abstract class SavedInspectionDataService {
 
 	abstract SavedInspection find(int orderNumber)
 
-	abstract void delete(Serializable id)
-
 	abstract SavedInspection saveSavedInspection(SavedInspection savedInspection)
 
 	@Transactional

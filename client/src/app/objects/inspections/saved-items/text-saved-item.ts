@@ -1,6 +1,5 @@
 import {SavedItem} from './saved-item';
 import {TextItem} from '../items/text-item';
-import * as dayjs from 'dayjs';
 
 export class TextSavedItem extends SavedItem {
 
@@ -11,14 +10,14 @@ export class TextSavedItem extends SavedItem {
 		this.text = savedItem?.text;
 	}
 
-	update(text: string): void {
+	update(text: string, employeeCode: string): void {
 		this.text = text;
-		this.filled = dayjs();
+		this.updateCommonFields(employeeCode);
 	}
 
-	reset(): void {
-		this.text = '';
-		this.filled = undefined;
+	reset(employeeCode: string): void {
+		this.text = undefined;
+		this.updateCommonFields(employeeCode);
 	}
 
 }

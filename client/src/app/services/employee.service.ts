@@ -28,6 +28,7 @@ export class EmployeeService {
 
 	static setEmployees(employees: any): void {
 		this.employees = employees.map(employee => new Employee(employee));
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.EMPLOYEES, this.employees);
 		console.log('Employees', this.employees);
 	}
 

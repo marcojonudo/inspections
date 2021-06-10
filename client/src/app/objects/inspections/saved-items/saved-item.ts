@@ -14,8 +14,13 @@ export abstract class SavedItem {
 		this.filled = savedItem ? dayjs(savedItem.filled) : dayjs();
 	}
 
-	abstract update(value: string): void;
+	abstract update(value: string, employeeCode: string): void;
 
-	abstract reset(item: Item): void;
+	abstract reset(employeeCode: string, item: Item): void;
+
+	updateCommonFields(employeeCode: string): void {
+		this.employeeCode = employeeCode;
+		this.filled = dayjs();
+	}
 
 }

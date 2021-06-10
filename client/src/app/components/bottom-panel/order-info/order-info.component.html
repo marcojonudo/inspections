@@ -1,3 +1,16 @@
+<mat-card id="car-card">
+	<mat-card-content>
+		<mat-icon inline="true">directions_car</mat-icon>
+		<ul>
+			<li><span class="item-label">Matrícula</span>: {{order.vehicle.numberPlate}}</li>
+			<li><span class="item-label">Marca y modelo</span>: {{order.vehicle.brand}} {{order.vehicle.model}}</li>
+			<li><span class="item-label">Cilindrada</span>: {{order.vehicle.cylinder}}</li>
+			<li><span class="item-label">Código motor</span>: {{order.vehicle.engineCode ? order.vehicle.engineCode : '-'}}</li>
+			<li><span class="item-label">Potencia</span>: {{order.vehicle.power ? order.vehicle.power + 'cv' : '-'}}</li>
+			<li><span class="item-label">Matriculación</span>: {{order.vehicle.registrationYear}}</li>
+		</ul>
+	</mat-card-content>
+</mat-card>
 <mat-list>
 	<mat-list-item *ngFor="let line of order.lines">
 		<div mat-line>{{line.articleName}}</div>

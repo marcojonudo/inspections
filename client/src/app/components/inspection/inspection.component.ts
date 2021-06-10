@@ -2,7 +2,7 @@ import {
 	AfterViewInit,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
-	Component, ElementRef,
+	Component, ElementRef, HostListener,
 	ViewChild
 } from '@angular/core';
 import {Inspection} from '../../objects/inspections/inspection';
@@ -26,6 +26,9 @@ import {MatList} from '@angular/material/list';
 import {fromEvent} from 'rxjs';
 import {MatAccordion} from '@angular/material/expansion';
 import {LoadingService} from '../../services/loading.service';
+import {MatDialog} from '@angular/material/dialog';
+import {ResetEmployeeDialogComponent} from '../reset-employee-dialog/reset-employee-dialog.component';
+import {LocalStorageService} from '../../services/local-storage.service';
 
 @Component({
 	selector: 'app-inspection',
@@ -46,6 +49,7 @@ export class InspectionComponent implements AfterViewInit {
 	pressingItem: Item;
 	scroll: boolean;
 	openedCategories: string[];
+	lockTimeout: any;
 
 	private readonly SELECT_ICON_COLOR: { [key: string]: string } = {
 		C: '#36d23d',
@@ -55,17 +59,28 @@ export class InspectionComponent implements AfterViewInit {
 		RR: '#3681d2'
 	};
 
+	@HostListener(Constants.EVENT.TOUCH_START) onTouchStart(): void {
+		this.setResetEmployeeTimeout();
+	}
+
 	constructor(
 		private inspectionService: InspectionService,
 		private bottomSheet: MatBottomSheet,
 		private loadingService: LoadingService,
 		private snackBarService: SnackBarService,
+		private dialog: MatDialog,
 		private router: Router,
 		private cdRef: ChangeDetectorRef
 	) {
 		this.groupedItems = this.findGroupedItems();
 		this.scroll = false;
 		this.openedCategories = [];
+		const resetEmployee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE);
+		if (resetEmployee) {
+			this.handleEmployeeDialog();
+		} else {
+			this.setResetEmployeeTimeout();
+		}
 	}
 
 	ngAfterViewInit(): void {
@@ -110,6 +125,24 @@ export class InspectionComponent implements AfterViewInit {
 	}
 
 	// endregion
+
+	setResetEmployeeTimeout(): void {
+		clearTimeout(this.lockTimeout);
+		this.lockTimeout = setTimeout(
+			() => this.handleEmployeeDialog(),
+			Constants.RESET_EMPLOYEE_INTERVAL * 1000
+		);
+	}
+
+	handleEmployeeDialog(): void {
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, true);
+		const dialogRef = this.dialog.open(ResetEmployeeDialogComponent);
+		dialogRef.afterClosed().subscribe(() => {
+			LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, false);
+			this.setResetEmployeeTimeout();
+			this.cdRef.detectChanges();
+		});
+	}
 
 	findGroupedItems(inspection: Inspection = this.inspection): { [key: string]: Item[] } {
 		const groupedItems = {};

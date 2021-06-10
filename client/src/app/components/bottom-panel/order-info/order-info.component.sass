@@ -1,0 +1,22 @@
+@import "abstracts/variables"
+@import "abstracts/mixins"
+
+\:host
+	@include flex-column-center
+
+	#car-card
+		width: 75%
+
+		mat-card-content
+			display: flex
+			align-items: center
+
+			mat-icon
+				font-size: $big-font
+
+			& > ul
+				@include flex-column
+				margin-left: $medium-gap
+
+				.item-label
+					font-weight: bold

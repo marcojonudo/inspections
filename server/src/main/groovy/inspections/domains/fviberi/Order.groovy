@@ -8,6 +8,7 @@ import org.grails.datastore.gorm.GormEntity
 class Order implements GormEntity<Order> {
 
 	int number
+	Vehicle vehicle
 
 	static hasMany = [lines: OrderLine]
 
@@ -16,6 +17,7 @@ class Order implements GormEntity<Order> {
 		table 'fvcabord'
 
 		number column: 'nuordrep'
+		vehicle column: 'numatric', fetch: 'join'
 		lines fetch: 'join'
 
 		id generator: 'assigned', name: 'number'

@@ -5,6 +5,7 @@ import {Order} from '../../../objects/orders/order';
 @Component({
 	selector: 'app-order-info',
 	templateUrl: './order-info.component.html',
+	styleUrls: ['./order-info.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderInfoComponent {

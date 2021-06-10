@@ -5,12 +5,9 @@ import inspections.domains.Inspection
 import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
-import inspections.pogos.Builder
+import inspections.domains.savedItems.SavedItem
 import inspections.pogos.InspectionInfo
-import inspections.services.data.InspectionDataService
-import inspections.services.data.OrderDataService
-import inspections.services.data.OrderTimeDataService
-import inspections.services.data.SavedInspectionDataService
+import inspections.services.data.*
 
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -21,8 +18,10 @@ class InspectionService {
 
 	@Inject OrderTimeDataService orderTimeDataService
 	@Inject OrderDataService orderDataService
+	@Inject VehicleInfoDataService vehicleInfoDataService
 	@Inject InspectionDataService inspectionDataService
 	@Inject SavedInspectionDataService savedInspectionDataService
+	@Inject SavedItemDataService savedItemDataService
 
 	/**
 	 * Busca una orden asociada al código corto
@@ -33,7 +32,12 @@ class InspectionService {
 		Integer orderNumber = orderTimeDataService.findOrderTimeOrderNumber(
 			shortCode, [sort: 'orderNumber', order: 'desc', max: 1]
 		)
-		return orderNumber ? orderDataService.find(orderNumber) : null
+		Order order = null
+		if (orderNumber) {
+			order = orderDataService.find(orderNumber)
+			order.vehicle.extraInfo = vehicleInfoDataService.find(order.vehicle.numberPlate)
+		}
+		return order
 	}
 
 	/**
@@ -84,12 +88,18 @@ class InspectionService {
 		SavedInspection savedInspection = null
 		try {
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
-			/* Si existe una revisión para ese número de serie, se actualizan los elementos en lugar de crear otra */
+			/* Si existe una revisión para ese número de serie, se actualizan los elementos */
 			if (existent) {
-				savedInspectionDataService.delete(existent.id)
-				savedInspection = Builder.buildSavedInspection(inspection)
+				existent.items.each { SavedItem existentSavedItem ->
+					SavedItem savedItem = inspection.items.find { it.item.name == existentSavedItem.item.name }
+					if (existentSavedItem != savedItem) {
+						savedItemDataService.update(existentSavedItem.id, savedItem)
+					}
+				}
+				savedInspection = existent
+			} else {
+				savedInspection = savedInspectionDataService.save(inspection)
 			}
-			savedInspection = savedInspectionDataService.save(savedInspection ?: inspection)
 		} catch (all) {
 			all.printStackTrace()
 		}

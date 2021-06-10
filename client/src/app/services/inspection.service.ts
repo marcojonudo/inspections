@@ -14,6 +14,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {TextSavedItem} from '../objects/inspections/saved-items/text-saved-item';
 import {SelectSavedItem} from '../objects/inspections/saved-items/select-saved-item';
 import {Builder} from '../objects/builder';
+import {Employee} from '../objects/employee';
 
 @Injectable({
 	providedIn: 'root'
@@ -47,31 +48,43 @@ export class InspectionService {
 		this.inspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION);
 		this.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
 		EmployeeService.employee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEE);
+		EmployeeService.employees = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEES);
 
 		const savedInspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION);
 		this.savedInspection = Builder.loadSavedInspection(savedInspection);
+
 		console.log('Inspection', this.inspection);
 		console.log('Saved inspection', this.savedInspection);
+		console.log('Employees', EmployeeService.employees);
+		console.log('Selected employee', EmployeeService.employee);
 	}
 
-	static resetInspection(savedInspection: SavedInspection = this.savedInspection): void {
-		savedInspection.items.forEach(item => item.reset(item.item));
+	static resetInspection(
+		savedInspection: SavedInspection = this.savedInspection, employee: Employee = EmployeeService.employee
+	): void {
+		savedInspection.items.forEach(item => item.reset(employee.code, item.item));
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
 	static updateSelectItem(
-		itemName: string, value: string, savedInspection: SavedInspection = this.savedInspection
+		itemName: string,
+		value: string,
+		savedInspection: SavedInspection = this.savedInspection,
+		employee: Employee = EmployeeService.employee
 	): void {
 		const savedItem = savedInspection.items.find(i => i.item.name === itemName) as SelectSavedItem;
-		savedItem.update(value);
+		savedItem.update(value, employee.code);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
 	static updateTextItem(
-		itemName: string, text: string, savedInspection: SavedInspection = this.savedInspection
+		itemName: string,
+		text: string,
+		savedInspection: SavedInspection = this.savedInspection,
+		employee: Employee = EmployeeService.employee
 	): void {
 		const savedItem = savedInspection.items.find(i => i.item.name === itemName) as TextSavedItem;
-		savedItem.update(text);
+		savedItem.update(text, employee.code);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
@@ -84,6 +97,7 @@ export class InspectionService {
 			}),
 			concatMap((order: any) => {
 				const or = InspectionService.setOrder(new Order(order, orderCode));
+				console.log('Order', or);
 				return this.findInspections(or.number);
 			}),
 			catchError(error => {
