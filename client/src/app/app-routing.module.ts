@@ -4,12 +4,14 @@ import {InitialDataComponent} from './components/initial-data/initial-data.compo
 import {InspectionComponent} from './components/inspection/inspection.component';
 import {InspectionGuard} from './auth/inspection-guard';
 import {EmployeesResolver} from './resolvers/employees-resolver';
+import {InitGuard} from './auth/init.guard';
 
 
 const routes: Routes = [
 	{
 		path: 'init',
 		component: InitialDataComponent,
+		canActivate: [InitGuard],
 		data: {animation: 'InitPage'},
 		resolve: {employees: EmployeesResolver}
 	},
