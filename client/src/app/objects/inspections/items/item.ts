@@ -1,15 +1,16 @@
 import {ItemCategory} from '../item-category';
 import {GaragePosition} from '../garage-position';
-import {VehiclePosition} from '../vehicle-position';
+import {VehicleSection} from '../vehicle-section';
+import {ListElement} from '../../list-elements/list-element';
 
-export class Item {
+export class Item implements ListElement {
 
 	type: string;
 	name: string;
 	order: number;
 	category: ItemCategory;
 	garagePosition: GaragePosition;
-	vehiclePositions: VehiclePosition[];
+	vehicleSection: VehicleSection;
 
 	constructor(item: any) {
 		this.type = item.type;
@@ -17,7 +18,7 @@ export class Item {
 		this.order = item.order;
 		this.category = new ItemCategory(item.category);
 		this.garagePosition = new GaragePosition(item.garagePosition);
-		this.vehiclePositions = item.vehiclePositions.map(p => new VehiclePosition(p));
+		this.vehicleSection = item.vehicleSection ? new VehicleSection(item.vehicleSection) : undefined;
 	}
 
 }

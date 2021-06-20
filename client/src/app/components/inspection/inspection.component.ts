@@ -19,16 +19,15 @@ import {SelectSavedItem} from '../../objects/inspections/saved-items/select-save
 import {Employee} from '../../objects/employee';
 import {EmployeeService} from '../../services/employee.service';
 import {Order} from '../../objects/orders/order';
-import {debounceTime, finalize, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
-import {SnackBarService} from '../../services/snack-bar.service';
 import {MatList} from '@angular/material/list';
-import {fromEvent} from 'rxjs';
 import {MatAccordion} from '@angular/material/expansion';
 import {LoadingService} from '../../services/loading.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ResetEmployeeDialogComponent} from '../reset-employee-dialog/reset-employee-dialog.component';
 import {LocalStorageService} from '../../services/local-storage.service';
+import {ListElement} from '../../objects/list-elements/list-element';
+import {Category} from '../../objects/list-elements/category';
 
 @Component({
 	selector: 'app-inspection',
@@ -44,20 +43,11 @@ export class InspectionComponent implements AfterViewInit {
 	@ViewChild(MatAccordion, { read: ElementRef }) accordionElementRef: ElementRef;
 
 	bottomBarHeight: number;
-	groupedItems: { [key: string]: Item[] };
-	saving: boolean;
+	listElements: ListElement[];
 	pressingItem: Item;
 	scroll: boolean;
 	openedCategories: string[];
 	lockTimeout: any;
-
-	private readonly SELECT_ICON_COLOR: { [key: string]: string } = {
-		C: '#36d23d',
-		PS: '#ffb47e',
-		SN: '#d23636',
-		RA: '#3681d2',
-		RR: '#3681d2'
-	};
 
 	@HostListener(Constants.EVENT.TOUCH_START) onTouchStart(): void {
 		this.setResetEmployeeTimeout();
@@ -67,12 +57,12 @@ export class InspectionComponent implements AfterViewInit {
 		private inspectionService: InspectionService,
 		private bottomSheet: MatBottomSheet,
 		private loadingService: LoadingService,
-		private snackBarService: SnackBarService,
 		private dialog: MatDialog,
 		private router: Router,
 		private cdRef: ChangeDetectorRef
 	) {
-		this.groupedItems = this.findGroupedItems();
+		this.listElements = InspectionService.findGroupedItems(this.inspection.items);
+		console.log('List elements', this.listElements);
 		this.scroll = false;
 		this.openedCategories = [];
 		const resetEmployee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE);
@@ -144,29 +134,26 @@ export class InspectionComponent implements AfterViewInit {
 		});
 	}
 
-	findGroupedItems(inspection: Inspection = this.inspection): { [key: string]: Item[] } {
-		const groupedItems = {};
-		inspection.items.forEach(item => {
-			if (groupedItems[item.garagePosition.name]) {
-				groupedItems[item.garagePosition.name].push(item);
-			} else {
-				groupedItems[item.garagePosition.name] = [item];
-			}
-		});
-		return groupedItems;
+	findMenuCategories(menuElements: ListElement[]): Category[] {
+		return menuElements.filter(elem => elem instanceof Category) as Category[];
 	}
 
-	findIconColor(code: string, selectIconColor: { [key: string]: string } = this.SELECT_ICON_COLOR): string {
-		return selectIconColor[code];
+	findMenuItems(menuElements: ListElement[]): Item[] {
+		return menuElements.filter(elem => !(elem instanceof Category)) as Item[];
+	}
+
+	findIconColor(code: string): string {
+		return InspectionService.findIconColor(code);
 	}
 
 	goBack(): void {
 		this.router.navigate([Constants.PATH.INIT]);
 	}
 
-	expandAll(accordion: MatAccordion = this.accordion): void {
-		const openedItem = this.checkOpenedCategory();
+	expandAll(openedCategories: string[] = this.openedCategories, accordion: MatAccordion = this.accordion): void {
+		const openedItem = this.checkOpenedCategory(openedCategories);
 		if (openedItem) {
+			openedCategories.splice(0, openedCategories.length);
 			accordion.closeAll();
 		} else {
 			accordion.openAll();
@@ -255,7 +242,7 @@ export class InspectionComponent implements AfterViewInit {
 	}
 
 	updateGroupedItems(): void {
-		this.groupedItems = this.findGroupedItems();
+		this.listElements = InspectionService.findGroupedItems();
 	}
 
 	setPressingItem(item: Item): void {

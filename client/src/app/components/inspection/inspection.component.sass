@@ -43,6 +43,12 @@
 				.mat-expansion-panel-header-title
 					color: $white !important
 
+			.sub-category-title
+				background-color: $grey
+
+				.mat-expansion-panel-header-title
+					color: $black !important
+
 		.item
 			width: 100%
 			height: 100%
@@ -67,12 +73,6 @@
 						position: absolute
 						transition: transform $fast-transition, opacity $fast-transition
 						backface-visibility: hidden
-
-						&.fa-check
-							background-color: green
-
-						&.fa-exclamation
-							background-color: yellow
 
 						&.front
 							transform: translateX(-100%) rotateY(0)

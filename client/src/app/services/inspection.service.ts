@@ -15,6 +15,11 @@ import {TextSavedItem} from '../objects/inspections/saved-items/text-saved-item'
 import {SelectSavedItem} from '../objects/inspections/saved-items/select-saved-item';
 import {Builder} from '../objects/builder';
 import {Employee} from '../objects/employee';
+import {Centre} from '../objects/orders/centre';
+import {Item} from '../objects/inspections/items/item';
+import {ListElement} from '../objects/list-elements/list-element';
+import {Category} from '../objects/list-elements/category';
+import {NameElement} from '../objects/list-elements/name-element';
 
 @Injectable({
 	providedIn: 'root'
@@ -24,6 +29,19 @@ export class InspectionService {
 	static order: Order;
 	static inspection: Inspection;
 	static savedInspection: SavedInspection;
+
+	private static readonly SELECT_ICON_COLOR: { [key: string]: string } = {
+		C: '#36d23d',
+		PS: '#ffb47e',
+		SN: '#d23636',
+		RA: '#3681d2',
+		RR: '#3681d2'
+	};
+
+	private static readonly LEVEL_ELEMENTS: ((item: Item) => NameElement)[] = [
+		(item: Item) => item.garagePosition,
+		(item: Item) => item.vehicleSection ? item.vehicleSection : undefined
+	];
 
 	constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
 
@@ -57,6 +75,42 @@ export class InspectionService {
 		console.log('Saved inspection', this.savedInspection);
 		console.log('Employees', EmployeeService.employees);
 		console.log('Selected employee', EmployeeService.employee);
+	}
+
+	static findGroupedItems(
+		items: any[] = this.inspection.items,
+		i: number = 0,
+		levelElements: ((item: Item) => NameElement)[] = this.LEVEL_ELEMENTS
+	): ListElement[] {
+		if (i >= levelElements.length) {
+			return items;
+		}
+		const listElements = [];
+		items.forEach(item => {
+			const levelElem = levelElements[i](item);
+			if (levelElem) {
+				const existent: Category = listElements.find(elem =>
+					elem instanceof Category && (elem as Category).name === levelElem.name
+				);
+				if (existent) {
+					existent.items.push(item);
+				} else {
+					listElements.push(new Category(levelElem, [item]));
+				}
+			} else {
+				listElements.push(item);
+			}
+		});
+		i += 1;
+		const categoryElements = listElements.filter(item => item instanceof Category);
+		categoryElements.forEach(categoryElem => {
+			categoryElem.items = this.findGroupedItems(categoryElem.items, i);
+		});
+		return listElements;
+	}
+
+	static findIconColor(code: string, selectIconColor: { [key: string]: string } = this.SELECT_ICON_COLOR): string {
+		return selectIconColor[code];
 	}
 
 	static resetInspection(
