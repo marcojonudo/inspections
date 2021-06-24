@@ -6,7 +6,7 @@ export class Url {
 		return `${environment.serverUrl}/inspections/inspection`;
 	}
 
-	static order(): string {
+	static orderInfo(): string {
 		return `${environment.serverUrl}/inspections/order`;
 	}
 

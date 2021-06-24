@@ -2,6 +2,8 @@
 @import "abstracts/mixins"
 
 mat-toolbar
+	display: flex
+	justify-content: center
 	background-color: $primary
 	color: $white
 	transition: transform $fast-transition
@@ -22,3 +24,46 @@ mat-toolbar
 			& > span
 				padding: 0 $super-tiny-gap
 
+	#button-container
+		position: absolute
+		bottom: 1rem
+		@include flex-center
+		z-index: 1
+
+		#toggle-menu-button
+			background-color: $highlight
+			z-index: 1
+
+			#toggle-menu-icon
+				transition: transform $fast-transition
+
+				&.opened-menu
+					transform: rotate(45deg)
+
+		#save-inspection-button
+			background-color: $light-green
+
+		#print-inspection-button
+			background-color: #285dc6
+
+		#reset-inspection-button
+			background-color: #c62828
+
+		.menu-button
+			position: absolute
+			top: 0
+			left: 0
+			color: $white
+			box-shadow: none
+			transition: transform $fast-transition
+			transform: scale(.5)
+
+			.menu-button-icon
+				transform: rotate(180deg)
+				transition: transform $fast-transition
+
+				&.straight
+					transform: rotate(0)
+
+		div
+			position: absolute

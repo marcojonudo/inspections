@@ -3,20 +3,16 @@ package inspections.controllers
 import groovy.transform.CompileStatic
 import inspections.domains.Inspection
 import inspections.domains.SavedInspection
-import inspections.domains.fviberi.Order
 import inspections.domains.schedules.EmployeeData
 import inspections.pogos.InspectionInfo
+import inspections.pogos.OrderInfo
 import inspections.services.InspectionService
 import inspections.services.data.EmployeeDataDataService
 import inspections.services.data.InspectionDataService
 import inspections.services.data.OrderTimeDataService
 import inspections.services.data.SavedInspectionDataService
 import io.micronaut.http.HttpResponse
-import io.micronaut.http.annotation.Body
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.Post
-import io.micronaut.http.annotation.QueryValue
+import io.micronaut.http.annotation.*
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
@@ -79,8 +75,8 @@ class InspectionController {
 	@ApiResponse(
 		responseCode = "404", description = "Número de orden no encontrado"
 	)
-	Order findInspections(@QueryValue String shortCode) {
-		return inspectionService.findOrder(shortCode)
+	OrderInfo findOrderInfo(@QueryValue String shortCode) {
+		return inspectionService.findOrderInfo(shortCode)
 	}
 
 	@Get("/inspection")

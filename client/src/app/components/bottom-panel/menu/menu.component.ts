@@ -20,7 +20,9 @@ export class MenuComponent {
 		private bottomSheetRef: MatBottomSheetRef<MenuComponent>,
 		private inspectionService: InspectionService,
 		private cdRef: ChangeDetectorRef
-	) {}
+	) {
+		// TODO Quitar
+	}
 
 	resetInspection(): void {
 		InspectionService.resetInspection();

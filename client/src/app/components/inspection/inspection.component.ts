@@ -66,24 +66,24 @@ export class InspectionComponent implements AfterViewInit {
 		this.scroll = false;
 		this.openedCategories = [];
 		const resetEmployee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE);
-		if (resetEmployee) {
-			this.handleEmployeeDialog();
-		} else {
-			this.setResetEmployeeTimeout();
-		}
+		// if (resetEmployee) {
+		// 	this.handleEmployeeDialog();
+		// } else {
+		// 	this.setResetEmployeeTimeout();
+		// }
 	}
 
 	ngAfterViewInit(): void {
-		fromEvent(this.accordionElementRef.nativeElement, Constants.EVENT.SCROLL).pipe(
-			tap(() => {
-				this.scroll = true;
-				this.cdRef.detectChanges();
-			}),
-			debounceTime(500)
-		).subscribe(() => {
-			this.scroll = false;
-			this.cdRef.detectChanges();
-		});
+			// fromEvent(this.accordionElementRef.nativeElement, Constants.EVENT.SCROLL).pipe(
+			// 	tap(() => {
+			// 		this.scroll = true;
+			// 		this.cdRef.detectChanges();
+			// 	}),
+			// 	debounceTime(500)
+			// ).subscribe(() => {
+			// 	this.scroll = false;
+			// 	this.cdRef.detectChanges();
+			// });
 		this.bottomBarHeight = this.toolBar.nativeElement.getBoundingClientRect().height;
 		this.loadingService.stop();
 	}
@@ -224,21 +224,6 @@ export class InspectionComponent implements AfterViewInit {
 
 	openLegend(options: SelectItemOption[]): void {
 		this.bottomSheet.open(LegendComponent, {data: options});
-	}
-
-	saveInspection(
-		savedInspection: SavedInspection = this.savedInspection, orderNumber: number = this.order.number
-	): void {
-		this.saving = true;
-		this.inspectionService.saveInspection(savedInspection, orderNumber).pipe(
-			finalize(() => {
-				this.saving = false;
-				this.cdRef.detectChanges();
-			})
-		).subscribe(
-			() => this.snackBarService.open(Constants.MESSAGE.SAVED_INSPECTION),
-			() => this.snackBarService.open(Constants.MESSAGE.ERROR_SAVING_INSPECTION, Constants.SNACK_BAR.TYPE.ERROR)
-		);
 	}
 
 	updateGroupedItems(): void {

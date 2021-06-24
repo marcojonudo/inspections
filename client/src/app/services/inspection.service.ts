@@ -20,6 +20,8 @@ import {Item} from '../objects/inspections/items/item';
 import {ListElement} from '../objects/list-elements/list-element';
 import {Category} from '../objects/list-elements/category';
 import {NameElement} from '../objects/list-elements/name-element';
+import {SelectItemOption} from '../objects/inspections/items/select-item-option';
+import {SelectItem} from '../objects/inspections/items/select-item';
 
 @Injectable({
 	providedIn: 'root'
@@ -27,7 +29,9 @@ import {NameElement} from '../objects/list-elements/name-element';
 export class InspectionService {
 
 	static order: Order;
+	static centre: Centre;
 	static inspection: Inspection;
+	static selectItemOptions: SelectItemOption[];
 	static savedInspection: SavedInspection;
 
 	private static readonly SELECT_ICON_COLOR: { [key: string]: string } = {
@@ -51,36 +55,50 @@ export class InspectionService {
 		return this.order;
 	}
 
+	static setCentre(centre: Centre): Centre {
+		this.centre = centre;
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.CENTRE, centre);
+		return this.centre;
+	}
+
 	static initInspection(inspection: any, savedInspection: any): void {
 		this.inspection = Builder.buildInspection(inspection);
 		this.savedInspection = savedInspection ?
 			Builder.loadSavedInspection(savedInspection) :
 			Builder.buildSavedInspection(inspection, EmployeeService.employee.code, this.order.number);
+		this.selectItemOptions = this.findSelectItemOptions();
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.INSPECTION, inspection);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, this.savedInspection);
 		console.log('Inspection', this.inspection);
 		console.log('Saved inspection', this.savedInspection);
+		console.log('Select item options', this.selectItemOptions);
 	}
 
 	static loadInfo(): void {
-		this.inspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION);
+		this.inspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION) as Inspection;
 		this.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
+		this.centre = LocalStorageService.getItem(Constants.LOCAL_STORAGE.CENTRE);
+		this.selectItemOptions = this.findSelectItemOptions();
+
 		EmployeeService.employee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEE);
 		EmployeeService.employees = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEES);
 
 		const savedInspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION);
 		this.savedInspection = Builder.loadSavedInspection(savedInspection);
 
+		console.log('Order', this.order);
+		console.log('Centre', this.centre);
 		console.log('Inspection', this.inspection);
 		console.log('Saved inspection', this.savedInspection);
 		console.log('Employees', EmployeeService.employees);
 		console.log('Selected employee', EmployeeService.employee);
+		console.log('Select item options', this.selectItemOptions);
 	}
 
 	static findGroupedItems(
 		items: any[] = this.inspection.items,
 		i: number = 0,
-		levelElements: ((item: Item) => NameElement)[] = this.LEVEL_ELEMENTS
+		levelElements: ((item: any) => NameElement)[] = this.LEVEL_ELEMENTS
 	): ListElement[] {
 		if (i >= levelElements.length) {
 			return items;
@@ -107,6 +125,23 @@ export class InspectionService {
 			categoryElem.items = this.findGroupedItems(categoryElem.items, i);
 		});
 		return listElements;
+	}
+
+	static findSelectItems(items: Item[] = this.inspection.items): SelectItem[] {
+		return items.filter(item => item.type === Constants.ITEM_TYPE.SELECT) as SelectItem[];
+	}
+
+	static findSelectItemOptions(): SelectItemOption[] {
+		const options = [];
+		this.findSelectItems().forEach((item: SelectItem) => {
+			item.options.forEach(option => {
+				const existent = options.find(o => o.name === option.name);
+				if (!existent) {
+					options.push(option);
+				}
+			});
+		});
+		return options;
 	}
 
 	static findIconColor(code: string, selectIconColor: { [key: string]: string } = this.SELECT_ICON_COLOR): string {
@@ -144,15 +179,17 @@ export class InspectionService {
 
 	findInspection(orderCode: string): Observable<any> {
 		let errorText;
-		return this.findOrder(orderCode).pipe(
+		return this.findOrderInfo(orderCode).pipe(
 			catchError(error => {
 				errorText = Constants.MESSAGE.NONEXISTENT_ORDER;
 				return throwError(error);
 			}),
-			concatMap((order: any) => {
-				const or = InspectionService.setOrder(new Order(order, orderCode));
-				console.log('Order', or);
-				return this.findInspections(or.number);
+			concatMap((orderInfo: any) => {
+				const order = InspectionService.setOrder(new Order(orderInfo.order, orderCode));
+				console.log('Order', order);
+				const centre = InspectionService.setCentre(new Centre(orderInfo.centre));
+				console.log('Centre', centre);
+				return this.findInspections(order.number);
 			}),
 			catchError(error => {
 				errorText = errorText ? errorText : Constants.MESSAGE.NONEXISTENT_INSPECTIONS;
@@ -172,8 +209,8 @@ export class InspectionService {
 		);
 	}
 
-	findOrder(shortCode: string): Observable<any> {
-		const url = `${Url.order()}?shortCode=${shortCode}`;
+	findOrderInfo(shortCode: string): Observable<any> {
+		const url = `${Url.orderInfo()}?shortCode=${shortCode}`;
 		return this.http.get(url);
 	}
 

@@ -28,7 +28,7 @@
 				#expand-icon
 					transition: transform $fast-transition
 
-	#items-accordion
+	.accordion
 		@include flex-1
 		overflow-y: auto
 
@@ -38,7 +38,6 @@
 
 			.category-title
 				background-color: $secondary
-				color: $white
 
 				.mat-expansion-panel-header-title
 					color: $white !important
@@ -87,9 +86,3 @@
 
 			&-input
 				width: 100%
-
-	#save-inspection-button
-		position: absolute
-		right: 1rem
-		@include flex-center
-		background-color: $highlight

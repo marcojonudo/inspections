@@ -37,6 +37,9 @@ import {Constants} from './objects/constants';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
 import { ResetEmployeeDialogComponent } from './components/reset-employee-dialog/reset-employee-dialog.component';
+import { PrintComponent } from './components/print/print.component';
+import {MatTableModule} from '@angular/material/table';
+import {ChartsModule} from 'ng2-charts';
 
 @NgModule({
 	declarations: [
@@ -52,7 +55,8 @@ import { ResetEmployeeDialogComponent } from './components/reset-employee-dialog
 		ConfirmDialogComponent,
 		MenuComponent,
 		SplashScreenComponent,
-		ResetEmployeeDialogComponent
+		ResetEmployeeDialogComponent,
+		PrintComponent
 	],
 	imports: [
 		BrowserModule,
@@ -73,9 +77,11 @@ import { ResetEmployeeDialogComponent } from './components/reset-employee-dialog
 		MatBottomSheetModule,
 		MatSnackBarModule,
 		MatDialogModule,
-		MatExpansionModule
+		MatExpansionModule,
+		MatTableModule,
+		ChartsModule
 	],
-	providers: [],
+	providers: [OrderPipe],
 	bootstrap: [AppComponent]
 })
 export class AppModule {

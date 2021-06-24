@@ -9,6 +9,7 @@ class Order implements GormEntity<Order> {
 
 	int number
 	Vehicle vehicle
+	Client client
 
 	static hasMany = [lines: OrderLine]
 
@@ -18,6 +19,7 @@ class Order implements GormEntity<Order> {
 
 		number column: 'nuordrep'
 		vehicle column: 'numatric', fetch: 'join'
+		client column: 'coclient', fetch: 'join'
 		lines fetch: 'join'
 
 		id generator: 'assigned', name: 'number'
