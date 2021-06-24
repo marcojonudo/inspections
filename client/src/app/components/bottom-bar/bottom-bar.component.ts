@@ -9,7 +9,6 @@ import {Order} from '../../objects/orders/order';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {OrderInfoComponent} from '../bottom-panel/order-info/order-info.component';
 import {EmployeeInfoComponent} from '../bottom-panel/employee-info/employee-info.component';
-import {MenuComponent} from '../bottom-panel/menu/menu.component';
 import {PrintService} from '../../services/print.service';
 import {SavedInspection} from '../../objects/inspections/saved-inspection';
 import {finalize} from 'rxjs/operators';
@@ -58,19 +57,6 @@ export class BottomBarComponent {
 			if (triggerCd) {
 				this.employee = EmployeeService.employee;
 				this.cdRef.detectChanges();
-			}
-		});
-	}
-
-	openToolsMenu(): void {
-		this.openedMenu = true;
-
-		const bottomSheetRef = this.bottomSheet.open(MenuComponent);
-		bottomSheetRef.afterDismissed().subscribe((foundInspection: boolean) => {
-			this.openedMenu = false;
-			this.cdRef.detectChanges();
-			if (foundInspection) {
-				this.foundInspectionEmitter.emit(foundInspection);
 			}
 		});
 	}

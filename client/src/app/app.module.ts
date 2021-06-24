@@ -27,7 +27,6 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { EmployeeInfoComponent } from './components/bottom-panel/employee-info/employee-info.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
-import { MenuComponent } from './components/bottom-panel/menu/menu.component';
 import localeEs from '@angular/common/locales/es';
 import {registerLocaleData} from '@angular/common';
 registerLocaleData(localeEs);
@@ -53,7 +52,6 @@ import {ChartsModule} from 'ng2-charts';
 		LegendComponent,
 		EmployeeInfoComponent,
 		ConfirmDialogComponent,
-		MenuComponent,
 		SplashScreenComponent,
 		ResetEmployeeDialogComponent,
 		PrintComponent
