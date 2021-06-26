@@ -1,0 +1,111 @@
+<header>
+	<div id="title">
+		{{inspection.name}}
+		<img id="logo" src="assets/img/feuvert-logo.png">
+	</div>
+	<div id="info">
+		<mat-card>
+			<mat-card-header>
+				<mat-icon mat-card-avatar>home</mat-icon>
+				<mat-card-title>Centro</mat-card-title>
+			</mat-card-header>
+			<mat-card-content>
+				<span>{{centre.name | titlecase}}</span>
+				<span>{{centre.addressLine1 | titlecase}}</span>
+				<span>{{centre.addressLine2 | titlecase}}</span>
+				<span>{{centre.addressLine3 | titlecase}}</span>
+				<span>{{centre.phoneNumber | titlecase}}</span>
+			</mat-card-content>
+		</mat-card>
+		<mat-card>
+			<mat-card-header>
+				<mat-icon mat-card-avatar>directions_car</mat-icon>
+				<mat-card-title>Vehículo</mat-card-title>
+			</mat-card-header>
+			<mat-card-content>
+				<span>{{order.vehicle.numberPlate}}</span>
+				<span>{{order.vehicle.brand | titlecase}} {{order.vehicle.model | titlecase}}</span>
+				<span>{{order.vehicle.cylinder}}</span>
+				<span *ngIf="order.vehicle.engineCode">{{order.vehicle.engineCode}}</span>
+				<span *ngIf="order.vehicle.power">{{order.vehicle.power + 'cv'}}</span>
+				<span>{{order.vehicle.registrationYear}}</span>
+			</mat-card-content>
+		</mat-card>
+		<mat-card>
+			<mat-card-header>
+				<mat-icon mat-card-avatar>account_circle</mat-icon>
+				<mat-card-title>Cliente</mat-card-title>
+			</mat-card-header>
+			<mat-card-content>
+				<span>{{order.client.name | titlecase}} {{order.client.surnames | titlecase}}</span>
+				<span>{{order.client.phoneNumber}}</span>
+			</mat-card-content>
+		</mat-card>
+		<mat-card>
+			<mat-card-header>
+				<mat-icon mat-card-avatar>summarize</mat-icon>
+				<mat-card-title>Resumen</mat-card-title>
+			</mat-card-header>
+			<mat-card-content id="summary-container">
+				<div id="summary">
+					<canvas
+						baseChart
+						width="1px"
+						height="1px"
+						[chartType]="chartType"
+						[options]="options"
+						[colors]="colors"
+						[data]="findData()">
+					</canvas>
+				</div>
+			</mat-card-content>
+		</mat-card>
+	</div>
+	<mat-card>
+		<mat-card-content id="legend">
+			<div *ngFor="let label of groupLabels(findLabels())" class="label">
+				<div class="label-color" [style.background-color]="findIconColor(label.code)"></div>
+				<span>{{label.name}}</span>
+			</div>
+		</mat-card-content>
+	</mat-card>
+</header>
+<div *ngFor="let category of categories | order; let i = index" class="category">
+	<mat-card>
+		<mat-card-header>
+			<mat-icon mat-card-avatar>navigate_next</mat-icon>
+			<mat-card-title>{{category.name}}</mat-card-title>
+		</mat-card-header>
+		<div class="graph-container">
+			<div class="graph-info">
+				<canvas
+					baseChart
+					width="1px"
+					height="1px"
+					[chartType]="chartType"
+					[options]="options"
+					[colors]="colors"
+					[data]="findData(category.items)">
+				</canvas>
+			</div>
+		</div>
+		<mat-card-content>
+			<div class="items-info">
+				<div>
+					<div *ngFor="let item of category.items | order" class="item">
+						<div>{{item.item.name}}</div>
+						<mat-icon
+							*ngIf="checkItemType(item.item.type, selectType); else textItemText"
+							class="item-data"
+							[style.color]="findIconColor(findSelectCode(findSelectSavedItem(item)))">
+							{{findSelectIcon(findSelectSavedItem(item))}}
+						</mat-icon>
+						<ng-template #textItemText>
+							<span class="item-data">{{findTextSavedItem(item).text ? findTextSavedItem(item).text : '-'}}</span>
+						</ng-template>
+					</div>
+				</div>
+			</div>
+		</mat-card-content>
+	</mat-card>
+</div>

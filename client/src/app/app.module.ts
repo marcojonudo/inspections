@@ -27,7 +27,6 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { EmployeeInfoComponent } from './components/bottom-panel/employee-info/employee-info.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
-import { MenuComponent } from './components/bottom-panel/menu/menu.component';
 import localeEs from '@angular/common/locales/es';
 import {registerLocaleData} from '@angular/common';
 registerLocaleData(localeEs);
@@ -37,6 +36,9 @@ import {Constants} from './objects/constants';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
 import { ResetEmployeeDialogComponent } from './components/reset-employee-dialog/reset-employee-dialog.component';
+import { PrintComponent } from './components/print/print.component';
+import {MatTableModule} from '@angular/material/table';
+import {ChartsModule} from 'ng2-charts';
 
 @NgModule({
 	declarations: [
@@ -50,9 +52,9 @@ import { ResetEmployeeDialogComponent } from './components/reset-employee-dialog
 		LegendComponent,
 		EmployeeInfoComponent,
 		ConfirmDialogComponent,
-		MenuComponent,
 		SplashScreenComponent,
-		ResetEmployeeDialogComponent
+		ResetEmployeeDialogComponent,
+		PrintComponent
 	],
 	imports: [
 		BrowserModule,
@@ -73,9 +75,11 @@ import { ResetEmployeeDialogComponent } from './components/reset-employee-dialog
 		MatBottomSheetModule,
 		MatSnackBarModule,
 		MatDialogModule,
-		MatExpansionModule
+		MatExpansionModule,
+		MatTableModule,
+		ChartsModule
 	],
-	providers: [],
+	providers: [OrderPipe],
 	bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -1,13 +1,12 @@
-export class GaragePosition {
+import {NameElement} from '../list-elements/name-element';
+
+export class GaragePosition extends NameElement {
 
 	code: string;
-	name: string;
-	order: number;
 
 	constructor(garagePosition: any) {
+		super(garagePosition);
 		this.code = garagePosition.code;
-		this.name = garagePosition.name;
-		this.order = garagePosition.order;
 	}
 
 }

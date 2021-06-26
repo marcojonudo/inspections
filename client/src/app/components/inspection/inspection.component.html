@@ -1,4 +1,4 @@
-<mat-toolbar id="inspection-title" class="mat-elevation-z3">
+<mat-toolbar id="inspection-title" class="mat-elevation-z3 no-print">
 	<button id="back-icon-button" mat-icon-button (click)="goBack()">
 		<mat-icon>chevron_left</mat-icon>
 	</button>
@@ -7,65 +7,69 @@
 		<mat-icon id="expand-icon" [style.transform]="'rotate(' + (checkOpenedCategory() ? '180deg' : 0) + ')'">expand_more</mat-icon>
 	</button>
 </mat-toolbar>
-<mat-accordion id="items-accordion" multi>
-	<mat-expansion-panel
-		*ngFor="let items of groupedItems | keyvalue"
-		class="category"
-		(opened)="addOpenedCategory(items.key)"
-		(closed)="removeOpenedCategory(items.key)">
-		<mat-expansion-panel-header class="category-title">
-			<mat-panel-title>{{items.key}}</mat-panel-title>
-		</mat-expansion-panel-header>
-		<mat-list>
-			<mat-list-item *ngFor="let item of items.value">
-				<div
-					*ngIf="checkItemType(item.type, selectType)"
-					class="item select-item"
-					matRipple
-					(click)="toggleSelectOption(findSelectItem(item))"
-					appLongPress
-					[scrolled]="checkScrolledItem(item)"
-					(pressingEmitter)="setPressingItem(item)"
-					(longPressEmitter)="openLegend(findSelectItem(item).options)">
-					<div class="select-item-content">
-						<div>{{item.name}}</div>
-						<div class="select-item-icon-container">
-							<mat-icon
-								*ngFor="let option of findSelectItem(item).options | order; let i = index"
-								class="select-item-icon"
-								[ngClass]="{
-									'front': checkSelectedOption(item.name, option.name),
-									'left': checkLeftOption(item.name, findSelectItem(item).options, i),
-									'right': checkRightOption(item.name, findSelectItem(item).options, i)
-								}"
-								[style.color]="findIconColor(option.code)">
-								{{option.icon}}
-							</mat-icon>
-						</div>
+<ng-container
+	*ngTemplateOutlet="recursiveList; context: {
+        $implicit: listElements, index: 0
+    }">
+</ng-container>
+<ng-template #recursiveList let-list let-index="index">
+	<mat-accordion multi class="accordion no-print">
+		<mat-expansion-panel
+			*ngFor="let category of findMenuCategories(list) | order"
+			class="category"
+			(opened)="addOpenedCategory(category.name)"
+			(closed)="removeOpenedCategory(category.name)">
+			<mat-expansion-panel-header class="category-title" [class.sub-category-title]="index > 0">
+				<mat-panel-title>{{category.name}}</mat-panel-title>
+			</mat-expansion-panel-header>
+			<ng-container
+				*ngTemplateOutlet="recursiveList; context: {
+					$implicit: category.items, index: index + 1
+				}">
+			</ng-container>
+		</mat-expansion-panel>
+	</mat-accordion>
+	<mat-list>
+		<mat-list-item *ngFor="let item of findMenuItems(list) | order">
+			<div
+				*ngIf="checkItemType(item.type, selectType)"
+				class="item select-item"
+				matRipple
+				(click)="toggleSelectOption(findSelectItem(item))"
+				appLongPress
+				[scrolled]="checkScrolledItem(item)"
+				(pressingEmitter)="setPressingItem(item)"
+				(longPressEmitter)="openLegend(findSelectItem(item).options)">
+				<div class="select-item-content">
+					<div>{{item.name}}</div>
+					<div class="select-item-icon-container">
+						<mat-icon
+							*ngFor="let option of findSelectItem(item).options | order; let i = index"
+							class="select-item-icon"
+							[ngClass]="{
+								'front': checkSelectedOption(item.name, option.name),
+								'left': checkLeftOption(item.name, findSelectItem(item).options, i),
+								'right': checkRightOption(item.name, findSelectItem(item).options, i)
+							}"
+							[style.color]="findIconColor(option.code)">
+							{{option.icon}}
+						</mat-icon>
 					</div>
 				</div>
-				<div *ngIf="checkItemType(item.type, textType)" class="item text-item">
-					<mat-form-field class="text-item-input">
-						<mat-label>{{item.name}}</mat-label>
-						<input
-							matInput
-							[(ngModel)]="findTextSavedItem(item.name).text"
-							(change)="updateText(item.name)">
-					</mat-form-field>
-				</div>
-			</mat-list-item>
-		</mat-list>
-	</mat-expansion-panel>
-</mat-accordion>
-<button
-	id="save-inspection-button"
-	mat-fab
-	[style.bottom]="findSaveButtonBottom()"
-	(click)="saveInspection()"
-	[disabled]="saving">
-	<mat-icon *ngIf="!saving">save</mat-icon>
-	<mat-spinner diameter="30" *ngIf="saving"></mat-spinner>
-</button>
-<div #toolBar>
+			</div>
+			<div *ngIf="checkItemType(item.type, textType)" class="item text-item">
+				<mat-form-field class="text-item-input">
+					<mat-label>{{item.name}}</mat-label>
+					<input
+						matInput
+						[(ngModel)]="findTextSavedItem(item.name).text"
+						(change)="updateText(item.name)">
+				</mat-form-field>
+			</div>
+		</mat-list-item>
+	</mat-list>
+</ng-template>
+<div #toolBar class="no-print">
 	<app-bottom-bar [employee]="employee" (foundInspectionEmitter)="updateGroupedItems()"></app-bottom-bar>
 </div>
+<router-outlet name="print"></router-outlet>

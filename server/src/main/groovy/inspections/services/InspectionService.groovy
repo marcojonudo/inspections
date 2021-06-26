@@ -3,10 +3,12 @@ package inspections.services
 import groovy.transform.CompileStatic
 import inspections.domains.Inspection
 import inspections.domains.SavedInspection
+import inspections.domains.fviberi.Centre
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
 import inspections.pogos.InspectionInfo
+import inspections.pogos.OrderInfo
 import inspections.services.data.*
 
 import javax.inject.Inject
@@ -18,6 +20,7 @@ class InspectionService {
 
 	@Inject OrderTimeDataService orderTimeDataService
 	@Inject OrderDataService orderDataService
+	@Inject CentreDataService centreDataService
 	@Inject VehicleInfoDataService vehicleInfoDataService
 	@Inject InspectionDataService inspectionDataService
 	@Inject SavedInspectionDataService savedInspectionDataService
@@ -28,16 +31,19 @@ class InspectionService {
 	 * @param shortCode Código corto de la orden
 	 * @return Orden
 	 */
-	Order findOrder(String shortCode) {
+	OrderInfo findOrderInfo(String shortCode) {
 		Integer orderNumber = orderTimeDataService.findOrderTimeOrderNumber(
 			shortCode, [sort: 'orderNumber', order: 'desc', max: 1]
 		)
-		Order order = null
+		OrderInfo orderInfo = null
 		if (orderNumber) {
-			order = orderDataService.find(orderNumber)
+			Order order = orderDataService.find(orderNumber)
 			order.vehicle.extraInfo = vehicleInfoDataService.find(order.vehicle.numberPlate)
+			Centre centre = centreDataService.find()
+
+			orderInfo = new OrderInfo(order, centre)
 		}
-		return order
+		return orderInfo
 	}
 
 	/**

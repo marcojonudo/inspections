@@ -9,7 +9,11 @@ import {Order} from '../../objects/orders/order';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {OrderInfoComponent} from '../bottom-panel/order-info/order-info.component';
 import {EmployeeInfoComponent} from '../bottom-panel/employee-info/employee-info.component';
-import {MenuComponent} from '../bottom-panel/menu/menu.component';
+import {PrintService} from '../../services/print.service';
+import {SavedInspection} from '../../objects/inspections/saved-inspection';
+import {finalize} from 'rxjs/operators';
+import {Constants} from '../../objects/constants';
+import {SnackBarService} from '../../services/snack-bar.service';
 
 @Component({
 	selector: 'app-bottom-bar',
@@ -23,13 +27,24 @@ export class BottomBarComponent {
 	@Output() foundInspectionEmitter: EventEmitter<boolean>;
 
 	openedMenu: boolean;
+	saving: boolean;
 
-	constructor(private bottomSheet: MatBottomSheet, private cdRef: ChangeDetectorRef) {
+	constructor(
+		private inspectionService: InspectionService,
+		private printService: PrintService,
+		private snackBarService: SnackBarService,
+		private bottomSheet: MatBottomSheet,
+		private cdRef: ChangeDetectorRef
+	) {
 		this.foundInspectionEmitter = new EventEmitter<boolean>();
 	}
 
 	get order(): Order {
 		return InspectionService.order;
+	}
+
+	get savedInspection(): SavedInspection {
+		return InspectionService.savedInspection;
 	}
 
 	openOrder(order: Order = this.order): void {
@@ -46,17 +61,38 @@ export class BottomBarComponent {
 		});
 	}
 
-	openToolsMenu(): void {
-		this.openedMenu = true;
+	toggleMenu(): void {
+		this.openedMenu = !this.openedMenu;
+		this.cdRef.detectChanges();
+	}
 
-		const bottomSheetRef = this.bottomSheet.open(MenuComponent);
-		bottomSheetRef.afterDismissed().subscribe((foundInspection: boolean) => {
-			this.openedMenu = false;
-			this.cdRef.detectChanges();
-			if (foundInspection) {
-				this.foundInspectionEmitter.emit(foundInspection);
-			}
-		});
+	findMenuButtonTranslate(i: number, openedMenu: boolean = this.openedMenu): string {
+		return openedMenu ? `translateY(-${i * 110}%)` : '';
+	}
+
+	saveInspection(
+		savedInspection: SavedInspection = this.savedInspection, orderNumber: number = this.order.number
+	): void {
+		this.saving = true;
+		this.inspectionService.saveInspection(savedInspection, orderNumber).pipe(
+			finalize(() => {
+				this.saving = false;
+				this.cdRef.detectChanges();
+			})
+		).subscribe(
+			() => this.snackBarService.open(Constants.MESSAGE.SAVED_INSPECTION),
+			() => this.snackBarService.open(Constants.MESSAGE.ERROR_SAVING_INSPECTION, Constants.SNACK_BAR.TYPE.ERROR)
+		);
+	}
+
+	print(): void {
+		this.printService.print();
+		this.openedMenu = false;
+	}
+
+	resetInspection(): void {
+		InspectionService.resetInspection();
+		this.openedMenu = false;
 	}
 
 }

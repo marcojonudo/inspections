@@ -10,6 +10,8 @@ import {Order} from '../../../objects/orders/order';
 })
 export class OrderInfoComponent {
 
+	displayedColumns: string[] = ['description', 'units'];
+
 	constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public order: Order) {}
 
 }

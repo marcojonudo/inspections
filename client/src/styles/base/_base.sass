@@ -2,6 +2,7 @@ html, body
 	height: 100%
 	user-select: none
 	overflow-y: hidden
+	-webkit-print-color-adjust: exact !important
 
 ::-webkit-scrollbar
 	width: 4px
@@ -57,3 +58,11 @@ html, body
 
 .mat-expansion-indicator::after
 	color: $white !important
+
+@media print
+
+	.no-print
+		display: none !important
+
+	@page
+		margin: $small-gap $medium-gap

@@ -13,6 +13,7 @@ class OrderLine implements GormEntity<OrderLine>, Serializable {
 	int line
 	int articleCode
 	String articleName
+	float units
 
 	static mapping = {
 		datasource Constants.DataSource.FVIBERI
@@ -22,6 +23,7 @@ class OrderLine implements GormEntity<OrderLine>, Serializable {
 		line column: 'nulinord'
 		articleCode column: 'coarticu'
 		articleName column: 'noarticu'
+		units column: 'caordrep'
 
 		id composite: ['order', 'line'], generator: 'assigned'
 		version false

@@ -28,7 +28,7 @@
 				#expand-icon
 					transition: transform $fast-transition
 
-	#items-accordion
+	.accordion
 		@include flex-1
 		overflow-y: auto
 
@@ -38,10 +38,15 @@
 
 			.category-title
 				background-color: $secondary
-				color: $white
 
 				.mat-expansion-panel-header-title
 					color: $white !important
+
+			.sub-category-title
+				background-color: $grey
+
+				.mat-expansion-panel-header-title
+					color: $black !important
 
 		.item
 			width: 100%
@@ -68,12 +73,6 @@
 						transition: transform $fast-transition, opacity $fast-transition
 						backface-visibility: hidden
 
-						&.fa-check
-							background-color: green
-
-						&.fa-exclamation
-							background-color: yellow
-
 						&.front
 							transform: translateX(-100%) rotateY(0)
 
@@ -87,9 +86,3 @@
 
 			&-input
 				width: 100%
-
-	#save-inspection-button
-		position: absolute
-		right: 1rem
-		@include flex-center
-		background-color: $highlight

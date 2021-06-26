@@ -1,12 +1,11 @@
 package inspections.domains.items
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonInclude
 import grails.gorm.annotation.Entity
 import inspections.domains.GaragePosition
 import inspections.domains.Inspection
 import inspections.domains.ItemCategory
-import inspections.domains.VehiclePosition
+import inspections.domains.VehicleSection
 import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.SelectSavedItem
 import inspections.domains.savedItems.TextSavedItem
@@ -22,14 +21,12 @@ class Item implements GormEntity<Item> {
 	int order
 	ItemCategory category
 	GaragePosition garagePosition
+	VehicleSection vehicleSection
 
 	@JsonIgnore
 	Set<Inspection> inspections
 
-	@JsonInclude
-	Set<VehiclePosition> vehiclePositions
-
-	static hasMany = [inspections: Inspection, vehiclePositions: VehiclePosition]
+	static hasMany = [inspections: Inspection]
 
 	static belongsTo = Inspection
 
@@ -43,7 +40,7 @@ class Item implements GormEntity<Item> {
 		order column: '`order`'
 		category lazy: false
 		garagePosition lazy: false
-		vehiclePositions fetch: 'join'
+		vehicleSection lazy: false
 	}
 
 	enum Type {
