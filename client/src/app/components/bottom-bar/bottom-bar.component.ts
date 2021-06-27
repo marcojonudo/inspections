@@ -83,6 +83,7 @@ export class BottomBarComponent {
 			() => this.snackBarService.open(Constants.MESSAGE.SAVED_INSPECTION),
 			() => this.snackBarService.open(Constants.MESSAGE.ERROR_SAVING_INSPECTION, Constants.SNACK_BAR.TYPE.ERROR)
 		);
+		this.openedMenu = false;
 	}
 
 	print(): void {

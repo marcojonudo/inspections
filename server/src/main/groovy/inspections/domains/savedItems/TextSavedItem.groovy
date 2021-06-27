@@ -9,6 +9,10 @@ class TextSavedItem extends SavedItem implements GormEntity<TextSavedItem> {
 
 	String text
 
+	static constraints = {
+		text nullable: true
+	}
+
 	boolean equals(SavedItem savedItem) {
 		return text == ((TextSavedItem) savedItem).text
 	}

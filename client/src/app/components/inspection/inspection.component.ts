@@ -28,6 +28,8 @@ import {ResetEmployeeDialogComponent} from '../reset-employee-dialog/reset-emplo
 import {LocalStorageService} from '../../services/local-storage.service';
 import {ListElement} from '../../objects/list-elements/list-element';
 import {Category} from '../../objects/list-elements/category';
+import {fromEvent} from 'rxjs';
+import {debounceTime, tap} from 'rxjs/operators';
 
 @Component({
 	selector: 'app-inspection',
@@ -66,24 +68,24 @@ export class InspectionComponent implements AfterViewInit {
 		this.scroll = false;
 		this.openedCategories = [];
 		const resetEmployee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE);
-		// if (resetEmployee) {
-		// 	this.handleEmployeeDialog();
-		// } else {
-		// 	this.setResetEmployeeTimeout();
-		// }
+		if (resetEmployee) {
+			this.handleEmployeeDialog();
+		} else {
+			this.setResetEmployeeTimeout();
+		}
 	}
 
 	ngAfterViewInit(): void {
-			// fromEvent(this.accordionElementRef.nativeElement, Constants.EVENT.SCROLL).pipe(
-			// 	tap(() => {
-			// 		this.scroll = true;
-			// 		this.cdRef.detectChanges();
-			// 	}),
-			// 	debounceTime(500)
-			// ).subscribe(() => {
-			// 	this.scroll = false;
-			// 	this.cdRef.detectChanges();
-			// });
+		fromEvent(this.accordionElementRef.nativeElement, Constants.EVENT.SCROLL).pipe(
+			tap(() => {
+				this.scroll = true;
+				this.cdRef.detectChanges();
+			}),
+			debounceTime(500)
+		).subscribe(() => {
+			this.scroll = false;
+			this.cdRef.detectChanges();
+		});
 		this.bottomBarHeight = this.toolBar.nativeElement.getBoundingClientRect().height;
 		this.loadingService.stop();
 	}

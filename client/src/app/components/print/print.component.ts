@@ -82,10 +82,6 @@ export class PrintComponent implements OnInit {
 		return Constants.ITEM_TYPE.SELECT;
 	}
 
-	get textType(): string {
-		return Constants.ITEM_TYPE.TEXT;
-	}
-
 	get selectItemOptions(): SelectItemOption[] {
 		return InspectionService.selectItemOptions;
 	}
@@ -102,7 +98,7 @@ export class PrintComponent implements OnInit {
 	groupLabels(
 		labels: SelectItemOption[], groupLabels: { [key: string]: string[] } = this.GROUP_LABELS
 	): SelectItemOption[] {
-		const groupedLabels = labels.slice(0, labels.length - 1);
+		const groupedLabels = labels.slice(0, labels.length);
 		Object.entries(groupLabels).forEach(([name, codes]) => {
 			const codesLabels = groupedLabels.filter(label => codes.find(code => code === label.code));
 			const existentCodes = codesLabels.length === codes.length;

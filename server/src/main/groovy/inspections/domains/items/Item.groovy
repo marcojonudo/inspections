@@ -32,6 +32,7 @@ class Item implements GormEntity<Item> {
 
 	static constraints = {
 		type maxSize: 25
+		vehicleSection nullable: true
 	}
 
 	static mapping = {
