@@ -16,6 +16,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MatInput} from '@angular/material/input';
 import {LoadingService} from '../../services/loading.service';
 import {inOutAnimation, inOutTranslateAnimation} from '../../animations';
+import {LocalStorageService} from '../../services/local-storage.service';
 
 @Component({
 	selector: 'app-initial-data',
@@ -105,6 +106,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 
 		this.inspectionService.findInspection(orderCode.value).pipe(
 			finalize(() => {
+				LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, false);
 				this.searchingInspections = false;
 				this.cdRef.detectChanges();
 			})
