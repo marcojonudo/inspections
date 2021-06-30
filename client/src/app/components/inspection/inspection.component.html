@@ -13,7 +13,7 @@
     }">
 </ng-container>
 <ng-template #recursiveList let-list let-index="index">
-	<mat-accordion multi class="accordion no-print">
+	<mat-accordion class="accordion no-print">
 		<mat-expansion-panel
 			*ngFor="let category of findMenuCategories(list) | order"
 			class="category"
