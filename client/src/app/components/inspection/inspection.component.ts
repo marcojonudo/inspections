@@ -140,6 +140,10 @@ export class InspectionComponent implements AfterViewInit {
 		return menuElements.filter(elem => elem instanceof Category) as Category[];
 	}
 
+	checkMenuItems(menuElements: ListElement[]): boolean {
+		return menuElements.filter(elem => !(elem instanceof Category)).length > 0;
+	}
+
 	findMenuItems(menuElements: ListElement[]): Item[] {
 		return menuElements.filter(elem => !(elem instanceof Category)) as Item[];
 	}

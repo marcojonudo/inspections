@@ -1,27 +1,20 @@
 import {
-	AfterViewInit,
-	ChangeDetectionStrategy, ChangeDetectorRef,
+	ChangeDetectionStrategy,
 	Component,
-	ElementRef,
-	OnInit,
-	QueryList,
-	ViewChildren
+	OnInit
 } from '@angular/core';
 import {PrintService} from '../../services/print.service';
-import {Inspection} from '../../objects/inspections/inspection';
 import {InspectionService} from '../../services/inspection.service';
 import {SavedInspection} from '../../objects/inspections/saved-inspection';
 import {Constants} from '../../objects/constants';
 import {SelectSavedItem} from '../../objects/inspections/saved-items/select-saved-item';
 import {Centre} from '../../objects/orders/centre';
 import {Order} from '../../objects/orders/order';
-import {Item} from '../../objects/inspections/items/item';
 import {SavedItem} from '../../objects/inspections/saved-items/saved-item';
 import {SelectItem} from '../../objects/inspections/items/select-item';
 import {TextSavedItem} from '../../objects/inspections/saved-items/text-saved-item';
-import {ListElement} from '../../objects/list-elements/list-element';
 import {Category} from '../../objects/list-elements/category';
-import {ChartAnimationOptions, ChartOptions, ChartType} from 'chart.js';
+import {ChartOptions, ChartType} from 'chart.js';
 import {SelectItemOption} from '../../objects/inspections/items/select-item-option';
 import {Color} from 'ng2-charts';
 import {OrderPipe} from '../../pipes/order.pipe';

@@ -3,11 +3,7 @@ import 'hammerjs';
 import {RouterOutlet} from '@angular/router';
 import {leaveAnimation, routeAnimations} from './animations';
 import {LoadingService} from './services/loading.service';
-import {animate, style, transition, trigger} from '@angular/animations';
-import {InspectionService} from './services/inspection.service';
 import {Constants} from './objects/constants';
-import {MatDialog} from '@angular/material/dialog';
-import {ResetEmployeeDialogComponent} from './components/reset-employee-dialog/reset-employee-dialog.component';
 
 @Component({
 	selector: 'app-root',
