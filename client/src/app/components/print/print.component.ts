@@ -150,6 +150,10 @@ export class PrintComponent implements OnInit {
 		return items.filter(item => item.item.type === Constants.ITEM_TYPE.SELECT) as SelectSavedItem[];
 	}
 
+	checkExistentSelectItems(items: SavedItem[]): boolean {
+		return items.filter(i => i.item.type === Constants.ITEM_TYPE.SELECT).length > 0;
+	}
+
 	findData(items: SavedItem[] = this.inspection.items): number[] {
 		const labels = this.findLabels();
 		const selectItems = this.findSelectItems(items);
