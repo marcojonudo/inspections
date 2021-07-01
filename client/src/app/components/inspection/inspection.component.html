@@ -3,9 +3,6 @@
 		<mat-icon>chevron_left</mat-icon>
 	</button>
 	<h1>{{inspection.name}}</h1>
-	<button id="expand-icon-button" mat-icon-button (click)="expandAll()">
-		<mat-icon id="expand-icon" [style.transform]="'rotate(' + (checkOpenedCategory() ? '180deg' : 0) + ')'">expand_more</mat-icon>
-	</button>
 </mat-toolbar>
 <ng-container
 	*ngTemplateOutlet="recursiveList; context: {

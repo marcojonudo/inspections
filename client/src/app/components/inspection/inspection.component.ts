@@ -41,7 +41,6 @@ export class InspectionComponent implements AfterViewInit {
 
 	@ViewChild('toolBar') toolBar: ElementRef;
 	@ViewChild(MatList, { read: ElementRef }) itemsList: ElementRef;
-	@ViewChild(MatAccordion) accordion: MatAccordion;
 	@ViewChild(MatAccordion, { read: ElementRef }) accordionElementRef: ElementRef;
 
 	bottomBarHeight: number;
@@ -155,16 +154,6 @@ export class InspectionComponent implements AfterViewInit {
 		this.router.navigate([Constants.PATH.INIT]);
 	}
 
-	expandAll(openedCategories: string[] = this.openedCategories, accordion: MatAccordion = this.accordion): void {
-		const openedItem = this.checkOpenedCategory(openedCategories);
-		if (openedItem) {
-			openedCategories.splice(0, openedCategories.length);
-			accordion.closeAll();
-		} else {
-			accordion.openAll();
-		}
-	}
-
 	addOpenedCategory(name: string, openedCategories: string[] = this.openedCategories): void {
 		openedCategories.push(name);
 	}
@@ -172,10 +161,6 @@ export class InspectionComponent implements AfterViewInit {
 	removeOpenedCategory(name: string, openedCategories: string[] = this.openedCategories): void {
 		const index = openedCategories.indexOf(name);
 		openedCategories.splice(index, 1);
-	}
-
-	checkOpenedCategory(openedCategories: string[] = this.openedCategories): boolean {
-		return openedCategories.length > 0;
 	}
 
 	checkItemType(optionType: string, type: string): boolean {
