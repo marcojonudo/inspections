@@ -44,6 +44,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		private cdRef: ChangeDetectorRef,
 		private activatedRoute: ActivatedRoute
 	) {
+		clearTimeout(InspectionService.lockTimeout);
 		this.employeeCode = new FormControl(
 			'', [Validators.required, Validators.minLength(this.employeeCodeLength)]
 		);

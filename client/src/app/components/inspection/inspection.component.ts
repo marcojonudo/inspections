@@ -49,7 +49,6 @@ export class InspectionComponent implements AfterViewInit {
 	pressingItem: Item;
 	scroll: boolean;
 	openedCategories: string[];
-	lockTimeout: any;
 
 	@HostListener(Constants.EVENT.TOUCH_START) onTouchStart(): void {
 		this.setResetEmployeeTimeout();
@@ -119,8 +118,8 @@ export class InspectionComponent implements AfterViewInit {
 	// endregion
 
 	setResetEmployeeTimeout(): void {
-		clearTimeout(this.lockTimeout);
-		this.lockTimeout = setTimeout(
+		clearTimeout(InspectionService.lockTimeout);
+		InspectionService.lockTimeout = setTimeout(
 			() => this.handleEmployeeDialog(),
 			Constants.RESET_EMPLOYEE_INTERVAL * 1000
 		);
@@ -177,10 +176,6 @@ export class InspectionComponent implements AfterViewInit {
 
 	checkOpenedCategory(openedCategories: string[] = this.openedCategories): boolean {
 		return openedCategories.length > 0;
-	}
-
-	findSaveButtonBottom(): string {
-		return `calc(${this.bottomBarHeight}px + 1rem)`;
 	}
 
 	checkItemType(optionType: string, type: string): boolean {

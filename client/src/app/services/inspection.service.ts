@@ -33,6 +33,7 @@ export class InspectionService {
 	static inspection: Inspection;
 	static selectItemOptions: SelectItemOption[];
 	static savedInspection: SavedInspection;
+	static lockTimeout: any;
 
 	private static readonly SELECT_ICON_COLOR: { [key: string]: string } = {
 		C: '#36d23d',
