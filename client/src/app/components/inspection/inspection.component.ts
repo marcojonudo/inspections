@@ -51,6 +51,7 @@ export class InspectionComponent implements AfterViewInit {
 
 	@HostListener(Constants.EVENT.TOUCH_START) onTouchStart(): void {
 		this.setResetEmployeeTimeout();
+		this.checkCurrentUrl();
 	}
 
 	constructor(
@@ -132,6 +133,14 @@ export class InspectionComponent implements AfterViewInit {
 			this.setResetEmployeeTimeout();
 			this.cdRef.detectChanges();
 		});
+	}
+
+	checkCurrentUrl(): void {
+		/* Si al hacer tap se está en la URL de print, significa que se acaba de imprimir. En ese caso, se retorna a la
+		 * URL de la pantalla principal */
+		if (this.router.url.includes('print')) {
+			this.router.navigate([Constants.PATH.INSPECTION]);
+		}
 	}
 
 	findMenuCategories(menuElements: ListElement[]): Category[] {
