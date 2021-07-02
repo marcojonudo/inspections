@@ -81,13 +81,13 @@ export class BottomBarComponent {
 		this.inspectionService.saveInspection(savedInspection, orderNumber).pipe(
 			finalize(() => {
 				this.saving = false;
+				this.openedMenu = false;
 				this.cdRef.detectChanges();
 			})
 		).subscribe(
 			() => this.snackBarService.open(Constants.MESSAGE.SAVED_INSPECTION),
 			() => this.snackBarService.open(Constants.MESSAGE.ERROR_SAVING_INSPECTION, Constants.SNACK_BAR.TYPE.ERROR)
 		);
-		this.openedMenu = false;
 	}
 
 	print(): void {
