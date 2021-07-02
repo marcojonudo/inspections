@@ -24,9 +24,9 @@ import {SnackBarService} from '../../services/snack-bar.service';
 export class BottomBarComponent {
 
 	@Input() employee: Employee;
+	@Input() openedMenu: boolean;
 	@Output() foundInspectionEmitter: EventEmitter<boolean>;
 
-	openedMenu: boolean;
 	saving: boolean;
 
 	constructor(
@@ -45,6 +45,10 @@ export class BottomBarComponent {
 
 	get savedInspection(): SavedInspection {
 		return InspectionService.savedInspection;
+	}
+
+	get menuToggle(): string {
+		return Constants.MENU_TOGGLE;
 	}
 
 	openOrder(order: Order = this.order): void {

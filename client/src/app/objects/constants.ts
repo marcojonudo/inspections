@@ -4,6 +4,7 @@ export class Constants {
 	static readonly SELECT_ITEM_OPTION_MIN_ORDER: number = 1;
 	static readonly SPLASH_SCREEN_DURATION: number = 1.5;
 	static readonly RESET_EMPLOYEE_INTERVAL: number = 240;
+	static readonly MENU_TOGGLE: string = 'menu-toggle';
 
 	static readonly SNACK_BAR: any = {
 		DURATION: 5000,

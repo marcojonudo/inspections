@@ -68,6 +68,10 @@
 	</mat-list>
 </ng-template>
 <div #toolBar class="no-print">
-	<app-bottom-bar [employee]="employee" (foundInspectionEmitter)="updateGroupedItems()"></app-bottom-bar>
+	<app-bottom-bar
+		[employee]="employee"
+		[openedMenu]="openedMenu"
+		(foundInspectionEmitter)="updateGroupedItems()">
+	</app-bottom-bar>
 </div>
 <router-outlet name="print"></router-outlet>

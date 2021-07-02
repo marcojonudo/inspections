@@ -48,10 +48,13 @@ export class InspectionComponent implements AfterViewInit {
 	pressingItem: Item;
 	scroll: boolean;
 	openedCategories: string[];
+	openedMenu: boolean;
 
-	@HostListener(Constants.EVENT.TOUCH_START) onTouchStart(): void {
+	@HostListener(Constants.EVENT.TOUCH_START, ['$event'])
+	onTouchStart(event): void {
 		this.setResetEmployeeTimeout();
 		this.checkCurrentUrl();
+		this.checkCloseMenu(event.target.className);
 	}
 
 	constructor(
@@ -140,6 +143,14 @@ export class InspectionComponent implements AfterViewInit {
 		 * URL de la pantalla principal */
 		if (this.router.url.includes('print')) {
 			this.router.navigate([Constants.PATH.INSPECTION]);
+		}
+	}
+
+	checkCloseMenu(targetClasses: string): void {
+		/* Se actualiza la variable si se hace clic fuera del botón de menú. En caso contrario, ya se gestiona su
+		 * apertura y cierre desde el evento del propio botón */
+		if (!targetClasses.includes(Constants.MENU_TOGGLE)) {
+			this.openedMenu = this.openedMenu === undefined ? false : undefined;
 		}
 	}
 
