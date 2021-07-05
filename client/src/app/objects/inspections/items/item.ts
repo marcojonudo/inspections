@@ -16,8 +16,8 @@ export class Item implements ListElement {
 		this.type = item.type;
 		this.name = item.name;
 		this.order = item.order;
-		this.category = new ItemCategory(item.category);
-		this.garagePosition = new GaragePosition(item.garagePosition);
+		this.category = item.category ? new ItemCategory(item.category) : undefined;
+		this.garagePosition = item.garagePosition ? new GaragePosition(item.garagePosition) : undefined;
 		this.vehicleSection = item.vehicleSection ? new VehicleSection(item.vehicleSection) : undefined;
 	}
 

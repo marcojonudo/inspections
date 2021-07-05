@@ -7,10 +7,10 @@ export class OrderPipe implements PipeTransform {
 
 	transform(array: any[]): any[] {
 		return array.sort((a, b) => {
-			if (a.order < b.order) {
+			if (a.order < b.order || !b.order) {
 				return -1;
 			}
-			if (a.order > b.order) {
+			if (a.order > b.order || !a.order) {
 				return 1;
 			}
 			return 0;

@@ -18,7 +18,7 @@ class Order implements GormEntity<Order> {
 		table 'fvcabord'
 
 		number column: 'nuordrep'
-		vehicle column: 'numatric', fetch: 'join'
+		vehicle column: 'numatric', lazy: false
 		client column: 'coclient', fetch: 'join'
 		lines fetch: 'join'
 

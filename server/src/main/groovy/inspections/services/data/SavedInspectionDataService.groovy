@@ -19,7 +19,8 @@ abstract class SavedInspectionDataService {
 	SavedInspection save(SavedInspection savedInspection) {
 		savedInspection.items.each {
 			it.savedInspection = savedInspection
-			it.item = itemDataService.find(it.item.name, it.item.category.code)
+			it.item = it.item.category ?
+				itemDataService.find(it.item.name, it.item.category.code) : itemDataService.find(it.item.name)
 		}
 		return saveSavedInspection(savedInspection)
 	}
