@@ -45,8 +45,10 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		private activatedRoute: ActivatedRoute
 	) {
 		clearTimeout(InspectionService.lockTimeout);
+		this.employee = EmployeeService.employee;
+		const employeeCode = this.employee ? this.employee.code : '';
 		this.employeeCode = new FormControl(
-			'', [Validators.required, Validators.minLength(this.employeeCodeLength)]
+			employeeCode, [Validators.required, Validators.minLength(this.employeeCodeLength)]
 		);
 		this.orderCode = new FormControl('', [Validators.required]);
 	}
@@ -59,7 +61,11 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		this.employeeCodeInput.focus();
+		if (this.employee) {
+			this.orderCodeInput.focus();
+		} else {
+			this.employeeCodeInput.focus();
+		}
 	}
 
 	get employeeCodeLength(): number {
