@@ -3,9 +3,6 @@
 		<mat-icon>chevron_left</mat-icon>
 	</button>
 	<h1>{{inspection.name}}</h1>
-	<button id="expand-icon-button" mat-icon-button (click)="expandAll()">
-		<mat-icon id="expand-icon" [style.transform]="'rotate(' + (checkOpenedCategory() ? '180deg' : 0) + ')'">expand_more</mat-icon>
-	</button>
 </mat-toolbar>
 <ng-container
 	*ngTemplateOutlet="recursiveList; context: {
@@ -13,7 +10,7 @@
     }">
 </ng-container>
 <ng-template #recursiveList let-list let-index="index">
-	<mat-accordion multi class="accordion no-print">
+	<mat-accordion class="accordion no-print">
 		<mat-expansion-panel
 			*ngFor="let category of findMenuCategories(list) | order"
 			class="category"
@@ -29,7 +26,7 @@
 			</ng-container>
 		</mat-expansion-panel>
 	</mat-accordion>
-	<mat-list>
+	<mat-list *ngIf="checkMenuItems(list)">
 		<mat-list-item *ngFor="let item of findMenuItems(list) | order">
 			<div
 				*ngIf="checkItemType(item.type, selectType)"
@@ -62,6 +59,7 @@
 					<mat-label>{{item.name}}</mat-label>
 					<input
 						matInput
+						type="tel"
 						[(ngModel)]="findTextSavedItem(item.name).text"
 						(change)="updateText(item.name)">
 				</mat-form-field>
@@ -70,6 +68,10 @@
 	</mat-list>
 </ng-template>
 <div #toolBar class="no-print">
-	<app-bottom-bar [employee]="employee" (foundInspectionEmitter)="updateGroupedItems()"></app-bottom-bar>
+	<app-bottom-bar
+		[employee]="employee"
+		[openedMenu]="openedMenu"
+		(foundInspectionEmitter)="updateGroupedItems()">
+	</app-bottom-bar>
 </div>
 <router-outlet name="print"></router-outlet>

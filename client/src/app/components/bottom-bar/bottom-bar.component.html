@@ -6,45 +6,39 @@
 		</div>
 	</section>
 	<div id="button-container">
-		<button id="toggle-menu-button" mat-fab (click)="toggleMenu()">
-			<mat-icon id="toggle-menu-icon" [class.opened-menu]="openedMenu">add</mat-icon>
+		<button id="toggle-menu-button" [class]="menuToggle" mat-fab (click)="toggleMenu()">
+			<mat-icon id="toggle-menu-icon" [class]="menuToggle" [class.opened-menu]="openedMenu">add</mat-icon>
 		</button>
 		<button
 			mat-fab
 			id="save-inspection-button"
 			class="menu-button"
+			[class]="menuToggle"
 			[style.transform]="findMenuButtonTranslate(1)"
 			(click)="saveInspection()"
 			[disabled]="saving">
-			<mat-icon *ngIf="!saving" class="menu-button-icon" [class.straight]="openedMenu">save</mat-icon>
-			<mat-spinner diameter="30" *ngIf="saving"></mat-spinner>
+			<mat-icon *ngIf="!saving" class="menu-button-icon" [class]="menuToggle" [class.straight]="openedMenu">save</mat-icon>
+			<mat-spinner diameter="30" *ngIf="saving" [class]="menuToggle"></mat-spinner>
 		</button>
 		<button
 			mat-fab
 			id="print-inspection-button"
 			class="menu-button"
+			[class]="menuToggle"
 			[style.transform]="findMenuButtonTranslate(2)"
 			(click)="print()">
-			<mat-icon class="menu-button-icon" [class.straight]="openedMenu">print</mat-icon>
+			<mat-icon class="menu-button-icon" [class]="menuToggle" [class.straight]="openedMenu">print</mat-icon>
 		</button>
 		<button
 			mat-fab
 			id="reset-inspection-button"
 			class="menu-button"
+			[class]="menuToggle"
 			[style.transform]="findMenuButtonTranslate(3)"
 			(click)="resetInspection()">
-			<mat-icon class="menu-button-icon" [class.straight]="openedMenu">delete</mat-icon>
+			<mat-icon class="menu-button-icon" [class]="menuToggle" [class.straight]="openedMenu">delete</mat-icon>
 		</button>
 	</div>
-<!--	<button-->
-<!--		id="save-inspection-button"-->
-<!--		mat-fab-->
-<!--		[style.bottom]="findSaveButtonBottom()"-->
-<!--		(click)="saveInspection()"-->
-<!--		[disabled]="saving">-->
-<!--		<mat-icon *ngIf="!saving">save</mat-icon>-->
-<!--		<mat-spinner diameter="30" *ngIf="saving"></mat-spinner>-->
-<!--	</button>-->
 	<section matRipple (click)="openOrder()">
 		<mat-icon>assignment</mat-icon>
 		<div>
@@ -53,7 +47,4 @@
 			<span>{{order?.number}}</span>
 		</div>
 	</section>
-<!--	<button mat-icon-button (click)="openToolsMenu()">-->
-<!--		<mat-icon id="expand-menu-icon" [style.transform]="'rotate(' + (openedMenu ? '180deg' : 0) + ')'">expand_more</mat-icon>-->
-<!--	</button>-->
 </mat-toolbar>

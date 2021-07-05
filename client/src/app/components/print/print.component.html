@@ -76,7 +76,7 @@
 			<mat-icon mat-card-avatar>navigate_next</mat-icon>
 			<mat-card-title>{{category.name}}</mat-card-title>
 		</mat-card-header>
-		<div class="graph-container">
+		<div *ngIf="checkExistentSelectItems(category.items)" class="graph-container">
 			<div class="graph-info">
 				<canvas
 					baseChart

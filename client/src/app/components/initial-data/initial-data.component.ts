@@ -16,6 +16,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MatInput} from '@angular/material/input';
 import {LoadingService} from '../../services/loading.service';
 import {inOutAnimation, inOutTranslateAnimation} from '../../animations';
+import {LocalStorageService} from '../../services/local-storage.service';
 
 @Component({
 	selector: 'app-initial-data',
@@ -43,8 +44,11 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		private cdRef: ChangeDetectorRef,
 		private activatedRoute: ActivatedRoute
 	) {
+		clearTimeout(InspectionService.lockTimeout);
+		this.employee = EmployeeService.employee;
+		const employeeCode = this.employee ? this.employee.code : '';
 		this.employeeCode = new FormControl(
-			'', [Validators.required, Validators.minLength(this.employeeCodeLength)]
+			employeeCode, [Validators.required, Validators.minLength(this.employeeCodeLength)]
 		);
 		this.orderCode = new FormControl('', [Validators.required]);
 	}
@@ -57,7 +61,11 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		this.employeeCodeInput.focus();
+		if (this.employee) {
+			this.orderCodeInput.focus();
+		} else {
+			this.employeeCodeInput.focus();
+		}
 	}
 
 	get employeeCodeLength(): number {
@@ -105,6 +113,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 
 		this.inspectionService.findInspection(orderCode.value).pipe(
 			finalize(() => {
+				LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, false);
 				this.searchingInspections = false;
 				this.cdRef.detectChanges();
 			})

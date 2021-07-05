@@ -41,7 +41,6 @@ export class InspectionComponent implements AfterViewInit {
 
 	@ViewChild('toolBar') toolBar: ElementRef;
 	@ViewChild(MatList, { read: ElementRef }) itemsList: ElementRef;
-	@ViewChild(MatAccordion) accordion: MatAccordion;
 	@ViewChild(MatAccordion, { read: ElementRef }) accordionElementRef: ElementRef;
 
 	bottomBarHeight: number;
@@ -49,10 +48,13 @@ export class InspectionComponent implements AfterViewInit {
 	pressingItem: Item;
 	scroll: boolean;
 	openedCategories: string[];
-	lockTimeout: any;
+	openedMenu: boolean;
 
-	@HostListener(Constants.EVENT.TOUCH_START) onTouchStart(): void {
+	@HostListener(Constants.EVENT.TOUCH_START, ['$event'])
+	onTouchStart(event): void {
 		this.setResetEmployeeTimeout();
+		this.checkCurrentUrl();
+		this.checkCloseMenu(event.target.className);
 	}
 
 	constructor(
@@ -119,8 +121,8 @@ export class InspectionComponent implements AfterViewInit {
 	// endregion
 
 	setResetEmployeeTimeout(): void {
-		clearTimeout(this.lockTimeout);
-		this.lockTimeout = setTimeout(
+		clearTimeout(InspectionService.lockTimeout);
+		InspectionService.lockTimeout = setTimeout(
 			() => this.handleEmployeeDialog(),
 			Constants.RESET_EMPLOYEE_INTERVAL * 1000
 		);
@@ -136,8 +138,28 @@ export class InspectionComponent implements AfterViewInit {
 		});
 	}
 
+	checkCurrentUrl(): void {
+		/* Si al hacer tap se está en la URL de print, significa que se acaba de imprimir. En ese caso, se retorna a la
+		 * URL de la pantalla principal */
+		if (this.router.url.includes('print')) {
+			this.router.navigate([Constants.PATH.INSPECTION]);
+		}
+	}
+
+	checkCloseMenu(targetClasses: string): void {
+		/* Se actualiza la variable si se hace clic fuera del botón de menú. En caso contrario, ya se gestiona su
+		 * apertura y cierre desde el evento del propio botón */
+		if (!targetClasses.includes(Constants.MENU_TOGGLE)) {
+			this.openedMenu = this.openedMenu === undefined ? false : undefined;
+		}
+	}
+
 	findMenuCategories(menuElements: ListElement[]): Category[] {
 		return menuElements.filter(elem => elem instanceof Category) as Category[];
+	}
+
+	checkMenuItems(menuElements: ListElement[]): boolean {
+		return menuElements.filter(elem => !(elem instanceof Category)).length > 0;
 	}
 
 	findMenuItems(menuElements: ListElement[]): Item[] {
@@ -152,16 +174,6 @@ export class InspectionComponent implements AfterViewInit {
 		this.router.navigate([Constants.PATH.INIT]);
 	}
 
-	expandAll(openedCategories: string[] = this.openedCategories, accordion: MatAccordion = this.accordion): void {
-		const openedItem = this.checkOpenedCategory(openedCategories);
-		if (openedItem) {
-			openedCategories.splice(0, openedCategories.length);
-			accordion.closeAll();
-		} else {
-			accordion.openAll();
-		}
-	}
-
 	addOpenedCategory(name: string, openedCategories: string[] = this.openedCategories): void {
 		openedCategories.push(name);
 	}
@@ -169,14 +181,6 @@ export class InspectionComponent implements AfterViewInit {
 	removeOpenedCategory(name: string, openedCategories: string[] = this.openedCategories): void {
 		const index = openedCategories.indexOf(name);
 		openedCategories.splice(index, 1);
-	}
-
-	checkOpenedCategory(openedCategories: string[] = this.openedCategories): boolean {
-		return openedCategories.length > 0;
-	}
-
-	findSaveButtonBottom(): string {
-		return `calc(${this.bottomBarHeight}px + 1rem)`;
 	}
 
 	checkItemType(optionType: string, type: string): boolean {

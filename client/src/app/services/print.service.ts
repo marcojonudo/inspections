@@ -14,10 +14,7 @@ export class PrintService {
 	}
 
 	openPrintDialog(): void {
-		setTimeout(() => {
-			window.print();
-			this.router.navigate([Constants.PATH.INSPECTION]);
-		});
+		setTimeout(() => window.print());
 	}
 
 }

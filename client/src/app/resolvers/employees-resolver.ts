@@ -1,7 +1,7 @@
 import {
 	Injectable,
 } from '@angular/core';
-import {EMPTY, Observable} from 'rxjs';
+import {EMPTY, Observable, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
 import {EmployeeService} from '../services/employee.service';
@@ -14,7 +14,7 @@ export class EmployeesResolver implements Resolve<any> {
 	constructor(private employeeService: EmployeeService) {}
 
 	resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-		return this.employeeService.findEmployees().pipe(
+		return EmployeeService.employees ? of(EmployeeService.employees) : this.employeeService.findEmployees().pipe(
 			catchError(() => EMPTY)
 		);
 	}
