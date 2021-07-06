@@ -74,11 +74,9 @@ export class BottomBarComponent {
 		return openedMenu ? `translateY(-${i * 110}%)` : '';
 	}
 
-	saveInspection(
-		savedInspection: SavedInspection = this.savedInspection, orderNumber: number = this.order.number
-	): void {
+	saveInspection(savedInspection: SavedInspection = this.savedInspection): void {
 		this.saving = true;
-		this.inspectionService.saveInspection(savedInspection, orderNumber).pipe(
+		this.inspectionService.saveInspection(savedInspection).pipe(
 			finalize(() => {
 				this.saving = false;
 				this.openedMenu = false;

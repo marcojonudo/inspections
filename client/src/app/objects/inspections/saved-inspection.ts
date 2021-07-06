@@ -5,6 +5,7 @@ export class SavedInspection {
 
 	name: string;
 	orderNumber: number;
+	employeeCode: string;
 	items: SavedItem[];
 	saved: Dayjs;
 

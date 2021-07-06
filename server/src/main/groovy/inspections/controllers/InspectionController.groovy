@@ -105,8 +105,10 @@ class InspectionController {
 		description = "Revisión creada",
 		content = @Content(schema = @Schema(implementation = SavedInspection))
 	)
-	HttpResponse saveInspection(@Body SavedInspection inspection, @QueryValue int orderNumber) {
-		SavedInspection savedInspection = inspectionService.saveInspection(inspection, orderNumber)
+	HttpResponse saveInspection(@Body SavedInspection inspection) {
+		SavedInspection savedInspection = inspectionService.saveInspection(
+			inspection, inspection.orderNumber, inspection.employeeCode
+		)
 		return savedInspection ? HttpResponse.created(savedInspection) : HttpResponse.serverError()
     }
 
