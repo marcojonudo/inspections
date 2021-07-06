@@ -118,6 +118,10 @@ export class InspectionComponent implements AfterViewInit {
 		return Constants.ITEM_TYPE.TEXT;
 	}
 
+	get textAreaType(): string {
+		return Constants.ITEM_TYPE.TEXT_AREA;
+	}
+
 	// endregion
 
 	setResetEmployeeTimeout(): void {

@@ -4,69 +4,84 @@
 	</button>
 	<h1>{{inspection.name}}</h1>
 </mat-toolbar>
-<ng-container
-	*ngTemplateOutlet="recursiveList; context: {
+<div id="items-container" class="no-print">
+	<ng-container
+		*ngTemplateOutlet="recursiveList; context: {
         $implicit: listElements, index: 0
     }">
-</ng-container>
-<ng-template #recursiveList let-list let-index="index">
-	<mat-accordion class="accordion no-print">
-		<mat-expansion-panel
-			*ngFor="let category of findMenuCategories(list) | order"
-			class="category"
-			(opened)="addOpenedCategory(category.name)"
-			(closed)="removeOpenedCategory(category.name)">
-			<mat-expansion-panel-header class="category-title" [class.sub-category-title]="index > 0">
-				<mat-panel-title>{{category.name}}</mat-panel-title>
-			</mat-expansion-panel-header>
-			<ng-container
-				*ngTemplateOutlet="recursiveList; context: {
+	</ng-container>
+	<ng-template #recursiveList let-list let-index="index">
+		<mat-accordion class="accordion">
+			<mat-expansion-panel
+				*ngFor="let category of findMenuCategories(list) | order"
+				class="category"
+				(opened)="addOpenedCategory(category.name)"
+				(closed)="removeOpenedCategory(category.name)">
+				<mat-expansion-panel-header class="category-title" [class.sub-category-title]="index > 0">
+					<mat-panel-title>{{category.name}}</mat-panel-title>
+				</mat-expansion-panel-header>
+				<ng-container
+					*ngTemplateOutlet="recursiveList; context: {
 					$implicit: category.items, index: index + 1
 				}">
-			</ng-container>
-		</mat-expansion-panel>
-	</mat-accordion>
-	<mat-list *ngIf="checkMenuItems(list)">
-		<mat-list-item *ngFor="let item of findMenuItems(list) | order">
-			<div
-				*ngIf="checkItemType(item.type, selectType)"
-				class="item select-item"
-				matRipple
-				(click)="toggleSelectOption(findSelectItem(item))"
-				appLongPress
-				[scrolled]="checkScrolledItem(item)"
-				(pressingEmitter)="setPressingItem(item)"
-				(longPressEmitter)="openLegend(findSelectItem(item).options)">
-				<div class="select-item-content">
-					<div>{{item.name}}</div>
-					<div class="select-item-icon-container">
-						<mat-icon
-							*ngFor="let option of findSelectItem(item).options | order; let i = index"
-							class="select-item-icon"
-							[ngClass]="{
+				</ng-container>
+			</mat-expansion-panel>
+		</mat-accordion>
+		<mat-list *ngIf="checkMenuItems(list)">
+			<mat-list-item *ngFor="let item of findMenuItems(list) | order">
+				<div
+					*ngIf="checkItemType(item.type, selectType)"
+					class="item select-item"
+					matRipple
+					(click)="toggleSelectOption(findSelectItem(item))"
+					appLongPress
+					[scrolled]="checkScrolledItem(item)"
+					(pressingEmitter)="setPressingItem(item)"
+					(longPressEmitter)="openLegend(findSelectItem(item).options)">
+					<div class="select-item-content">
+						<div>{{item.name}}</div>
+						<div class="select-item-icon-container">
+							<mat-icon
+								*ngFor="let option of findSelectItem(item).options | order; let i = index"
+								class="select-item-icon"
+								[ngClass]="{
 								'front': checkSelectedOption(item.name, option.name),
 								'left': checkLeftOption(item.name, findSelectItem(item).options, i),
 								'right': checkRightOption(item.name, findSelectItem(item).options, i)
 							}"
-							[style.color]="findIconColor(option.code)">
-							{{option.icon}}
-						</mat-icon>
+								[style.color]="findIconColor(option.code)">
+								{{option.icon}}
+							</mat-icon>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div *ngIf="checkItemType(item.type, textType)" class="item text-item">
-				<mat-form-field class="text-item-input">
-					<mat-label>{{item.name}}</mat-label>
-					<input
-						matInput
-						type="tel"
-						[(ngModel)]="findTextSavedItem(item.name).text"
-						(change)="updateText(item.name)">
-				</mat-form-field>
-			</div>
-		</mat-list-item>
-	</mat-list>
-</ng-template>
+				<div *ngIf="checkItemType(item.type, textType)" class="item text-item">
+					<mat-form-field class="text-item-input">
+						<mat-label>{{item.name}}</mat-label>
+						<input
+							matInput
+							type="tel"
+							[(ngModel)]="findTextSavedItem(item.name).text"
+							(change)="updateText(item.name)">
+					</mat-form-field>
+				</div>
+				<div *ngIf="checkItemType(item.type, textAreaType)" class="item text-item">
+					<mat-form-field appearance="standard" class="text-item-input">
+						<mat-label>{{item.name}}</mat-label>
+						<textarea
+							matInput
+							cdkTextareaAutosize
+							cdkAutosizeMinRows="1"
+							cdkAutosizeMaxRows="5"
+							[(ngModel)]="findTextSavedItem(item.name).text"
+							(change)="updateText(item.name)">
+						</textarea>
+					</mat-form-field>
+				</div>
+			</mat-list-item>
+		</mat-list>
+	</ng-template>
+</div>
 <div #toolBar class="no-print">
 	<app-bottom-bar
 		[employee]="employee"

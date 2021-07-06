@@ -4,19 +4,23 @@ import {TextItem} from './inspections/items/text-item';
 import {TextSavedItem} from './inspections/saved-items/text-saved-item';
 import {SelectItem} from './inspections/items/select-item';
 import {SelectSavedItem} from './inspections/saved-items/select-saved-item';
+import {TextAreaItem} from './inspections/items/text-area-item';
 
 export class Builder {
 
 	static itemBuilder: any = {
 		TEXT: (item: any) => new TextItem(item),
-		SELECT: (item: any) => new SelectItem(item)
+		SELECT: (item: any) => new SelectItem(item),
+		TEXT_AREA: (item: any) => new TextAreaItem(item)
 	};
 
 	static savedItemBuilder: any = {
 		TEXT: (item: TextItem, employeeCode: string, savedItem: TextSavedItem) =>
 			new TextSavedItem(item, employeeCode, savedItem),
 		SELECT: (item: SelectItem, employeeCode: string, savedItem: SelectSavedItem) =>
-			new SelectSavedItem(item, employeeCode, savedItem)
+			new SelectSavedItem(item, employeeCode, savedItem),
+		TEXT_AREA: (item: TextItem, employeeCode: string, savedItem: TextSavedItem) =>
+			new TextSavedItem(item, employeeCode, savedItem)
 	};
 
 	static buildInspection(inspection: any): Inspection {

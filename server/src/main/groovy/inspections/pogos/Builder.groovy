@@ -22,8 +22,8 @@ class Builder {
 		savedItem.item = new Item(
 			type: Item.Type.valueOf((String) ((Map<String, Object>) item.item).type),
 			name: (String) ((Map<String, Object>) item.item).name,
-			category: new ItemCategory(code: (String) category.code, name: (String) category.name),
-			garagePosition: new GaragePosition(code: (String) garagePosition.code, name: (String) garagePosition.name)
+			category: category ? new ItemCategory(code: (String) category.code, name: (String) category.name) : null,
+			garagePosition: garagePosition ? new GaragePosition(code: (String) garagePosition.code, name: (String) garagePosition.name) : null
 		)
 		savedItem.employeeCode = item.employeeCode
 		savedItem.filled = LocalDateTime.parse(

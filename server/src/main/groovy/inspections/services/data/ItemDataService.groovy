@@ -25,4 +25,6 @@ interface ItemDataService {
 	""")
 	Item find(String name, String categoryCode)
 
+	Item find(String name)
+
 }

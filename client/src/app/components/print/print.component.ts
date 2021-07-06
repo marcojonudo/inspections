@@ -18,6 +18,7 @@ import {ChartOptions, ChartType} from 'chart.js';
 import {SelectItemOption} from '../../objects/inspections/items/select-item-option';
 import {Color} from 'ng2-charts';
 import {OrderPipe} from '../../pipes/order.pipe';
+import {ListElement} from '../../objects/list-elements/list-element';
 
 @Component({
 	selector: 'app-print',
@@ -29,7 +30,7 @@ export class PrintComponent implements OnInit {
 
 	private readonly GROUP_LABELS: { [key: string]: string[] };
 
-	categories: Category[];
+	listElements: Category[];
 
 	chartType: ChartType;
 	options: ChartOptions;
@@ -42,7 +43,7 @@ export class PrintComponent implements OnInit {
 				Constants.SELECT_ITEM_OPTION_CODE.RA, Constants.SELECT_ITEM_OPTION_CODE.RR
 			]
 		};
-		this.categories = InspectionService.findGroupedItems(
+		this.listElements = InspectionService.findGroupedItems(
 			InspectionService.savedInspection.items, 0, [(savedItem: SavedItem) => savedItem.item.category]
 		) as Category[];
 
@@ -150,6 +151,10 @@ export class PrintComponent implements OnInit {
 		return items.filter(item => item.item.type === Constants.ITEM_TYPE.SELECT) as SelectSavedItem[];
 	}
 
+	checkCategoryElement(item: ListElement): boolean {
+		return item instanceof Category;
+	}
+
 	checkExistentSelectItems(items: SavedItem[]): boolean {
 		return items.filter(i => i.item.type === Constants.ITEM_TYPE.SELECT).length > 0;
 	}
@@ -162,6 +167,10 @@ export class PrintComponent implements OnInit {
 			data.push(selectItems.filter(item => item.value === label.name).length);
 		});
 		return this.groupData(labels, data);
+	}
+
+	findTextAreaLines(item: TextSavedItem): string[] {
+		return item.text ? item.text.split('\n') : [];
 	}
 
 }
