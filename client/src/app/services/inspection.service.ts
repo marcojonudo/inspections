@@ -66,7 +66,9 @@ export class InspectionService {
 		this.inspection = Builder.buildInspection(inspection);
 		this.savedInspection = savedInspection ?
 			Builder.loadSavedInspection(savedInspection) :
-			Builder.buildSavedInspection(inspection, EmployeeService.employee.code, this.order.number);
+			Builder.buildSavedInspection(
+				inspection, EmployeeService.employee.code, this.order.number, this.order.vehicle.numberPlate
+			);
 		this.selectItemOptions = this.findSelectItemOptions();
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.INSPECTION, inspection);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, this.savedInspection);
