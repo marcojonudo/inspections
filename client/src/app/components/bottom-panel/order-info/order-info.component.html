@@ -7,17 +7,10 @@
 			<li><span class="item-label">Cilindrada</span>: {{order.vehicle.cylinder}}</li>
 			<li><span class="item-label">Código motor</span>: {{order.vehicle.engineCode ? order.vehicle.engineCode : '-'}}</li>
 			<li><span class="item-label">Potencia</span>: {{order.vehicle.power ? order.vehicle.power + 'cv' : '-'}}</li>
-			<li><span class="item-label">Matriculación</span>: {{order.vehicle.registrationYear}}</li>
+			<li><span class="item-label">Matriculación</span>: {{order.vehicle.registrationYear ? order.vehicle.registrationYear : '-' }}</li>
 		</ul>
 	</mat-card-content>
 </mat-card>
-<!--<mat-list>-->
-<!--	<mat-list-item *ngFor="let line of order.lines">-->
-<!--		<div mat-line>{{line.articleName}}</div>-->
-<!--		<div mat-line>{{line.units}} unidad{{line.units == 1 ? '' : 'es'}}</div>-->
-<!--	</mat-list-item>-->
-<!--	-->
-<!--</mat-list>-->
 <table mat-table [dataSource]="order.lines">
 	<ng-container matColumnDef="description">
 		<th mat-header-cell *matHeaderCellDef>Descripción</th>

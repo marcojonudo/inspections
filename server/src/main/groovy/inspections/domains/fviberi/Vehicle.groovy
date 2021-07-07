@@ -12,11 +12,15 @@ class Vehicle implements GormEntity<Vehicle> {
     String model
     String cylinder
     String brand
-    int registrationYear
+    Integer registrationYear
 
     VehicleInfo extraInfo
 
     static transients = ['extraInfo']
+
+    static constraints = {
+        registrationYear nullable: true
+    }
 
     static mapping = {
         datasource Constants.DataSource.FVIBERI
