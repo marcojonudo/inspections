@@ -220,11 +220,11 @@ export class InspectionService {
 		return this.http.get(url);
 	}
 
-	saveInspection(inspection: SavedInspection, orderNumber: number): Observable<any> {
+	saveInspection(inspection: SavedInspection, employee: Employee = EmployeeService.employee): Observable<any> {
+		inspection.employeeCode = employee.code;
 		inspection.saved = dayjs();
 		console.log('Saving inspection', inspection);
-		const url = `${Url.inspection()}?orderNumber=${orderNumber}`;
-		return this.http.post(url, inspection);
+		return this.http.post(Url.inspection(), inspection);
 	}
 
 }

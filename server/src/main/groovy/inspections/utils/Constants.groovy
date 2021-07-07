@@ -26,4 +26,13 @@ class Constants {
 
     }
 
+    static class Message {
+
+        static final String SAVING_INSPECTION = "Saving inspection"
+        static final String EXISTENT_INSPECTION = "Existent inspection"
+        static final String ERROR_SAVING_INSPECTION = "Error saving inspection"
+        static final String SAVED_INSPECTION = "Saved inspection!"
+
+    }
+
 }

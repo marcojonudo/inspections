@@ -9,7 +9,11 @@ import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
 import inspections.pogos.InspectionInfo
 import inspections.pogos.OrderInfo
+import inspections.pogos.logs.Log
 import inspections.services.data.*
+import inspections.utils.Constants
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -17,6 +21,8 @@ import javax.inject.Singleton
 @Singleton
 @CompileStatic
 class InspectionService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(InspectionService)
 
 	@Inject OrderTimeDataService orderTimeDataService
 	@Inject OrderDataService orderDataService
@@ -88,12 +94,16 @@ class InspectionService {
 	 * Guarda o actualiza una revisión
 	 * @param inspection Revisión
 	 * @param orderNumber Número de orden
+	 * @param employeeCode Código del empleado que guarda la revisión
 	 * @return Revisión guardada
 	 */
-	SavedInspection saveInspection(SavedInspection inspection, int orderNumber) {
+	SavedInspection saveInspection(SavedInspection inspection, int orderNumber, String employeeCode) {
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspection: inspection.name, message: Constants.Message.SAVING_INSPECTION]).toString())
 		SavedInspection savedInspection = null
 		try {
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
+			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspection: inspection.name, existent: existent as boolean, message: Constants.Message.EXISTENT_INSPECTION]).toString())
+
 			/* Si existe una revisión para ese número de serie, se actualizan los elementos */
 			if (existent) {
 				existent.items.each { SavedItem existentSavedItem ->
@@ -106,8 +116,10 @@ class InspectionService {
 			} else {
 				savedInspection = savedInspectionDataService.save(inspection)
 			}
+			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspection: inspection.name, message: Constants.Message.SAVED_INSPECTION]).toString())
 		} catch (all) {
 			all.printStackTrace()
+			LOG.error(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspection: inspection.name, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
 		}
 		return savedInspection
 	}
