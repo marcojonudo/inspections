@@ -45,10 +45,10 @@
 								*ngFor="let option of findSelectItem(item).options | order; let i = index"
 								class="select-item-icon"
 								[ngClass]="{
-								'front': checkSelectedOption(item.name, option.name),
-								'left': checkLeftOption(item.name, findSelectItem(item).options, i),
-								'right': checkRightOption(item.name, findSelectItem(item).options, i)
-							}"
+									'front': checkSelectedOption(item.name, option.name),
+									'left': checkLeftOption(item.name, findSelectItem(item).options, i),
+									'right': checkRightOption(item.name, findSelectItem(item).options, i)
+								}"
 								[style.color]="findIconColor(option.code)">
 								{{option.icon}}
 							</mat-icon>
@@ -61,6 +61,7 @@
 						<input
 							matInput
 							type="tel"
+							[placeholder]="item.placeholder"
 							[(ngModel)]="findTextSavedItem(item.name).text"
 							(change)="updateText(item.name)">
 					</mat-form-field>
