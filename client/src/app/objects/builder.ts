@@ -28,16 +28,20 @@ export class Builder {
 		return new Inspection(inspection.name, items);
 	}
 
-	static buildSavedInspection(inspection: Inspection, employeeCode: string, orderNumber: number): SavedInspection {
+	static buildSavedInspection(
+		inspection: Inspection, employeeCode: string, orderNumber: number, numberPlate: string
+	): SavedInspection {
 		const savedItems = inspection.items.map(item => this.savedItemBuilder[item.type](item, employeeCode));
-		return new SavedInspection(inspection.name, orderNumber, savedItems);
+		return new SavedInspection(inspection.name, orderNumber, numberPlate, savedItems);
 	}
 
 	static loadSavedInspection(savedInspection: any): SavedInspection {
 		const savedItems = savedInspection.items.map(savedItem =>
 			this.savedItemBuilder[savedItem.item.type](savedItem.item, savedItem.employeeCode, savedItem)
 		);
-		return new SavedInspection(savedInspection.name, savedInspection.orderNumber, savedItems);
+		return new SavedInspection(
+			savedInspection.name, savedInspection.orderNumber, savedInspection.numberPlate, savedItems
+		);
 	}
 
 }

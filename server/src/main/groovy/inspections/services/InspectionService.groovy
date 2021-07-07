@@ -61,7 +61,7 @@ class InspectionService {
 		LOG.info(new Log((Map) [orderNumber: orderNumber, message: Constants.Message.FINDING_INSPECTION]).toString())
 		Inspection inspection = buildInspection(orderNumber)
 		SavedInspection existent = savedInspectionDataService.find(orderNumber)
-		LOG.info(new Log((Map) [orderNumber: orderNumber, inspection: inspection.name, savedInspection: existent?.name, message: Constants.Message.FIND_INSPECTION_RESULT]).toString())
+		LOG.info(new Log((Map) [orderNumber: orderNumber, inspection: inspection?.name, savedInspection: existent?.name, message: Constants.Message.FIND_INSPECTION_RESULT]).toString())
 		return inspection ? new InspectionInfo(inspection, existent) : null
 	}
 

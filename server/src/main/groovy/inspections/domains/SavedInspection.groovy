@@ -14,6 +14,7 @@ class SavedInspection implements GormEntity<SavedInspection> {
 	String name
 	int orderNumber
 	String employeeCode
+	String numberPlate
 
 	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
 	LocalDateTime saved
