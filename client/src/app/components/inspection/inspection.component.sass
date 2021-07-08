@@ -40,13 +40,32 @@
 				background-color: $secondary
 
 				.mat-expansion-panel-header-title
+					align-items: center
 					color: $white !important
+
+				&-icon-container
+					position: relative
+					@include flex-center
+					margin-right: 1rem
+					color: $white
+
+					& > mat-icon
+						position: absolute
+						backface-visibility: hidden
+						transition: transform $fast-transition
+						transform: translateX(-50%) rotateY(0)
+
+						&.rotated
+							transform: translateX(-50%) rotateY(-180deg)
 
 			.sub-category-title
 				background-color: $grey
 
 				.mat-expansion-panel-header-title
 					color: $black !important
+
+				.category-title-icon-container
+					color: $secondary
 
 		.item
 			width: 100%
@@ -70,8 +89,8 @@
 
 					.select-item-icon
 						position: absolute
-						transition: transform $fast-transition, opacity $fast-transition
 						backface-visibility: hidden
+						transition: transform $fast-transition
 
 						&.front
 							transform: translateX(-100%) rotateY(0)

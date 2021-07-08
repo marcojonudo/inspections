@@ -36,6 +36,7 @@ export class InspectionService {
 	static lockTimeout: any;
 
 	private static readonly SELECT_ICON_COLOR: { [key: string]: string } = {
+		P: '#7b7979',
 		C: '#36d23d',
 		PS: '#ffb47e',
 		SN: '#d23636',
@@ -149,6 +150,33 @@ export class InspectionService {
 
 	static findIconColor(code: string, selectIconColor: { [key: string]: string } = this.SELECT_ICON_COLOR): string {
 		return selectIconColor[code];
+	}
+
+	static findMenuItems(menuElements: ListElement[]): Item[] {
+		return menuElements.filter(elem => !(elem instanceof Category)) as Item[];
+	}
+
+	static findMenuCategories(menuElements: ListElement[]): Category[] {
+		return menuElements.filter(elem => elem instanceof Category) as Category[];
+	}
+
+	static checkCompleteCategory(category: Category): boolean {
+		const items = this.findMenuItems(category.items);
+		const incompleteItems = this.checkCompleteItems(items);
+		if (incompleteItems) {
+			return true;
+		}
+
+		const subCategories = this.findMenuCategories(category.items);
+		return !(subCategories.find(c => this.checkCompleteCategory(c)) !== undefined);
+	}
+
+	static checkCompleteItems(items: Item[]): boolean {
+		const itemNames = items.map(item => item.name);
+		const savedItems = this.savedInspection.items.filter(savedItem =>
+			itemNames.find(name => name === savedItem.item.name)
+		);
+		return !(savedItems.find(savedItem => !savedItem.filled) !== undefined);
 	}
 
 	static resetInspection(

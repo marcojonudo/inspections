@@ -14,6 +14,7 @@ import {SavedInspection} from '../../objects/inspections/saved-inspection';
 import {finalize} from 'rxjs/operators';
 import {Constants} from '../../objects/constants';
 import {SnackBarService} from '../../services/snack-bar.service';
+import {Inspection} from '../../objects/inspections/inspection';
 
 @Component({
 	selector: 'app-bottom-bar',
@@ -39,6 +40,8 @@ export class BottomBarComponent {
 		this.foundInspectionEmitter = new EventEmitter<boolean>();
 	}
 
+	// region Getters / setters
+
 	get order(): Order {
 		return InspectionService.order;
 	}
@@ -50,6 +53,8 @@ export class BottomBarComponent {
 	get menuToggle(): string {
 		return Constants.MENU_TOGGLE;
 	}
+
+	// endregion
 
 	openOrder(order: Order = this.order): void {
 		this.bottomSheet.open(OrderInfoComponent, {data: order});
@@ -88,8 +93,13 @@ export class BottomBarComponent {
 		);
 	}
 
-	print(): void {
-		this.printService.print();
+	print(inspection: Inspection = InspectionService.inspection): void {
+		const completeInspection = InspectionService.checkCompleteItems(inspection.items);
+		if (completeInspection) {
+			this.printService.print();
+		} else {
+			this.snackBarService.open(Constants.MESSAGE.NON_COMPLETE_INSPECTION, Constants.SNACK_BAR.TYPE.WARNING);
+		}
 		this.openedMenu = false;
 	}
 
