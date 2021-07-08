@@ -94,7 +94,7 @@ export class BottomBarComponent {
 	}
 
 	print(inspection: Inspection = InspectionService.inspection): void {
-		const completeInspection = InspectionService.checkCompleteItems(inspection.items);
+		const completeInspection = InspectionService.checkCompleteItems(inspection.items.filter(i => i.required));
 		if (completeInspection) {
 			this.printService.print();
 		} else {

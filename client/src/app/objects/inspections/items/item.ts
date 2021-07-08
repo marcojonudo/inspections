@@ -11,6 +11,7 @@ export class Item implements ListElement {
 	category: ItemCategory;
 	garagePosition: GaragePosition;
 	vehicleSection: VehicleSection;
+	required: boolean;
 
 	constructor(item: any) {
 		this.type = item.type;
@@ -19,6 +20,7 @@ export class Item implements ListElement {
 		this.category = item.category ? new ItemCategory(item.category) : undefined;
 		this.garagePosition = item.garagePosition ? new GaragePosition(item.garagePosition) : undefined;
 		this.vehicleSection = item.vehicleSection ? new VehicleSection(item.vehicleSection) : undefined;
+		this.required = item.required;
 	}
 
 }

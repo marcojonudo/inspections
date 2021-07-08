@@ -162,13 +162,13 @@ export class InspectionService {
 
 	static checkCompleteCategory(category: Category): boolean {
 		const items = this.findMenuItems(category.items);
-		const incompleteItems = this.checkCompleteItems(items);
-		if (incompleteItems) {
-			return true;
+		const completeItems = this.checkCompleteItems(items);
+		if (!completeItems) {
+			return false;
 		}
 
 		const subCategories = this.findMenuCategories(category.items);
-		return !(subCategories.find(c => this.checkCompleteCategory(c)) !== undefined);
+		return subCategories.filter(c => this.checkCompleteCategory(c)).length === subCategories.length;
 	}
 
 	static checkCompleteItems(items: Item[]): boolean {
