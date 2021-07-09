@@ -2,7 +2,7 @@ import {
 	AfterViewInit,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
-	Component, OnInit,
+	Component, ElementRef, OnInit,
 	ViewChild
 } from '@angular/core';
 import {EmployeeService} from '../../services/employee.service';
@@ -17,6 +17,7 @@ import {MatInput} from '@angular/material/input';
 import {LoadingService} from '../../services/loading.service';
 import {inOutAnimation, inOutTranslateAnimation} from '../../animations';
 import {LocalStorageService} from '../../services/local-storage.service';
+import {fromEvent} from 'rxjs';
 
 @Component({
 	selector: 'app-initial-data',
@@ -29,6 +30,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 
 	@ViewChild('employeeCodeInput') employeeCodeInput: MatInput;
 	@ViewChild('orderCodeInput') orderCodeInput: MatInput;
+	@ViewChild('searchOrderButton', { read: ElementRef }) searchOrderButton: ElementRef;
 
 	employeeCode: FormControl;
 	orderCode: FormControl;
@@ -66,6 +68,11 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		} else {
 			this.employeeCodeInput.focus();
 		}
+		fromEvent(this.searchOrderButton.nativeElement, Constants.EVENT.CLICK).subscribe((event: MouseEvent) => {
+			/* Se evita que un clic en el botón abra el teclado automáticamente (al ejecutarse el click de la ficha) */
+			event.stopPropagation();
+			this.searchOrder();
+		});
 	}
 
 	get employeeCodeLength(): number {
@@ -110,6 +117,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 
 	searchOrder(orderCode: FormControl = this.orderCode): void {
 		this.searchingInspections = true;
+		this.cdRef.detectChanges();
 
 		this.inspectionService.findInspection(orderCode.value).pipe(
 			finalize(() => {
