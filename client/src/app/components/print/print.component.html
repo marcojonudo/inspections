@@ -112,7 +112,7 @@
 </div>
 <ng-template #itemTemplate let-elem>
 	<div class="items-info">
-		<div *ngFor="let item of elem.items | order" class="item">
+		<div *ngFor="let item of elem.items | savedItem" class="item">
 			<div>{{item.item.name}}</div>
 			<mat-icon
 				*ngIf="checkItemType(item.item.type, selectType); else textItemText"
