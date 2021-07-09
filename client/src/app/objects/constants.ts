@@ -1,7 +1,7 @@
 export class Constants {
 
 	static readonly EMPLOYEE_CODE_LENGTH: number = 7;
-	static readonly SELECT_ITEM_OPTION_MIN_ORDER: number = 1;
+	static readonly SELECT_ITEM_OPTION_MIN_ORDER: number = 0;
 	static readonly SPLASH_SCREEN_DURATION: number = 1.5;
 	static readonly RESET_EMPLOYEE_INTERVAL: number = 24220;
 	static readonly MENU_TOGGLE: string = 'menu-toggle';
@@ -20,7 +20,8 @@ export class Constants {
 		NONEXISTENT_INSPECTIONS: 'No se encuentran revisiones asociadas a la orden',
 		UPDATE_EMPLOYEE_MESSAGE: (newCode: string, code: string) => `¿Quieres cambiar el empleado ${code} por el ${newCode}?`,
 		ERROR_SAVING_INSPECTION: 'Error al guardar la revisión. Por favor, inténtalo de nuevo',
-		SAVED_INSPECTION: 'Revisión guardada correctamente'
+		SAVED_INSPECTION: 'Revisión guardada correctamente',
+		NON_COMPLETE_INSPECTION: 'Inspección no terminada. Por favor, rellena todos los elementos'
 	};
 
 	static readonly PANEL_INFO_TYPE: any = {

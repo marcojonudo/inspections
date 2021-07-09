@@ -19,6 +19,10 @@
 				(closed)="removeOpenedCategory(category.name)">
 				<mat-expansion-panel-header class="category-title" [class.sub-category-title]="index > 0">
 					<mat-panel-title>{{category.name}}</mat-panel-title>
+					<div class="category-title-icon-container">
+						<mat-icon [class.rotated]="checkCompleteCategory(category)">pending</mat-icon>
+						<mat-icon [class.rotated]="!checkCompleteCategory(category)">check_circle</mat-icon>
+					</div>
 				</mat-expansion-panel-header>
 				<ng-container
 					*ngTemplateOutlet="recursiveList; context: {

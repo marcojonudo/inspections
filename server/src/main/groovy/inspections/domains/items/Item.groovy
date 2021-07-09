@@ -22,6 +22,7 @@ class Item implements GormEntity<Item> {
 	ItemCategory category
 	GaragePosition garagePosition
 	VehicleSection vehicleSection
+	boolean required
 
 	@JsonIgnore
 	Set<Inspection> inspections

@@ -159,19 +159,23 @@ export class InspectionComponent implements AfterViewInit {
 	}
 
 	findMenuCategories(menuElements: ListElement[]): Category[] {
-		return menuElements.filter(elem => elem instanceof Category) as Category[];
+		return InspectionService.findMenuCategories(menuElements);
 	}
 
 	checkMenuItems(menuElements: ListElement[]): boolean {
-		return menuElements.filter(elem => !(elem instanceof Category)).length > 0;
+		return InspectionService.findMenuItems(menuElements).length > 0;
 	}
 
 	findMenuItems(menuElements: ListElement[]): Item[] {
-		return menuElements.filter(elem => !(elem instanceof Category)) as Item[];
+		return InspectionService.findMenuItems(menuElements);
 	}
 
 	findIconColor(code: string): string {
 		return InspectionService.findIconColor(code);
+	}
+
+	checkCompleteCategory(category: Category): boolean {
+		return InspectionService.checkCompleteCategory(category);
 	}
 
 	goBack(): void {
