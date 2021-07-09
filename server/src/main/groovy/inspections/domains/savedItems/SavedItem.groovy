@@ -27,6 +27,10 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 
 	static belongsTo = SavedInspection
 
+	static constraints = {
+		filled nullable: true
+	}
+
 	static mapping = {
 		tablePerHierarchy false
 		item fetch: 'join'
