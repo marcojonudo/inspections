@@ -10,6 +10,7 @@
 
 	mat-card
 		margin: $medium-gap $medium-gap 0 $medium-gap
+		transition: transform $fast-transition, opacity $fast-transition
 
 		.custom-card-header
 			display: flex
@@ -26,6 +27,9 @@
 			.mat-card-title
 				margin-bottom: 0 !important
 
+		.mat-card-content
+			margin-bottom: 0
+
 		mat-form-field
 			width: 100%
 
@@ -37,3 +41,13 @@
 
 		button
 			background-color: $highlight
+
+		&.hide
+			transform: translateY(25px)
+			opacity: 0
+			pointer-events: none
+
+		&.show
+			transform: translateY(0)
+			opacity: 1
+			pointer-events: auto

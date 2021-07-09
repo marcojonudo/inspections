@@ -5,22 +5,24 @@ import {InspectionComponent} from './components/inspection/inspection.component'
 import {InspectionGuard} from './auth/inspection-guard';
 import {EmployeesResolver} from './resolvers/employees-resolver';
 import {PrintComponent} from './components/print/print.component';
+import {NavigationGuard} from './auth/navigation-guard';
 
 
 const routes: Routes = [
 	{
 		path: 'init',
 		component: InitialDataComponent,
-		data: {animation: 'InitPage'},
-		resolve: {employees: EmployeesResolver}
+		canActivate: [NavigationGuard],
+		data: { animation: 'InitPage' },
+		resolve: { employees: EmployeesResolver }
 	},
 	{
 		path: 'inspection',
 		component: InspectionComponent,
-		canActivate: [InspectionGuard],
+		canActivate: [NavigationGuard, InspectionGuard],
 		data: {animation: 'InspectionPage'},
 		children: [
-			{path: 'print', outlet: 'print', component: PrintComponent}
+			{ path: 'print', outlet: 'print', component: PrintComponent }
 		]
 	},
 	{path: '**', pathMatch: 'full', redirectTo: 'init'}

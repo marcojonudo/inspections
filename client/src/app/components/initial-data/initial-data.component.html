@@ -18,7 +18,7 @@
 		</mat-form-field>
 	</mat-card-content>
 </mat-card>
-<mat-card [@inOutTranslateAnimation] *ngIf="employee" (click)="setOrderCodeFocus()">
+<mat-card class="hide" [class.show]="employee" (click)="setOrderCodeFocus()">
 	<mat-card-header class="custom-card-header">
 		<mat-icon mat-card-avatar>assignment</mat-icon>
 		<mat-card-title>¿Cuál es el código corto de la orden?</mat-card-title>
@@ -36,7 +36,7 @@
 		</mat-form-field>
 	</mat-card-content>
 	<mat-card-actions>
-		<button mat-fab (click)="searchOrder()" [disabled]="checkDisableSearchOrderButton()">
+		<button #searchOrderButton mat-fab [disabled]="checkDisableSearchOrderButton()">
 			<mat-icon *ngIf="!searchingInspections">search</mat-icon>
 			<mat-spinner diameter="30" *ngIf="searchingInspections"></mat-spinner>
 		</button>

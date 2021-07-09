@@ -21,7 +21,7 @@ export class Constants {
 		UPDATE_EMPLOYEE_MESSAGE: (newCode: string, code: string) => `¿Quieres cambiar el empleado ${code} por el ${newCode}?`,
 		ERROR_SAVING_INSPECTION: 'Error al guardar la revisión. Por favor, inténtalo de nuevo',
 		SAVED_INSPECTION: 'Revisión guardada correctamente',
-		NON_COMPLETE_INSPECTION: 'Inspección no terminada. Por favor, rellena todos los elementos'
+		NON_COMPLETE_INSPECTION: 'Revisión no terminada. Por favor, rellena todos los elementos'
 	};
 
 	static readonly PANEL_INFO_TYPE: any = {
@@ -55,7 +55,8 @@ export class Constants {
 		MOUSE_DOWN: 'mousedown',
 		TOUCHE_END: 'touchend',
 		MOUSE_UP: 'mouseup',
-		SCROLL: 'scroll'
+		SCROLL: 'scroll',
+		CLICK: 'click'
 	};
 
 	static readonly DATE_TIME_FORMAT: any = {
