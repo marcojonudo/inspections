@@ -30,6 +30,7 @@ import {ListElement} from '../../objects/list-elements/list-element';
 import {Category} from '../../objects/list-elements/category';
 import {fromEvent} from 'rxjs';
 import {debounceTime, tap} from 'rxjs/operators';
+import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
 	selector: 'app-inspection',
@@ -179,7 +180,12 @@ export class InspectionComponent implements AfterViewInit {
 	}
 
 	goBack(): void {
-		this.router.navigate([Constants.PATH.INIT]);
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, { data: Constants.MESSAGE.WARNING_GOING_BACK });
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) {
+				this.router.navigate([Constants.PATH.INIT]);
+			}
+		});
 	}
 
 	addOpenedCategory(name: string, openedCategories: string[] = this.openedCategories): void {
