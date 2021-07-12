@@ -40,6 +40,7 @@ import {PrintComponent} from './components/print/print.component';
 import {MatTableModule} from '@angular/material/table';
 import {ChartsModule} from 'ng2-charts';
 import {SavedItemPipe} from './pipes/saved-item.pipe';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
 	declarations: [
@@ -79,7 +80,8 @@ import {SavedItemPipe} from './pipes/saved-item.pipe';
 		MatDialogModule,
 		MatExpansionModule,
 		MatTableModule,
-		ChartsModule
+		ChartsModule,
+		MatMenuModule
 	],
 	providers: [OrderPipe],
 	bootstrap: [AppComponent]

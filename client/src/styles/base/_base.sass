@@ -59,6 +59,25 @@ html, body
 .mat-expansion-indicator::after
 	color: $white !important
 
+.mat-menu-content
+	@include flex-column-center
+	padding-bottom: 0 !important
+
+#context-menu-version
+	position: relative
+	@include flex-center
+	font-size: $small-font
+	margin-top: 1rem
+
+#update-indicator
+	width: .5rem
+	height: .5rem
+	position: absolute
+	top: 0
+	right: -.5rem
+	background-color: $dark-highlight
+	border-radius: 50%
+
 @media print
 
 	.no-print
