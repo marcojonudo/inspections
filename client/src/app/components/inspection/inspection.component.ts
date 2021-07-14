@@ -263,7 +263,8 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 
 	toggleSelectOption(item: SelectItem): void {
 		const selectedIndex = this.findOptionIndex(item.name, item.options);
-		const newIndex = (selectedIndex + 1) % item.options.length;
+		/* Con el segundo sumando, se evita que la opción por defecto ('Pendiente') sea seleccionada de nuevo */
+		const newIndex = (selectedIndex + 1) % item.options.length + Math.floor(selectedIndex / (item.options.length - 1));
 
 		InspectionService.updateSelectItem(item.name, item.options[newIndex].name);
 	}

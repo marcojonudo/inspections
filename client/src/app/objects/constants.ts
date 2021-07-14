@@ -69,7 +69,8 @@ export class Constants {
 	static readonly SELECT_ITEM_OPTION_CODE: any = {
 		NA: 'NA',
 		RA: 'RA',
-		RR: 'RR'
+		RR: 'RR',
+		P: 'P'
 	};
 
 }

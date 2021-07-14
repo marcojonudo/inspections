@@ -1,0 +1,1 @@
+- [.label-fix]#Se ordenan las subcategorías de la pantalla principal (por ejemplo, Ruedas DI, DD, TD, TI).#

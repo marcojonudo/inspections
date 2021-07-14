@@ -1,0 +1,2 @@
+- [.label-improvement]#Se cierra el menú al guardar la revisión, en lugar de al hacer clic en el botón de guardado.#
+- [.label-improvement]#Se cierra el menú al tocar cualquier parte de la pantalla.#
