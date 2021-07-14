@@ -15,21 +15,22 @@ export class VersionService {
 
 	getVersion(): Observable<any> {
 		return this.http.get(Url.info()).pipe(
-			map((data: any) => {
-				return data.git.tags;
-			})
+			map((data: any) => data.git.tags)
 		);
 	}
 
 	handleVersion(scheduled: boolean, refreshed: boolean): Observable<boolean> {
 		return this.getVersion().pipe(
 			map(version => {
-				const existent = LocalStorageService.getItem(Constants.LOCAL_STORAGE.VERSION);
-				if (!existent || (refreshed && !scheduled)) {
-					LocalStorageService.setItem(Constants.LOCAL_STORAGE.VERSION, version);
-					return false;
+				if (version) {
+					const existent = LocalStorageService.getItem(Constants.LOCAL_STORAGE.VERSION);
+					if (!existent || (refreshed && !scheduled)) {
+						LocalStorageService.setItem(Constants.LOCAL_STORAGE.VERSION, version);
+						return false;
+					}
+					return existent !== version;
 				}
-				return existent !== version;
+				return false;
 			})
 		);
 	}

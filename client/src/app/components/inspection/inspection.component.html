@@ -3,9 +3,9 @@
 		<mat-icon>chevron_left</mat-icon>
 	</button>
 	<h1>{{inspection.name}}</h1>
-	<button id="context-button" mat-icon-button [matMenuTriggerFor]="contextMenu">
+	<button id="context-button" mat-icon-button [matMenuTriggerFor]="contextMenu" [class.pulse]="updateVersion">
 		<span></span>
-		<span [class.pulse]="updateVersion"></span>
+		<span></span>
 		<span></span>
 	</button>
 	<mat-menu #contextMenu="matMenu" xPosition="before">
