@@ -1,0 +1,1 @@
+- [.label-new]#Indicador de nueva versión, para poder actualizar la aplicación de haber una nueva#

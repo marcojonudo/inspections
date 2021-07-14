@@ -28,10 +28,12 @@ import {ResetEmployeeDialogComponent} from '../reset-employee-dialog/reset-emplo
 import {LocalStorageService} from '../../services/local-storage.service';
 import {ListElement} from '../../objects/list-elements/list-element';
 import {Category} from '../../objects/list-elements/category';
-import {fromEvent, of} from 'rxjs';
-import {debounceTime, filter, tap} from 'rxjs/operators';
+import {fromEvent} from 'rxjs';
+import {debounceTime, filter, map, tap} from 'rxjs/operators';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 import {VersionService} from '../../services/version.service';
+import {Url} from '../../objects/url';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
 	selector: 'app-inspection',
@@ -301,6 +303,10 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 				this.version = LocalStorageService.getItem(Constants.LOCAL_STORAGE.VERSION);
 			}
 		});
+	}
+
+	openChangelog(): void {
+		window.open(Url.changelog(), '_self');
 	}
 
 }

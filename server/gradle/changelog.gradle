@@ -1,0 +1,87 @@
+ext {
+    FEU_VERT_GROUP = "feuvert"
+
+    CHANGELOG_DIR = "$projectDir/src/main/changelog"
+    BUILD_CHANGELOG_ASCIIDOCTOR_DIR = "$buildDir/changelog/asciidoctor"
+    BUILD_CHANGELOG_HTML_DIR = "$buildDir/changelog/html"
+    BUILD_RESOURCES_DIR = "$buildDir/resources/main"
+
+    CHANGELOG_TITLE = "Histórico de cambios"
+    INDEX_ADOC = "index.adoc"
+
+    SECTION_ID = '='
+}
+
+String generateIndex(Map<String, List<String>> daysChangelog, String basePath) {
+    String indexText = "$SECTION_ID Histórico de cambios\n"
+    indexText += ":docinfodir: $basePath\n"
+    indexText += ":docinfo:\n"
+    indexText += ":includedir: $basePath\n\n"
+
+    daysChangelog.each { String day, List<String> changelogs ->
+        indexText += "$SECTION_ID$SECTION_ID $day\n\n"
+
+        changelogs.each {
+            indexText += "include::{includedir}/$it[]\n\n"
+        }
+    }
+    return indexText
+}
+
+task copyChangelogFiles(type: Copy) {
+    group FEU_VERT_GROUP
+    description "Copy .adoc changelog files from changelog folder to buildDir"
+
+    from(CHANGELOG_DIR)
+    into(BUILD_CHANGELOG_ASCIIDOCTOR_DIR)
+}
+
+task copyChangelogToResources() {
+    group FEU_VERT_GROUP
+    description "Copy changelog resources to classpath"
+
+    doLast {
+        String to = "$BUILD_RESOURCES_DIR/changelog"
+        println("Copying changelog from $BUILD_CHANGELOG_HTML_DIR to $to")
+        copy {
+            from(BUILD_CHANGELOG_HTML_DIR)
+            into(to)
+        }
+    }
+}
+
+task generateChangelog {
+    group FEU_VERT_GROUP
+    description "Generate changelog"
+    dependsOn copyChangelogFiles
+    finalizedBy asciidoctor, copyChangelogToResources
+    copyChangelogToResources.mustRunAfter asciidoctor
+
+    doLast {
+        Map<String, List> daysChangelog = [:]
+        File buildDocsHtmlOutputDir = new File(CHANGELOG_DIR)
+        buildDocsHtmlOutputDir.eachFileRecurse(groovy.io.FileType.FILES) { file ->
+            String[] nameInfo = file.name.split("\\.")
+            if (nameInfo[0].matches("^\\d{4}-\\d{2}-\\d{2}")) {
+                if (!daysChangelog[nameInfo[0]]) {
+                    daysChangelog[nameInfo[0]] = []
+                }
+                daysChangelog[nameInfo[0]] << file.name
+            }
+        }
+        daysChangelog = daysChangelog.sort { a, b -> b.key <=> a.key }
+        String index = generateIndex(daysChangelog, BUILD_CHANGELOG_ASCIIDOCTOR_DIR)
+
+        new File("$BUILD_CHANGELOG_ASCIIDOCTOR_DIR/$INDEX_ADOC").withWriter('UTF-8') { writer ->
+            writer.write(index)
+        }
+    }
+}
+
+asciidoctor {
+    sourceDir = file(BUILD_CHANGELOG_ASCIIDOCTOR_DIR)
+    outputDir = file(BUILD_CHANGELOG_HTML_DIR)
+    attributes 'source-highlighter': 'coderay',
+        'toc': 'left',
+        'icons': 'font'
+}
