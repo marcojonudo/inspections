@@ -3,6 +3,25 @@
 		<mat-icon>chevron_left</mat-icon>
 	</button>
 	<h1>{{inspection.name}}</h1>
+	<button id="context-button" mat-icon-button [matMenuTriggerFor]="contextMenu" [class.pulse]="updateVersion">
+		<span></span>
+		<span></span>
+		<span></span>
+	</button>
+	<mat-menu #contextMenu="matMenu" xPosition="before">
+<!--		<button mat-menu-item>-->
+<!--			<mat-icon>timeline</mat-icon>-->
+<!--			<span>Histórico de cambios</span>-->
+<!--		</button>-->
+		<button mat-menu-item *ngIf="updateVersion" (click)="refresh()">
+			<mat-icon>upgrade</mat-icon>
+			<span>Actualizar versión</span>
+		</button>
+		<div id="context-menu-version">
+			{{version}}
+			<span id="update-indicator" *ngIf="updateVersion"></span>
+		</div>
+	</mat-menu>
 </mat-toolbar>
 <div id="items-container" class="no-print">
 	<ng-container

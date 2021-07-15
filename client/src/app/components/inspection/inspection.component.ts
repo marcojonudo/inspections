@@ -2,7 +2,7 @@ import {
 	AfterViewInit,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
-	Component, ElementRef, HostListener,
+	Component, ElementRef, HostListener, OnInit,
 	ViewChild
 } from '@angular/core';
 import {Inspection} from '../../objects/inspections/inspection';
@@ -19,7 +19,7 @@ import {SelectSavedItem} from '../../objects/inspections/saved-items/select-save
 import {Employee} from '../../objects/employee';
 import {EmployeeService} from '../../services/employee.service';
 import {Order} from '../../objects/orders/order';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {MatList} from '@angular/material/list';
 import {MatAccordion} from '@angular/material/expansion';
 import {LoadingService} from '../../services/loading.service';
@@ -28,9 +28,10 @@ import {ResetEmployeeDialogComponent} from '../reset-employee-dialog/reset-emplo
 import {LocalStorageService} from '../../services/local-storage.service';
 import {ListElement} from '../../objects/list-elements/list-element';
 import {Category} from '../../objects/list-elements/category';
-import {fromEvent} from 'rxjs';
-import {debounceTime, tap} from 'rxjs/operators';
+import {fromEvent, of} from 'rxjs';
+import {debounceTime, filter, tap} from 'rxjs/operators';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
+import {VersionService} from '../../services/version.service';
 
 @Component({
 	selector: 'app-inspection',
@@ -38,7 +39,7 @@ import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component
 	styleUrls: ['./inspection.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InspectionComponent implements AfterViewInit {
+export class InspectionComponent implements OnInit, AfterViewInit {
 
 	@ViewChild('toolBar') toolBar: ElementRef;
 	@ViewChild(MatList, { read: ElementRef }) itemsList: ElementRef;
@@ -50,6 +51,12 @@ export class InspectionComponent implements AfterViewInit {
 	scroll: boolean;
 	openedCategories: string[];
 	openedMenu: boolean;
+	refreshed: boolean;
+
+	version: string;
+	updateVersion: boolean;
+
+	versionInterval: any;
 
 	@HostListener(Constants.EVENT.TOUCH_START, ['$event'])
 	onTouchStart(event): void {
@@ -62,20 +69,41 @@ export class InspectionComponent implements AfterViewInit {
 		private inspectionService: InspectionService,
 		private bottomSheet: MatBottomSheet,
 		private loadingService: LoadingService,
+		private versionService: VersionService,
 		private dialog: MatDialog,
 		private router: Router,
 		private cdRef: ChangeDetectorRef
 	) {
 		this.listElements = InspectionService.findGroupedItems(this.inspection.items);
 		console.log('List elements', this.listElements);
+
 		this.scroll = false;
 		this.openedCategories = [];
+
+		this.version = LocalStorageService.getItem(Constants.LOCAL_STORAGE.VERSION);
+		this.refreshed = false;
+
 		const resetEmployee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE);
 		if (resetEmployee) {
 			this.handleEmployeeDialog();
 		} else {
 			this.setResetEmployeeTimeout();
 		}
+
+		this.router.events.pipe(
+			filter(event => event instanceof NavigationEnd)
+		).subscribe((event: NavigationEnd) => {
+			this.refreshed = event.id === 1;
+		});
+
+		this.versionInterval = setInterval(
+			() => this.handleVersion(true),
+			Constants.CHECK_VERSION_INTERVAL
+		);
+	}
+
+	ngOnInit(): void {
+		this.handleVersion(false);
 	}
 
 	ngAfterViewInit(): void {
@@ -180,7 +208,9 @@ export class InspectionComponent implements AfterViewInit {
 	}
 
 	goBack(): void {
-		const dialogRef = this.dialog.open(ConfirmDialogComponent, { data: Constants.MESSAGE.WARNING_GOING_BACK });
+		const dialogRef = this.dialog.open(
+			ConfirmDialogComponent, { data: Constants.MESSAGE.WARNING_GOING_BACK, autoFocus: false }
+		);
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
 				this.router.navigate([Constants.PATH.INIT]);
@@ -256,6 +286,21 @@ export class InspectionComponent implements AfterViewInit {
 
 	checkScrolledItem(item: Item, pressingItem: Item = this.pressingItem, scroll: boolean = this.scroll): boolean {
 		return pressingItem && scroll ? item.name === pressingItem.name : false;
+	}
+
+	refresh(): void {
+		window.location.reload();
+	}
+
+	handleVersion(scheduled: boolean): void {
+		this.versionService.handleVersion(scheduled, this.refreshed).subscribe(showUpdateIndicator => {
+			if (showUpdateIndicator) {
+				this.updateVersion = showUpdateIndicator;
+				this.cdRef.detectChanges();
+			} else {
+				this.version = LocalStorageService.getItem(Constants.LOCAL_STORAGE.VERSION);
+			}
+		});
 	}
 
 }
