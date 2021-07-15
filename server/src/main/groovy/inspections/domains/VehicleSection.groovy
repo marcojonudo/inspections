@@ -8,9 +8,14 @@ class VehicleSection implements GormEntity<VehicleSection> {
 
 	String code
 	String name
+	int order
 
 	static constraints = {
 		name maxSize: 45
+	}
+
+	static mapping = {
+		order column: '`order`'
 	}
 
 }
