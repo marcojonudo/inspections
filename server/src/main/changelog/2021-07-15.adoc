@@ -1,2 +1,0 @@
-- [.label-new]#Histórico de cambios#
-- [.label-fix]#Solución a algunas revisiones no encontradas al introducir el código corto de la orden#

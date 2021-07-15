@@ -1,2 +1,0 @@
-- [.label-new]#Añadido cuadro de texto de comentarios#
-- [.label-improvement]#Se rellena el código de empleado automáticamente al ir atrás desde la pantalla de revisión#

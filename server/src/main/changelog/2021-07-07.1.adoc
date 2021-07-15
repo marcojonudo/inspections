@@ -1,0 +1,2 @@
+- [.label-improvement]#Añadido placeholder a los elementos de texto de fecha de neumáticos.#
+- [.label-improvement]#Se asocia la matrícula del vehículo a la revisión guardad en base de datos.#

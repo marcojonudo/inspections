@@ -1,2 +1,0 @@
-- [.label-improvement]#Añadido popup de confirmación al volver atrás desde la pantalla de revisiones#
-- [.label-fix]#Corrección del orden de los elementos en la hoja impresa#

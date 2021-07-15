@@ -1,0 +1,1 @@
+- [.label-improvement]#Se evita que, una vez completado un elemento, se pueda volver a seleccionar la opción 'Pendiente'.#
