@@ -9,10 +9,10 @@
 		<span></span>
 	</button>
 	<mat-menu #contextMenu="matMenu" xPosition="before">
-<!--		<button mat-menu-item>-->
-<!--			<mat-icon>timeline</mat-icon>-->
-<!--			<span>Histórico de cambios</span>-->
-<!--		</button>-->
+		<button mat-menu-item (click)="openChangelog()">
+			<mat-icon>timeline</mat-icon>
+			<span>Histórico de cambios</span>
+		</button>
 		<button mat-menu-item *ngIf="updateVersion" (click)="refresh()">
 			<mat-icon>upgrade</mat-icon>
 			<span>Actualizar versión</span>

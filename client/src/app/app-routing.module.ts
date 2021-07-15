@@ -20,7 +20,7 @@ const routes: Routes = [
 		path: 'inspection',
 		component: InspectionComponent,
 		canActivate: [NavigationGuard, InspectionGuard],
-		data: {animation: 'InspectionPage'},
+		data: { animation: 'InspectionPage' },
 		children: [
 			{ path: 'print', outlet: 'print', component: PrintComponent }
 		]

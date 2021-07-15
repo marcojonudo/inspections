@@ -15,7 +15,11 @@ export class Url {
 	}
 
 	static info(): string {
-		return `${environment.serverUrl}/info`;
+		return `${environment.serverUrl}/info`.replace('localhost', '192.9.84.1');
+	}
+
+	static changelog(): string {
+		return `${environment.serverUrl}/changelog`;
 	}
 
 }

@@ -22,6 +22,9 @@ micronaut:
             swagger-ui:
                 paths: classpath:META-INF/swagger/views/swagger-ui
                 mapping: /swagger-ui/**
+            changelog:
+                paths: classpath:changelog
+                mapping: /changelog/**
 
 endpoints:
     beans:
