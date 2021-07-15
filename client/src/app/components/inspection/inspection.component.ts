@@ -29,11 +29,10 @@ import {LocalStorageService} from '../../services/local-storage.service';
 import {ListElement} from '../../objects/list-elements/list-element';
 import {Category} from '../../objects/list-elements/category';
 import {fromEvent} from 'rxjs';
-import {debounceTime, filter, map, tap} from 'rxjs/operators';
+import {debounceTime, filter, tap} from 'rxjs/operators';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 import {VersionService} from '../../services/version.service';
 import {Url} from '../../objects/url';
-import {HttpClient} from '@angular/common/http';
 
 @Component({
 	selector: 'app-inspection',
@@ -274,8 +273,14 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		InspectionService.updateTextItem(itemName, text);
 	}
 
-	openLegend(options: SelectItemOption[]): void {
-		this.bottomSheet.open(LegendComponent, {data: options});
+	openLegend(item: SelectItem): void {
+		const bottomSheetRef = this.bottomSheet.open(LegendComponent, { data: item.options });
+		bottomSheetRef.afterDismissed().subscribe((option: SelectItemOption) => {
+			if (option) {
+				InspectionService.updateSelectItem(item.name, option.name);
+				this.cdRef.detectChanges();
+			}
+		});
 	}
 
 	updateGroupedItems(): void {

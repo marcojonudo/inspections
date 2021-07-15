@@ -1,5 +1,5 @@
 <mat-list>
-	<mat-list-item *ngFor="let option of options">
+	<mat-list-item *ngFor="let option of options" (click)="selectOption(option)">
 		<mat-icon mat-list-icon [style.color]="findIconColor(option.code)">{{option.icon}}</mat-icon>
 		<div mat-line>{{option.name}}</div>
 	</mat-list-item>
