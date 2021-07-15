@@ -39,7 +39,7 @@ class InspectionService {
 	 */
 	OrderInfo findOrderInfo(String shortCode) {
 		Integer orderNumber = orderTimeDataService.findOrderTimeOrderNumber(
-			shortCode, [sort: 'orderNumber', order: 'desc', max: 1]
+			shortCode, [sort: 'day', order: 'desc', max: 1]
 		)
 		OrderInfo orderInfo = null
 		if (orderNumber) {
