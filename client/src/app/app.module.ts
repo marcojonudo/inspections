@@ -29,7 +29,6 @@ import {ConfirmDialogComponent} from './components/confirm-dialog/confirm-dialog
 import {MatDialogModule} from '@angular/material/dialog';
 import localeEs from '@angular/common/locales/es';
 import {registerLocaleData} from '@angular/common';
-registerLocaleData(localeEs);
 import * as dayjs from 'dayjs';
 import * as es from 'dayjs/locale/es';
 import {Constants} from './objects/constants';
@@ -41,6 +40,9 @@ import {MatTableModule} from '@angular/material/table';
 import {ChartsModule} from 'ng2-charts';
 import {SavedItemPipe} from './pipes/saved-item.pipe';
 import {MatMenuModule} from '@angular/material/menu';
+import { HiddenPipe } from './pipes/hidden.pipe';
+
+registerLocaleData(localeEs);
 
 @NgModule({
 	declarations: [
@@ -57,7 +59,8 @@ import {MatMenuModule} from '@angular/material/menu';
 		SplashScreenComponent,
 		ResetEmployeeDialogComponent,
 		PrintComponent,
-		SavedItemPipe
+		SavedItemPipe,
+		HiddenPipe
 	],
 	imports: [
 		BrowserModule,

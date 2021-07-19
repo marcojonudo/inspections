@@ -14,6 +14,8 @@ export abstract class SavedItem {
 		this.filled = savedItem && savedItem.filled ? dayjs(savedItem.filled) : undefined;
 	}
 
+	abstract findValue(): string;
+
 	abstract update(value: string, employeeCode: string): void;
 
 	abstract reset(employeeCode: string, item: Item): void;

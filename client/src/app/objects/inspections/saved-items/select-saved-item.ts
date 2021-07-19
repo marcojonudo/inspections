@@ -13,6 +13,10 @@ export class SelectSavedItem extends SavedItem {
 			item.options.find(o => o.order === Constants.SELECT_ITEM_OPTION_MIN_ORDER).name;
 	}
 
+	findValue(): string {
+		return this.value;
+	}
+
 	update(value: string, employeeCode: string): void {
 		this.value = value;
 		this.updateCommonFields(employeeCode);

@@ -1,11 +1,9 @@
 package inspections.domains.items
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
 import grails.gorm.annotation.Entity
-import inspections.domains.GaragePosition
-import inspections.domains.Inspection
-import inspections.domains.ItemCategory
-import inspections.domains.VehicleSection
+import inspections.domains.*
 import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.SelectSavedItem
 import inspections.domains.savedItems.TextSavedItem
@@ -27,7 +25,10 @@ class Item implements GormEntity<Item> {
 	@JsonIgnore
 	Set<Inspection> inspections
 
-	static hasMany = [inspections: Inspection]
+	@JsonInclude
+	Set<ItemRelation> relations
+
+	static hasMany = [inspections: Inspection, relations: ItemRelation]
 
 	static belongsTo = Inspection
 
@@ -46,6 +47,7 @@ class Item implements GormEntity<Item> {
 		category lazy: false
 		garagePosition lazy: false
 		vehicleSection lazy: false
+		relations fetch: 'join'
 	}
 
 	enum Type {

@@ -10,6 +10,10 @@ export class TextSavedItem extends SavedItem {
 		this.text = savedItem?.text;
 	}
 
+	findValue(): string {
+		return this.text;
+	}
+
 	update(text: string, employeeCode: string): void {
 		this.text = text;
 		this.updateCommonFields(employeeCode);
