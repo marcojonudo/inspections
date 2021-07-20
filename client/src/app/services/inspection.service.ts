@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, throwError} from 'rxjs';
+import {from, Observable, of, throwError} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Url} from '../objects/url';
 import {Order} from '../objects/orders/order';
@@ -9,7 +9,7 @@ import * as dayjs from 'dayjs';
 import {LocalStorageService} from './local-storage.service';
 import {Constants} from '../objects/constants';
 import {EmployeeService} from './employee.service';
-import {catchError, concatMap, finalize, map} from 'rxjs/operators';
+import {catchError, concatMap, finalize, map, tap} from 'rxjs/operators';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {SelectSavedItem} from '../objects/inspections/saved-items/select-saved-item';
 import {Builder} from '../objects/builder';
@@ -21,6 +21,8 @@ import {Category} from '../objects/list-elements/category';
 import {NameElement} from '../objects/list-elements/name-element';
 import {SelectItemOption} from '../objects/inspections/items/select-item-option';
 import {SelectItem} from '../objects/inspections/items/select-item';
+import {ItemRelation} from '../objects/inspections/item-relation';
+import {SavedItem} from '../objects/inspections/saved-items/saved-item';
 
 @Injectable({
 	providedIn: 'root'
@@ -49,19 +51,19 @@ export class InspectionService {
 	];
 
 	private static readonly ITEM_RELATION_ACTION: any = {
-		HIDE: (targetItem: Item) =>
-			InspectionService.toggleHiddenItem(targetItem),
-		REPLICATE: (targetItem: Item, targetSavedItem: SelectSavedItem, newValue: string) =>
-			InspectionService.updateItemValue(targetSavedItem, newValue)
+		HIDE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
+			targetSavedItem.toggleHidden(employeeCode),
+		REPLICATE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
+			targetSavedItem.update(newValue, employeeCode)
 	};
 
 	private static readonly ITEM_RELATION_RESTORE_ACTION: any = {
-		HIDE: (targetItem: Item) =>
-			InspectionService.toggleHiddenItem(targetItem),
-		REPLICATE: (targetItem: Item, targetSavedItem: SelectSavedItem, newValue: string) =>
-			InspectionService.updateItemValue(
-				targetSavedItem,
-				InspectionService.findSelectItemOption(Constants.SELECT_ITEM_OPTION_CODE.P).name
+		HIDE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
+			targetSavedItem.toggleHidden(employeeCode),
+		REPLICATE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
+			targetSavedItem.update(
+				InspectionService.findSelectItemOption(Constants.SELECT_ITEM_OPTION_CODE.P).name,
+				employeeCode
 			)
 	};
 
@@ -86,7 +88,6 @@ export class InspectionService {
 			Builder.buildSavedInspection(
 				inspection, EmployeeService.employee.code, this.order.number, this.order.vehicle.numberPlate
 			);
-		this.loadRelations();
 		this.selectItemOptions = this.findSelectItemOptions();
 
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.INSPECTION, this.inspection);
@@ -101,7 +102,6 @@ export class InspectionService {
 		this.savedInspection = Builder.loadSavedInspection(
 			LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION)
 		);
-		this.loadRelations();
 
 		this.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
 		this.centre = LocalStorageService.getItem(Constants.LOCAL_STORAGE.CENTRE);
@@ -122,15 +122,6 @@ export class InspectionService {
 	static checkLocalInspection(orderNumber: number): boolean {
 		const localSavedInspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION);
 		return localSavedInspection && localSavedInspection.orderNumber === orderNumber;
-	}
-
-	static loadRelations(items: Item[] = this.inspection.items): void {
-		items.forEach(item => {
-			const savedItem = this.findSavedItem(item.name);
-			return this.updateRelations(
-				savedItem, savedItem.findValue(), item.relations, this.ITEM_RELATION_ACTION
-			).subscribe();
-		});
 	}
 
 	static findGroupedItems(
@@ -213,10 +204,13 @@ export class InspectionService {
 		return subCategories.filter(c => this.checkCompleteCategory(c)).length === subCategories.length;
 	}
 
-	static checkCompleteItems(items: Item[]): boolean {
-		const itemNames = items.map(item => item.name);
-		const savedItems = this.savedInspection.items.filter(savedItem =>
-			itemNames.find(name => name === savedItem.item.name)
+	static checkCompleteItems(items: Item[], savedInspection: SavedInspection = this.savedInspection): boolean {
+		/* Para comprobar si una categoría está completa, se tienen en cuenta sólo aquellos items obligatorios */
+		const itemNames = items.filter(item => item.required).map(item => item.name);
+
+		/* Tampoco se tienen en cuenta aquellos items ocultos */
+		const savedItems = savedInspection.items.filter(savedItem =>
+			!savedItem.hidden && itemNames.find(name => name === savedItem.item.name)
 		);
 		return !(savedItems.find(savedItem => !savedItem.filled) !== undefined);
 	}
@@ -224,7 +218,7 @@ export class InspectionService {
 	static resetInspection(
 		savedInspection: SavedInspection = this.savedInspection, employee: Employee = EmployeeService.employee
 	): void {
-		savedInspection.items.forEach(item => item.reset(employee.code, item.item));
+		savedInspection.items.forEach(item => item.reset(employee.code));
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
@@ -251,25 +245,25 @@ export class InspectionService {
 		);
 	}
 
-	static updateRelations(savedItem: SavedItem, value: string, relations: ItemRelation[], actions: any): Observable<ItemRelation> {
+	static updateRelations(
+		savedItem: SavedItem, value: string, relations: ItemRelation[], actions: any
+	): Observable<ItemRelation> {
 		return from(relations).pipe(
 			tap(itemRelation => InspectionService.handleRelation(savedItem, value, itemRelation, actions))
 		);
 	}
 
-	static handleRelation(savedItem: SavedItem, value: string, itemRelation: ItemRelation, actions: any): void {
+	static handleRelation(
+		savedItem: SavedItem,
+		value: string,
+		itemRelation: ItemRelation,
+		actions: any,
+		employee: Employee = EmployeeService.employee
+	): void {
 		if (value === itemRelation.matchText) {
 			const targetSavedItem = this.findSavedItem(itemRelation.targetItem.name);
-			actions[itemRelation.action](itemRelation.targetItem, targetSavedItem, savedItem.findValue());
+			actions[itemRelation.action](targetSavedItem, savedItem.findValue(), employee.code);
 		}
-	}
-
-	static toggleHiddenItem(item: Item): void {
-		item.hidden = !item.hidden;
-	}
-
-	static updateItemValue(targetSavedItem: SelectSavedItem, value: string): void {
-		targetSavedItem.value = value;
 	}
 
 	findInspection(orderCode: string): Observable<any> {

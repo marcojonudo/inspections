@@ -56,21 +56,21 @@ class Item implements GormEntity<Item> {
 			return Builder.buildTextSavedItem(item)
 		}, { Serializable id, TextSavedItem savedItem, SavedItemDataService savedItemDataService ->
 			return savedItemDataService.textSavedItemDataService.update(
-				id, savedItem.text, savedItem.employeeCode, savedItem.filled
+				id, savedItem.text, savedItem.employeeCode, savedItem.hidden, savedItem.filled
 			)
 		}),
 		SELECT({ Map<String, Object> item ->
 			return Builder.buildSelectSavedItem(item)
 		}, { Serializable id, SelectSavedItem savedItem, SavedItemDataService savedItemDataService ->
 			return savedItemDataService.selectSavedItemDataService.update(
-				id, savedItem.value, savedItem.employeeCode, savedItem.filled
+				id, savedItem.value, savedItem.employeeCode, savedItem.hidden, savedItem.filled
 			)
 		}),
 		TEXT_AREA({ Map<String, Object> item ->
 			return Builder.buildTextSavedItem(item)
 		}, { Serializable id, TextSavedItem savedItem, SavedItemDataService savedItemDataService ->
 			return savedItemDataService.textSavedItemDataService.update(
-				id, savedItem.text, savedItem.employeeCode, savedItem.filled
+				id, savedItem.text, savedItem.employeeCode, savedItem.hidden, savedItem.filled
 			)
 		})
 
