@@ -320,4 +320,9 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		window.open(Url.changelog(), '_self');
 	}
 
+	completeCategory(event: Event, category: Category): void {
+		event.stopPropagation();
+		InspectionService.handleCategoryComplete(category);
+	}
+
 }

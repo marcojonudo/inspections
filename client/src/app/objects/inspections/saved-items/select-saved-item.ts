@@ -10,7 +10,7 @@ export class SelectSavedItem extends SavedItem {
 		super(item, employeeCode, savedItem);
 		this.value = savedItem ?
 			savedItem.value :
-			item.options.find(o => o.order === Constants.SELECT_ITEM_OPTION_MIN_ORDER).name;
+			item.options.find(o => o.code === Constants.SELECT_ITEM_OPTION_CODE.P).name;
 	}
 
 	findValue(): string {
@@ -23,7 +23,7 @@ export class SelectSavedItem extends SavedItem {
 	}
 
 	reset(employeeCode: string): void {
-		this.value = (this.item as SelectItem).options.find(o => o.order === Constants.SELECT_ITEM_OPTION_MIN_ORDER).name;
+		this.value = (this.item as SelectItem).options.find(o => o.code === Constants.SELECT_ITEM_OPTION_CODE.P).name;
 		this.updateCommonFields(employeeCode);
 	}
 

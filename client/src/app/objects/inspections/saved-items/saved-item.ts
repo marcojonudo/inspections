@@ -26,7 +26,6 @@ export abstract class SavedItem {
 
 	toggleHidden(employeeCode: string): void {
 		this.hidden = !this.hidden;
-		console.log('next', this.hidden);
 		this.reset(employeeCode);
 	}
 
