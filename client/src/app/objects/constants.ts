@@ -23,7 +23,7 @@ export class Constants {
 		ERROR_SAVING_INSPECTION: 'Error al guardar la revisión. Por favor, inténtalo de nuevo',
 		SAVED_INSPECTION: 'Revisión guardada correctamente',
 		NON_COMPLETE_INSPECTION: 'Revisión no terminada. Por favor, rellena todos los elementos',
-		WARNING_GOING_BACK: 'Si vuelves a la pantalla de inicio, perderás los cambios que no hayas guardado'
+		WARNING_GOING_BACK: '¿Seguro que quieres volver a la pantalla de inicio?'
 	};
 
 	static readonly PANEL_INFO_TYPE: any = {
@@ -50,7 +50,8 @@ export class Constants {
 		EMPLOYEES: 'employees',
 		RESET_EMPLOYEE: 'resetEmployee',
 		CENTRE: 'centre',
-		VERSION: 'version'
+		VERSION: 'version',
+		MANUAL_EXIT: 'manualExit'
 	};
 
 	static readonly EVENT: any = {

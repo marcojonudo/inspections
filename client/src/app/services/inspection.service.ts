@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, throwError} from 'rxjs';
+import {forkJoin, Observable, of, throwError} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Url} from '../objects/url';
 import {Order} from '../objects/orders/order';
@@ -97,6 +97,11 @@ export class InspectionService {
 		console.log('Employees', EmployeeService.employees);
 		console.log('Selected employee', EmployeeService.employee);
 		console.log('Select item options', this.selectItemOptions);
+	}
+
+	static checkLocalInspection(orderNumber: number): boolean {
+		const localSavedInspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION);
+		return localSavedInspection && localSavedInspection.orderNumber === orderNumber;
 	}
 
 	static findGroupedItems(
@@ -226,9 +231,11 @@ export class InspectionService {
 				errorText = errorText ? errorText : Constants.MESSAGE.NONEXISTENT_INSPECTIONS;
 				return throwError(error);
 			}),
-			map((inspectionInfo: any) => {
-				console.log('Received inspection info', inspectionInfo);
-				InspectionService.initInspection(inspectionInfo.inspection, inspectionInfo.savedInspection);
+			map(inspectionInfo => {
+				if (inspectionInfo) {
+					console.log('Received inspection info', inspectionInfo);
+					InspectionService.initInspection(inspectionInfo.inspection, inspectionInfo.savedInspection);
+				}
 			}),
 			finalize(() => {
 				if (errorText) {
@@ -246,6 +253,10 @@ export class InspectionService {
 	}
 
 	findInspections(orderNumber: number): Observable<any> {
+		if (InspectionService.checkLocalInspection(orderNumber)) {
+			InspectionService.loadInfo();
+			return of(undefined);
+		}
 		const url = `${Url.inspection()}?orderNumber=${orderNumber}`;
 		return this.http.get(url);
 	}

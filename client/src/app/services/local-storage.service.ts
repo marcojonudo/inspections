@@ -26,4 +26,8 @@ export class LocalStorageService {
 		});
 	}
 
+	static removeItem(item: string): void {
+		localStorage.removeItem(item);
+	}
+
 }

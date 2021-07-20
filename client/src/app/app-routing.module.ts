@@ -2,24 +2,24 @@ import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {InitialDataComponent} from './components/initial-data/initial-data.component';
 import {InspectionComponent} from './components/inspection/inspection.component';
-import {InspectionGuard} from './auth/inspection-guard';
+import {InspectionGuard} from './guards/inspection-guard';
 import {EmployeesResolver} from './resolvers/employees-resolver';
 import {PrintComponent} from './components/print/print.component';
-import {NavigationGuard} from './auth/navigation-guard';
+import {InitGuard} from './guards/init-guard';
 
 
 const routes: Routes = [
 	{
 		path: 'init',
 		component: InitialDataComponent,
-		canActivate: [NavigationGuard],
+		canActivate: [InitGuard],
 		data: { animation: 'InitPage' },
 		resolve: { employees: EmployeesResolver }
 	},
 	{
 		path: 'inspection',
 		component: InspectionComponent,
-		canActivate: [NavigationGuard, InspectionGuard],
+		canActivate: [InspectionGuard],
 		data: { animation: 'InspectionPage' },
 		children: [
 			{ path: 'print', outlet: 'print', component: PrintComponent }

@@ -214,6 +214,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		);
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
+				LocalStorageService.setItem(Constants.LOCAL_STORAGE.MANUAL_EXIT, true);
 				this.router.navigate([Constants.PATH.INIT]);
 			}
 		});
