@@ -4,7 +4,6 @@ import {RouterOutlet} from '@angular/router';
 import {leaveAnimation, routeAnimations} from './animations';
 import {LoadingService} from './services/loading.service';
 import {Constants} from './objects/constants';
-import {NavigationService} from './services/navigation.service';
 
 @Component({
 	selector: 'app-root',
@@ -19,11 +18,6 @@ export class AppComponent implements OnInit {
 
 	showSplashScreen: boolean;
 	loading: boolean;
-
-	@HostListener('window:popstate', ['$event'])
-	onPopState() {
-		NavigationService.backButtonPressed = true;
-	}
 
 	constructor(private loadingService: LoadingService, private cdRef: ChangeDetectorRef) {
 		this.showSplashScreen = true;
