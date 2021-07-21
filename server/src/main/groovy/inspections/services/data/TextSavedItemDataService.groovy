@@ -8,6 +8,6 @@ import java.time.LocalDateTime
 @Service(TextSavedItem)
 interface TextSavedItemDataService {
 
-	TextSavedItem update(Serializable id, String text, String employeeCode, LocalDateTime filled)
+	TextSavedItem update(Serializable id, String text, String employeeCode, boolean hidden, LocalDateTime filled)
 
 }

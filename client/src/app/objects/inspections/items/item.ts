@@ -2,6 +2,7 @@ import {ItemCategory} from '../item-category';
 import {GaragePosition} from '../garage-position';
 import {VehicleSection} from '../vehicle-section';
 import {ListElement} from '../../list-elements/list-element';
+import {ItemRelation} from '../item-relation';
 
 export class Item implements ListElement {
 
@@ -11,6 +12,7 @@ export class Item implements ListElement {
 	category: ItemCategory;
 	garagePosition: GaragePosition;
 	vehicleSection: VehicleSection;
+	relations: ItemRelation[];
 	required: boolean;
 
 	constructor(item: any) {

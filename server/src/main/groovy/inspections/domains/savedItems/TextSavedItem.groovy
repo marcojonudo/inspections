@@ -14,7 +14,7 @@ class TextSavedItem extends SavedItem implements GormEntity<TextSavedItem> {
 	}
 
 	boolean equals(SavedItem savedItem) {
-		return text == ((TextSavedItem) savedItem).text
+		return equalsSaveItem(savedItem) && text == ((TextSavedItem) savedItem).text
 	}
 
 }

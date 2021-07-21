@@ -10,7 +10,7 @@ class SelectSavedItem extends SavedItem implements GormEntity<SelectSavedItem> {
 	String value
 
 	boolean equals(SavedItem savedItem) {
-		return value == ((SelectSavedItem) savedItem).value
+		return equalsSaveItem(savedItem) && value == ((SelectSavedItem) savedItem).value
 	}
 
 }

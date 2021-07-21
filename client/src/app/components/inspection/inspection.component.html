@@ -51,7 +51,7 @@
 			</mat-expansion-panel>
 		</mat-accordion>
 		<mat-list *ngIf="checkMenuItems(list)">
-			<mat-list-item *ngFor="let item of findMenuItems(list) | order">
+			<mat-list-item *ngFor="let item of findMenuItems(list) | order | hidden">
 				<div
 					*ngIf="checkItemType(item.type, selectType)"
 					class="item select-item"
@@ -84,9 +84,9 @@
 						<input
 							matInput
 							type="tel"
-							[placeholder]="item.placeholder"
+							[placeholder]="findTextItem(item).placeholder"
 							[(ngModel)]="findTextSavedItem(item.name).text"
-							(change)="updateText(item.name)">
+							(change)="updateText(item)">
 					</mat-form-field>
 				</div>
 				<div *ngIf="checkItemType(item.type, textAreaType)" class="item text-item">
@@ -98,7 +98,7 @@
 							cdkAutosizeMinRows="1"
 							cdkAutosizeMaxRows="5"
 							[(ngModel)]="findTextSavedItem(item.name).text"
-							(change)="updateText(item.name)">
+							(change)="updateText(item)">
 						</textarea>
 					</mat-form-field>
 				</div>

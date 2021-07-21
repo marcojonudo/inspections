@@ -33,6 +33,7 @@ import {debounceTime, filter, tap} from 'rxjs/operators';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 import {VersionService} from '../../services/version.service';
 import {Url} from '../../objects/url';
+import {TextItem} from '../../objects/inspections/items/text-item';
 
 @Component({
 	selector: 'app-inspection',
@@ -77,7 +78,6 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	) {
 		this.listElements = InspectionService.findGroupedItems(this.inspection.items);
 		console.log('List elements', this.listElements);
-
 		this.scroll = false;
 		this.openedCategories = [];
 
@@ -237,6 +237,10 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		return item as SelectItem;
 	}
 
+	findTextItem(item: Item): TextItem {
+		return item as TextItem;
+	}
+
 	findSelectSavedItem(itemName: string, savedInspection: SavedInspection = this.savedInspection): SelectSavedItem {
 		return savedInspection.items.find(savedItem => savedItem.item.name === itemName) as SelectSavedItem;
 	}
@@ -267,19 +271,19 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		/* Con el segundo sumando, se evita que la opción por defecto ('Pendiente') sea seleccionada de nuevo */
 		const newIndex = (selectedIndex + 1) % item.options.length + Math.floor(selectedIndex / (item.options.length - 1));
 
-		InspectionService.updateSelectItem(item.name, item.options[newIndex].name);
+		InspectionService.updateItem(item, item.options[newIndex].name).subscribe();
 	}
 
-	updateText(itemName: string): void {
-		const text = this.findTextSavedItem(itemName).text;
-		InspectionService.updateTextItem(itemName, text);
+	updateText(item: Item): void {
+		const text = this.findTextSavedItem(item.name).text;
+		InspectionService.updateItem(item, text).subscribe();
 	}
 
 	openLegend(item: SelectItem): void {
 		const bottomSheetRef = this.bottomSheet.open(LegendComponent, { data: item.options });
 		bottomSheetRef.afterDismissed().subscribe((option: SelectItemOption) => {
 			if (option) {
-				InspectionService.updateSelectItem(item.name, option.name);
+				InspectionService.updateItem(item, option.name);
 				this.cdRef.detectChanges();
 			}
 		});

@@ -26,6 +26,7 @@ class Builder {
 			garagePosition: garagePosition ? new GaragePosition(code: (String) garagePosition.code, name: (String) garagePosition.name) : null
 		)
 		savedItem.employeeCode = item.employeeCode
+		savedItem.hidden = item.hidden
 		savedItem.filled = (LocalDateTime) (item.filled ? LocalDateTime.parse(
 			(String) item.filled, DateTimeFormatter.ofPattern(Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss)
 		) : null)
