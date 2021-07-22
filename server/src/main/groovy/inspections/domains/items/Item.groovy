@@ -15,6 +15,7 @@ import org.grails.datastore.gorm.GormEntity
 class Item implements GormEntity<Item> {
 
 	Type type
+	String code
 	String name
 	Integer order
 	ItemCategory category

@@ -34,14 +34,14 @@ export class Builder {
 				new ItemRelation(itemRelation, items.find(i => i.name === itemRelation.targetItem.name))
 			);
 		});
-		return new Inspection(inspection.name, items);
+		return new Inspection(inspection.code, inspection.name, items);
 	}
 
 	static buildSavedInspection(
 		inspection: Inspection, employeeCode: string, orderNumber: number, numberPlate: string
 	): SavedInspection {
 		const savedItems = inspection.items.map(item => this.savedItemBuilder[item.type](item, employeeCode, undefined));
-		return new SavedInspection(inspection.name, orderNumber, numberPlate, savedItems);
+		return new SavedInspection(inspection.code, inspection.name, orderNumber, numberPlate, savedItems);
 	}
 
 	static loadSavedInspection(savedInspection: any): SavedInspection {
@@ -49,7 +49,7 @@ export class Builder {
 			this.savedItemBuilder[savedItem.item.type](savedItem.item, savedItem.employeeCode, savedItem)
 		);
 		return new SavedInspection(
-			savedInspection.name, savedInspection.orderNumber, savedInspection.numberPlate, savedItems
+			savedInspection.code, savedInspection.name, savedInspection.orderNumber, savedInspection.numberPlate, savedItems
 		);
 	}
 

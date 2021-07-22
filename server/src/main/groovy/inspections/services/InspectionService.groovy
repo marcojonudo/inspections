@@ -84,10 +84,10 @@ class InspectionService {
 	static Inspection buildGroupedInspection(List<Inspection> inspections) {
 		Inspection inspection = null
 		if (inspections) {
-			/* Se obtiene el nombre de la revisión con mayor número de items */
-			String name = inspections.max { it.items.size() }.name
+			/* Se obtienen el código y nombre de la revisión con mayor número de items */
+			Inspection maxInspection = inspections.max { it.items.size() }
 			List<Item> items = ((List<Item>) inspections.items.flatten()).unique { it.name }
-			inspection = new Inspection(name: name, items: items.toSet())
+			inspection = new Inspection(code: maxInspection.code, name: maxInspection.name, items: items.toSet())
 		}
 		return inspection
 	}

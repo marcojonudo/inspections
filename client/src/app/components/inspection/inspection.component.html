@@ -2,7 +2,7 @@
 	<button id="back-icon-button" mat-icon-button (click)="goBack()">
 		<mat-icon>chevron_left</mat-icon>
 	</button>
-	<h1>{{inspection.name}}</h1>
+	<h1 translate>inspection.type.{{inspection.code}}</h1>
 	<button id="context-button" mat-icon-button [matMenuTriggerFor]="contextMenu" [class.pulse]="updateVersion">
 		<span></span>
 		<span></span>
@@ -11,11 +11,11 @@
 	<mat-menu #contextMenu="matMenu" xPosition="before">
 		<button mat-menu-item (click)="openChangelog()">
 			<mat-icon>timeline</mat-icon>
-			<span>Histórico de cambios</span>
+			<span translate>inspection.changelog</span>
 		</button>
 		<button mat-menu-item *ngIf="updateVersion" (click)="refresh()">
 			<mat-icon>upgrade</mat-icon>
-			<span>Actualizar versión</span>
+			<span translate>inspection.updateVersion</span>
 		</button>
 		<div id="context-menu-version">
 			{{version}}
@@ -37,7 +37,7 @@
 				(opened)="addOpenedCategory(category.name)"
 				(closed)="removeOpenedCategory(category.name)">
 				<mat-expansion-panel-header class="category-title" [class.sub-category-title]="index > 0">
-					<mat-panel-title>{{category.name}}</mat-panel-title>
+					<mat-panel-title translate>inspection.category.{{category.code}}</mat-panel-title>
 					<button mat-icon-button class="category-title-button" (click)="completeCategory($event, category)">
 						<mat-icon [class.rotated]="checkCompleteCategory(category)">pending</mat-icon>
 						<mat-icon [class.rotated]="!checkCompleteCategory(category)">check_circle</mat-icon>
@@ -62,7 +62,7 @@
 					(pressingEmitter)="setPressingItem(item)"
 					(longPressEmitter)="openLegend(findSelectItem(item))">
 					<div class="select-item-content">
-						<div>{{item.name}}</div>
+						<div translate>inspection.item.{{item.code}}</div>
 						<div class="select-item-icon-container">
 							<mat-icon
 								*ngFor="let option of findSelectItem(item).options | order; let i = index"
@@ -80,7 +80,7 @@
 				</div>
 				<div *ngIf="checkItemType(item.type, textType)" class="item text-item">
 					<mat-form-field class="text-item-input">
-						<mat-label>{{item.name}}</mat-label>
+						<mat-label translate>inspection.item.{{item.code}}</mat-label>
 						<input
 							matInput
 							type="tel"
@@ -91,7 +91,7 @@
 				</div>
 				<div *ngIf="checkItemType(item.type, textAreaType)" class="item text-item">
 					<mat-form-field appearance="standard" class="text-item-input">
-						<mat-label>{{item.name}}</mat-label>
+						<mat-label translate>inspection.item.{{item.code}}</mat-label>
 						<textarea
 							matInput
 							cdkTextareaAutosize

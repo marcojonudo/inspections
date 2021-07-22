@@ -7,6 +7,7 @@ import {ItemRelation} from '../item-relation';
 export class Item implements ListElement {
 
 	type: string;
+	code: string;
 	name: string;
 	order: number;
 	category: ItemCategory;
@@ -17,6 +18,7 @@ export class Item implements ListElement {
 
 	constructor(item: any) {
 		this.type = item.type;
+		this.code = item.code;
 		this.name = item.name;
 		this.order = item.order;
 		this.category = item.category ? new ItemCategory(item.category) : undefined;
