@@ -17,6 +17,13 @@ export class SelectSavedItem extends SavedItem {
 		return this.value;
 	}
 
+	isFilled(): boolean {
+		const defaultValue = (this.item as SelectItem).options.find(o =>
+			o.code === Constants.SELECT_ITEM_OPTION_CODE.P
+		).name;
+		return this.findValue() !== defaultValue;
+	}
+
 	update(value: string, employeeCode: string): void {
 		this.value = value;
 		this.updateCommonFields(employeeCode);

@@ -212,7 +212,7 @@ export class InspectionService {
 		const savedItems = savedInspection.items.filter(savedItem =>
 			!savedItem.hidden && itemNames.find(name => name === savedItem.item.name)
 		);
-		return !(savedItems.find(savedItem => !savedItem.filled) !== undefined);
+		return !(savedItems.find(savedItem => !savedItem.isFilled()) !== undefined);
 	}
 
 	static handleCategoryComplete(category: Category, savedInspection: SavedInspection = this.savedInspection): void {

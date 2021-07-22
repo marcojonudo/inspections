@@ -20,6 +20,8 @@ export abstract class SavedItem {
 
 	abstract findValue(): string;
 
+	abstract isFilled(): boolean;
+
 	abstract update(value: string, employeeCode: string): void;
 
 	abstract reset(employeeCode: string): void;
