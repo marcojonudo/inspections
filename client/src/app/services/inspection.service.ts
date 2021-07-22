@@ -29,6 +29,7 @@ import {SavedItem} from '../objects/inspections/saved-items/saved-item';
 })
 export class InspectionService {
 
+	static language: string;
 	static order: Order;
 	static centre: Centre;
 	static inspection: Inspection;
@@ -292,6 +293,17 @@ export class InspectionService {
 			const targetSavedItem = this.findSavedItem(itemRelation.targetItem.name);
 			actions[itemRelation.action](targetSavedItem, savedItem.findValue(), employee.code);
 		}
+	}
+
+	findLanguage(): Observable<string> {
+		const language = LocalStorageService.getItem(Constants.LOCAL_STORAGE.LANGUAGE);
+		return (language ? of(language) : this.http.get(Url.language(), { responseType: 'text' })).pipe(
+			tap((lang: string) => {
+				InspectionService.language = lang;
+				LocalStorageService.setItem(Constants.LOCAL_STORAGE.LANGUAGE, lang);
+				console.log('Language', lang);
+			})
+		);
 	}
 
 	findInspection(orderCode: string): Observable<any> {

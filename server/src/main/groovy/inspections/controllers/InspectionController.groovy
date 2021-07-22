@@ -9,6 +9,7 @@ import inspections.pogos.OrderInfo
 import inspections.services.InspectionService
 import inspections.services.data.EmployeeDataDataService
 import inspections.services.data.InspectionDataService
+import inspections.services.data.LanguageDataService
 import inspections.services.data.OrderTimeDataService
 import inspections.services.data.SavedInspectionDataService
 import io.micronaut.http.HttpResponse
@@ -30,6 +31,7 @@ class InspectionController {
 	@Inject private InspectionDataService inspectionDataService
 	@Inject private SavedInspectionDataService savedInspectionDataService
 	@Inject private EmployeeDataDataService employeeDataDataService
+	@Inject private LanguageDataService languageDataService
 
 	@Get("/employees")
 	@Operation(
@@ -61,16 +63,29 @@ class InspectionController {
 		return inspectionDataService.findAll()
     }
 
+	@Get("/language")
+	@Operation(
+		summary = "Obtiene el idioma de la aplicación",
+		description = "Obtiene el código de idioma de la base de datos"
+	)
+	@ApiResponse(
+		responseCode = "200",
+		description = "Idioma encontrado",
+		content = @Content(mediaType = "text/plain", schema = @Schema(type = "string"))
+	)
+	String findLanguage() {
+		return languageDataService.findLanguageLang()
+	}
+
 	@Get("/order")
 	@Operation(
 		summary = "Obtiene el número de orden a partir del código corto",
 		description = "Obtiene el número de orden a partir del código corto"
 	)
-	@ApiResponse(content = @Content(mediaType = "text/plain", schema = @Schema(type = "integer")))
 	@ApiResponse(
 		responseCode = "200",
 		description = "Número de orden encontrado",
-		content = @Content(mediaType = "text/plain", schema = @Schema(type = "integer"))
+		content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderInfo))
 	)
 	@ApiResponse(
 		responseCode = "404", description = "Número de orden no encontrado"

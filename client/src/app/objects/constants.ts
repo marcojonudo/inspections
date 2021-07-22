@@ -50,7 +50,8 @@ export class Constants {
 		RESET_EMPLOYEE: 'resetEmployee',
 		CENTRE: 'centre',
 		VERSION: 'version',
-		MANUAL_EXIT: 'manualExit'
+		MANUAL_EXIT: 'manualExit',
+		LANGUAGE: 'language'
 	};
 
 	static readonly EVENT: any = {
