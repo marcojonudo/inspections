@@ -58,20 +58,8 @@
 					align-items: center
 					color: $white !important
 
-				&-icon-container
-					position: relative
-					@include flex-center
-					margin-right: 1rem
-					color: $white
-
-					& > mat-icon
-						position: absolute
-						backface-visibility: hidden
-						transition: transform $fast-transition
-						transform: translateX(-50%) rotateY(0)
-
-						&.rotated
-							transform: translateX(-50%) rotateY(-180deg)
+				&-button
+					margin-right: $small-gap
 
 			.sub-category-title
 				background-color: $grey

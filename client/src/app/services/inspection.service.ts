@@ -212,7 +212,35 @@ export class InspectionService {
 		const savedItems = savedInspection.items.filter(savedItem =>
 			!savedItem.hidden && itemNames.find(name => name === savedItem.item.name)
 		);
-		return !(savedItems.find(savedItem => !savedItem.filled) !== undefined);
+		return !(savedItems.find(savedItem => !savedItem.isFilled()) !== undefined);
+	}
+
+	static handleCategoryComplete(category: Category, savedInspection: SavedInspection = this.savedInspection): void {
+		this.completeCategory(category);
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
+	}
+
+	static completeCategory(category: Category): void {
+		const items = this.findMenuItems(category.items);
+		this.completeItems(items);
+
+		const subCategories = this.findMenuCategories(category.items);
+		if (subCategories.length) {
+			subCategories.forEach(subCategory => this.handleCategoryComplete(subCategory));
+		}
+	}
+
+	static completeItems(
+		items: Item[],
+		options: SelectItemOption[] = this.selectItemOptions,
+		employee: Employee = EmployeeService.employee
+	): void {
+		const itemNames = items.filter(item => item.type === Constants.ITEM_TYPE.SELECT).map(item => item.name);
+		const savedItems = this.savedInspection.items.filter(savedItem =>
+			itemNames.find(name => name === savedItem.item.name)
+		);
+		const value = options.find(option => option.code === Constants.SELECT_ITEM_OPTION_CODE.C).name;
+		savedItems.forEach(savedItem => (savedItem as SelectSavedItem).update(value, employee.code));
 	}
 
 	static resetInspection(

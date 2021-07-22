@@ -1,0 +1,5 @@
+- [.label-improvement]#Al abrir la aplicación, se carga la revisión que se estuviera completando anteriormente sin
+necesidad de introducir el código corto.#
+- [.label-new]#Se añaden acciones al modificar elementos de la revisión. Por ejemplo, cuando se define el valor de
+'Pastilla de freno' como 'No aplica', se copia a 'Disco de freno' y se oculta 'Espesor pastilla'.#
+- [.label-new]#El botón de la cabecera de las categorías ahora permite completar todos los elementos de las mismas.#

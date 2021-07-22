@@ -20,13 +20,14 @@ export abstract class SavedItem {
 
 	abstract findValue(): string;
 
+	abstract isFilled(): boolean;
+
 	abstract update(value: string, employeeCode: string): void;
 
 	abstract reset(employeeCode: string): void;
 
 	toggleHidden(employeeCode: string): void {
 		this.hidden = !this.hidden;
-		console.log('next', this.hidden);
 		this.reset(employeeCode);
 	}
 
