@@ -13,8 +13,10 @@ export class Vehicle {
 		this.brand = vehicle.brand;
 		this.model = vehicle.model;
 		this.cylinder = vehicle.cylinder;
-		this.engineCode = vehicle.extraInfo.engineCode;
-		this.power = vehicle.extraInfo.power !== '0.00' ? vehicle.extraInfo.power : undefined;
+		if (vehicle.extraInfo) {
+			this.engineCode = vehicle.extraInfo.engineCode;
+			this.power = vehicle.extraInfo.power !== '0.00' ? vehicle.extraInfo.power : undefined;
+		}
 		this.registrationYear = vehicle.registrationYear;
 	}
 
