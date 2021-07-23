@@ -210,7 +210,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 
 	goBack(): void {
 		const dialogRef = this.dialog.open(
-			ConfirmDialogComponent, { data: { message: Constants.MESSAGE.WARNING_GOING_BACK }, autoFocus: false }
+			ConfirmDialogComponent, { data: { message: Constants.MESSAGE_CODE.WARNING_GOING_BACK }, autoFocus: false }
 		);
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {

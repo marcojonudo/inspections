@@ -10,7 +10,6 @@ import {LocalStorageService} from './local-storage.service';
 import {Constants} from '../objects/constants';
 import {EmployeeService} from './employee.service';
 import {catchError, concatMap, finalize, map, tap} from 'rxjs/operators';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {SelectSavedItem} from '../objects/inspections/saved-items/select-saved-item';
 import {Builder} from '../objects/builder';
 import {Employee} from '../objects/employee';
@@ -23,6 +22,8 @@ import {SelectItemOption} from '../objects/inspections/items/select-item-option'
 import {SelectItem} from '../objects/inspections/items/select-item';
 import {ItemRelation} from '../objects/inspections/item-relation';
 import {SavedItem} from '../objects/inspections/saved-items/saved-item';
+import {TranslateService} from '@ngx-translate/core';
+import {SnackBarService} from './snack-bar.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -68,7 +69,9 @@ export class InspectionService {
 			)
 	};
 
-	constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
+	constructor(
+		private translate: TranslateService, private http: HttpClient, private snackBarService: SnackBarService
+	) {}
 
 	static setOrder(order: Order): Order {
 		this.order = order;
@@ -307,10 +310,10 @@ export class InspectionService {
 	}
 
 	findInspection(orderCode: string): Observable<any> {
-		let errorText;
+		let errorMessageCode;
 		return this.findOrderInfo(orderCode).pipe(
 			catchError(error => {
-				errorText = Constants.MESSAGE.NONEXISTENT_ORDER;
+				errorMessageCode = Constants.MESSAGE_CODE.NONEXISTENT_ORDER;
 				return throwError(error);
 			}),
 			concatMap((orderInfo: any) => {
@@ -321,7 +324,7 @@ export class InspectionService {
 				return this.findInspections(order.number);
 			}),
 			catchError(error => {
-				errorText = errorText ? errorText : Constants.MESSAGE.NONEXISTENT_INSPECTIONS;
+				errorMessageCode = errorMessageCode ? errorMessageCode : Constants.MESSAGE_CODE.NONEXISTENT_INSPECTIONS;
 				return throwError(error);
 			}),
 			map(inspectionInfo => {
@@ -331,10 +334,8 @@ export class InspectionService {
 				}
 			}),
 			finalize(() => {
-				if (errorText) {
-					this.snackBar.open(
-						errorText, '', {verticalPosition: 'top', duration: Constants.SNACK_BAR.DURATION, panelClass: 'warning-snack-bar'}
-					);
+				if (errorMessageCode) {
+					this.snackBarService.open(errorMessageCode, Constants.SNACK_BAR.TYPE.WARNING);
 				}
 			})
 		);
