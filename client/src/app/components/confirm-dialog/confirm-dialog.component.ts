@@ -8,8 +8,6 @@ import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 })
 export class ConfirmDialogComponent {
 
-	constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
-		console.log(data.message);
-	}
+	constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 
 }

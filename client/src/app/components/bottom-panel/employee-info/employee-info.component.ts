@@ -29,7 +29,7 @@ export class EmployeeInfoComponent {
 	}
 
 	openDialog(newEmployeeCode: string, employeeCode: string = this.employeeCode): void {
-		const data = { message: Constants.MESSAGE.UPDATE_EMPLOYEE_MESSAGE, params: { employeeCode, newEmployeeCode } };
+		const data = { message: Constants.MESSAGE_CODE.UPDATE_EMPLOYEE_MESSAGE, params: { employeeCode, newEmployeeCode } };
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, { data });
 		dialogRef.afterClosed().subscribe((update: boolean) => {
 			if (update) {

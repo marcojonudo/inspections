@@ -15,6 +15,7 @@ import {finalize} from 'rxjs/operators';
 import {Constants} from '../../objects/constants';
 import {SnackBarService} from '../../services/snack-bar.service';
 import {Inspection} from '../../objects/inspections/inspection';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-bottom-bar',
@@ -33,6 +34,7 @@ export class BottomBarComponent {
 	constructor(
 		private inspectionService: InspectionService,
 		private printService: PrintService,
+		private translate: TranslateService,
 		private snackBarService: SnackBarService,
 		private bottomSheet: MatBottomSheet,
 		private cdRef: ChangeDetectorRef
@@ -88,8 +90,8 @@ export class BottomBarComponent {
 				this.cdRef.detectChanges();
 			})
 		).subscribe(
-			() => this.snackBarService.open(Constants.MESSAGE.SAVED_INSPECTION),
-			() => this.snackBarService.open(Constants.MESSAGE.ERROR_SAVING_INSPECTION, Constants.SNACK_BAR.TYPE.ERROR)
+			() => this.snackBarService.open(Constants.MESSAGE_CODE.SAVED_INSPECTION),
+			() => this.snackBarService.open(Constants.MESSAGE_CODE.ERROR_SAVING_INSPECTION, Constants.SNACK_BAR.TYPE.ERROR)
 		);
 	}
 
@@ -98,7 +100,7 @@ export class BottomBarComponent {
 		if (completeInspection) {
 			this.printService.print();
 		} else {
-			this.snackBarService.open(Constants.MESSAGE.NON_COMPLETE_INSPECTION, Constants.SNACK_BAR.TYPE.WARNING);
+			this.snackBarService.open(Constants.MESSAGE_CODE.NON_COMPLETE_INSPECTION, Constants.SNACK_BAR.TYPE.WARNING);
 		}
 		this.openedMenu = false;
 	}
