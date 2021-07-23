@@ -14,6 +14,10 @@ export class Url {
 		return `${environment.serverUrl}/inspections/employees`;
 	}
 
+	static language(): string {
+		return `${environment.serverUrl}/inspections/language`;
+	}
+
 	static info(): string {
 		return `${environment.serverUrl}/info`;
 	}

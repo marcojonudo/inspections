@@ -1,13 +1,13 @@
 <header>
-	<div id="title">
-		{{inspection.name}}
+	<div id="title" translate="">
+		inspection.type.{{inspection.code}}
 		<img id="logo" src="assets/img/feuvert-logo.png">
 	</div>
 	<div id="info">
 		<mat-card>
 			<mat-card-header>
 				<mat-icon mat-card-avatar>home</mat-icon>
-				<mat-card-title>Centro</mat-card-title>
+				<mat-card-title translate>centre.centre</mat-card-title>
 			</mat-card-header>
 			<mat-card-content>
 				<span>{{centre.name | titlecase}}</span>
@@ -20,7 +20,7 @@
 		<mat-card>
 			<mat-card-header>
 				<mat-icon mat-card-avatar>directions_car</mat-icon>
-				<mat-card-title>Vehículo</mat-card-title>
+				<mat-card-title translate>print.vehicle</mat-card-title>
 			</mat-card-header>
 			<mat-card-content>
 				<span>{{order.vehicle.numberPlate}}</span>
@@ -34,7 +34,7 @@
 		<mat-card>
 			<mat-card-header>
 				<mat-icon mat-card-avatar>account_circle</mat-icon>
-				<mat-card-title>Cliente</mat-card-title>
+				<mat-card-title translate>print.client</mat-card-title>
 			</mat-card-header>
 			<mat-card-content>
 				<span>{{order.client.name | titlecase}} {{order.client.surnames | titlecase}}</span>
@@ -44,7 +44,7 @@
 		<mat-card>
 			<mat-card-header>
 				<mat-icon mat-card-avatar>summarize</mat-icon>
-				<mat-card-title>Resumen</mat-card-title>
+				<mat-card-title translate>print.summary</mat-card-title>
 			</mat-card-header>
 			<mat-card-content id="summary-container">
 				<div id="summary">
@@ -65,7 +65,7 @@
 		<mat-card-content id="legend">
 			<div *ngFor="let label of groupLabels(findLabels())" class="label">
 				<div class="label-color" [style.background-color]="findIconColor(label.code)"></div>
-				<span>{{label.name}}</span>
+				<span translate>inspection.selectItemOption.{{label.code}}</span>
 			</div>
 		</mat-card-content>
 	</mat-card>
@@ -77,7 +77,7 @@
 	<mat-card *ngIf="checkCategoryElement(elem); else elementTemplate">
 		<mat-card-header>
 			<mat-icon mat-card-avatar>navigate_next</mat-icon>
-			<mat-card-title>{{elem.name}}</mat-card-title>
+			<mat-card-title translate>print.category.{{elem.code}}</mat-card-title>
 		</mat-card-header>
 		<div *ngIf="checkExistentSelectItems(elem.items)" class="graph-container">
 			<div class="graph-info">
@@ -100,12 +100,10 @@
 		<mat-card class="text-area-card">
 			<mat-card-header>
 				<mat-icon mat-card-avatar>navigate_next</mat-icon>
-				<mat-card-title>{{elem.item.name}}</mat-card-title>
+				<mat-card-title translate>inspection.item.{{elem.item.code}}</mat-card-title>
 			</mat-card-header>
 			<mat-card-content>
-				<div *ngFor="let line of findTextAreaLines(findTextSavedItem(elem))">
-					{{line}}
-				</div>
+				<div *ngFor="let line of findTextAreaLines(findTextSavedItem(elem))">{{line}}</div>
 			</mat-card-content>
 		</mat-card>
 	</ng-template>
@@ -113,7 +111,7 @@
 <ng-template #itemTemplate let-elem>
 	<div class="items-info">
 		<div *ngFor="let item of elem.items | savedItem" class="item">
-			<div>{{item.item.name}}</div>
+			<div translate>inspection.item.{{item.item.code}}</div>
 			<mat-icon
 				*ngIf="checkItemType(item.item.type, selectType); else textItemText"
 				class="item-data"

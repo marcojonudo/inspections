@@ -4,7 +4,7 @@ import {NgModule} from '@angular/core';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BottomBarComponent} from './components/bottom-bar/bottom-bar.component';
 import {InitialDataComponent} from './components/initial-data/initial-data.component';
@@ -41,8 +41,9 @@ import {ChartsModule} from 'ng2-charts';
 import {SavedItemPipe} from './pipes/saved-item.pipe';
 import {MatMenuModule} from '@angular/material/menu';
 import { HiddenPipe } from './pipes/hidden.pipe';
-
 registerLocaleData(localeEs);
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 @NgModule({
 	declarations: [
@@ -84,7 +85,14 @@ registerLocaleData(localeEs);
 		MatExpansionModule,
 		MatTableModule,
 		ChartsModule,
-		MatMenuModule
+		MatMenuModule,
+		TranslateModule.forRoot({
+			loader: {
+				provide: TranslateLoader,
+				useFactory: HttpLoaderFactory,
+				deps: [HttpClient]
+			}
+		})
 	],
 	providers: [OrderPipe],
 	bootstrap: [AppComponent]
@@ -98,4 +106,8 @@ export class AppModule {
 		};
 	}
 
+}
+
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+	return new TranslateHttpLoader(http);
 }

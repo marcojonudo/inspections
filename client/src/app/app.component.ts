@@ -4,6 +4,9 @@ import {RouterOutlet} from '@angular/router';
 import {leaveAnimation, routeAnimations} from './animations';
 import {LoadingService} from './services/loading.service';
 import {Constants} from './objects/constants';
+import {TranslateService} from '@ngx-translate/core';
+import {HttpClient} from '@angular/common/http';
+import {InspectionService} from './services/inspection.service';
 
 @Component({
 	selector: 'app-root',
@@ -19,9 +22,18 @@ export class AppComponent implements OnInit {
 	showSplashScreen: boolean;
 	loading: boolean;
 
-	constructor(private loadingService: LoadingService, private cdRef: ChangeDetectorRef) {
+	constructor(
+		private loadingService: LoadingService,
+		private inspectionService: InspectionService,
+		private translate: TranslateService,
+		private cdRef: ChangeDetectorRef
+	) {
 		this.showSplashScreen = true;
 		this.loading = true;
+
+		this.inspectionService.findLanguage().subscribe(() =>
+			this.translate.setDefaultLang(InspectionService.language)
+		);
 	}
 
 	ngOnInit(): void {

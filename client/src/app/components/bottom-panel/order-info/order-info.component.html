@@ -2,23 +2,23 @@
 	<mat-card-content>
 		<mat-icon inline="true">directions_car</mat-icon>
 		<ul>
-			<li><span class="item-label">Matrícula</span>: {{order.vehicle.numberPlate}}</li>
-			<li><span class="item-label">Marca y modelo</span>: {{order.vehicle.brand}} {{order.vehicle.model}}</li>
-			<li><span class="item-label">Cilindrada</span>: {{order.vehicle.cylinder}}</li>
-			<li><span class="item-label">Código motor</span>: {{order.vehicle.engineCode ? order.vehicle.engineCode : '-'}}</li>
-			<li><span class="item-label">Potencia</span>: {{order.vehicle.power ? order.vehicle.power + 'cv' : '-'}}</li>
-			<li><span class="item-label">Matriculación</span>: {{order.vehicle.registrationYear ? order.vehicle.registrationYear : '-' }}</li>
+			<li><span class="item-label" translate>order.numberPlate</span>: {{order.vehicle.numberPlate}}</li>
+			<li><span class="item-label" translate>order.brandModel</span>: {{order.vehicle.brand}} {{order.vehicle.model}}</li>
+			<li><span class="item-label" translate>order.cylinder</span>: {{order.vehicle.cylinder}}</li>
+			<li><span class="item-label" translate>order.engineCode</span>: {{order.vehicle.engineCode ? order.vehicle.engineCode : '-'}}</li>
+			<li><span class="item-label" translate>order.power</span>: {{order.vehicle.power ? order.vehicle.power + 'cv' : '-'}}</li>
+			<li><span class="item-label" translate>order.registrationYear</span>: {{order.vehicle.registrationYear ? order.vehicle.registrationYear : '-' }}</li>
 		</ul>
 	</mat-card-content>
 </mat-card>
 <table mat-table [dataSource]="order.lines">
 	<ng-container matColumnDef="description">
-		<th mat-header-cell *matHeaderCellDef>Descripción</th>
+		<th mat-header-cell *matHeaderCellDef translate>order.description</th>
 		<td mat-cell *matCellDef="let element"> {{element.articleName}} </td>
 	</ng-container>
 
 	<ng-container matColumnDef="units">
-		<th mat-header-cell *matHeaderCellDef>Uds.</th>
+		<th mat-header-cell *matHeaderCellDef translate>order.units</th>
 		<td mat-cell *matCellDef="let element"> {{element.units}} </td>
 	</ng-container>
 

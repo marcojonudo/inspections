@@ -16,13 +16,13 @@ export class Constants {
 	};
 
 	static readonly MESSAGE: any = {
-		NONEXISTENT_ORDER: 'No se encuentra ninguna orden asociada al código corto',
-		NONEXISTENT_INSPECTIONS: 'No se encuentran revisiones asociadas a la orden',
-		UPDATE_EMPLOYEE_MESSAGE: (newCode: string, code: string) => `¿Quieres cambiar el empleado ${code} por el ${newCode}?`,
-		ERROR_SAVING_INSPECTION: 'Error al guardar la revisión. Por favor, inténtalo de nuevo',
-		SAVED_INSPECTION: 'Revisión guardada correctamente',
-		NON_COMPLETE_INSPECTION: 'Revisión no terminada. Por favor, rellena todos los elementos',
-		WARNING_GOING_BACK: '¿Seguro que quieres volver a la pantalla de inicio?'
+		NONEXISTENT_ORDER: 'NONEXISTENT_ORDER',
+		NONEXISTENT_INSPECTIONS: 'NONEXISTENT_INSPECTIONS',
+		UPDATE_EMPLOYEE_MESSAGE: 'UPDATE_EMPLOYEE_MESSAGE',
+		ERROR_SAVING_INSPECTION: 'ERROR_SAVING_INSPECTION',
+		SAVED_INSPECTION: 'SAVED_INSPECTION',
+		NON_COMPLETE_INSPECTION: 'NON_COMPLETE_INSPECTION',
+		WARNING_GOING_BACK: 'WARNING_GOING_BACK'
 	};
 
 	static readonly PANEL_INFO_TYPE: any = {
@@ -50,7 +50,8 @@ export class Constants {
 		RESET_EMPLOYEE: 'resetEmployee',
 		CENTRE: 'centre',
 		VERSION: 'version',
-		MANUAL_EXIT: 'manualExit'
+		MANUAL_EXIT: 'manualExit',
+		LANGUAGE: 'language'
 	};
 
 	static readonly EVENT: any = {
