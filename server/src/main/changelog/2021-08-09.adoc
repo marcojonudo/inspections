@@ -1,0 +1,6 @@
+- [.label-improvement]#Mejora de la introducción del código de empleado en centros de Portugal.#
+- [.label-improvement]#Deshabilitado autocompletado en cuadros de texto.#
+- [.label-fix]#Se evita que se abra la leyenda cuando se hace scroll mientras se mantiene pulsado un elemento de la
+revisión.#
+- [.label-improvement]#Actualización de los iconos de la hoja de impresión, y resaltado de los elementos que no sean
+correctos.#

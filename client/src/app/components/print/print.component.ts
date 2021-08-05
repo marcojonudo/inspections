@@ -136,7 +136,7 @@ export class PrintComponent implements OnInit {
 	}
 
 	findSelectIcon(item: SelectSavedItem): string {
-		return (item.item as SelectItem).options.find(option => option.code === item.value).icon;
+		return (item.item as SelectItem).options.find(option => option.code === item.value).printIcon;
 	}
 
 	findIconColor(code: string): string {
@@ -167,6 +167,13 @@ export class PrintComponent implements OnInit {
 
 	findTextAreaLines(item: TextSavedItem): string[] {
 		return item.text ? item.text.split('\n') : [];
+	}
+
+	checkWrongItem(savedItem: SavedItem): boolean {
+		if (savedItem.item.type !== Constants.ITEM_TYPE.SELECT) {
+			return false;
+		}
+		return (savedItem as SelectSavedItem).value !== Constants.SELECT_ITEM_OPTION_CODE.C;
 	}
 
 }
