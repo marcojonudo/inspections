@@ -115,7 +115,7 @@
 			<mat-icon
 				*ngIf="checkItemType(item.item.type, selectType); else textItemText"
 				class="item-data"
-				[style.color]="findIconColor(findSelectCode(findSelectSavedItem(item)))">
+				[style.color]="findIconColor(findSelectSavedItem(item).value)">
 				{{findSelectIcon(findSelectSavedItem(item))}}
 			</mat-icon>
 			<ng-template #textItemText>

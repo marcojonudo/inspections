@@ -249,13 +249,13 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		return savedInspection.items.find(savedItem => savedItem.item.name === itemName) as TextSavedItem;
 	}
 
-	checkSelectedOption(itemName: string, optionName: string): boolean {
-		return this.findSelectSavedItem(itemName).value === optionName;
+	checkSelectedOption(itemName: string, optionCode: string): boolean {
+		return this.findSelectSavedItem(itemName).value === optionCode;
 	}
 
 	findOptionIndex(itemName: string, options: SelectItemOption[]): number {
 		const selectedValue = this.findSelectSavedItem(itemName).value;
-		return options.findIndex(o => o.name === selectedValue);
+		return options.findIndex(o => o.code === selectedValue);
 	}
 
 	checkLeftOption(itemName: string, options: SelectItemOption[], i: number): boolean {
@@ -271,7 +271,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		/* Con el segundo sumando, se evita que la opción por defecto ('Pendiente') sea seleccionada de nuevo */
 		const newIndex = (selectedIndex + 1) % item.options.length + Math.floor(selectedIndex / (item.options.length - 1));
 
-		InspectionService.updateItem(item, item.options[newIndex].name).subscribe();
+		InspectionService.updateItem(item, item.options[newIndex].code).subscribe();
 	}
 
 	updateText(item: Item): void {
@@ -283,7 +283,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		const bottomSheetRef = this.bottomSheet.open(LegendComponent, { data: item.options });
 		bottomSheetRef.afterDismissed().subscribe((option: SelectItemOption) => {
 			if (option) {
-				InspectionService.updateItem(item, option.name);
+				InspectionService.updateItem(item, option.code);
 				this.cdRef.detectChanges();
 			}
 		});
