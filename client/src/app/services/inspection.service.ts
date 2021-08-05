@@ -63,10 +63,7 @@ export class InspectionService {
 		HIDE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
 			targetSavedItem.toggleHidden(employeeCode),
 		REPLICATE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
-			targetSavedItem.update(
-				InspectionService.findSelectItemOption(Constants.SELECT_ITEM_OPTION_CODE.P).name,
-				employeeCode
-			)
+			targetSavedItem.update(Constants.SELECT_ITEM_OPTION_CODE.P, employeeCode)
 	};
 
 	constructor(
@@ -167,18 +164,14 @@ export class InspectionService {
 	static findSelectItemOptions(): SelectItemOption[] {
 		const options = [];
 		this.findSelectItems().forEach((item: SelectItem) => {
-			item.options.forEach(option => {
-				const existent = options.find(o => o.name === option.name);
+			item.options.forEach((option: SelectItemOption) => {
+				const existent = options.find(o => o.code === option.code);
 				if (!existent) {
 					options.push(option);
 				}
 			});
 		});
 		return options;
-	}
-
-	static findSelectItemOption(code: string, options: SelectItemOption[] = this.selectItemOptions): SelectItemOption {
-		return options.find(option => option.code === code);
 	}
 
 	static findSavedItem(name: string, savedInspection = this.savedInspection): SavedItem {
@@ -243,8 +236,9 @@ export class InspectionService {
 		const savedItems = this.savedInspection.items.filter(savedItem =>
 			itemNames.find(name => name === savedItem.item.name)
 		);
-		const value = options.find(option => option.code === Constants.SELECT_ITEM_OPTION_CODE.C).name;
-		savedItems.forEach(savedItem => (savedItem as SelectSavedItem).update(value, employee.code));
+		savedItems.forEach(savedItem =>
+			(savedItem as SelectSavedItem).update(Constants.SELECT_ITEM_OPTION_CODE.C, employee.code)
+		);
 	}
 
 	static resetInspection(

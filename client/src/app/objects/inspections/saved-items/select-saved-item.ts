@@ -8,9 +8,7 @@ export class SelectSavedItem extends SavedItem {
 
 	constructor(item: SelectItem, employeeCode: string, savedItem: SelectSavedItem) {
 		super(item, employeeCode, savedItem);
-		this.value = savedItem ?
-			savedItem.value :
-			item.options.find(o => o.code === Constants.SELECT_ITEM_OPTION_CODE.P).name;
+		this.value = savedItem ? savedItem.value : Constants.SELECT_ITEM_OPTION_CODE.P;
 	}
 
 	findValue(): string {
@@ -18,10 +16,7 @@ export class SelectSavedItem extends SavedItem {
 	}
 
 	isFilled(): boolean {
-		const defaultValue = (this.item as SelectItem).options.find(o =>
-			o.code === Constants.SELECT_ITEM_OPTION_CODE.P
-		).name;
-		return this.findValue() !== defaultValue;
+		return this.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.P;
 	}
 
 	update(value: string, employeeCode: string): void {
@@ -30,7 +25,7 @@ export class SelectSavedItem extends SavedItem {
 	}
 
 	reset(employeeCode: string): void {
-		this.value = (this.item as SelectItem).options.find(o => o.code === Constants.SELECT_ITEM_OPTION_CODE.P).name;
+		this.value = Constants.SELECT_ITEM_OPTION_CODE.P;
 		this.updateCommonFields(employeeCode);
 	}
 

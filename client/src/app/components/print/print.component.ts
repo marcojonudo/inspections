@@ -136,11 +136,7 @@ export class PrintComponent implements OnInit {
 	}
 
 	findSelectIcon(item: SelectSavedItem): string {
-		return (item.item as SelectItem).options.find(option => option.name === item.value).icon;
-	}
-
-	findSelectCode(item: SelectSavedItem): string {
-		return (item.item as SelectItem).options.find(option => option.name === item.value).code;
+		return (item.item as SelectItem).options.find(option => option.code === item.value).icon;
 	}
 
 	findIconColor(code: string): string {
@@ -164,7 +160,7 @@ export class PrintComponent implements OnInit {
 		const selectItems = this.findSelectItems(items);
 		const data = [];
 		labels.forEach(label => {
-			data.push(selectItems.filter(item => item.value === label.name).length);
+			data.push(selectItems.filter(item => item.value === label.code).length);
 		});
 		return this.groupData(labels, data);
 	}

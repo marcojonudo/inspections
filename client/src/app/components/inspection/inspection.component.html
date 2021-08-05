@@ -68,7 +68,7 @@
 								*ngFor="let option of findSelectItem(item).options | order; let i = index"
 								class="select-item-icon"
 								[ngClass]="{
-									'front': checkSelectedOption(item.name, option.name),
+									'front': checkSelectedOption(item.name, option.code),
 									'left': checkLeftOption(item.name, findSelectItem(item).options, i),
 									'right': checkRightOption(item.name, findSelectItem(item).options, i)
 								}"
