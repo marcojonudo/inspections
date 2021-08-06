@@ -24,6 +24,9 @@ import {ItemRelation} from '../objects/inspections/item-relation';
 import {SavedItem} from '../objects/inspections/saved-items/saved-item';
 import {TranslateService} from '@ngx-translate/core';
 import {SnackBarService} from './snack-bar.service';
+import {CountryHandler} from '../objects/country-info/country-handler';
+import {SpainHandler} from '../objects/country-info/spain-handler';
+import {PortugalHandler} from '../objects/country-info/portugal-handler';
 
 @Injectable({
 	providedIn: 'root'
@@ -31,6 +34,7 @@ import {SnackBarService} from './snack-bar.service';
 export class InspectionService {
 
 	static language: string;
+	static countryHandler: CountryHandler;
 	static order: Order;
 	static centre: Centre;
 	static inspection: Inspection;
@@ -64,6 +68,11 @@ export class InspectionService {
 			targetSavedItem.toggleHidden(employeeCode),
 		REPLICATE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
 			targetSavedItem.update(Constants.SELECT_ITEM_OPTION_CODE.P, employeeCode)
+	};
+
+	private static readonly COUNTRY_HANDLER_DECIDER: any = {
+		es: new SpainHandler(),
+		pt: new PortugalHandler()
 	};
 
 	constructor(
@@ -297,6 +306,7 @@ export class InspectionService {
 		return (language ? of(language) : this.http.get(Url.language(), { responseType: 'text' })).pipe(
 			tap((lang: string) => {
 				InspectionService.language = lang;
+				InspectionService.countryHandler = InspectionService.COUNTRY_HANDLER_DECIDER[lang];
 				LocalStorageService.setItem(Constants.LOCAL_STORAGE.LANGUAGE, lang);
 				console.log('Language', lang);
 			})

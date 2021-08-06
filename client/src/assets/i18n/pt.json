@@ -2,8 +2,10 @@
 	"init": {
 		"introduceEmployeeCode": "Qual é o seu código de empregado?",
 		"employeeCode": "Código de empregado",
+		"requiredEmployeeCode": "Deve inserir um código de empregado",
 		"introduceShortCode": "Qual é o código curto do ordem de reparação",
-		"shortCode": "Código curto"
+		"shortCode": "Código curto",
+		"requiredShortCode": "Deve inserir um código curto do ordem"
 	},
 	"inspection": {
 		"changelog": "Histórico de mudanças",
