@@ -1,0 +1,2 @@
+- [.label-improvement]#Se muestra un mensaje de error si falla la carga inicial de empleados.#
+- [.label-improvement]#Si la obtención del idioma del centro falla, se usa el español por defecto.#

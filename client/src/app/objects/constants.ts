@@ -8,6 +8,7 @@ export class Constants {
 	static readonly REQUIRED: string = 'required';
 	static readonly REQUIRED_EMPLOYEE_CODE: string = 'requiredEmployeeCode';
 	static readonly EMPLOYEE_CODE_MIN_LENGTH: string = 'employeeCodeMinLength';
+	static readonly DEFAULT_LANGUAGE: string = 'es';
 
 	static readonly SNACK_BAR: any = {
 		DURATION: 5000,
@@ -25,7 +26,8 @@ export class Constants {
 		ERROR_SAVING_INSPECTION: 'ERROR_SAVING_INSPECTION',
 		SAVED_INSPECTION: 'SAVED_INSPECTION',
 		NON_COMPLETE_INSPECTION: 'NON_COMPLETE_INSPECTION',
-		WARNING_GOING_BACK: 'WARNING_GOING_BACK'
+		WARNING_GOING_BACK: 'WARNING_GOING_BACK',
+		ERROR_FINDING_EMPLOYEES: 'ERROR_FINDING_EMPLOYEES'
 	};
 
 	static readonly PANEL_INFO_TYPE: any = {

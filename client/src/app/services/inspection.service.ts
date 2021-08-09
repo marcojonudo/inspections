@@ -304,6 +304,7 @@ export class InspectionService {
 	findLanguage(): Observable<string> {
 		const language = LocalStorageService.getItem(Constants.LOCAL_STORAGE.LANGUAGE);
 		return (language ? of(language) : this.http.get(Url.language(), { responseType: 'text' })).pipe(
+			catchError(() => of(Constants.DEFAULT_LANGUAGE)),
 			tap((lang: string) => {
 				InspectionService.language = lang;
 				InspectionService.countryHandler = InspectionService.COUNTRY_HANDLER_DECIDER[lang];

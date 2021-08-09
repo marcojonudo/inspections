@@ -198,7 +198,8 @@
 		"ERROR_SAVING_INSPECTION": "Ocorreu um erro ao guardar a revisão. Por favor, tente de novo",
 		"SAVED_INSPECTION": "Revisão guardada corretamente ",
 		"NON_COMPLETE_INSPECTION": "A revisão não está terminada. Por favor, preencha todos os itens",
-		"WARNING_GOING_BACK": "Tem certeza de que deseja voltar para a tela inicial?"
+		"WARNING_GOING_BACK": "Tem certeza de que deseja voltar para a tela inicial?",
+		"ERROR_FINDING_EMPLOYEES": "Erro ao obter empregados. Tente novamente em alguns instantes ou envie um e-mail para TI"
 	},
 	"print": {
 		"centre": "Centro",

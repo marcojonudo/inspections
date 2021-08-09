@@ -18,6 +18,7 @@ import {inOutAnimation, inOutTranslateAnimation} from '../../animations';
 import {LocalStorageService} from '../../services/local-storage.service';
 import {fromEvent, Observable} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
+import {SnackBarService} from '../../services/snack-bar.service';
 
 @Component({
 	selector: 'app-initial-data',
@@ -45,7 +46,8 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		private router: Router,
 		private cdRef: ChangeDetectorRef,
 		private activatedRoute: ActivatedRoute,
-		private translateService: TranslateService
+		private translateService: TranslateService,
+		private snackBarService: SnackBarService
 	) {
 		clearTimeout(InspectionService.lockTimeout);
 		this.employee = EmployeeService.employee;
@@ -59,6 +61,11 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 
 	ngOnInit(): void {
 		this.activatedRoute.data.subscribe((data: { employees: any }) => {
+			if (!data.employees.length) {
+				this.snackBarService.open(
+					Constants.MESSAGE_CODE.ERROR_FINDING_EMPLOYEES, Constants.SNACK_BAR.TYPE.WARNING
+				);
+			}
 			EmployeeService.setEmployees(data.employees);
 			this.loadingService.stop();
 		});
