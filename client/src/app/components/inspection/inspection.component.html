@@ -86,7 +86,8 @@
 							type="tel"
 							[placeholder]="findTextItem(item).placeholder"
 							[(ngModel)]="findTextSavedItem(item.name).text"
-							(change)="updateText(item)">
+							(change)="updateText(item)"
+							autocomplete="off">
 					</mat-form-field>
 				</div>
 				<div *ngIf="checkItemType(item.type, textAreaType)" class="item text-item">

@@ -4,7 +4,12 @@
 		resetEmployee.introduceEmployeeCode
 		<mat-form-field>
 			<mat-label translate>init.employeeCode</mat-label>
-			<input matInput type="tel" placeholder="1234567" [(ngModel)]="newEmployeeCode" (keyup)="searchEmployee()">
+			<input
+				matInput type="tel"
+				placeholder="1234567"
+				[(ngModel)]="newEmployeeCode"
+				(keyup)="searchEmployee()"
+				autocomplete="off">
 		</mat-form-field>
 	</div>
 </div>
