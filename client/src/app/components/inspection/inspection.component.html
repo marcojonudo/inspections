@@ -23,7 +23,7 @@
 		</div>
 	</mat-menu>
 </mat-toolbar>
-<div id="items-container" class="no-print">
+<div #itemsContainer id="items-container" class="no-print">
 	<ng-container
 		*ngTemplateOutlet="recursiveList; context: {
         $implicit: listElements, index: 0
