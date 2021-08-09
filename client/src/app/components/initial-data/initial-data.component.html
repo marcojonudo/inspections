@@ -8,13 +8,13 @@
 			<mat-label translate>init.employeeCode</mat-label>
 			<input
 				matInput
-				type="tel"
+				[type]="findEmployeeCodeInputType()"
 				#employeeCodeInput="matInput"
-				placeholder="1234567"
+				[placeholder]="findEmployeeCodePlaceholder()"
 				[formControl]="employeeCode"
-				[maxLength]="employeeCodeLength"
+				[maxLength]="employeeCodeMaxLength"
 				(keyup)="searchEmployee()">
-			<mat-error *ngIf="employeeCode.invalid">{{getEmployeeCodeErrorMessage()}}</mat-error>
+			<mat-error *ngIf="employeeCode.invalid">{{getEmployeeCodeErrorMessage() | async}}</mat-error>
 		</mat-form-field>
 	</mat-card-content>
 </mat-card>
@@ -32,7 +32,7 @@
 				placeholder="C4"
 				[formControl]="orderCode"
 				(keydown.enter)="searchOrder()">
-			<mat-error *ngIf="orderCode.invalid">{{getOrderCodeErrorMessage()}}</mat-error>
+			<mat-error *ngIf="orderCode.invalid" translate>init.requiredShortCode</mat-error>
 		</mat-form-field>
 	</mat-card-content>
 	<mat-card-actions>

@@ -17,7 +17,8 @@ import {MatInput} from '@angular/material/input';
 import {LoadingService} from '../../services/loading.service';
 import {inOutAnimation, inOutTranslateAnimation} from '../../animations';
 import {LocalStorageService} from '../../services/local-storage.service';
-import {fromEvent} from 'rxjs';
+import {fromEvent, Observable} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-initial-data',
@@ -44,13 +45,15 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		private loadingService: LoadingService,
 		private router: Router,
 		private cdRef: ChangeDetectorRef,
-		private activatedRoute: ActivatedRoute
+		private activatedRoute: ActivatedRoute,
+		private translateService: TranslateService
 	) {
 		clearTimeout(InspectionService.lockTimeout);
 		this.employee = EmployeeService.employee;
 		const employeeCode = this.employee ? this.employee.code : '';
 		this.employeeCode = new FormControl(
-			employeeCode, [Validators.required, Validators.minLength(this.employeeCodeLength)]
+			employeeCode,
+			[Validators.required].concat(InspectionService.countryHandler.findEmployeeCodeCustomValidations)
 		);
 		this.orderCode = new FormControl('', [Validators.required]);
 	}
@@ -75,8 +78,8 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		});
 	}
 
-	get employeeCodeLength(): number {
-		return Constants.EMPLOYEE_CODE_LENGTH;
+	get employeeCodeMaxLength(): number {
+		return Constants.EMPLOYEE_CODE_MAX_LENGTH;
 	}
 
 	setEmployeeFocus(): void {
@@ -87,15 +90,18 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		this.orderCodeInput.focus();
 	}
 
-	getEmployeeCodeErrorMessage(employeeCode: FormControl = this.employeeCode) {
-		if (employeeCode.hasError('required')) {
-			return 'Debes introducir un código de empleado';
-		}
-		return 'Longitud mínima de 7 dígitos';
+	findEmployeeCodeInputType(): string {
+		return InspectionService.countryHandler.findEmployeeCodeInputType();
 	}
 
-	getOrderCodeErrorMessage() {
-		return 'Debes introducir un código de orden';
+	findEmployeeCodePlaceholder(): string {
+		return InspectionService.countryHandler.findEmployeeCodePlaceholder();
+	}
+
+	getEmployeeCodeErrorMessage(employeeCode: FormControl = this.employeeCode): Observable<string> {
+		const messageCode = employeeCode.hasError(Constants.REQUIRED) ?
+			Constants.REQUIRED_EMPLOYEE_CODE : Constants.EMPLOYEE_CODE_MIN_LENGTH;
+		return this.translateService.get(`init.${messageCode}`);
 	}
 
 	searchEmployee(employeeCode: FormControl = this.employeeCode): void {
