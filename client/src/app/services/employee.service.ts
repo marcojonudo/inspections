@@ -2,9 +2,10 @@ import {Injectable} from '@angular/core';
 import {Employee} from '../objects/employee';
 import {LocalStorageService} from './local-storage.service';
 import {Constants} from '../objects/constants';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {Url} from '../objects/url';
 import {HttpClient} from '@angular/common/http';
+import {catchError} from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root'
@@ -33,7 +34,9 @@ export class EmployeeService {
 	}
 
 	findEmployees(): Observable<any> {
-		return this.http.get(Url.employees());
+		return this.http.get(Url.employees()).pipe(
+			catchError(() => of([]))
+		);
 	}
 
 }

@@ -14,9 +14,7 @@ export class EmployeesResolver implements Resolve<any> {
 	constructor(private employeeService: EmployeeService) {}
 
 	resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-		return EmployeeService.employees ? of(EmployeeService.employees) : this.employeeService.findEmployees().pipe(
-			catchError(() => EMPTY)
-		);
+		return EmployeeService.employees ? of(EmployeeService.employees) : this.employeeService.findEmployees();
 	}
 
 }

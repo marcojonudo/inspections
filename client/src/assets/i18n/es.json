@@ -199,7 +199,8 @@
 		"ERROR_SAVING_INSPECTION": "Error al guardar la revisión. Por favor, inténtalo de nuevo",
 		"SAVED_INSPECTION": "Revisión guardada correctamente",
 		"NON_COMPLETE_INSPECTION": "Revisión no terminada. Por favor, rellena todos los elementos",
-		"WARNING_GOING_BACK": "¿Seguro que quieres volver a la pantalla de inicio?"
+		"WARNING_GOING_BACK": "¿Seguro que quieres volver a la pantalla de inicio?",
+		"ERROR_FINDING_EMPLOYEES": "Error obteniendo empleados. Inténtalo de nuevo en unos instantes, o envía un correo a informática"
 	},
 	"print": {
 		"centre": "Centro",
