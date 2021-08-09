@@ -13,7 +13,8 @@
 				[placeholder]="findEmployeeCodePlaceholder()"
 				[formControl]="employeeCode"
 				[maxLength]="employeeCodeMaxLength"
-				(keyup)="searchEmployee()">
+				(keyup)="searchEmployee()"
+				autocomplete="off">
 			<mat-error *ngIf="employeeCode.invalid">{{getEmployeeCodeErrorMessage() | async}}</mat-error>
 		</mat-form-field>
 	</mat-card-content>
@@ -31,7 +32,8 @@
 				#orderCodeInput="matInput"
 				placeholder="C4"
 				[formControl]="orderCode"
-				(keydown.enter)="searchOrder()">
+				(keydown.enter)="searchOrder()"
+				autocomplete="off">
 			<mat-error *ngIf="orderCode.invalid" translate>init.requiredShortCode</mat-error>
 		</mat-form-field>
 	</mat-card-content>

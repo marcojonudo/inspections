@@ -10,7 +10,6 @@ import {Employee} from '../../objects/employee';
 import {Constants} from '../../objects/constants';
 import {finalize} from 'rxjs/operators';
 import {InspectionService} from '../../services/inspection.service';
-import {animate, style, transition, trigger} from '@angular/animations';
 import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatInput} from '@angular/material/input';
@@ -53,7 +52,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		const employeeCode = this.employee ? this.employee.code : '';
 		this.employeeCode = new FormControl(
 			employeeCode,
-			[Validators.required].concat(InspectionService.countryHandler.findEmployeeCodeCustomValidations)
+			[Validators.required].concat(InspectionService.countryHandler.findEmployeeCodeCustomValidations())
 		);
 		this.orderCode = new FormControl('', [Validators.required]);
 	}
