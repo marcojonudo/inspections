@@ -47,7 +47,7 @@
 			font-size: $small-font
 			margin-bottom: $tiny-gap
 
-			mat-card
+			& > mat-card, & > div
 				@include flex-1
 
 				mat-card-content
@@ -55,6 +55,25 @@
 
 					span
 						line-height: 1.4
+
+			#info-card
+
+				mat-card-content
+					height: calc(100% - 24px)
+
+					section
+						@include flex-1
+						@include flex-column
+
+						& > div
+							display: flex
+							line-height: 1.4
+
+							& > div:first-child
+								display: flex
+								align-items: center
+								width: 30%
+								font-weight: bold
 
 			.header-block
 				@include flex-1

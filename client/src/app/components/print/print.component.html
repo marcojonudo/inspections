@@ -4,6 +4,33 @@
 		<img id="logo" src="assets/img/feuvert-logo.png">
 	</div>
 	<div id="info">
+		<mat-card id="info-card">
+			<mat-card-header>
+				<mat-icon mat-card-avatar>info</mat-icon>
+				<mat-card-title translate>Información</mat-card-title>
+			</mat-card-header>
+			<mat-card-content>
+				<section>
+					<div>
+						<div>Vendedor</div>
+						<div>{{seller.name | titlecase}} {{seller.surname1 | titlecase}} {{seller.surname2 | titlecase}}</div>
+					</div>
+					<div>
+						<div>Nº orden</div>
+						<div>{{order.code}} · {{order.number}}</div>
+					</div>
+				</section>
+				<section>
+					<div>
+						<div>Cliente</div>
+						<div>
+							<div>{{order.client.name | titlecase}} {{order.client.surnames | titlecase}}</div>
+							<div>{{order.client.phoneNumber}}</div>
+						</div>
+					</div>
+				</section>
+			</mat-card-content>
+		</mat-card>
 		<mat-card>
 			<mat-card-header>
 				<mat-icon mat-card-avatar>home</mat-icon>
@@ -29,16 +56,6 @@
 				<span *ngIf="order.vehicle.engineCode">{{order.vehicle.engineCode}}</span>
 				<span *ngIf="order.vehicle.power">{{order.vehicle.power + 'cv'}}</span>
 				<span>{{order.vehicle.registrationYear}}</span>
-			</mat-card-content>
-		</mat-card>
-		<mat-card>
-			<mat-card-header>
-				<mat-icon mat-card-avatar>account_circle</mat-icon>
-				<mat-card-title translate>print.client</mat-card-title>
-			</mat-card-header>
-			<mat-card-content>
-				<span>{{order.client.name | titlecase}} {{order.client.surnames | titlecase}}</span>
-				<span>{{order.client.phoneNumber}}</span>
 			</mat-card-content>
 		</mat-card>
 		<mat-card>
