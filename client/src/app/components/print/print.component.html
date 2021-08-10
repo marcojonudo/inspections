@@ -7,7 +7,7 @@
 		<mat-card>
 			<mat-card-header>
 				<mat-icon mat-card-avatar>home</mat-icon>
-				<mat-card-title translate>centre.centre</mat-card-title>
+				<mat-card-title translate>print.centre</mat-card-title>
 			</mat-card-header>
 			<mat-card-content>
 				<span>{{centre.name | titlecase}}</span>
@@ -110,7 +110,7 @@
 </div>
 <ng-template #itemTemplate let-elem>
 	<div class="items-info">
-		<div *ngFor="let item of elem.items | savedItem" class="item">
+		<div *ngFor="let item of elem.items | savedItem" class="item" [class.highlight]="checkWrongItem(item)">
 			<div translate>inspection.item.{{item.item.code}}</div>
 			<mat-icon
 				*ngIf="checkItemType(item.item.type, selectType); else textItemText"

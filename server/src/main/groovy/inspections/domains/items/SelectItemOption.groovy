@@ -10,6 +10,7 @@ class SelectItemOption implements GormEntity<SelectItemOption> {
 	String code
 	String name
 	String icon
+	String printIcon
 	int order
 
 	@JsonIgnore
