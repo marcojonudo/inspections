@@ -19,6 +19,8 @@ import {SelectItemOption} from '../../objects/inspections/items/select-item-opti
 import {Color} from 'ng2-charts';
 import {OrderPipe} from '../../pipes/order.pipe';
 import {ListElement} from '../../objects/list-elements/list-element';
+import {EmployeeService} from '../../services/employee.service';
+import {Employee} from '../../objects/employee';
 
 @Component({
 	selector: 'app-print',
@@ -36,6 +38,7 @@ export class PrintComponent implements OnInit {
 	options: ChartOptions;
 	colors: Color[];
 	avoidLegendItems: string[] = [Constants.SELECT_ITEM_OPTION_CODE.NA];
+	seller: Employee;
 
 	constructor(private printService: PrintService, private orderPipe: OrderPipe) {
 		this.GROUP_LABELS = {
@@ -52,6 +55,8 @@ export class PrintComponent implements OnInit {
 		this.colors = [{
 			backgroundColor: this.findLabels().map(label => this.findIconColor(label.code))
 		}];
+
+		this.seller = EmployeeService.findEmployee(this.order.sellerCode);
 	}
 
 	ngOnInit(): void {

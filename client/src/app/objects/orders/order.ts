@@ -8,6 +8,7 @@ export class Order {
 	code: string;
 	vehicle: Vehicle;
 	client: Client;
+	sellerCode: string;
 	lines: OrderLine[];
 
 	constructor(order: any, code: string) {
@@ -15,6 +16,7 @@ export class Order {
 		this.code = code;
 		this.vehicle = new Vehicle(order.vehicle);
 		this.client = new Client(order.client);
+		this.sellerCode = order.sellerCode;
 		this.lines = order.lines.map(line => new OrderLine(line));
 	}
 
