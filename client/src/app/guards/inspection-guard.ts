@@ -17,8 +17,10 @@ export class InspectionGuard implements CanActivate {
 		}
 		const inspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION);
 		if (inspection) {
-			InspectionService.loadInfo();
-			return true;
+			const loaded = InspectionService.loadInfo();
+			if (loaded) {
+				return true;
+			}
 		}
 		this.router.navigate([Constants.PATH.INIT]);
 		return false;
