@@ -107,26 +107,35 @@ export class InspectionService {
 		console.log('Select item options', this.selectItemOptions);
 	}
 
-	static loadInfo(): void {
-		this.inspection = Builder.buildInspection(LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION));
-		this.savedInspection = Builder.loadSavedInspection(
-			LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION)
-		);
+	static loadInfo(): boolean {
+		let loaded = false;
+		try {
+			this.inspection = Builder.buildInspection(LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION));
+			this.savedInspection = Builder.loadSavedInspection(
+				LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION)
+			);
 
-		this.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
-		this.centre = LocalStorageService.getItem(Constants.LOCAL_STORAGE.CENTRE);
-		this.selectItemOptions = this.findSelectItemOptions();
+			this.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
+			this.centre = LocalStorageService.getItem(Constants.LOCAL_STORAGE.CENTRE);
+			this.selectItemOptions = this.findSelectItemOptions();
 
-		EmployeeService.employee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEE);
-		EmployeeService.employees = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEES);
+			EmployeeService.employee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEE);
+			EmployeeService.employees = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEES);
 
-		console.log('Order', this.order);
-		console.log('Centre', this.centre);
-		console.log('Inspection', this.inspection);
-		console.log('Saved inspection', this.savedInspection);
-		console.log('Employees', EmployeeService.employees);
-		console.log('Selected employee', EmployeeService.employee);
-		console.log('Select item options', this.selectItemOptions);
+			console.log('Order', this.order);
+			console.log('Centre', this.centre);
+			console.log('Inspection', this.inspection);
+			console.log('Saved inspection', this.savedInspection);
+			console.log('Employees', EmployeeService.employees);
+			console.log('Selected employee', EmployeeService.employee);
+			console.log('Select item options', this.selectItemOptions);
+			loaded = true;
+		} catch (error) {
+			console.error('Error loading data', error);
+			console.log('Clearing local storage');
+			LocalStorageService.clear();
+		}
+		return loaded;
 	}
 
 	static checkLocalInspection(orderNumber: number): boolean {
@@ -353,8 +362,10 @@ export class InspectionService {
 
 	findInspections(orderNumber: number): Observable<any> {
 		if (InspectionService.checkLocalInspection(orderNumber)) {
-			InspectionService.loadInfo();
-			return of(undefined);
+			const loaded = InspectionService.loadInfo();
+			if (loaded) {
+				return of(undefined);
+			}
 		}
 		const url = `${Url.inspection()}?orderNumber=${orderNumber}`;
 		return this.http.get(url);

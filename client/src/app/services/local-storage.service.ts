@@ -30,4 +30,8 @@ export class LocalStorageService {
 		localStorage.removeItem(item);
 	}
 
+	static clear(): void {
+		localStorage.clear();
+	}
+
 }

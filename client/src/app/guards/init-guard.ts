@@ -20,9 +20,11 @@ export class InitGuard implements CanActivate {
 			}
 			const inspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION);
 			if (inspection) {
-				InspectionService.loadInfo();
-				this.router.navigate([Constants.PATH.INSPECTION]);
-				return false;
+				const loaded = InspectionService.loadInfo();
+				if (loaded) {
+					this.router.navigate([Constants.PATH.INSPECTION]);
+					return false;
+				}
 			}
 		}
 		LocalStorageService.removeItem(Constants.LOCAL_STORAGE.MANUAL_EXIT);
