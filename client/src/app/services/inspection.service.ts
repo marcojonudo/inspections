@@ -9,7 +9,7 @@ import * as dayjs from 'dayjs';
 import {LocalStorageService} from './local-storage.service';
 import {Constants} from '../objects/constants';
 import {EmployeeService} from './employee.service';
-import {catchError, concatMap, finalize, map, tap} from 'rxjs/operators';
+import {catchError, concatMap, finalize, map, mergeMap, switchMap, tap} from 'rxjs/operators';
 import {SelectSavedItem} from '../objects/inspections/saved-items/select-saved-item';
 import {Builder} from '../objects/builder';
 import {Employee} from '../objects/employee';
@@ -32,6 +32,8 @@ import {PortugalHandler} from '../objects/country-info/portugal-handler';
 	providedIn: 'root'
 })
 export class InspectionService {
+
+	private static readonly IMAGE_UPLOAD_NAME = 'image';
 
 	static language: string;
 	static countryHandler: CountryHandler;
@@ -192,8 +194,8 @@ export class InspectionService {
 		return options;
 	}
 
-	static findSavedItem(name: string, savedInspection = this.savedInspection): SavedItem {
-		return savedInspection.items.find(i => i.item.name === name);
+	static findSavedItem(code: string, savedInspection = this.savedInspection): SavedItem {
+		return savedInspection.items.find(i => i.item.code === code);
 	}
 
 	static findIconColor(code: string, selectIconColor: { [key: string]: string } = this.SELECT_ICON_COLOR): string {
@@ -305,9 +307,19 @@ export class InspectionService {
 		employee: Employee = EmployeeService.employee
 	): void {
 		if (value === itemRelation.matchText) {
-			const targetSavedItem = this.findSavedItem(itemRelation.targetItem.name);
+			const targetSavedItem = this.findSavedItem(itemRelation.targetItem.code);
 			actions[itemRelation.action](targetSavedItem, savedItem.findValue(), employee.code);
 		}
+	}
+
+	static updateImage(
+		savedItem: SavedItem,
+		image: string,
+		savedInspection: SavedInspection = this.savedInspection,
+		employee: Employee = EmployeeService.employee
+	): void {
+		savedItem.addImage(image, employee.code);
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
 	findLanguage(): Observable<string> {

@@ -33,6 +33,8 @@ import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component
 import {VersionService} from '../../services/version.service';
 import {Url} from '../../objects/url';
 import {TextItem} from '../../objects/inspections/items/text-item';
+import {HttpClient} from '@angular/common/http';
+import {CameraComponent} from '../bottom-panel/camera/camera.component';
 import {SnackBarService} from '../../services/snack-bar.service';
 
 @Component({
@@ -76,7 +78,8 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		private dialog: MatDialog,
 		private snackBarService: SnackBarService,
 		private router: Router,
-		private cdRef: ChangeDetectorRef
+		private cdRef: ChangeDetectorRef,
+		private http: HttpClient
 	) {
 		this.listElements = InspectionService.findGroupedItems(this.inspection.items);
 		console.log('List elements', this.listElements);
@@ -337,6 +340,17 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 			this.snackBarService.open(Constants.MESSAGE_CODE.CLEARED_LOCAL_STORAGE);
 			this.goBack();
 		});
+	}
+
+	openCamera(itemCode: string): void {
+		const savedItem = InspectionService.findSavedItem(itemCode);
+		const bottomSheetRef = this.bottomSheet.open(CameraComponent, { data: savedItem });
+		// bottomSheetRef.afterDismissed().subscribe((option: SelectItemOption) => {
+		// 	if (option) {
+		// 		InspectionService.updateItem(item, option.code);
+		// 		this.cdRef.detectChanges();
+		// 	}
+		// });
 	}
 
 	// fill(): void {

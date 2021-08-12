@@ -1,0 +1,13 @@
+<img *ngIf="savedItem.image; else videoTemplate" [src]="findImageUrl(savedItem.image)" class="camera-content">
+<ng-template #videoTemplate>
+	<div class="camera-content">
+		<video #video autoplay></video>
+		<canvas #canvas></canvas>
+	</div>
+</ng-template>
+<button mat-fab color="warn" (click)="deleteImage()" [class.translated]="!savedItem.image">
+	<mat-icon>delete</mat-icon>
+</button>
+<button mat-fab color="primary" (click)="capture()" [class.translated]="savedItem.image">
+	<mat-icon>camera</mat-icon>
+</button>

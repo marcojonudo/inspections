@@ -9,8 +9,8 @@ export class HiddenPipe implements PipeTransform {
 
 	transform(items: Item[]): Item[] {
 		return items.filter(i => {
-			const savedItem = InspectionService.findSavedItem(i.name);
-			return !savedItem.hidden
+			const savedItem = InspectionService.findSavedItem(i.code);
+			return !savedItem.hidden;
 		});
 	}
 

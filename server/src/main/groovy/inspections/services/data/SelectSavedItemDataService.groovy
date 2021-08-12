@@ -8,6 +8,8 @@ import java.time.LocalDateTime
 @Service(SelectSavedItem)
 interface SelectSavedItemDataService {
 
-	SelectSavedItem update(Serializable id, String value, String employeeCode, boolean hidden, LocalDateTime filled)
+	SelectSavedItem update(
+		Serializable id, String value, String employeeCode, boolean hidden, byte[] image, LocalDateTime filled
+	)
 
 }

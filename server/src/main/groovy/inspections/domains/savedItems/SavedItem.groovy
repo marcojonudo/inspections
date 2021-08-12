@@ -22,6 +22,7 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	Item item
 	String employeeCode
 	boolean hidden
+	byte[] image
 
 	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
 	LocalDateTime filled
@@ -30,6 +31,7 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 
 	static constraints = {
 		filled nullable: true
+		image nullable: true
 	}
 
 	static mapping = {
@@ -40,7 +42,7 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	abstract boolean equals(SavedItem savedItem)
 
 	boolean equalsSaveItem(SavedItem savedItem) {
-		return hidden == savedItem.hidden
+		return hidden == savedItem.hidden && image == savedItem.image
 	}
 
 }

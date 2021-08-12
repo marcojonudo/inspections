@@ -7,12 +7,14 @@ export abstract class SavedItem {
 	item: Item;
 	employeeCode: string;
 	hidden: boolean;
+	image: string;
 	filled: Dayjs;
 
 	protected constructor(item: Item, employeeCode: string, savedItem: SavedItem) {
 		this.item = item;
 		this.employeeCode = employeeCode;
 		if (savedItem) {
+			this.image = savedItem.image;
 			this.filled = savedItem.filled ? dayjs(savedItem.filled) : undefined;
 			this.hidden = savedItem.hidden;
 		}
@@ -34,6 +36,11 @@ export abstract class SavedItem {
 	updateCommonFields(employeeCode: string): void {
 		this.employeeCode = employeeCode;
 		this.filled = dayjs();
+	}
+
+	addImage(image: string, employeeCode: string): void {
+		this.image = image;
+		this.updateCommonFields(employeeCode);
 	}
 
 }

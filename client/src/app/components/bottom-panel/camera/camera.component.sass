@@ -1,0 +1,29 @@
+@import "abstracts/mixins"
+
+\:host
+	position: relative
+	@include flex-column-center
+	height: calc((100vw - .5rem) * 4 / 3)
+	margin: 0 $tiny-gap
+
+	.camera-content, video
+		width: 100%
+		height: 100%
+		border-radius: $small-gap $small-gap 0 0
+
+	canvas
+		display: none
+
+	button
+		position: absolute
+		bottom: $small-gap
+		transition: transform $fast-transition, opacity $fast-transition
+
+		&.translated
+			opacity: 0
+
+		&:first-of-type.translated
+			transform: translateX(-100%)
+
+		&:last-of-type.translated
+			transform: translateX(100%)

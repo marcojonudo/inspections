@@ -26,4 +26,8 @@ export class Url {
 		return `${environment.serverUrl}/changelog`;
 	}
 
+	static image(orderNumber: number, code: string): string {
+		return `${environment.serverUrl}/inspections/image?orderNumber=${orderNumber}&itemCode=${code}`;
+	}
+
 }
