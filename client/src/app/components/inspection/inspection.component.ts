@@ -344,13 +344,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 
 	openCamera(itemCode: string): void {
 		const savedItem = InspectionService.findSavedItem(itemCode);
-		const bottomSheetRef = this.bottomSheet.open(CameraComponent, { data: savedItem });
-		// bottomSheetRef.afterDismissed().subscribe((option: SelectItemOption) => {
-		// 	if (option) {
-		// 		InspectionService.updateItem(item, option.code);
-		// 		this.cdRef.detectChanges();
-		// 	}
-		// });
+		this.bottomSheet.open(CameraComponent, { data: savedItem });
 	}
 
 	// fill(): void {

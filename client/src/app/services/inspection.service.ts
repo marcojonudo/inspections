@@ -27,6 +27,7 @@ import {SnackBarService} from './snack-bar.service';
 import {CountryHandler} from '../objects/country-info/country-handler';
 import {SpainHandler} from '../objects/country-info/spain-handler';
 import {PortugalHandler} from '../objects/country-info/portugal-handler';
+import {CustomImage} from '../objects/inspections/customImage';
 
 @Injectable({
 	providedIn: 'root'
@@ -314,12 +315,16 @@ export class InspectionService {
 
 	static updateImage(
 		savedItem: SavedItem,
-		image: string,
+		image: CustomImage,
 		savedInspection: SavedInspection = this.savedInspection,
 		employee: Employee = EmployeeService.employee
 	): void {
 		savedItem.addImage(image, employee.code);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
+	}
+
+	static findImageUrl(image: string): string {
+		return `data:image/png;base64,${image}`;
 	}
 
 	findLanguage(): Observable<string> {

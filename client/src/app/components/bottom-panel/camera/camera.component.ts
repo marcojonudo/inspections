@@ -3,12 +3,14 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	ElementRef,
-	Inject,
+	Inject, OnDestroy,
 	ViewChild
 } from '@angular/core';
-import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 import {SavedItem} from '../../../objects/inspections/saved-items/saved-item';
 import {InspectionService} from '../../../services/inspection.service';
+import {CustomImage} from '../../../objects/inspections/customImage';
+import {Constants} from '../../../objects/constants';
 
 @Component({
 	selector: 'app-camera',
@@ -16,17 +18,29 @@ import {InspectionService} from '../../../services/inspection.service';
 	styleUrls: ['./camera.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CameraComponent implements AfterViewInit {
+export class CameraComponent implements AfterViewInit, OnDestroy {
 
 	@ViewChild('video') video: ElementRef;
 	@ViewChild('canvas') canvas: ElementRef;
 
-	constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public savedItem: SavedItem) {}
+	landscape: boolean;
+
+	constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public savedItem: SavedItem) {
+		window.addEventListener(Constants.EVENT.DEVICE_MOTION, (event) => this.watchDeviceMotion(event));
+	}
+
+	watchDeviceMotion(event: DeviceMotionEvent): void {
+		this.landscape = event.accelerationIncludingGravity.y < event.accelerationIncludingGravity.x;
+	}
 
 	ngAfterViewInit(): void {
 		if (!this.savedItem.image) {
 			this.startVideo();
 		}
+	}
+
+	ngOnDestroy(): void {
+		window.removeEventListener(Constants.EVENT.DEVICE_MOTION, this.watchDeviceMotion);
 	}
 
 	startVideo(): void {
@@ -36,15 +50,35 @@ export class CameraComponent implements AfterViewInit {
 	}
 
 	findImageUrl(image: string): string {
-		return `data:image/png;base64,${image}`;
+		return InspectionService.findImageUrl(image);
 	}
 
 	capture(): void {
-		this.canvas.nativeElement.width = this.video.nativeElement.videoWidth;
-		this.canvas.nativeElement.height = this.video.nativeElement.videoHeight;
-		this.canvas.nativeElement.getContext('2d').drawImage(this.video.nativeElement, 0, 0);
-		const image = this.canvas.nativeElement.toDataURL('image/png');
-		InspectionService.updateImage(this.savedItem, image.slice(22, image.length));
+		let width;
+		let height;
+		if (this.landscape) {
+			width = this.video.nativeElement.videoHeight;
+			height = this.video.nativeElement.videoWidth;
+		} else {
+			width = this.video.nativeElement.videoWidth;
+			height = this.video.nativeElement.videoHeight;
+		}
+
+		this.canvas.nativeElement.width = width;
+		this.canvas.nativeElement.height = height;
+		const context = this.canvas.nativeElement.getContext('2d');
+
+		if (this.landscape) {
+			context.translate(width / 2, height / 2);
+			context.rotate(-90 * Math.PI / 180);
+			context.translate(-height / 2, -width / 2);
+		}
+
+		context.drawImage(this.video.nativeElement, 0, 0);
+		const base64Code = this.canvas.nativeElement.toDataURL('image/png');
+		console.log(base64Code);
+		const image = new CustomImage(base64Code.slice(22, base64Code.length), this.landscape);
+		InspectionService.updateImage(this.savedItem, image);
 	}
 
 	deleteImage(): void {

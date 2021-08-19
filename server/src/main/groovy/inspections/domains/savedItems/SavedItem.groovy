@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import grails.gorm.annotation.Entity
 import inspections.deserializers.SavedItemDeserializer
+import inspections.domains.Image
 import inspections.domains.SavedInspection
 import inspections.domains.items.Item
 import inspections.utils.Constants
@@ -22,7 +23,7 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	Item item
 	String employeeCode
 	boolean hidden
-	byte[] image
+	Image image
 
 	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
 	LocalDateTime filled
@@ -37,6 +38,7 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	static mapping = {
 		tablePerHierarchy false
 		item fetch: 'join'
+		image fetch: 'join'
 	}
 
 	abstract boolean equals(SavedItem savedItem)

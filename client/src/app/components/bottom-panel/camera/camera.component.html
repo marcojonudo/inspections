@@ -1,4 +1,8 @@
-<img *ngIf="savedItem.image; else videoTemplate" [src]="findImageUrl(savedItem.image)" class="camera-content">
+<img
+	*ngIf="savedItem.image; else videoTemplate"
+	[src]="findImageUrl(savedItem.image.image)"
+	class="camera-content"
+	[class.landscape]="landscape">
 <ng-template #videoTemplate>
 	<div class="camera-content">
 		<video #video autoplay></video>
