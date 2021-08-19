@@ -1,8 +1,8 @@
 <mat-toolbar id="inspection-title" class="mat-elevation-z3 no-print">
-	<button id="back-icon-button" mat-icon-button (click)="goBack()">
+	<button id="back-icon-button" mat-icon-button (click)="checkGoBack()">
 		<mat-icon>chevron_left</mat-icon>
 	</button>
-	<h1 translate>inspection.type.{{inspection.code}}</h1>
+	<h1 #clearStorage translate>inspection.type.{{inspection.code}}</h1>
 	<button id="context-button" mat-icon-button [matMenuTriggerFor]="contextMenu" [class.pulse]="updateVersion">
 		<span></span>
 		<span></span>

@@ -1,8 +1,7 @@
 import {
 	Injectable,
 } from '@angular/core';
-import {EMPTY, Observable, of} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {Observable, of} from 'rxjs';
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
 import {EmployeeService} from '../services/employee.service';
 

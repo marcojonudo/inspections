@@ -21,19 +21,19 @@ import {EmployeeService} from '../../services/employee.service';
 import {Order} from '../../objects/orders/order';
 import {NavigationEnd, Router} from '@angular/router';
 import {MatList} from '@angular/material/list';
-import {MatAccordion} from '@angular/material/expansion';
 import {LoadingService} from '../../services/loading.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ResetEmployeeDialogComponent} from '../reset-employee-dialog/reset-employee-dialog.component';
 import {LocalStorageService} from '../../services/local-storage.service';
 import {ListElement} from '../../objects/list-elements/list-element';
 import {Category} from '../../objects/list-elements/category';
-import {fromEvent} from 'rxjs';
+import {fromEvent, Observable} from 'rxjs';
 import {debounceTime, filter, tap} from 'rxjs/operators';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 import {VersionService} from '../../services/version.service';
 import {Url} from '../../objects/url';
 import {TextItem} from '../../objects/inspections/items/text-item';
+import {SnackBarService} from '../../services/snack-bar.service';
 
 @Component({
 	selector: 'app-inspection',
@@ -46,6 +46,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	@ViewChild('toolBar') toolBar: ElementRef;
 	@ViewChild(MatList, { read: ElementRef }) itemsList: ElementRef;
 	@ViewChild('itemsContainer') itemsContainer: ElementRef;
+	@ViewChild('clearStorage', { read: ElementRef }) clearStorage: ElementRef;
 
 	bottomBarHeight: number;
 	listElements: ListElement[];
@@ -73,6 +74,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		private loadingService: LoadingService,
 		private versionService: VersionService,
 		private dialog: MatDialog,
+		private snackBarService: SnackBarService,
 		private router: Router,
 		private cdRef: ChangeDetectorRef
 	) {
@@ -120,6 +122,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		});
 		this.bottomBarHeight = this.toolBar.nativeElement.getBoundingClientRect().height;
 		this.loadingService.stop();
+		this.handleClearStorage(fromEvent(this.clearStorage.nativeElement, Constants.EVENT.CLICK));
 	}
 
 	// region Getters / setters
@@ -208,16 +211,20 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		return InspectionService.checkCompleteCategory(category);
 	}
 
-	goBack(): void {
+	checkGoBack(): void {
 		const dialogRef = this.dialog.open(
 			ConfirmDialogComponent, { data: { message: Constants.MESSAGE_CODE.WARNING_GOING_BACK }, autoFocus: false }
 		);
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				LocalStorageService.setItem(Constants.LOCAL_STORAGE.MANUAL_EXIT, true);
-				this.router.navigate([Constants.PATH.INIT]);
+				this.goBack();
 			}
 		});
+	}
+
+	goBack(): void {
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.MANUAL_EXIT, true);
+		this.router.navigate([Constants.PATH.INIT]);
 	}
 
 	addOpenedCategory(name: string, openedCategories: string[] = this.openedCategories): void {
@@ -323,6 +330,13 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	completeCategory(event: Event, category: Category): void {
 		event.stopPropagation();
 		InspectionService.handleCategoryComplete(category);
+	}
+
+	handleClearStorage(click$: Observable<any>): void {
+		LocalStorageService.checkClearStorage(click$).subscribe(() => {
+			this.snackBarService.open(Constants.MESSAGE_CODE.CLEARED_LOCAL_STORAGE);
+			this.goBack();
+		});
 	}
 
 }

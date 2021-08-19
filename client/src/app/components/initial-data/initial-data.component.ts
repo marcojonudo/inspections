@@ -8,7 +8,7 @@ import {
 import {EmployeeService} from '../../services/employee.service';
 import {Employee} from '../../objects/employee';
 import {Constants} from '../../objects/constants';
-import {finalize} from 'rxjs/operators';
+import {buffer, debounceTime, exhaustMap, filter, finalize, map} from 'rxjs/operators';
 import {InspectionService} from '../../services/inspection.service';
 import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -32,6 +32,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 	@ViewChild('employeeCodeInput') employeeCodeInput: MatInput;
 	@ViewChild('orderCodeInput') orderCodeInput: MatInput;
 	@ViewChild('searchOrderButton', { read: ElementRef }) searchOrderButton: ElementRef;
+	@ViewChild('clearStorage', { read: ElementRef }) clearStorage: ElementRef;
 
 	employeeCode: FormControl;
 	orderCode: FormControl;
@@ -39,6 +40,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 	employee: Employee;
 
 	searchingInspections: boolean;
+	clearStorageCounter: number;
 
 	constructor(
 		private inspectionService: InspectionService,
@@ -57,6 +59,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 			[Validators.required].concat(InspectionService.countryHandler.findEmployeeCodeCustomValidations())
 		);
 		this.orderCode = new FormControl('', [Validators.required]);
+		this.clearStorageCounter = 0;
 	}
 
 	ngOnInit(): void {
@@ -69,6 +72,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 			EmployeeService.setEmployees(data.employees);
 			this.loadingService.stop();
 		});
+		this.handleClearStorage(fromEvent(this.clearStorage.nativeElement, Constants.EVENT.CLICK));
 	}
 
 	ngAfterViewInit(): void {
@@ -140,6 +144,12 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		).subscribe(() => {
 			this.router.navigate([Constants.PATH.INSPECTION]);
 		});
+	}
+
+	handleClearStorage(click$: Observable<any>): void {
+		LocalStorageService.checkClearStorage(click$).subscribe(() =>
+			this.snackBarService.open(Constants.MESSAGE_CODE.CLEARED_LOCAL_STORAGE)
+		);
 	}
 
 }
