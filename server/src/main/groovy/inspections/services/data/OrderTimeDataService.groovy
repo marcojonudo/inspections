@@ -10,6 +10,6 @@ import inspections.utils.Constants
 @Transactional(connection = Constants.DataSource.FVIBERI)
 interface OrderTimeDataService {
 
-	Integer findOrderTimeOrderNumber(String shortCode, Map args)
+	List<Integer> findOrderTimeOrderNumber(String shortCode, Map args)
 
 }

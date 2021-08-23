@@ -8,6 +8,7 @@ import org.grails.datastore.gorm.GormEntity
 class Order implements GormEntity<Order> {
 
 	int number
+	String state
 	Vehicle vehicle
 	Client client
 	String sellerCode
@@ -19,6 +20,7 @@ class Order implements GormEntity<Order> {
 		table 'fvcabord'
 
 		number column: 'nuordrep'
+		state column: 'clsituac'
 		vehicle column: 'numatric', lazy: false
 		client column: 'coclient', fetch: 'join'
 		sellerCode column: 'covended'
