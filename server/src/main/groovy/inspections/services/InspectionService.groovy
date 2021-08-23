@@ -24,7 +24,6 @@ class InspectionService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InspectionService)
 
-	@Inject OrderTimeDataService orderTimeDataService
 	@Inject OrderDataService orderDataService
 	@Inject CentreDataService centreDataService
 	@Inject VehicleInfoDataService vehicleInfoDataService
@@ -38,9 +37,7 @@ class InspectionService {
 	 * @return Orden
 	 */
 	OrderInfo findOrderInfo(String shortCode) {
-		Integer orderNumber = orderTimeDataService.findOrderTimeOrderNumber(
-			shortCode, [sort: 'day', order: 'desc', max: 1]
-		)
+		Integer orderNumber = orderDataService.find(shortCode)
 		OrderInfo orderInfo = null
 		if (orderNumber) {
 			Order order = orderDataService.find(orderNumber)
