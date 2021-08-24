@@ -104,9 +104,12 @@
 						</textarea>
 					</mat-form-field>
 				</div>
-				<button class="camera-button" mat-icon-button (click)="openCamera(item.code)">
+				<button
+					mat-icon-button
+					class="camera-button"
+					[class.picture]="checkExistentImage(item)"
+					(click)="openCamera(item.code)">
 					<mat-icon>photo_camera</mat-icon>
-<!--					<input #image type="file" [hidden]="true" accept="image/*" (change)="setFile(item, image.files)">-->
 				</button>
 			</mat-list-item>
 		</mat-list>

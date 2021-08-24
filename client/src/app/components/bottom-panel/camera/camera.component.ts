@@ -76,7 +76,6 @@ export class CameraComponent implements AfterViewInit, OnDestroy {
 
 		context.drawImage(this.video.nativeElement, 0, 0);
 		const base64Code = this.canvas.nativeElement.toDataURL('image/png');
-		console.log(base64Code);
 		const image = new CustomImage(base64Code.slice(22, base64Code.length), this.landscape);
 		InspectionService.updateImage(this.savedItem, image);
 	}
