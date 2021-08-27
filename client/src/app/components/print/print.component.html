@@ -1,6 +1,6 @@
 <header>
 	<div id="title" translate="">
-		inspection.type.{{inspection.code}}
+		inspection.type.{{savedInspection.code}}
 		<img id="logo" src="assets/img/feuvert-logo.png">
 	</div>
 	<div id="info">
@@ -10,8 +10,8 @@
 				<mat-card-title translate>Información</mat-card-title>
 			</mat-card-header>
 			<mat-card-content>
-				<section>
-					<div>
+				<section class="key-value-section">
+					<div *ngIf="seller">
 						<div>Vendedor</div>
 						<div>{{seller.name | titlecase}} {{seller.surname1 | titlecase}} {{seller.surname2 | titlecase}}</div>
 					</div>
@@ -20,7 +20,7 @@
 						<div>{{order.code}} · {{order.number}}</div>
 					</div>
 				</section>
-				<section>
+				<section class="key-value-section">
 					<div>
 						<div>Cliente</div>
 						<div>
@@ -50,12 +50,36 @@
 				<mat-card-title translate>print.vehicle</mat-card-title>
 			</mat-card-header>
 			<mat-card-content>
-				<span>{{order.vehicle.numberPlate}}</span>
-				<span>{{order.vehicle.brand | titlecase}} {{order.vehicle.model | titlecase}}</span>
-				<span>{{order.vehicle.cylinder}}</span>
-				<span *ngIf="order.vehicle.engineCode">{{order.vehicle.engineCode}}</span>
-				<span *ngIf="order.vehicle.power">{{order.vehicle.power + 'cv'}}</span>
-				<span>{{order.vehicle.registrationYear}}</span>
+				<section class="key-value-section">
+					<div>
+						<div>Matrícula</div>
+						<div>{{order.vehicle.numberPlate}}</div>
+					</div>
+					<div>
+						<div>Modelo</div>
+						<div>{{order.vehicle.brand | titlecase}} {{order.vehicle.model | titlecase}}</div>
+					</div>
+					<div>
+						<div>Cilindrada</div>
+						<span>{{order.vehicle.cylinder}}</span>
+					</div>
+					<div *ngIf="order.vehicle.engineCode">
+						<div>Motor</div>
+						<div>{{order.vehicle.engineCode}}</div>
+					</div>
+					<div *ngIf="order.vehicle.power">
+						<div>Potencia</div>
+						<div>{{order.vehicle.power + 'cv'}}</div>
+					</div>
+					<div *ngIf="order.vehicle.registrationYear">
+						<div>Matriculación</div>
+						<div>{{order.vehicle.registrationYear}}</div>
+					</div>
+					<div *ngFor="let item of findHeaderItems(headerVehicleItem)">
+						<div>{{item.item.code | titlecase}}</div>
+						<div>{{item.findValue()}}</div>
+					</div>
+				</section>
 			</mat-card-content>
 		</mat-card>
 		<mat-card>

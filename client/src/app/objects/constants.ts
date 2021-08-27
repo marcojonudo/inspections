@@ -9,6 +9,11 @@ export class Constants {
 	static readonly REQUIRED_EMPLOYEE_CODE: string = 'requiredEmployeeCode';
 	static readonly EMPLOYEE_CODE_MIN_LENGTH: string = 'employeeCodeMinLength';
 	static readonly DEFAULT_LANGUAGE: string = 'es';
+	static readonly HEADER_CARD: { [key: string]: string } = {
+		INFO: 'INFO',
+		CENTRE: 'CENTRE',
+		VEHICLE: 'VEHICLE'
+	};
 
 	static readonly SNACK_BAR: any = {
 		DURATION: 5000,

@@ -339,4 +339,10 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		});
 	}
 
+	// fill(): void {
+	// 	InspectionService.savedInspection.items.filter(i => i.item.type === 'TEXT').forEach((i: TextSavedItem) => {
+	// 		i.text = '12';
+	// 	});
+	// }
+
 }
