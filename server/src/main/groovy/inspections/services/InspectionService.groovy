@@ -6,7 +6,6 @@ import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Centre
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
-import inspections.domains.savedItems.SavedItem
 import inspections.pogos.InspectionInfo
 import inspections.pogos.OrderInfo
 import inspections.pogos.logs.Log
@@ -105,13 +104,7 @@ class InspectionService {
 
 			/* Si existe una revisión para ese número de serie, se actualizan los elementos */
 			if (existent) {
-				existent.items.each { SavedItem existentSavedItem ->
-					SavedItem savedItem = inspection.items.find { it.item.name == existentSavedItem.item.name }
-					if (existentSavedItem != savedItem) {
-						savedItemDataService.update(existentSavedItem.id, savedItem)
-					}
-				}
-				savedInspection = existent
+				savedInspection = savedInspectionDataService.update(inspection, existent)
 			} else {
 				savedInspection = savedInspectionDataService.save(inspection)
 			}
