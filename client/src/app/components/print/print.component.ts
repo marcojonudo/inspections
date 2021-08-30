@@ -46,8 +46,9 @@ export class PrintComponent implements OnInit {
 				Constants.SELECT_ITEM_OPTION_CODE.RA, Constants.SELECT_ITEM_OPTION_CODE.RR
 			]
 		};
+		const items = this.savedInspection.items.filter(i => i.item.header === undefined);
 		this.listElements = InspectionService.findGroupedItems(
-			InspectionService.savedInspection.items, 0, [(savedItem: SavedItem) => savedItem.item.category]
+			items, 0, [(savedItem: SavedItem) => savedItem.item.category]
 		) as Category[];
 
 		this.chartType = 'pie';
@@ -65,7 +66,7 @@ export class PrintComponent implements OnInit {
 
 	// region Getters / setters
 
-	get inspection(): SavedInspection {
+	get savedInspection(): SavedInspection {
 		return InspectionService.savedInspection;
 	}
 
@@ -83,6 +84,10 @@ export class PrintComponent implements OnInit {
 
 	get selectItemOptions(): SelectItemOption[] {
 		return InspectionService.selectItemOptions;
+	}
+
+	get headerVehicleItem(): string {
+		return Constants.HEADER_CARD.VEHICLE;
 	}
 
 	// endregion
@@ -128,6 +133,10 @@ export class PrintComponent implements OnInit {
 		return data;
 	}
 
+	findHeaderItems(code: string, items: SavedItem[] = this.savedInspection.items): SavedItem[] {
+		return items.filter(item => item.item.header === code);
+	}
+
 	checkItemType(optionType: string, type: string): boolean {
 		return optionType === type;
 	}
@@ -148,7 +157,7 @@ export class PrintComponent implements OnInit {
 		return InspectionService.findIconColor(code);
 	}
 
-	findSelectItems(items: SavedItem[] = this.inspection.items): SelectSavedItem[] {
+	findSelectItems(items: SavedItem[] = this.savedInspection.items): SelectSavedItem[] {
 		return items.filter(item => item.item.type === Constants.ITEM_TYPE.SELECT) as SelectSavedItem[];
 	}
 
@@ -160,7 +169,7 @@ export class PrintComponent implements OnInit {
 		return items.filter(i => i.item.type === Constants.ITEM_TYPE.SELECT).length > 0;
 	}
 
-	findData(items: SavedItem[] = this.inspection.items): number[] {
+	findData(items: SavedItem[] = this.savedInspection.items): number[] {
 		const labels = this.findLabels();
 		const selectItems = this.findSelectItems(items);
 		const data = [];

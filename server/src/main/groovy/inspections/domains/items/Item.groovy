@@ -22,6 +22,7 @@ class Item implements GormEntity<Item> {
 	GaragePosition garagePosition
 	VehicleSection vehicleSection
 	boolean required
+	HeaderCard header
 
 	@JsonIgnore
 	Set<Inspection> inspections
@@ -82,6 +83,14 @@ class Item implements GormEntity<Item> {
 			this.buildSavedItem = buildSavedItem
 			this.updateSavedItem = updateSavedItem
 		}
+
+	}
+
+	enum HeaderCard {
+
+		INFO,
+		CENTRE,
+		VEHICLE
 
 	}
 
