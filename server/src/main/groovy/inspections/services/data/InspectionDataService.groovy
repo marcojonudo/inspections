@@ -17,7 +17,7 @@ abstract class InspectionDataService {
 
 	List<Inspection> findAll() {
 		List<Inspection> inspections = findAllInspections()
-		return inspections.collect { Builder.buildInspection(it, itemDataService.findAll(it)) }
+		return inspections.collect { Builder.buildInspection(it, itemDataService.findAll((Inspection) it)) }
 	}
 
 	@Query("""

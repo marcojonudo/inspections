@@ -16,6 +16,7 @@ class SavedInspection implements GormEntity<SavedInspection> {
 	int orderNumber
 	String employeeCode
 	String numberPlate
+	State state
 
 	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
 	LocalDateTime saved
@@ -28,6 +29,19 @@ class SavedInspection implements GormEntity<SavedInspection> {
 
 	static mapping = {
 		items fetch: 'join'
+	}
+
+	enum State {
+
+		STARTED({ Set<SavedItem> items -> items.find { it.item.required && !it.filled } as boolean }),
+		FINISHED({ Set<SavedItem> items -> !items.find { it.item.required && !it.filled } as boolean })
+
+		final Closure<Boolean> check
+
+		State(Closure<Boolean> check) {
+			this.check = check;
+		}
+
 	}
 
 }

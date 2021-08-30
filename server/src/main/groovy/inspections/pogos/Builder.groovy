@@ -21,6 +21,7 @@ class Builder {
 		Map<String, Object> garagePosition = (Map<String, Object>) ((Map<String, Object>) item.item).garagePosition
 		savedItem.item = new Item(
 			type: Item.Type.valueOf((String) ((Map<String, Object>) item.item).type),
+			code: (String) ((Map<String, Object>) item.item).code,
 			name: (String) ((Map<String, Object>) item.item).name,
 			category: category ? new ItemCategory(code: (String) category.code, name: (String) category.name) : null,
 			garagePosition: garagePosition ? new GaragePosition(code: (String) garagePosition.code, name: (String) garagePosition.name) : null
