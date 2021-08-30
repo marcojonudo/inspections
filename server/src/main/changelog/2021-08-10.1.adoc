@@ -1,2 +1,3 @@
-- [.label-improvement]#Se muestra un mensaje de error si falla la carga inicial de empleados.#
-- [.label-improvement]#Si la obtención del idioma del centro falla, se usa el español por defecto.#
+- [.label-improvement]#Añadidos elementos de 'Luz de warning' y 'Control visual geometría neumáticos' genéricos, y de 'Kilómetros'#
+- [.label-fix]#Se evita obtener órdenes ya cerradas al introducir el código corto.#
+- [.label-improvement]#Se filtran los elementos con valor 'No aplica' en la hoja de impresión.#

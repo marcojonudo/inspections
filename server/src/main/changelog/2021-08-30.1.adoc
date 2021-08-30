@@ -1,0 +1,2 @@
+- [.label-improvement]#Actualizado cabecero de la revisión impresa (ahora se muestra una ficha 'Información').#
+- [.label-improvement]#Añadido campo de 'Vendedor' en la nueva ficha.#

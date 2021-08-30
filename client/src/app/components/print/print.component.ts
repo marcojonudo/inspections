@@ -46,7 +46,12 @@ export class PrintComponent implements OnInit {
 				Constants.SELECT_ITEM_OPTION_CODE.RA, Constants.SELECT_ITEM_OPTION_CODE.RR
 			]
 		};
-		const items = this.savedInspection.items.filter(i => i.item.header === undefined);
+		const items = this.savedInspection.items.filter(i =>
+			i.item.header === undefined
+		).filter(i => {
+			const selectItem = i.item.type === Constants.ITEM_TYPE.SELECT;
+			return selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true;
+		});
 		this.listElements = InspectionService.findGroupedItems(
 			items, 0, [(savedItem: SavedItem) => savedItem.item.category]
 		) as Category[];
