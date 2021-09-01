@@ -200,10 +200,19 @@
 		"CLEARED_LOCAL_STORAGE": "Dados do navegador excluídos"
 	},
 	"print": {
+		"info": "Em formação",
+		"seller": "Vendedor",
+		"orderNumber": "Nº pedido",
 		"centre": "Centro",
 		"vehicle": "Veículo",
 		"client": "Cliente",
 		"summary": "Resumo",
+		"numberPlate": "Registro carro",
+		"model": "Modelo",
+		"cylinder": "Deslocamento",
+		"engine": "Motor",
+		"power": "Potência",
+		"registration": "Cadastro",
 		"category": {
 			"I": "Iluminação",
 			"C": "Carrocería",

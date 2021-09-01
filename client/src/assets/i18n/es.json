@@ -201,10 +201,19 @@
 		"CLEARED_LOCAL_STORAGE": "Datos del navegador borrados"
 	},
 	"print": {
+		"info": "Información",
+		"seller": "Vendedor",
+		"orderNumber": "Nº orden",
 		"centre": "Centro",
 		"vehicle": "Vehículo",
 		"client": "Cliente",
 		"summary": "Resumen",
+		"numberPlate": "Matrícula",
+		"model": "Modelo",
+		"cylinder": "Cilindrada",
+		"engine": "Motor",
+		"power": "Potencia",
+		"registration": "Matriculación",
 		"category": {
 			"I": "Iluminación",
 			"C": "Carrocería",
