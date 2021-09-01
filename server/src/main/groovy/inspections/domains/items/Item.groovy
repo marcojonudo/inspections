@@ -40,6 +40,7 @@ class Item implements GormEntity<Item> {
 		category nullable: true
 		garagePosition nullable: true
 		vehicleSection nullable: true
+		header nullable: true
 	}
 
 	static mapping = {
