@@ -7,7 +7,7 @@ import {buffer, debounceTime, filter, map, tap} from 'rxjs/operators';
 })
 export class LocalStorageService {
 
-	static readonly CLEAR_STORAGE_THRESHOLD = 5;
+	static readonly CLEAR_STORAGE_THRESHOLD = 3;
 
 	static setItem(key, value): void {
 		localStorage.setItem(key, JSON.stringify(value));
