@@ -5,37 +5,37 @@ import {
 	Component, ElementRef, HostListener, OnInit,
 	ViewChild
 } from '@angular/core';
-import {Inspection} from '../../objects/inspections/inspection';
-import {Constants} from '../../objects/constants';
-import {SelectItem} from '../../objects/inspections/items/select-item';
-import {SelectItemOption} from '../../objects/inspections/items/select-item-option';
-import {Item} from '../../objects/inspections/items/item';
-import {InspectionService} from '../../services/inspection.service';
-import {MatBottomSheet} from '@angular/material/bottom-sheet';
-import {LegendComponent} from '../bottom-panel/legend/legend.component';
-import {SavedInspection} from '../../objects/inspections/saved-inspection';
-import {TextSavedItem} from '../../objects/inspections/saved-items/text-saved-item';
-import {SelectSavedItem} from '../../objects/inspections/saved-items/select-saved-item';
-import {Employee} from '../../objects/employee';
-import {EmployeeService} from '../../services/employee.service';
-import {Order} from '../../objects/orders/order';
-import {NavigationEnd, Router} from '@angular/router';
-import {MatList} from '@angular/material/list';
-import {LoadingService} from '../../services/loading.service';
-import {MatDialog} from '@angular/material/dialog';
-import {ResetEmployeeDialogComponent} from '../reset-employee-dialog/reset-employee-dialog.component';
-import {LocalStorageService} from '../../services/local-storage.service';
-import {ListElement} from '../../objects/list-elements/list-element';
-import {Category} from '../../objects/list-elements/category';
-import {fromEvent, Observable} from 'rxjs';
-import {debounceTime, filter, tap} from 'rxjs/operators';
-import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
-import {VersionService} from '../../services/version.service';
-import {Url} from '../../objects/url';
-import {TextItem} from '../../objects/inspections/items/text-item';
-import {HttpClient} from '@angular/common/http';
-import {CameraComponent} from '../bottom-panel/camera/camera.component';
-import {SnackBarService} from '../../services/snack-bar.service';
+import { Inspection } from '../../objects/inspections/inspection';
+import { Constants } from '../../objects/constants';
+import { SelectItem } from '../../objects/inspections/items/select-item';
+import { SelectItemOption } from '../../objects/inspections/items/select-item-option';
+import { Item } from '../../objects/inspections/items/item';
+import { InspectionService } from '../../services/inspection.service';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { LegendComponent } from '../bottom-panel/legend/legend.component';
+import { SavedInspection } from '../../objects/inspections/saved-inspection';
+import { TextSavedItem } from '../../objects/inspections/saved-items/text-saved-item';
+import { SelectSavedItem } from '../../objects/inspections/saved-items/select-saved-item';
+import { Employee } from '../../objects/employee';
+import { EmployeeService } from '../../services/employee.service';
+import { Order } from '../../objects/orders/order';
+import { NavigationEnd, Router } from '@angular/router';
+import { MatList } from '@angular/material/list';
+import { LoadingService } from '../../services/loading.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ResetEmployeeDialogComponent } from '../reset-employee-dialog/reset-employee-dialog.component';
+import { LocalStorageService } from '../../services/local-storage.service';
+import { ListElement } from '../../objects/list-elements/list-element';
+import { Category } from '../../objects/list-elements/category';
+import { fromEvent, Observable } from 'rxjs';
+import { debounceTime, filter, tap } from 'rxjs/operators';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { VersionService } from '../../services/version.service';
+import { Url } from '../../objects/url';
+import { TextItem } from '../../objects/inspections/items/text-item';
+import { HttpClient } from '@angular/common/http';
+import { CameraComponent } from '../bottom-panel/camera/camera.component';
+import { SnackBarService } from '../../services/snack-bar.service';
 
 @Component({
 	selector: 'app-inspection',
@@ -49,6 +49,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	@ViewChild(MatList, { read: ElementRef }) itemsList: ElementRef;
 	@ViewChild('itemsContainer') itemsContainer: ElementRef;
 	@ViewChild('clearStorage', { read: ElementRef }) clearStorage: ElementRef;
+	@ViewChild('fillInspection', { read: ElementRef }) fillInspection: ElementRef;
 
 	bottomBarHeight: number;
 	listElements: ListElement[];
@@ -78,8 +79,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		private dialog: MatDialog,
 		private snackBarService: SnackBarService,
 		private router: Router,
-		private cdRef: ChangeDetectorRef,
-		private http: HttpClient
+		private cdRef: ChangeDetectorRef
 	) {
 		this.listElements = InspectionService.findGroupedItems(this.inspection.items);
 		console.log('List elements', this.listElements);
@@ -126,6 +126,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		this.bottomBarHeight = this.toolBar.nativeElement.getBoundingClientRect().height;
 		this.loadingService.stop();
 		this.handleClearStorage(fromEvent(this.clearStorage.nativeElement, Constants.EVENT.CLICK));
+		this.handleFillInspection(fromEvent(this.fillInspection.nativeElement, Constants.EVENT.CLICK));
 	}
 
 	// region Getters / setters
@@ -351,10 +352,10 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		this.bottomSheet.open(CameraComponent, { data: savedItem });
 	}
 
-	// fill(): void {
-	// 	InspectionService.savedInspection.items.filter(i => i.item.type === 'TEXT').forEach((i: TextSavedItem) => {
-	// 		i.text = '12';
-	// 	});
-	// }
+	handleFillInspection(click$: Observable<any>): void {
+		InspectionService.checkFillInspection(click$).subscribe(() =>
+			this.cdRef.detectChanges()
+		);
+	}
 
 }
