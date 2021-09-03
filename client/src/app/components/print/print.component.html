@@ -91,7 +91,7 @@
 					</section>
 				</mat-card-content>
 			</mat-card>
-			<mat-card>
+			<mat-card id="summary-card">
 				<mat-card-header>
 					<mat-icon mat-card-avatar>summarize</mat-icon>
 					<mat-card-title translate>print.summary</mat-card-title>
@@ -129,19 +129,6 @@
 				<mat-icon mat-card-avatar>navigate_next</mat-icon>
 				<mat-card-title translate>print.category.{{elem.code}}</mat-card-title>
 			</mat-card-header>
-			<div *ngIf="checkExistentSelectItems(elem.items)" class="graph-container">
-				<div class="graph-info">
-					<canvas
-						baseChart
-						width="1px"
-						height="1px"
-						[chartType]="chartType"
-						[options]="options"
-						[colors]="colors"
-						[data]="findData(elem.items)">
-					</canvas>
-				</div>
-			</div>
 			<mat-card-content>
 				<ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: elem }"></ng-container>
 			</mat-card-content>
@@ -160,8 +147,8 @@
 	</div>
 	<ng-template #itemTemplate let-elem>
 		<div class="items-info">
-			<div *ngFor="let item of elem.items | savedItem" class="item" [class.highlight]="checkWrongItem(item)">
-				<div translate>inspection.item.{{item.item.code}}</div>
+			<div *ngFor="let item of elem.items | savedItem" class="item">
+				<div translate class="item-text">inspection.item.{{item.item.code}}</div>
 				<mat-icon
 					*ngIf="checkItemType(item.item.type, selectType); else textItemText"
 					class="item-data"

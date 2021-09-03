@@ -1,33 +1,33 @@
-import {Injectable} from '@angular/core';
-import {from, Observable, of, throwError} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {Url} from '../objects/url';
-import {Order} from '../objects/orders/order';
-import {Inspection} from '../objects/inspections/inspection';
-import {SavedInspection} from '../objects/inspections/saved-inspection';
+import { Injectable } from '@angular/core';
+import { from, Observable, of, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Url } from '../objects/url';
+import { Order } from '../objects/orders/order';
+import { Inspection } from '../objects/inspections/inspection';
+import { SavedInspection } from '../objects/inspections/saved-inspection';
 import * as dayjs from 'dayjs';
-import {LocalStorageService} from './local-storage.service';
-import {Constants} from '../objects/constants';
-import {EmployeeService} from './employee.service';
-import {catchError, concatMap, finalize, map, mergeMap, switchMap, tap} from 'rxjs/operators';
-import {SelectSavedItem} from '../objects/inspections/saved-items/select-saved-item';
-import {Builder} from '../objects/builder';
-import {Employee} from '../objects/employee';
-import {Centre} from '../objects/orders/centre';
-import {Item} from '../objects/inspections/items/item';
-import {ListElement} from '../objects/list-elements/list-element';
-import {Category} from '../objects/list-elements/category';
-import {NameElement} from '../objects/list-elements/name-element';
-import {SelectItemOption} from '../objects/inspections/items/select-item-option';
-import {SelectItem} from '../objects/inspections/items/select-item';
-import {ItemRelation} from '../objects/inspections/item-relation';
-import {SavedItem} from '../objects/inspections/saved-items/saved-item';
-import {TranslateService} from '@ngx-translate/core';
-import {SnackBarService} from './snack-bar.service';
-import {CountryHandler} from '../objects/country-info/country-handler';
-import {SpainHandler} from '../objects/country-info/spain-handler';
-import {PortugalHandler} from '../objects/country-info/portugal-handler';
-import {CustomImage} from '../objects/inspections/customImage';
+import { LocalStorageService } from './local-storage.service';
+import { Constants } from '../objects/constants';
+import { EmployeeService } from './employee.service';
+import { catchError, concatMap, debounceTime, filter, finalize, map, tap, buffer } from 'rxjs/operators';
+import { SelectSavedItem } from '../objects/inspections/saved-items/select-saved-item';
+import { Builder } from '../objects/builder';
+import { Employee } from '../objects/employee';
+import { Centre } from '../objects/orders/centre';
+import { Item } from '../objects/inspections/items/item';
+import { ListElement } from '../objects/list-elements/list-element';
+import { Category } from '../objects/list-elements/category';
+import { NameElement } from '../objects/list-elements/name-element';
+import { SelectItemOption } from '../objects/inspections/items/select-item-option';
+import { SelectItem } from '../objects/inspections/items/select-item';
+import { ItemRelation } from '../objects/inspections/item-relation';
+import { SavedItem } from '../objects/inspections/saved-items/saved-item';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackBarService } from './snack-bar.service';
+import { CountryHandler } from '../objects/country-info/country-handler';
+import { SpainHandler } from '../objects/country-info/spain-handler';
+import { PortugalHandler } from '../objects/country-info/portugal-handler';
+import { CustomImage } from '../objects/inspections/customImage';
 
 @Injectable({
 	providedIn: 'root'
@@ -44,6 +44,8 @@ export class InspectionService {
 	static selectItemOptions: SelectItemOption[];
 	static savedInspection: SavedInspection;
 	static lockTimeout: any;
+
+	private static readonly FILL_INSPECTION_CLICK_THRESHOLD: number = 3;
 
 	private static readonly SELECT_ICON_COLOR: { [key: string]: string } = {
 		P: '#7b7979',
@@ -80,7 +82,8 @@ export class InspectionService {
 
 	constructor(
 		private translate: TranslateService, private http: HttpClient, private snackBarService: SnackBarService
-	) {}
+	) {
+	}
 
 	static setOrder(order: Order): Order {
 		this.order = order;
@@ -325,6 +328,21 @@ export class InspectionService {
 
 	static findImageUrl(image: string): string {
 		return `data:image/png;base64,${image}`;
+	}
+
+	static checkFillInspection(click$: Observable<any>): Observable<number> {
+		return click$.pipe(
+			buffer(click$.pipe(debounceTime(300))),
+			map(array => array.length),
+			filter(length => length === this.FILL_INSPECTION_CLICK_THRESHOLD),
+			tap(() => this.fillInspection())
+		);
+	}
+
+	static fillInspection(savedInspection: SavedInspection = this.savedInspection): void {
+		savedInspection.items.forEach(item =>
+			InspectionService.updateItem(item.item, Constants.SELECT_ITEM_OPTION_CODE.C).subscribe()
+		);
 	}
 
 	findLanguage(): Observable<string> {

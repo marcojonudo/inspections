@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
-import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
-import {Order} from '../../../objects/orders/order';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { Order } from '../../../objects/orders/order';
 
 @Component({
 	selector: 'app-order-info',
