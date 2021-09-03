@@ -203,6 +203,8 @@
 	"print": {
 		"info": "Información",
 		"seller": "Vendedor",
+		"mechanic": "Mecánico",
+		"mechanics": "Mecánicos",
 		"orderNumber": "Nº orden",
 		"centre": "Centro",
 		"vehicle": "Vehículo",

@@ -20,6 +20,14 @@
 							<div translate>print.orderNumber</div>
 							<div>{{order.code}} · {{order.number}}</div>
 						</div>
+						<div>
+							<div translate>{{'print.mechanic' + (mechanics.length > 1 ? 's' : '')}}</div>
+							<div class="column">
+								<div *ngFor="let mechanic of mechanics">
+									{{mechanic.name | titlecase}} {{mechanic.surname1 | titlecase}} {{mechanic.surname2 | titlecase}}
+								</div>
+							</div>
+						</div>
 					</section>
 					<section class="key-value-section">
 						<div>

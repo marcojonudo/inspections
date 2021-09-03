@@ -42,6 +42,7 @@ export class PrintComponent implements OnInit {
 	colors: Color[];
 	avoidLegendItems: string[] = [Constants.SELECT_ITEM_OPTION_CODE.NA];
 	seller: Employee;
+	mechanics: Employee[];
 
 	constructor(private printService: PrintService, private orderPipe: OrderPipe) {
 		this.GROUP_LABELS = {
@@ -67,6 +68,9 @@ export class PrintComponent implements OnInit {
 		}];
 
 		this.seller = EmployeeService.findEmployee(this.order.sellerCode);
+		this.mechanics = this.savedInspection.items.map(i => i.employeeCode).filter(
+			(value, index, self) => self.indexOf(value) === index
+		).map(employeeCode => EmployeeService.findEmployee(employeeCode));
 	}
 
 	ngOnInit(): void {
