@@ -1,18 +1,21 @@
 import {Item} from '../items/item';
 import {Dayjs} from 'dayjs';
 import * as dayjs from 'dayjs';
+import {CustomImage} from '../customImage';
 
 export abstract class SavedItem {
 
 	item: Item;
 	employeeCode: string;
 	hidden: boolean;
+	image: CustomImage;
 	filled: Dayjs;
 
-	protected constructor(item: Item, employeeCode: string, savedItem: SavedItem) {
+	protected constructor(item: Item, employeeCode: string, savedItem: any) {
 		this.item = item;
 		this.employeeCode = employeeCode;
 		if (savedItem) {
+			this.image = savedItem.image ? new CustomImage(savedItem.image.image, savedItem.image.landscape) : undefined;
 			this.filled = savedItem.filled ? dayjs(savedItem.filled) : undefined;
 			this.hidden = savedItem.hidden;
 		}
@@ -34,6 +37,11 @@ export abstract class SavedItem {
 	updateCommonFields(employeeCode: string): void {
 		this.employeeCode = employeeCode;
 		this.filled = dayjs();
+	}
+
+	addImage(image: CustomImage, employeeCode: string): void {
+		this.image = image;
+		this.updateCommonFields(employeeCode);
 	}
 
 }

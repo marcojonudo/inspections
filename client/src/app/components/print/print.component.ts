@@ -21,6 +21,8 @@ import {OrderPipe} from '../../pipes/order.pipe';
 import {ListElement} from '../../objects/list-elements/list-element';
 import {EmployeeService} from '../../services/employee.service';
 import {Employee} from '../../objects/employee';
+import {Utils} from '../../objects/utils';
+import {Builder} from '../../objects/builder';
 
 @Component({
 	selector: 'app-print',
@@ -32,7 +34,8 @@ export class PrintComponent implements OnInit {
 
 	private readonly GROUP_LABELS: { [key: string]: string[] };
 
-	listElements: Category[];
+	listElements: ListElement[];
+	imageListElements: { listElement, pageBreak }[];
 
 	chartType: ChartType;
 	options: ChartOptions;
@@ -54,7 +57,8 @@ export class PrintComponent implements OnInit {
 		});
 		this.listElements = InspectionService.findGroupedItems(
 			items, 0, [(savedItem: SavedItem) => savedItem.item.category]
-		) as Category[];
+		);
+		this.imageListElements = this.findImageElements();
 
 		this.chartType = 'pie';
 		this.options = { animation: { duration: 0 } };
@@ -96,6 +100,41 @@ export class PrintComponent implements OnInit {
 	}
 
 	// endregion
+
+	findImageElements(): { listElement, pageBreak }[] {
+		const splittedImageListElements = [];
+		const imageListElements = InspectionService.findGroupedItems(
+			InspectionService.savedInspection.items.filter(i => i.image),
+			0,
+			[(savedItem: SavedItem) => savedItem.item.category]
+		);
+		let row = 0;
+		this.orderPipe.transform(imageListElements).forEach(listElement => {
+			if (this.checkCategoryElement(listElement)) {
+				const refCategory = listElement as Category;
+				let category = Builder.buildCategory(refCategory);
+				const landscapeItem = this.checkLandscapeItem(refCategory.items as SavedItem[]);
+				const rowItems = this.findRowItems(landscapeItem);
+
+				Utils.collate(refCategory.items, rowItems).forEach(items => {
+					category.items.push(...items);
+					row++;
+
+					const breakPage = this.checkBreak(row);
+					if (breakPage) {
+						splittedImageListElements.push({ listElement: category, pageBreak: this.checkBreak(row) });
+						category = Builder.buildCategory(refCategory);
+					}
+				});
+				if (category.items.length) {
+					splittedImageListElements.push({ listElement: category, pageBreak: this.checkBreak(row) });
+				}
+			} else {
+				splittedImageListElements.push({ listElement, pageBreak: this.checkBreak(row) });
+			}
+		});
+		return splittedImageListElements;
+	}
 
 	findLabels(): SelectItemOption[] {
 		const labels = this.selectItemOptions.filter(option =>
@@ -146,6 +185,11 @@ export class PrintComponent implements OnInit {
 		return optionType === type;
 	}
 
+	checkBreak(i: number, landscapeItem: boolean = false): boolean {
+		const threshold = landscapeItem ? 2 : 3;
+		return i > 0 && i % threshold === 0;
+	}
+
 	findSelectSavedItem(item: SavedItem): SelectSavedItem {
 		return item as SelectSavedItem;
 	}
@@ -193,6 +237,18 @@ export class PrintComponent implements OnInit {
 			return false;
 		}
 		return (savedItem as SelectSavedItem).value !== Constants.SELECT_ITEM_OPTION_CODE.C;
+	}
+
+	findImageUrl(image: string): string {
+		return InspectionService.findImageUrl(image);
+	}
+
+	checkLandscapeItem(items: SavedItem[]): boolean {
+		return items.find(i => i.image.landscape) !== undefined;
+	}
+
+	findRowItems(landscape: boolean): number {
+		return landscape ? 2 : 3;
 	}
 
 }

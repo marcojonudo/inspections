@@ -7,8 +7,8 @@ import inspections.domains.*
 import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.SelectSavedItem
 import inspections.domains.savedItems.TextSavedItem
-import inspections.pogos.Builder
 import inspections.services.data.SavedItemDataService
+import inspections.utils.Builder
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
@@ -58,23 +58,17 @@ class Item implements GormEntity<Item> {
 		TEXT({ Map<String, Object> item ->
 			return Builder.buildTextSavedItem(item)
 		}, { Serializable id, TextSavedItem savedItem, SavedItemDataService savedItemDataService ->
-			return savedItemDataService.textSavedItemDataService.update(
-				id, savedItem.text, savedItem.employeeCode, savedItem.hidden, savedItem.filled
-			)
+			return savedItemDataService.textSavedItemDataService.update(id, savedItem.text)
 		}),
 		SELECT({ Map<String, Object> item ->
 			return Builder.buildSelectSavedItem(item)
 		}, { Serializable id, SelectSavedItem savedItem, SavedItemDataService savedItemDataService ->
-			return savedItemDataService.selectSavedItemDataService.update(
-				id, savedItem.value, savedItem.employeeCode, savedItem.hidden, savedItem.filled
-			)
+			return savedItemDataService.selectSavedItemDataService.update(id, savedItem.value)
 		}),
 		TEXT_AREA({ Map<String, Object> item ->
 			return Builder.buildTextSavedItem(item)
 		}, { Serializable id, TextSavedItem savedItem, SavedItemDataService savedItemDataService ->
-			return savedItemDataService.textSavedItemDataService.update(
-				id, savedItem.text, savedItem.employeeCode, savedItem.hidden, savedItem.filled
-			)
+			return savedItemDataService.textSavedItemDataService.update(id, savedItem.text)
 		})
 
 		Closure<SavedItem> buildSavedItem

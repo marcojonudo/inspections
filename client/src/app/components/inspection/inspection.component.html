@@ -23,6 +23,7 @@
 		</div>
 	</mat-menu>
 </mat-toolbar>
+<!--<input type="file" capture="camera" accept="image/*" (change)="test($event)">-->
 <div #itemsContainer id="items-container" class="no-print">
 	<ng-container
 		*ngTemplateOutlet="recursiveList; context: {
@@ -103,6 +104,13 @@
 						</textarea>
 					</mat-form-field>
 				</div>
+				<button
+					mat-icon-button
+					class="camera-button"
+					[class.picture]="checkExistentImage(item)"
+					(click)="openCamera(item.code)">
+					<mat-icon>photo_camera</mat-icon>
+				</button>
 			</mat-list-item>
 		</mat-list>
 	</ng-template>

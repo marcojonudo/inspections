@@ -7,11 +7,7 @@ import inspections.domains.schedules.EmployeeData
 import inspections.pogos.InspectionInfo
 import inspections.pogos.OrderInfo
 import inspections.services.InspectionService
-import inspections.services.data.EmployeeDataDataService
-import inspections.services.data.InspectionDataService
-import inspections.services.data.LanguageDataService
-import inspections.services.data.OrderTimeDataService
-import inspections.services.data.SavedInspectionDataService
+import inspections.services.data.*
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.*
 import io.swagger.v3.oas.annotations.Operation
@@ -32,6 +28,8 @@ class InspectionController {
 	@Inject private SavedInspectionDataService savedInspectionDataService
 	@Inject private EmployeeDataDataService employeeDataDataService
 	@Inject private LanguageDataService languageDataService
+	@Inject private ItemDataService itemDataService
+	@Inject private SavedItemDataService savedItemDataService
 
 	@Get("/employees")
 	@Operation(

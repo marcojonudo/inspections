@@ -1,4 +1,3 @@
-@import "abstracts/variables"
 @import "abstracts/mixins"
 
 \:host
@@ -73,7 +72,7 @@
 		.item
 			width: 100%
 			height: 100%
-			padding: 0 1rem
+			padding: 0 2.5rem 0 $default-gap
 
 		.select-item
 
@@ -108,6 +107,14 @@
 
 			&-input
 				width: 100%
+
+		.camera-button
+			position: absolute
+			right: 0
+			color: $dark-grey
+
+			&.picture
+				color: $light-green !important
 
 @keyframes pulse
 	0%

@@ -21,10 +21,10 @@ interface ItemDataService {
 		select $item
 		from ${Item item}
 		inner join ${ItemCategory category = item.category}
-		where $item.name = $name and $category.code = $categoryCode
+		where $item.code = $code and $category.code = $categoryCode
 	""")
-	Item find(String name, String categoryCode)
+	Item find(String code, String categoryCode)
 
-	Item find(String name)
+	Item find(String code)
 
 }

@@ -24,7 +24,7 @@ abstract class SavedInspectionDataService {
 		savedInspection.items.each {
 			it.savedInspection = savedInspection
 			it.item = it.item.category ?
-				itemDataService.find(it.item.name, it.item.category.code) : itemDataService.find(it.item.name)
+				itemDataService.find(it.item.code, it.item.category.code) : itemDataService.find(it.item.code)
 		}
 		savedInspection.state = SavedInspection.State.values().find {
 			((Closure<Boolean>) it.check)(savedInspection.items)

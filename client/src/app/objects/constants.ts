@@ -71,7 +71,8 @@ export class Constants {
 		TOUCHE_END: 'touchend',
 		MOUSE_UP: 'mouseup',
 		SCROLL: 'scroll',
-		CLICK: 'click'
+		CLICK: 'click',
+		DEVICE_MOTION: 'devicemotion'
 	};
 
 	static readonly DATE_TIME_FORMAT: any = {

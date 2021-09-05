@@ -8,6 +8,9 @@ import {TextAreaItem} from './inspections/items/text-area-item';
 import {Item} from './inspections/items/item';
 import {SavedItem} from './inspections/saved-items/saved-item';
 import {ItemRelation} from './inspections/item-relation';
+import {Category} from './list-elements/category';
+import {NameElement} from './list-elements/name-element';
+import {ListElement} from './list-elements/list-element';
 
 export class Builder {
 
@@ -18,11 +21,11 @@ export class Builder {
 	};
 
 	static savedItemBuilder: { [key: string]: ((item: Item, employeeCode: string, savedItem: SavedItem) => SavedItem) } = {
-		TEXT: (item: TextItem, employeeCode: string, savedItem: TextSavedItem) =>
+		TEXT: (item: TextItem, employeeCode: string, savedItem: any) =>
 			new TextSavedItem(item, employeeCode, savedItem),
-		SELECT: (item: SelectItem, employeeCode: string, savedItem: SelectSavedItem) =>
+		SELECT: (item: SelectItem, employeeCode: string, savedItem: any) =>
 			new SelectSavedItem(item, employeeCode, savedItem),
-		TEXT_AREA: (item: TextItem, employeeCode: string, savedItem: TextSavedItem) =>
+		TEXT_AREA: (item: TextItem, employeeCode: string, savedItem: any) =>
 			new TextSavedItem(item, employeeCode, savedItem)
 	};
 
@@ -50,6 +53,12 @@ export class Builder {
 		);
 		return new SavedInspection(
 			savedInspection.code, savedInspection.name, savedInspection.orderNumber, savedInspection.numberPlate, savedItems
+		);
+	}
+
+	static buildCategory(category: Category, items: ListElement[] = []): Category {
+		return new Category(
+			new NameElement({ code: category.code, name: category.name, order: category.order }), items
 		);
 	}
 

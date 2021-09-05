@@ -82,7 +82,7 @@ class InspectionService {
 		if (inspections) {
 			/* Se obtienen el código y nombre de la revisión con mayor número de items */
 			Inspection maxInspection = inspections.max { it.items.size() }
-			List<Item> items = ((List<Item>) inspections.items.flatten()).unique { it.name }
+			List<Item> items = ((List<Item>) inspections.items.flatten()).unique { it.code }
 			inspection = new Inspection(code: maxInspection.code, name: maxInspection.name, items: items.toSet())
 		}
 		return inspection

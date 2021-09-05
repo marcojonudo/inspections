@@ -5,7 +5,7 @@ export class TextSavedItem extends SavedItem {
 
 	text: string;
 
-	constructor(item: TextItem, employeeCode: string, savedItem: TextSavedItem) {
+	constructor(item: TextItem, employeeCode: string, savedItem: any) {
 		super(item, employeeCode, savedItem);
 		this.text = savedItem?.text;
 	}

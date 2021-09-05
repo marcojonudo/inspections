@@ -5,7 +5,6 @@ import {leaveAnimation, routeAnimations} from './animations';
 import {LoadingService} from './services/loading.service';
 import {Constants} from './objects/constants';
 import {TranslateService} from '@ngx-translate/core';
-import {HttpClient} from '@angular/common/http';
 import {InspectionService} from './services/inspection.service';
 
 @Component({
