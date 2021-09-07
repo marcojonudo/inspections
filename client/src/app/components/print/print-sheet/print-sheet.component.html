@@ -19,7 +19,7 @@
 					<mat-card-title translate>inspection.item.{{elem.item.code}}</mat-card-title>
 				</mat-card-header>
 				<mat-card-content>
-					<div *ngFor="let line of findTextAreaLines(findTextSavedItem(elem))">{{line}}</div>
+					<div *ngFor="let line of findTextAreaLines(findTextSavedItem(elem))" class="highlight">{{line}}</div>
 				</mat-card-content>
 			</mat-card>
 		</ng-template>
