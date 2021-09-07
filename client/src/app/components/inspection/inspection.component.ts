@@ -33,7 +33,6 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { VersionService } from '../../services/version.service';
 import { Url } from '../../objects/url';
 import { TextItem } from '../../objects/inspections/items/text-item';
-import { HttpClient } from '@angular/common/http';
 import { CameraComponent } from '../bottom-panel/camera/camera.component';
 import { SnackBarService } from '../../services/snack-bar.service';
 

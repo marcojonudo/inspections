@@ -49,7 +49,8 @@ export class Constants {
 	static readonly PATH: any = {
 		INIT: '/init',
 		INSPECTION: '/inspection',
-		PRINT: 'print'
+		PRINT: 'print',
+		PRINT_SHEET: 'print-sheet',
 	};
 
 	static readonly LOCAL_STORAGE: any = {

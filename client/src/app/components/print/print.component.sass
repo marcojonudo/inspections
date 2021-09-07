@@ -3,42 +3,6 @@
 \:host
 	position: relative
 
-	.page-container
-		width: 100%
-		height: 292mm
-
-	#inspection-container
-		@include flex-column
-		page-break-after: always
-
-	.image-category-content
-		width: 100%
-		display: grid
-		grid-template-columns: repeat(3, 1fr)
-		grid-gap: $default-gap
-
-		.image-item
-			@include flex-column-center
-
-			&.span
-				grid-column-end: span 2
-
-				img
-					width: 80% !important
-
-			.image-container
-				@include flex-1
-				@include flex-center
-
-			img
-				width: 100%
-				height: auto
-				object-fit: cover
-				border-radius: $border-radius
-
-	.page-break
-		page-break-after: always
-
 	canvas
 		display: inline-block !important
 		margin-bottom: 2px
@@ -60,6 +24,9 @@
 			align-items: center
 
 	header
+		width: 100%
+		position: fixed
+		top: 0
 		@include flex-column
 		margin-bottom: $tiny-gap
 
@@ -162,84 +129,6 @@
 					height: $small-gap
 					border-radius: 50%
 					margin-right: $tiny-gap
-
-	.category
-		position: relative
-		font-size: $small-font
-		margin-bottom: $tiny-gap
-
-		&.fill
-			@include flex-1
-
-		mat-card
-
-			mat-card-header
-				align-items: center
-
-				mat-icon
-					width: .86rem
-					height: .86rem
-					font-size: .86rem
-
-				mat-card-title
-					height: .86rem
-					@include flex-center
-
-			.graph-container
-				width: 100%
-				height: 100%
-				position: absolute
-				top: 0
-				@include flex-center
-
-				.graph-info
-					width: 10%
-					position: absolute
-					right: 0
-
-			mat-card-content
-				display: flex
-
-				.items-info
-					width: 100%
-					display: grid
-					grid-template-columns: repeat(4, 1fr)
-					grid-auto-rows: 1rem
-
-					.item
-						position: relative
-						display: flex
-						align-items: center
-						padding: 0 $small-gap
-						overflow: hidden
-
-						&-text
-							width: 90%
-							overflow: hidden
-							white-space: nowrap
-							text-overflow: ellipsis
-
-						&-data
-							width: 10%
-							@include flex-center
-
-						mat-icon
-							font-size: $bigger-font
-
-			& > div:not(:last-child)
-				@include flex-1
-
-		.text-area-card
-			height: calc(100% - .5rem)
-			max-height: 150px
-
-			.mat-card-content
-				width: 100%
-				display: flex
-				flex-direction: column
-
-				& > div
-					line-height: 1.5
 
 @media screen
 

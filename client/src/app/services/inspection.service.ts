@@ -50,7 +50,7 @@ export class InspectionService {
 	private static readonly SELECT_ICON_COLOR: { [key: string]: string } = {
 		P: '#7b7979',
 		C: '#36d23d',
-		PS: '#ffb47e',
+		PS: '#ff6a00',
 		SN: '#d23636',
 		RA: '#3681d2',
 		RR: '#3681d2'
