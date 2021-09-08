@@ -45,6 +45,7 @@ registerLocaleData(localeEs);
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { CameraComponent } from './components/bottom-panel/camera/camera.component';
+import { PrintSheetComponent } from './components/print/print-sheet/print-sheet.component';
 
 @NgModule({
 	declarations: [
@@ -63,7 +64,8 @@ import { CameraComponent } from './components/bottom-panel/camera/camera.compone
 		PrintComponent,
 		SavedItemPipe,
 		HiddenPipe,
-		CameraComponent
+		CameraComponent,
+		PrintSheetComponent
 	],
 	imports: [
 		BrowserModule,

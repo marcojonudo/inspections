@@ -34,14 +34,12 @@ export class PrintComponent implements OnInit {
 
 	private readonly GROUP_LABELS: { [key: string]: string[] };
 
-	listElements: ListElement[];
-	imageListElements: { listElement, pageBreak }[];
-
 	chartType: ChartType;
 	options: ChartOptions;
 	colors: Color[];
 	avoidLegendItems: string[] = [Constants.SELECT_ITEM_OPTION_CODE.NA];
 	seller: Employee;
+	mechanics: Employee[];
 
 	constructor(private printService: PrintService, private orderPipe: OrderPipe) {
 		this.GROUP_LABELS = {
@@ -49,16 +47,6 @@ export class PrintComponent implements OnInit {
 				Constants.SELECT_ITEM_OPTION_CODE.RA, Constants.SELECT_ITEM_OPTION_CODE.RR
 			]
 		};
-		const items = this.savedInspection.items.filter(i =>
-			i.item.header === undefined
-		).filter(i => {
-			const selectItem = i.item.type === Constants.ITEM_TYPE.SELECT;
-			return selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true;
-		});
-		this.listElements = InspectionService.findGroupedItems(
-			items, 0, [(savedItem: SavedItem) => savedItem.item.category]
-		);
-		this.imageListElements = this.findImageElements();
 
 		this.chartType = 'pie';
 		this.options = { animation: { duration: 0 } };
@@ -67,6 +55,9 @@ export class PrintComponent implements OnInit {
 		}];
 
 		this.seller = EmployeeService.findEmployee(this.order.sellerCode);
+		this.mechanics = this.savedInspection.items.map(i => i.employeeCode).filter(
+			(value, index, self) => self.indexOf(value) === index
+		).map(employeeCode => EmployeeService.findEmployee(employeeCode));
 	}
 
 	ngOnInit(): void {
@@ -87,10 +78,6 @@ export class PrintComponent implements OnInit {
 		return InspectionService.centre;
 	}
 
-	get selectType(): string {
-		return Constants.ITEM_TYPE.SELECT;
-	}
-
 	get selectItemOptions(): SelectItemOption[] {
 		return InspectionService.selectItemOptions;
 	}
@@ -100,41 +87,6 @@ export class PrintComponent implements OnInit {
 	}
 
 	// endregion
-
-	findImageElements(): { listElement, pageBreak }[] {
-		const splittedImageListElements = [];
-		const imageListElements = InspectionService.findGroupedItems(
-			InspectionService.savedInspection.items.filter(i => i.image),
-			0,
-			[(savedItem: SavedItem) => savedItem.item.category]
-		);
-		let row = 0;
-		this.orderPipe.transform(imageListElements).forEach(listElement => {
-			if (this.checkCategoryElement(listElement)) {
-				const refCategory = listElement as Category;
-				let category = Builder.buildCategory(refCategory);
-				const landscapeItem = this.checkLandscapeItem(refCategory.items as SavedItem[]);
-				const rowItems = this.findRowItems(landscapeItem);
-
-				Utils.collate(refCategory.items, rowItems).forEach(items => {
-					category.items.push(...items);
-					row++;
-
-					const breakPage = this.checkBreak(row);
-					if (breakPage) {
-						splittedImageListElements.push({ listElement: category, pageBreak: this.checkBreak(row) });
-						category = Builder.buildCategory(refCategory);
-					}
-				});
-				if (category.items.length) {
-					splittedImageListElements.push({ listElement: category, pageBreak: this.checkBreak(row) });
-				}
-			} else {
-				splittedImageListElements.push({ listElement, pageBreak: this.checkBreak(row) });
-			}
-		});
-		return splittedImageListElements;
-	}
 
 	findLabels(): SelectItemOption[] {
 		const labels = this.selectItemOptions.filter(option =>
@@ -181,41 +133,12 @@ export class PrintComponent implements OnInit {
 		return items.filter(item => item.item.header === code);
 	}
 
-	checkItemType(optionType: string, type: string): boolean {
-		return optionType === type;
-	}
-
-	checkBreak(i: number, landscapeItem: boolean = false): boolean {
-		const threshold = landscapeItem ? 2 : 3;
-		return i > 0 && i % threshold === 0;
-	}
-
-	findSelectSavedItem(item: SavedItem): SelectSavedItem {
-		return item as SelectSavedItem;
-	}
-
-	findTextSavedItem(item: SavedItem): TextSavedItem {
-		return item as TextSavedItem;
-	}
-
-	findSelectIcon(item: SelectSavedItem): string {
-		return (item.item as SelectItem).options.find(option => option.code === item.value).printIcon;
-	}
-
 	findIconColor(code: string): string {
 		return InspectionService.findIconColor(code);
 	}
 
 	findSelectItems(items: SavedItem[] = this.savedInspection.items): SelectSavedItem[] {
 		return items.filter(item => item.item.type === Constants.ITEM_TYPE.SELECT) as SelectSavedItem[];
-	}
-
-	checkCategoryElement(item: ListElement): boolean {
-		return item instanceof Category;
-	}
-
-	checkExistentSelectItems(items: SavedItem[]): boolean {
-		return items.filter(i => i.item.type === Constants.ITEM_TYPE.SELECT).length > 0;
 	}
 
 	findData(items: SavedItem[] = this.savedInspection.items): number[] {
@@ -226,29 +149,6 @@ export class PrintComponent implements OnInit {
 			data.push(selectItems.filter(item => item.value === label.code).length);
 		});
 		return this.groupData(labels, data);
-	}
-
-	findTextAreaLines(item: TextSavedItem): string[] {
-		return item.text ? item.text.split('\n') : [];
-	}
-
-	checkWrongItem(savedItem: SavedItem): boolean {
-		if (savedItem.item.type !== Constants.ITEM_TYPE.SELECT) {
-			return false;
-		}
-		return (savedItem as SelectSavedItem).value !== Constants.SELECT_ITEM_OPTION_CODE.C;
-	}
-
-	findImageUrl(image: string): string {
-		return InspectionService.findImageUrl(image);
-	}
-
-	checkLandscapeItem(items: SavedItem[]): boolean {
-		return items.find(i => i.image.landscape) !== undefined;
-	}
-
-	findRowItems(landscape: boolean): number {
-		return landscape ? 2 : 3;
 	}
 
 }

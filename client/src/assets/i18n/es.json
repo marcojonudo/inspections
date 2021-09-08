@@ -203,6 +203,8 @@
 	"print": {
 		"info": "Información",
 		"seller": "Vendedor",
+		"mechanic": "Mecánico",
+		"mechanics": "Mecánicos",
 		"orderNumber": "Nº orden",
 		"centre": "Centro",
 		"vehicle": "Vehículo",
@@ -210,7 +212,7 @@
 		"summary": "Resumen",
 		"numberPlate": "Matrícula",
 		"model": "Modelo",
-		"cylinder": "Matriculación",
+		"cylinder": "Cilindrada",
 		"engine": "Motor",
 		"power": "Potencia",
 		"registration": "Matriculación",

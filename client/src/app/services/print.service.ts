@@ -10,7 +10,10 @@ export class PrintService {
 	constructor(private router: Router) {}
 
 	print(): void {
-		this.router.navigate([Constants.PATH.INSPECTION, { outlets: { print: [Constants.PATH.PRINT] } }]);
+		this.router.navigate([
+			Constants.PATH.INSPECTION,
+			{ outlets: { print: [Constants.PATH.PRINT, Constants.PATH.PRINT_SHEET] } }
+		]);
 	}
 
 	openPrintDialog(): void {

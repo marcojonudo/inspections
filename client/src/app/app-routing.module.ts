@@ -1,11 +1,12 @@
-import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
-import {InitialDataComponent} from './components/initial-data/initial-data.component';
-import {InspectionComponent} from './components/inspection/inspection.component';
-import {InspectionGuard} from './guards/inspection-guard';
-import {EmployeesResolver} from './resolvers/employees-resolver';
-import {PrintComponent} from './components/print/print.component';
-import {InitGuard} from './guards/init-guard';
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { InitialDataComponent } from './components/initial-data/initial-data.component';
+import { InspectionComponent } from './components/inspection/inspection.component';
+import { InspectionGuard } from './guards/inspection-guard';
+import { EmployeesResolver } from './resolvers/employees-resolver';
+import { PrintComponent } from './components/print/print.component';
+import { InitGuard } from './guards/init-guard';
+import { PrintSheetComponent } from './components/print/print-sheet/print-sheet.component';
 
 
 const routes: Routes = [
@@ -22,14 +23,21 @@ const routes: Routes = [
 		canActivate: [InspectionGuard],
 		data: { animation: 'InspectionPage' },
 		children: [
-			{ path: 'print', outlet: 'print', component: PrintComponent }
+			{
+				path: 'print',
+				outlet: 'print',
+				component: PrintComponent,
+				children: [
+					{ path: 'print-sheet', component: PrintSheetComponent }
+				]
+			}
 		]
 	},
-	{path: '**', pathMatch: 'full', redirectTo: 'init'}
+	{ path: '**', pathMatch: 'full', redirectTo: 'init' }
 ];
 
 @NgModule({
-	imports: [RouterModule.forRoot(routes, {useHash: true})],
+	imports: [RouterModule.forRoot(routes, { useHash: true })],
 	exports: [RouterModule]
 })
 export class AppRoutingModule {}
