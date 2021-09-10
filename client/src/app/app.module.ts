@@ -47,6 +47,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CameraComponent } from './components/bottom-panel/camera/camera.component';
 import { PrintSheetComponent } from './components/print/print-sheet/print-sheet.component';
+import { SeparatorInputComponent } from './components/separator-input/separator-input.component';
 
 @NgModule({
 	declarations: [
@@ -66,7 +67,8 @@ import { PrintSheetComponent } from './components/print/print-sheet/print-sheet.
 		PrintOrderPipePipe,
 		HiddenPipe,
 		CameraComponent,
-		PrintSheetComponent
+		PrintSheetComponent,
+		SeparatorInputComponent
 	],
 	imports: [
 		BrowserModule,

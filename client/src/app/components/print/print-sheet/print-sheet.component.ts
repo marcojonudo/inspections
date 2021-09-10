@@ -18,6 +18,8 @@ import { Utils } from '../../../objects/utils';
 import { SelectSavedItem } from '../../../objects/inspections/saved-items/select-saved-item';
 import { TextSavedItem } from '../../../objects/inspections/saved-items/text-saved-item';
 import { SelectItem } from '../../../objects/inspections/items/select-item';
+import { Item } from '../../../objects/inspections/items/item';
+import { TextItem } from '../../../objects/inspections/items/text-item';
 
 @Component({
 	selector: 'app-print-sheet',
@@ -113,6 +115,10 @@ export class PrintSheetComponent {
 
 	findTextSavedItem(item: SavedItem): TextSavedItem {
 		return item as TextSavedItem;
+	}
+
+	findTextItemUnit(item: SavedItem): string {
+		return this.findTextSavedItem(item).text ? (item.item as TextItem).unit || '' : '';
 	}
 
 	findSelectIcon(item: SelectSavedItem): string {

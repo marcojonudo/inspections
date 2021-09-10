@@ -35,6 +35,7 @@ import { Url } from '../../objects/url';
 import { TextItem } from '../../objects/inspections/items/text-item';
 import { CameraComponent } from '../bottom-panel/camera/camera.component';
 import { SnackBarService } from '../../services/snack-bar.service';
+import { SeparatorInputModel } from '../separator-input/separator-input.component';
 
 @Component({
 	selector: 'app-inspection',
@@ -251,33 +252,43 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		return item as TextItem;
 	}
 
-	findSelectSavedItem(itemName: string, savedInspection: SavedInspection = this.savedInspection): SelectSavedItem {
-		return savedInspection.items.find(savedItem => savedItem.item.name === itemName) as SelectSavedItem;
+	checkIndividualTextField(item: TextItem): boolean {
+		return item.fields.length === 1;
 	}
 
-	findTextSavedItem(itemName: string, savedInspection: SavedInspection = this.savedInspection): TextSavedItem {
-		return savedInspection.items.find(savedItem => savedItem.item.name === itemName) as TextSavedItem;
+	findSeparatorText(item: TextItem, savedItem: TextSavedItem): SeparatorInputModel {
+		return savedItem.text ?
+			new SeparatorInputModel(savedItem.text.split(item.separator), item.separator) :
+			undefined;
 	}
 
-	checkSelectedOption(itemName: string, optionCode: string): boolean {
-		return this.findSelectSavedItem(itemName).value === optionCode;
+	findSelectSavedItem(itemCode: string, savedInspection: SavedInspection = this.savedInspection): SelectSavedItem {
+		return savedInspection.items.find(savedItem => savedItem.item.code === itemCode) as SelectSavedItem;
 	}
 
-	findOptionIndex(itemName: string, options: SelectItemOption[]): number {
-		const selectedValue = this.findSelectSavedItem(itemName).value;
+	findTextSavedItem(itemCode: string, savedInspection: SavedInspection = this.savedInspection): TextSavedItem {
+		return savedInspection.items.find(savedItem => savedItem.item.code === itemCode) as TextSavedItem;
+	}
+
+	checkSelectedOption(itemCode: string, optionCode: string): boolean {
+		return this.findSelectSavedItem(itemCode).value === optionCode;
+	}
+
+	findOptionIndex(itemCode: string, options: SelectItemOption[]): number {
+		const selectedValue = this.findSelectSavedItem(itemCode).value;
 		return options.findIndex(o => o.code === selectedValue);
 	}
 
-	checkLeftOption(itemName: string, options: SelectItemOption[], i: number): boolean {
-		return i < this.findOptionIndex(itemName, options);
+	checkLeftOption(itemCode: string, options: SelectItemOption[], i: number): boolean {
+		return i < this.findOptionIndex(itemCode, options);
 	}
 
-	checkRightOption(itemName: string, options: SelectItemOption[], i: number): boolean {
-		return i > this.findOptionIndex(itemName, options);
+	checkRightOption(itemCode: string, options: SelectItemOption[], i: number): boolean {
+		return i > this.findOptionIndex(itemCode, options);
 	}
 
 	toggleSelectOption(item: SelectItem): void {
-		const selectedIndex = this.findOptionIndex(item.name, item.options);
+		const selectedIndex = this.findOptionIndex(item.code, item.options);
 		/* Con el segundo sumando, se evita que la opción por defecto ('Pendiente') sea seleccionada de nuevo */
 		const newIndex = (selectedIndex + 1) % item.options.length + Math.floor(selectedIndex / (item.options.length - 1));
 
@@ -285,7 +296,12 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	updateText(item: Item): void {
-		const text = this.findTextSavedItem(item.name).text;
+		const text = this.findTextSavedItem(item.code).text;
+		InspectionService.updateItem(item, text).subscribe();
+	}
+
+	updateSeparatorValue(item: Item, value: SeparatorInputModel): void {
+		const text = value.findValue();
 		InspectionService.updateItem(item, text).subscribe();
 	}
 
@@ -308,7 +324,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	checkScrolledItem(item: Item, pressingItem: Item = this.pressingItem, scroll: boolean = this.scroll): boolean {
-		return pressingItem && scroll ? item.name === pressingItem.name : false;
+		return pressingItem && scroll ? item.code === pressingItem.code : false;
 	}
 
 	refresh(): void {

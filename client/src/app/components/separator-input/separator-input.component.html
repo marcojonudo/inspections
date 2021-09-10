@@ -1,0 +1,16 @@
+<div
+	role="group"
+	class="separator-input-container"
+	[formGroup]="parts"
+	(focusin)="onFocusIn()"
+	(focusout)="onFocusOut($event)">
+	<div *ngFor="let field of fields; let i = index; let last = last" class="separator-field-wrapper">
+		<input
+			class="separator-input-element"
+			formControlName="field-{{i}}"
+			[maxLength]="field.maxLength"
+			(input)="_handleInput(i)"
+			#fieldInput>
+		<span *ngIf="!last" class="separator-input-spacer">{{separator}}</span>
+	</div>
+</div>

@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
-import {Employee} from '../objects/employee';
-import {LocalStorageService} from './local-storage.service';
-import {Constants} from '../objects/constants';
-import {Observable, of} from 'rxjs';
-import {Url} from '../objects/url';
-import {HttpClient} from '@angular/common/http';
-import {catchError} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { Employee } from '../objects/employee';
+import { LocalStorageService } from './local-storage.service';
+import { Constants } from '../objects/constants';
+import { Observable, of } from 'rxjs';
+import { Url } from '../objects/url';
+import { HttpClient } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root'

@@ -35,7 +35,6 @@ abstract class SavedItemDataService {
 			update(existent.id, null)
 			imageDataService.delete(existent.image.id)
 		}
-
 	}
 
 }

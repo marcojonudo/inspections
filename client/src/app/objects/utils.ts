@@ -8,4 +8,16 @@ export class Utils {
 		return newArray;
 	}
 
+	static sort(array: any[], criteria: any): any[] {
+		return array.sort((a, b) => {
+			if (criteria(a) < criteria(b)) {
+				return -1;
+			}
+			if (criteria(a) > criteria(b)) {
+				return 1;
+			}
+			return 0;
+		});
+	}
+
 }

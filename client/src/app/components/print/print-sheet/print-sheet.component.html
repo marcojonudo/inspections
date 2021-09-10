@@ -34,7 +34,8 @@
 				{{findSelectIcon(findSelectSavedItem(item))}}
 			</mat-icon>
 			<ng-template #textItemText>
-				<span class="item-data">{{findTextSavedItem(item).text ? findTextSavedItem(item).text : '-'}}</span>
+				<span>{{findTextSavedItem(item).text ? findTextSavedItem(item).text : '-'}}</span>
+				<span class="item-data-unit">{{findTextItemUnit(item)}}</span>
 			</ng-template>
 		</div>
 	</div>
