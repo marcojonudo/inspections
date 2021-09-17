@@ -2,20 +2,20 @@ import {
 	ChangeDetectionStrategy, ChangeDetectorRef,
 	Component, EventEmitter, Input, Output,
 } from '@angular/core';
-import {EmployeeService} from '../../services/employee.service';
-import {Employee} from '../../objects/employee';
-import {InspectionService} from '../../services/inspection.service';
-import {Order} from '../../objects/orders/order';
-import {MatBottomSheet} from '@angular/material/bottom-sheet';
-import {OrderInfoComponent} from '../bottom-panel/order-info/order-info.component';
-import {EmployeeInfoComponent} from '../bottom-panel/employee-info/employee-info.component';
-import {PrintService} from '../../services/print.service';
-import {SavedInspection} from '../../objects/inspections/saved-inspection';
-import {finalize} from 'rxjs/operators';
-import {Constants} from '../../objects/constants';
-import {SnackBarService} from '../../services/snack-bar.service';
-import {Inspection} from '../../objects/inspections/inspection';
-import {TranslateService} from '@ngx-translate/core';
+import { EmployeeService } from '../../services/employee.service';
+import { Employee } from '../../objects/employee';
+import { InspectionService } from '../../services/inspection.service';
+import { Order } from '../../objects/orders/order';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { OrderInfoComponent } from '../bottom-panel/order-info/order-info.component';
+import { EmployeeInfoComponent } from '../bottom-panel/employee-info/employee-info.component';
+import { PrintService } from '../../services/print.service';
+import { SavedInspection } from '../../objects/inspections/saved-inspection';
+import { finalize } from 'rxjs/operators';
+import { Constants } from '../../objects/constants';
+import { SnackBarService } from '../../services/snack-bar.service';
+import { InspectionVehicle } from '../../objects/inspections/inspection-vehicle';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-bottom-bar',
@@ -59,11 +59,11 @@ export class BottomBarComponent {
 	// endregion
 
 	openOrder(order: Order = this.order): void {
-		this.bottomSheet.open(OrderInfoComponent, {data: order});
+		this.bottomSheet.open(OrderInfoComponent, { data: order });
 	}
 
 	openEmployee(employee: Employee = this.employee): void {
-		const bottomSheetRef = this.bottomSheet.open(EmployeeInfoComponent, {data: employee.code});
+		const bottomSheetRef = this.bottomSheet.open(EmployeeInfoComponent, { data: employee.code });
 		bottomSheetRef.afterDismissed().subscribe((triggerCd: boolean) => {
 			if (triggerCd) {
 				this.employee = EmployeeService.employee;
@@ -95,7 +95,7 @@ export class BottomBarComponent {
 		);
 	}
 
-	print(inspection: Inspection = InspectionService.inspection): void {
+	print(inspection: InspectionVehicle = InspectionService.inspection): void {
 		const completeInspection = InspectionService.checkCompleteItems(inspection.items);
 		if (completeInspection) {
 			this.printService.print();

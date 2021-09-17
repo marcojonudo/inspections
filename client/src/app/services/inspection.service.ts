@@ -3,7 +3,7 @@ import { from, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Url } from '../objects/url';
 import { Order } from '../objects/orders/order';
-import { Inspection } from '../objects/inspections/inspection';
+import { InspectionVehicle } from '../objects/inspections/inspection-vehicle';
 import { SavedInspection } from '../objects/inspections/saved-inspection';
 import * as dayjs from 'dayjs';
 import { LocalStorageService } from './local-storage.service';
@@ -40,7 +40,7 @@ export class InspectionService {
 	static countryHandler: CountryHandler;
 	static order: Order;
 	static centre: Centre;
-	static inspection: Inspection;
+	static inspection: InspectionVehicle;
 	static selectItemOptions: SelectItemOption[];
 	static savedInspection: SavedInspection;
 	static lockTimeout: any;
@@ -57,8 +57,8 @@ export class InspectionService {
 	};
 
 	private static readonly LEVEL_ELEMENTS: ((item: Item) => NameElement)[] = [
-		(item: Item) => item.garagePosition,
-		(item: Item) => item.vehicleSection ? item.vehicleSection : undefined
+		(item: Item) => item.vehicleData.garagePosition,
+		(item: Item) => item.vehicleData?.vehicleSection
 	];
 
 	private static readonly ITEM_RELATION_ACTION: any = {
@@ -97,20 +97,24 @@ export class InspectionService {
 		return this.centre;
 	}
 
-	static initInspection(inspection: any, savedInspection: any): void {
+	static initInspection(inspection: any): void {
 		this.inspection = Builder.buildInspection(inspection);
+		this.selectItemOptions = this.findSelectItemOptions();
+
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.INSPECTION, this.inspection);
+		console.log('Inspection', this.inspection);
+		console.log('Select item options', this.selectItemOptions);
+	}
+
+	static initSavedInspection(savedInspection: any, inspection: InspectionVehicle = this.inspection): void {
 		this.savedInspection = savedInspection ?
 			Builder.loadSavedInspection(savedInspection) :
 			Builder.buildSavedInspection(
 				inspection, EmployeeService.employee.code, this.order.number, this.order.vehicle.numberPlate
 			);
-		this.selectItemOptions = this.findSelectItemOptions();
 
-		LocalStorageService.setItem(Constants.LOCAL_STORAGE.INSPECTION, this.inspection);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, this.savedInspection);
-		console.log('Inspection', this.inspection);
 		console.log('Saved inspection', this.savedInspection);
-		console.log('Select item options', this.selectItemOptions);
 	}
 
 	static loadInfo(): boolean {
@@ -358,34 +362,38 @@ export class InspectionService {
 		);
 	}
 
-	findInspection(orderCode: string): Observable<any> {
-		let errorMessageCode;
+	initInspectionData(orderCode: string): Observable<any> {
 		return this.findOrderInfo(orderCode).pipe(
-			catchError(error => {
-				errorMessageCode = Constants.MESSAGE_CODE.NONEXISTENT_ORDER;
-				return throwError(error);
-			}),
 			concatMap((orderInfo: any) => {
 				const order = InspectionService.setOrder(new Order(orderInfo.order, orderCode));
 				console.log('Order', order);
 				const centre = InspectionService.setCentre(new Centre(orderInfo.centre));
 				console.log('Centre', centre);
-				return this.findInspections(order.number);
+				return this.findInspection(order.number, Url.inspection()).pipe(
+					concatMap(inspection => {
+						if (inspection) {
+							console.log('Received inspection', inspection);
+							InspectionService.initInspection(inspection);
+							return this.findInspection(order.number, Url.savedInspection());
+						}
+						return of(undefined);
+					}),
+					catchError(() => {
+						this.snackBarService.open(
+							Constants.MESSAGE_CODE.NONEXISTENT_INSPECTIONS, Constants.SNACK_BAR.TYPE.WARNING
+						);
+						return of(undefined);
+					})
+				);
 			}),
 			catchError(error => {
-				errorMessageCode = errorMessageCode ? errorMessageCode : Constants.MESSAGE_CODE.NONEXISTENT_INSPECTIONS;
+				this.snackBarService.open(Constants.MESSAGE_CODE.NONEXISTENT_ORDER, Constants.SNACK_BAR.TYPE.WARNING);
 				return throwError(error);
-			}),
-			map(inspectionInfo => {
-				if (inspectionInfo) {
-					console.log('Received inspection info', inspectionInfo);
-					InspectionService.initInspection(inspectionInfo.inspection, inspectionInfo.savedInspection);
-				}
-			}),
-			finalize(() => {
-				if (errorMessageCode) {
-					this.snackBarService.open(errorMessageCode, Constants.SNACK_BAR.TYPE.WARNING);
-				}
+			})
+		).pipe(
+			tap(savedInspection => {
+				console.log('Received saved inspection', savedInspection);
+				InspectionService.initSavedInspection(savedInspection);
 			})
 		);
 	}
@@ -395,15 +403,20 @@ export class InspectionService {
 		return this.http.get(url);
 	}
 
-	findInspections(orderNumber: number): Observable<any> {
-		if (InspectionService.checkLocalInspection(orderNumber)) {
-			const loaded = InspectionService.loadInfo();
-			if (loaded) {
-				return of(undefined);
-			}
+	findInspection(orderNumber: number, url: string): Observable<any> {
+		const loaded = this.checkLocalInspection(orderNumber);
+		if (loaded) {
+			return of(undefined);
 		}
-		const url = `${Url.inspection()}?orderNumber=${orderNumber}`;
-		return this.http.get(url);
+		return loaded ? of(undefined) : this.http.get(`${url}?orderNumber=${orderNumber}`);
+	}
+
+	checkLocalInspection(orderNumber: number): boolean {
+		let loaded = false;
+		if (InspectionService.checkLocalInspection(orderNumber)) {
+			loaded = InspectionService.loadInfo();
+		}
+		return loaded;
 	}
 
 	saveInspection(inspection: SavedInspection, employee: Employee = EmployeeService.employee): Observable<any> {

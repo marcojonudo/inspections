@@ -1,6 +1,5 @@
 package inspections.domains
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore
 import grails.gorm.annotation.Entity
 import inspections.domains.items.Item

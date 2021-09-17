@@ -1,8 +1,7 @@
-import {ItemCategory} from '../item-category';
-import {GaragePosition} from '../garage-position';
-import {VehicleSection} from '../vehicle-section';
-import {ListElement} from '../../list-elements/list-element';
-import {ItemRelation} from '../item-relation';
+import { ItemCategory } from '../item-category';
+import { ListElement } from '../../list-elements/list-element';
+import { ItemRelation } from '../item-relation';
+import { ItemVehicleData } from './item-vehicle-data';
 
 export class Item implements ListElement {
 
@@ -11,8 +10,7 @@ export class Item implements ListElement {
 	name: string;
 	order: number;
 	category: ItemCategory;
-	garagePosition: GaragePosition;
-	vehicleSection: VehicleSection;
+	vehicleData: ItemVehicleData;
 	relations: ItemRelation[];
 	required: boolean;
 	header: string;
@@ -23,8 +21,7 @@ export class Item implements ListElement {
 		this.name = item.name;
 		this.order = item.order;
 		this.category = item.category ? new ItemCategory(item.category) : undefined;
-		this.garagePosition = item.garagePosition ? new GaragePosition(item.garagePosition) : undefined;
-		this.vehicleSection = item.vehicleSection ? new VehicleSection(item.vehicleSection) : undefined;
+		this.vehicleData = new ItemVehicleData(item.vehicleData);
 		this.required = item.required;
 		this.header = item.header;
 	}

@@ -2,6 +2,10 @@ import {environment} from '../../environments/environment';
 
 export class Url {
 
+	static savedInspection(): string {
+		return `${environment.serverUrl}/inspections/savedInspection`;
+	}
+
 	static inspection(): string {
 		return `${environment.serverUrl}/inspections/inspection`;
 	}

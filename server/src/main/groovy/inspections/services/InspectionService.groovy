@@ -1,15 +1,15 @@
 package inspections.services
 
 import groovy.transform.CompileStatic
-import inspections.domains.Inspection
+import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Centre
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
-import inspections.pogos.InspectionInfo
 import inspections.pogos.OrderInfo
 import inspections.pogos.logs.Log
 import inspections.services.data.*
+import inspections.utils.Builder
 import inspections.utils.Constants
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -26,7 +26,7 @@ class InspectionService {
 	@Inject OrderDataService orderDataService
 	@Inject CentreDataService centreDataService
 	@Inject VehicleInfoDataService vehicleInfoDataService
-	@Inject InspectionDataService inspectionDataService
+	@Inject InspectionVehicleDataService inspectionVehicleDataService
 	@Inject SavedInspectionDataService savedInspectionDataService
 	@Inject SavedItemDataService savedItemDataService
 
@@ -53,39 +53,45 @@ class InspectionService {
 	 * @param orderNumber Número de orden
 	 * @return Objecto con revisión y revisión guardada
 	 */
-	InspectionInfo findInspectionInfo(int orderNumber) {
+	InspectionVehicle findInspection(int orderNumber) {
 		LOG.info(new Log((Map) [orderNumber: orderNumber, message: Constants.Message.FINDING_INSPECTION]).toString())
-		Inspection inspection = buildInspection(orderNumber)
-		SavedInspection existent = savedInspectionDataService.find(orderNumber)
-		LOG.info(new Log((Map) [orderNumber: orderNumber, inspection: inspection?.name, savedInspection: existent?.name, message: Constants.Message.FIND_INSPECTION_RESULT]).toString())
-		return inspection ? new InspectionInfo(inspection, existent) : null
+		List<Integer> articles = orderDataService.find(orderNumber).lines*.articleCode.toList()
+		List<InspectionVehicle> inspectionsVehicle = inspectionVehicleDataService.findAll(articles)
+		InspectionVehicle inspectionVehicle = null
+		if (inspectionsVehicle) {
+			inspectionVehicle = buildGroupedInspection(inspectionsVehicle)
+		}
+		LOG.info(new Log((Map) [orderNumber: orderNumber, inspectionTypeCode: inspectionVehicle?.inspectionType?.code, vehicle: inspectionVehicle?.vehicle, message: Constants.Message.FIND_INSPECTION_RESULT]).toString())
+		return inspectionVehicle
 	}
 
 	/**
-	 * Construye una revisión aglutinando los elementos asociados a los códigos de mano de obra de una orden
+	 * Busca la revisión y la revisión guardad asociadas al número de orden
 	 * @param orderNumber Número de orden
-	 * @return
+	 * @return Objecto con revisión y revisión guardada
 	 */
-	Inspection buildInspection(int orderNumber) {
-		List<Integer> articles = orderDataService.find(orderNumber).lines*.articleCode.toList()
-		List<Inspection> inspections = inspectionDataService.findAll(articles)
-		return buildGroupedInspection(inspections)
-	}
+//	InspectionInfo findInspectionInfo(int orderNumber) {
+//		LOG.info(new Log((Map) [orderNumber: orderNumber, message: Constants.Message.FINDING_INSPECTION]).toString())
+//		InspectionVehicle inspectionVehicle = buildInspection(orderNumber)
+//		SavedInspection existent = savedInspectionDataService.find(orderNumber)
+//		LOG.info(new Log((Map) [orderNumber: orderNumber, inspection: inspectionVehicle?.inspection?.name, savedInspection: existent?.name, message: Constants.Message.FIND_INSPECTION_RESULT]).toString())
+//		return inspectionVehicle ? new InspectionInfo(inspectionVehicle, existent) : null
+//	}
 
 	/**
 	 * Construye una revisión agrupada con todos los items de las recibidas como parámetro
 	 * @param inspections Lista de revisiones
 	 * @return Revisión con items agrupados
 	 */
-	static Inspection buildGroupedInspection(List<Inspection> inspections) {
-		Inspection inspection = null
-		if (inspections) {
+	static InspectionVehicle buildGroupedInspection(List<InspectionVehicle> inspectionsVehicle) {
+		InspectionVehicle inspectionVehicle = null
+		if (inspectionsVehicle) {
 			/* Se obtienen el código y nombre de la revisión con mayor número de items */
-			Inspection maxInspection = inspections.max { it.items.size() }
-			List<Item> items = ((List<Item>) inspections.items.flatten()).unique { it.code }
-			inspection = new Inspection(code: maxInspection.code, name: maxInspection.name, items: items.toSet())
+			InspectionVehicle maxInspection = inspectionsVehicle.max { it.items.size() }
+			List<Item> items = ((List<Item>) inspectionsVehicle.items.flatten()).unique { it.code }
+			inspectionVehicle = Builder.buildInspectionVehicle(maxInspection, items)
 		}
-		return inspection
+		return inspectionVehicle
 	}
 
 	/**
@@ -95,25 +101,25 @@ class InspectionService {
 	 * @param employeeCode Código del empleado que guarda la revisión
 	 * @return Revisión guardada
 	 */
-	SavedInspection saveInspection(SavedInspection inspection, int orderNumber, String employeeCode) {
-		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspection: inspection.name, message: Constants.Message.SAVING_INSPECTION]).toString())
-		SavedInspection savedInspection = null
+	SavedInspection saveInspection(SavedInspection savedInspection, int orderNumber, String employeeCode) {
+		LOG.info(new Log((Map) [orderNumber: orderNumber, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, employeeCode: employeeCode, message: Constants.Message.SAVING_INSPECTION]).toString())
+		SavedInspection newSavedInspection = null
 		try {
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
-			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspection: inspection.name, existent: existent as boolean, message: Constants.Message.EXISTENT_INSPECTION]).toString())
+			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, existent: existent as boolean, message: Constants.Message.EXISTENT_INSPECTION]).toString())
 
 			/* Si existe una revisión para ese número de serie, se actualizan los elementos */
 			if (existent) {
-				savedInspection = savedInspectionDataService.update(inspection, existent)
+				newSavedInspection = savedInspectionDataService.update(savedInspection, existent)
 			} else {
-				savedInspection = savedInspectionDataService.save(inspection)
+				newSavedInspection = savedInspectionDataService.save(savedInspection)
 			}
-			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspection: inspection.name, message: Constants.Message.SAVED_INSPECTION]).toString())
+			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, message: Constants.Message.SAVED_INSPECTION]).toString())
 		} catch (all) {
 			all.printStackTrace()
-			LOG.error(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspection: inspection.name, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
+			LOG.error(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
 		}
-		return savedInspection
+		return newSavedInspection
 	}
 
 }

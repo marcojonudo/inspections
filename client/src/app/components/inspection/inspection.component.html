@@ -2,7 +2,7 @@
 	<button id="back-icon-button" mat-icon-button (click)="checkGoBack()">
 		<mat-icon>chevron_left</mat-icon>
 	</button>
-	<h1 translate>inspection.type.{{inspection.code}}</h1>
+	<h1 translate>inspection.type.{{inspection.inspectionType.code}}</h1>
 	<button id="context-button" mat-icon-button [matMenuTriggerFor]="contextMenu" [class.pulse]="updateVersion">
 		<span></span>
 		<span></span>
@@ -23,7 +23,6 @@
 		</div>
 	</mat-menu>
 </mat-toolbar>
-<!--<input type="file" capture="camera" accept="image/*" (change)="test($event)">-->
 <div #itemsContainer id="items-container" class="no-print">
 	<ng-container
 		*ngTemplateOutlet="recursiveList; context: {

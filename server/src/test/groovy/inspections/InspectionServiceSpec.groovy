@@ -1,6 +1,7 @@
 package inspections
 
-import inspections.domains.Inspection
+import inspections.domains.InspectionType
+import inspections.domains.InspectionVehicle
 import inspections.domains.items.Item
 import inspections.services.InspectionService
 import io.micronaut.test.annotation.MicronautTest
@@ -13,14 +14,16 @@ class InspectionServiceSpec extends Specification {
 
     @Inject InspectionService inspectionService
 
+    private final static CAR = "CAR"
+
     // region Build grouped inspection
 
     void "test build grouped inspection empty inspections"() {
         given:
-        List<Inspection> inspections = []
+        List<InspectionVehicle> inspections = []
 
         when:
-        Inspection inspection = inspectionService.buildGroupedInspection(inspections)
+        InspectionVehicle inspection = inspectionService.buildGroupedInspection(inspections)
 
         then:
         !inspection
@@ -28,30 +31,32 @@ class InspectionServiceSpec extends Specification {
 
     void "test build grouped inspection one inspection"() {
         given:
-        List<Inspection> inspections = [new Inspection(name: "Name", items: [new Item(name: "Item")])]
+        List<InspectionVehicle> inspections = [
+            new InspectionVehicle(new InspectionType(code: "A"), CAR, [new Item(name: "Item")].toSet())
+        ]
 
         when:
-        Inspection inspection = inspectionService.buildGroupedInspection(inspections)
+        InspectionVehicle inspection = inspectionService.buildGroupedInspection(inspections)
 
         then:
-        inspection.name == inspections[0].name
+        inspection.inspectionType.code == inspections[0].inspectionType.code
         inspection.items.size() == inspections[0].items.size()
         inspection.items[0].name == inspections[0].items[0].name
     }
 
     void "test build grouped inspection several inspections"() {
         given:
-        List<Inspection> inspections = [
-            new Inspection(name: "Name 1", items: [new Item(name: "Item 1")]),
-            new Inspection(name: "Name 2", items: [new Item(name: "Item 2"), new Item(name: "Item 3")]),
-            new Inspection(name: "Name 3", items: [new Item(name: "Item 4")])
+        List<InspectionVehicle> inspections = [
+            new InspectionVehicle(new InspectionType(code: "A"), CAR, [new Item(name: "Item 1")].toSet()),
+            new InspectionVehicle(new InspectionType(code: "A"), CAR, [new Item(name: "Item 2"), new Item(name: "Item 3")].toSet()),
+            new InspectionVehicle(new InspectionType(code: "A"), CAR, [new Item(name: "Item 4")].toSet())
         ]
 
         when:
-        Inspection inspection = inspectionService.buildGroupedInspection(inspections)
+        InspectionVehicle inspection = inspectionService.buildGroupedInspection(inspections)
 
         then:
-        inspection.name == inspections[1].name
+        inspection.inspectionType.code == inspections[1].inspectionType.code
         inspection.items.size() == inspections.items.flatten().size()
     }
 
