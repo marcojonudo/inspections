@@ -20,6 +20,7 @@ class Item implements GormEntity<Item> {
 	String code
 	String name
 	Integer order
+	Integer printOrder
 	ItemCategory category
 	boolean required
 	HeaderCard header

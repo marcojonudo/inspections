@@ -9,6 +9,7 @@ export class Item implements ListElement {
 	code: string;
 	name: string;
 	order: number;
+	printOrder: number;
 	category: ItemCategory;
 	vehicleData: ItemVehicleData;
 	relations: ItemRelation[];
@@ -20,6 +21,7 @@ export class Item implements ListElement {
 		this.code = item.code;
 		this.name = item.name;
 		this.order = item.order;
+		this.printOrder = item.printOrder;
 		this.category = item.category ? new ItemCategory(item.category) : undefined;
 		this.vehicleData = new ItemVehicleData(item.vehicleData);
 		this.required = item.required;

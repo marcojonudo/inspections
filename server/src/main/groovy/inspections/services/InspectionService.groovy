@@ -49,9 +49,9 @@ class InspectionService {
 	}
 
 	/**
-	 * Busca la revisión y la revisión guardad asociadas al número de orden
+	 * Busca la revisión asociada al número de orden
 	 * @param orderNumber Número de orden
-	 * @return Objecto con revisión y revisión guardada
+	 * @return Revisión
 	 */
 	InspectionVehicle findInspection(int orderNumber) {
 		LOG.info(new Log((Map) [orderNumber: orderNumber, message: Constants.Message.FINDING_INSPECTION]).toString())
@@ -64,19 +64,6 @@ class InspectionService {
 		LOG.info(new Log((Map) [orderNumber: orderNumber, inspectionTypeCode: inspectionVehicle?.inspectionType?.code, vehicle: inspectionVehicle?.vehicle, message: Constants.Message.FIND_INSPECTION_RESULT]).toString())
 		return inspectionVehicle
 	}
-
-	/**
-	 * Busca la revisión y la revisión guardad asociadas al número de orden
-	 * @param orderNumber Número de orden
-	 * @return Objecto con revisión y revisión guardada
-	 */
-//	InspectionInfo findInspectionInfo(int orderNumber) {
-//		LOG.info(new Log((Map) [orderNumber: orderNumber, message: Constants.Message.FINDING_INSPECTION]).toString())
-//		InspectionVehicle inspectionVehicle = buildInspection(orderNumber)
-//		SavedInspection existent = savedInspectionDataService.find(orderNumber)
-//		LOG.info(new Log((Map) [orderNumber: orderNumber, inspection: inspectionVehicle?.inspection?.name, savedInspection: existent?.name, message: Constants.Message.FIND_INSPECTION_RESULT]).toString())
-//		return inspectionVehicle ? new InspectionInfo(inspectionVehicle, existent) : null
-//	}
 
 	/**
 	 * Construye una revisión agrupada con todos los items de las recibidas como parámetro

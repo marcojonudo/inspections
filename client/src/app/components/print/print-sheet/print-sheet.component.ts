@@ -29,6 +29,7 @@ export class PrintSheetComponent {
 
 	private readonly ROW_ITEMS = 4;
 
+	listElementsPaginated: ListElement[][];
 	listElements: ListElement[];
 	imageListElements: { listElement, pageBreak }[];
 
@@ -139,6 +140,13 @@ export class PrintSheetComponent {
 			return false;
 		}
 		return (savedItem as SelectSavedItem).value !== Constants.SELECT_ITEM_OPTION_CODE.C;
+	}
+
+	checkCategoryBreak(elem: ListElement): boolean {
+		const gasCategory = this.checkCategoryElement(elem) && (elem as Category).code === 'G';
+		if (gasCategory) { return true; }
+		const commentsCategory = !this.checkCategoryElement(elem) && (elem as SavedItem).item.code === 'C';
+		return commentsCategory;
 	}
 
 }

@@ -363,37 +363,31 @@ export class InspectionService {
 	}
 
 	initInspectionData(orderCode: string): Observable<any> {
+		let messageCode = Constants.MESSAGE_CODE.NONEXISTENT_ORDER;
 		return this.findOrderInfo(orderCode).pipe(
 			concatMap((orderInfo: any) => {
 				const order = InspectionService.setOrder(new Order(orderInfo.order, orderCode));
 				console.log('Order', order);
 				const centre = InspectionService.setCentre(new Centre(orderInfo.centre));
 				console.log('Centre', centre);
-				return this.findInspection(order.number, Url.inspection()).pipe(
-					concatMap(inspection => {
-						if (inspection) {
-							console.log('Received inspection', inspection);
-							InspectionService.initInspection(inspection);
-							return this.findInspection(order.number, Url.savedInspection());
-						}
-						return of(undefined);
-					}),
-					catchError(() => {
-						this.snackBarService.open(
-							Constants.MESSAGE_CODE.NONEXISTENT_INSPECTIONS, Constants.SNACK_BAR.TYPE.WARNING
-						);
-						return of(undefined);
-					})
-				);
+				messageCode = Constants.MESSAGE_CODE.NONEXISTENT_INSPECTIONS;
+				return this.findInspection(order.number, Url.inspection());
 			}),
-			catchError(error => {
-				this.snackBarService.open(Constants.MESSAGE_CODE.NONEXISTENT_ORDER, Constants.SNACK_BAR.TYPE.WARNING);
-				return throwError(error);
-			})
-		).pipe(
-			tap(savedInspection => {
+			concatMap(inspection => {
+				if (inspection) {
+					console.log('Received inspection', inspection);
+					InspectionService.initInspection(inspection);
+					return this.findInspection(InspectionService.order.number, Url.savedInspection());
+				}
+			}),
+			concatMap(savedInspection => {
 				console.log('Received saved inspection', savedInspection);
 				InspectionService.initSavedInspection(savedInspection);
+				return of(true);
+			}),
+			catchError(error => {
+				this.snackBarService.open(messageCode, Constants.SNACK_BAR.TYPE.WARNING);
+				return throwError(error);
 			})
 		);
 	}

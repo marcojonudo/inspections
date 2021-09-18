@@ -38,7 +38,7 @@ import { ResetEmployeeDialogComponent } from './components/reset-employee-dialog
 import { PrintComponent } from './components/print/print.component';
 import { MatTableModule } from '@angular/material/table';
 import { ChartsModule } from 'ng2-charts';
-import { SavedItemPipe } from './pipes/saved-item.pipe';
+import { PrintOrderPipePipe } from './pipes/saved-item.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { HiddenPipe } from './pipes/hidden.pipe';
 
@@ -63,7 +63,7 @@ import { PrintSheetComponent } from './components/print/print-sheet/print-sheet.
 		SplashScreenComponent,
 		ResetEmployeeDialogComponent,
 		PrintComponent,
-		SavedItemPipe,
+		PrintOrderPipePipe,
 		HiddenPipe,
 		CameraComponent,
 		PrintSheetComponent

@@ -3,26 +3,22 @@ import {
 	Component,
 	OnInit
 } from '@angular/core';
-import {PrintService} from '../../services/print.service';
-import {InspectionService} from '../../services/inspection.service';
-import {SavedInspection} from '../../objects/inspections/saved-inspection';
-import {Constants} from '../../objects/constants';
-import {SelectSavedItem} from '../../objects/inspections/saved-items/select-saved-item';
-import {Centre} from '../../objects/orders/centre';
-import {Order} from '../../objects/orders/order';
-import {SavedItem} from '../../objects/inspections/saved-items/saved-item';
-import {SelectItem} from '../../objects/inspections/items/select-item';
-import {TextSavedItem} from '../../objects/inspections/saved-items/text-saved-item';
-import {Category} from '../../objects/list-elements/category';
-import {ChartOptions, ChartType} from 'chart.js';
-import {SelectItemOption} from '../../objects/inspections/items/select-item-option';
-import {Color} from 'ng2-charts';
-import {OrderPipe} from '../../pipes/order.pipe';
-import {ListElement} from '../../objects/list-elements/list-element';
-import {EmployeeService} from '../../services/employee.service';
-import {Employee} from '../../objects/employee';
-import {Utils} from '../../objects/utils';
-import {Builder} from '../../objects/builder';
+import { PrintService } from '../../services/print.service';
+import { InspectionService } from '../../services/inspection.service';
+import { SavedInspection } from '../../objects/inspections/saved-inspection';
+import { Constants } from '../../objects/constants';
+import { SelectSavedItem } from '../../objects/inspections/saved-items/select-saved-item';
+import { Centre } from '../../objects/orders/centre';
+import { Order } from '../../objects/orders/order';
+import { SavedItem } from '../../objects/inspections/saved-items/saved-item';
+import { ChartOptions, ChartType } from 'chart.js';
+import { SelectItemOption } from '../../objects/inspections/items/select-item-option';
+import { Color } from 'ng2-charts';
+import { OrderPipe } from '../../pipes/order.pipe';
+import { EmployeeService } from '../../services/employee.service';
+import { Employee } from '../../objects/employee';
+import { Dayjs } from 'dayjs';
+import * as dayjs from 'dayjs';
 
 @Component({
 	selector: 'app-print',
@@ -34,6 +30,7 @@ export class PrintComponent implements OnInit {
 
 	private readonly GROUP_LABELS: { [key: string]: string[] };
 
+	today: Dayjs;
 	chartType: ChartType;
 	options: ChartOptions;
 	colors: Color[];
@@ -47,6 +44,7 @@ export class PrintComponent implements OnInit {
 				Constants.SELECT_ITEM_OPTION_CODE.RA, Constants.SELECT_ITEM_OPTION_CODE.RR
 			]
 		};
+		this.today = dayjs();
 
 		this.chartType = 'pie';
 		this.options = { animation: { duration: 0 } };
@@ -104,7 +102,11 @@ export class PrintComponent implements OnInit {
 			const existentCodes = codesLabels.length === codes.length;
 			if (existentCodes) {
 				codes.forEach(code => groupedLabels.splice(groupedLabels.findIndex(label => label.code === code), 1));
-				groupedLabels.push(new SelectItemOption({ name, code: codesLabels[0].code, order: codesLabels[0].order }));
+				groupedLabels.push(new SelectItemOption({
+					name,
+					code: codesLabels[0].code,
+					order: codesLabels[0].order
+				}));
 			}
 		});
 		return groupedLabels;
