@@ -1,19 +1,21 @@
-import {SavedItem} from './saved-items/saved-item';
-import {Dayjs} from 'dayjs';
+import { SavedItem } from './saved-items/saved-item';
+import { Dayjs } from 'dayjs';
 
 export class SavedInspection {
 
-	code: string;
-	name: string;
+	inspectionTypeCode: string;
+	vehicle: string;
 	orderNumber: number;
 	employeeCode: string;
 	numberPlate: string;
 	items: SavedItem[];
 	saved: Dayjs;
 
-	constructor(code: string, name: string, orderNumber: number, numberPlate: string, items: SavedItem[]) {
-		this.code = code;
-		this.name = name;
+	constructor(
+		inspectionTypeCode: string, vehicle: string, orderNumber: number, numberPlate: string, items: SavedItem[]
+	) {
+		this.inspectionTypeCode = inspectionTypeCode;
+		this.vehicle = vehicle;
 		this.orderNumber = orderNumber;
 		this.numberPlate = numberPlate;
 		this.items = items;

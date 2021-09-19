@@ -1,4 +1,4 @@
-import {Item} from './items/item';
+import { Item } from './items/item';
 
 export class ItemRelation {
 

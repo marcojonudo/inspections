@@ -12,6 +12,7 @@ abstract class SavedInspectionDataService {
 
 	@Inject ItemDataService itemDataService
 	@Inject SavedItemDataService savedItemDataService
+	@Inject ItemVehicleDataDataService itemVehicleDataDataService
 
 	abstract SavedInspection find(int orderNumber)
 
@@ -23,8 +24,7 @@ abstract class SavedInspectionDataService {
 	SavedInspection save(SavedInspection savedInspection) {
 		savedInspection.items.each {
 			it.savedInspection = savedInspection
-			it.item = it.item.category ?
-				itemDataService.find(it.item.code, it.item.category.code) : itemDataService.find(it.item.code)
+			it.item = itemVehicleDataDataService.find(it.item.code)
 		}
 		savedInspection.state = SavedInspection.State.values().find {
 			((Closure<Boolean>) it.check)(savedInspection.items)
@@ -36,7 +36,7 @@ abstract class SavedInspectionDataService {
 		existentSavedInspection.items.each { SavedItem existentSavedItem ->
 			SavedItem savedItem = savedInspection.items.find { it.item.code == existentSavedItem.item.code }
 			if (existentSavedItem != savedItem) {
-				savedItemDataService.update(existentSavedItem.id, savedItem)
+				savedItemDataService.update(existentSavedItem, savedItem)
 			}
 		}
 		SavedInspection.State state = SavedInspection.State.values().find {

@@ -3,7 +3,9 @@ package inspections.domains.items
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import grails.gorm.annotation.Entity
-import inspections.domains.*
+import inspections.domains.InspectionVehicle
+import inspections.domains.ItemCategory
+import inspections.domains.ItemRelation
 import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.SelectSavedItem
 import inspections.domains.savedItems.TextSavedItem
@@ -18,28 +20,32 @@ class Item implements GormEntity<Item> {
 	String code
 	String name
 	Integer order
+	Integer printOrder
 	ItemCategory category
-	GaragePosition garagePosition
-	VehicleSection vehicleSection
 	boolean required
 	HeaderCard header
 
 	@JsonIgnore
-	Set<Inspection> inspections
+	Set<InspectionVehicle> inspectionsVehicle
+
+	@JsonIgnore
+	Set<ItemVehicleData> vehicleDataList
 
 	@JsonInclude
 	Set<ItemRelation> relations
 
-	static hasMany = [inspections: Inspection, relations: ItemRelation]
+	ItemVehicleData vehicleData
 
-	static belongsTo = Inspection
+	static hasMany = [inspectionsVehicle: InspectionVehicle, vehicleDataList: ItemVehicleData, relations: ItemRelation]
+
+	static belongsTo = InspectionVehicle
+
+	static transients = ['vehicleData']
 
 	static constraints = {
 		type maxSize: 25
 		order nullable: true
 		category nullable: true
-		garagePosition nullable: true
-		vehicleSection nullable: true
 		header nullable: true
 	}
 
@@ -48,8 +54,7 @@ class Item implements GormEntity<Item> {
 
 		order column: '`order`'
 		category lazy: false
-		garagePosition lazy: false
-		vehicleSection lazy: false
+		vehicleDataList fetch: 'join'
 		relations fetch: 'join'
 	}
 

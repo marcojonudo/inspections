@@ -1,16 +1,16 @@
-import {SavedInspection} from './inspections/saved-inspection';
-import {Inspection} from './inspections/inspection';
-import {TextItem} from './inspections/items/text-item';
-import {TextSavedItem} from './inspections/saved-items/text-saved-item';
-import {SelectItem} from './inspections/items/select-item';
-import {SelectSavedItem} from './inspections/saved-items/select-saved-item';
-import {TextAreaItem} from './inspections/items/text-area-item';
-import {Item} from './inspections/items/item';
-import {SavedItem} from './inspections/saved-items/saved-item';
-import {ItemRelation} from './inspections/item-relation';
-import {Category} from './list-elements/category';
-import {NameElement} from './list-elements/name-element';
-import {ListElement} from './list-elements/list-element';
+import { SavedInspection } from './inspections/saved-inspection';
+import { InspectionVehicle } from './inspections/inspection-vehicle';
+import { TextItem } from './inspections/items/text-item';
+import { TextSavedItem } from './inspections/saved-items/text-saved-item';
+import { SelectItem } from './inspections/items/select-item';
+import { SelectSavedItem } from './inspections/saved-items/select-saved-item';
+import { TextAreaItem } from './inspections/items/text-area-item';
+import { Item } from './inspections/items/item';
+import { SavedItem } from './inspections/saved-items/saved-item';
+import { ItemRelation } from './inspections/item-relation';
+import { Category } from './list-elements/category';
+import { NameElement } from './list-elements/name-element';
+import { ListElement } from './list-elements/list-element';
 
 export class Builder {
 
@@ -29,7 +29,7 @@ export class Builder {
 			new TextSavedItem(item, employeeCode, savedItem)
 	};
 
-	static buildInspection(inspection: any): Inspection {
+	static buildInspection(inspection: any): InspectionVehicle {
 		const items = inspection.items.map(item => this.itemBuilder[item.type](item));
 		items.forEach(item => {
 			const baseItem = inspection.items.find(i => i.name === item.name);
@@ -37,14 +37,16 @@ export class Builder {
 				new ItemRelation(itemRelation, items.find(i => i.name === itemRelation.targetItem.name))
 			);
 		});
-		return new Inspection(inspection.code, inspection.name, items);
+		return new InspectionVehicle(inspection, items);
 	}
 
 	static buildSavedInspection(
-		inspection: Inspection, employeeCode: string, orderNumber: number, numberPlate: string
+		inspection: InspectionVehicle, employeeCode: string, orderNumber: number, numberPlate: string
 	): SavedInspection {
 		const savedItems = inspection.items.map(item => this.savedItemBuilder[item.type](item, employeeCode, undefined));
-		return new SavedInspection(inspection.code, inspection.name, orderNumber, numberPlate, savedItems);
+		return new SavedInspection(
+			inspection.inspectionType.code, inspection.vehicle, orderNumber, numberPlate, savedItems
+		);
 	}
 
 	static loadSavedInspection(savedInspection: any): SavedInspection {
@@ -52,7 +54,11 @@ export class Builder {
 			this.savedItemBuilder[savedItem.item.type](savedItem.item, savedItem.employeeCode, savedItem)
 		);
 		return new SavedInspection(
-			savedInspection.code, savedInspection.name, savedInspection.orderNumber, savedInspection.numberPlate, savedItems
+			savedInspection.inspectionTypeCode,
+			savedInspection.vehicle,
+			savedInspection.orderNumber,
+			savedInspection.numberPlate,
+			savedItems
 		);
 	}
 

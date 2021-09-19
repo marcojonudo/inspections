@@ -1,6 +1,5 @@
 package inspections.domains
 
-
 import grails.gorm.annotation.Entity
 import groovy.transform.TupleConstructor
 import inspections.domains.items.Item
@@ -8,22 +7,18 @@ import org.grails.datastore.gorm.GormEntity
 
 @Entity
 @TupleConstructor
-class Inspection implements GormEntity<Inspection> {
+class InspectionVehicle implements GormEntity<InspectionVehicle> {
 
-	String code
-	String name
+	InspectionType inspectionType
+	String vehicle
 	Set<Item> items
 
-	static hasMany = [items: Item, internalCodes: InspectionInternalCode]
-
-	static constraints = {
-		code maxSize: 15
-		name maxSize: 45
-	}
+	static hasMany = [items: Item, articleCodes: ArticleCodeInspection]
 
 	static mapping = {
+		inspectionType lazy: false
 		items fetch: 'join'
-		internalCodes fetch: 'join'
+		articleCodes fetch: 'join'
 	}
 
 }

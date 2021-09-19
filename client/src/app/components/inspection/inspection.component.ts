@@ -5,7 +5,7 @@ import {
 	Component, ElementRef, HostListener, OnInit,
 	ViewChild
 } from '@angular/core';
-import { Inspection } from '../../objects/inspections/inspection';
+import { InspectionVehicle } from '../../objects/inspections/inspection-vehicle';
 import { Constants } from '../../objects/constants';
 import { SelectItem } from '../../objects/inspections/items/select-item';
 import { SelectItemOption } from '../../objects/inspections/items/select-item-option';
@@ -130,7 +130,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 
 	// region Getters / setters
 
-	get inspection(): Inspection {
+	get inspection(): InspectionVehicle {
 		return InspectionService.inspection;
 	}
 

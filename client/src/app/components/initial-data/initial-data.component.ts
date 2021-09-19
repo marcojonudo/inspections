@@ -135,7 +135,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		this.searchingInspections = true;
 		this.cdRef.detectChanges();
 
-		this.inspectionService.findInspection(orderCode.value).pipe(
+		this.inspectionService.initInspectionData(orderCode.value).pipe(
 			finalize(() => {
 				LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, false);
 				this.searchingInspections = false;

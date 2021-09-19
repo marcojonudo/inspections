@@ -1,10 +1,9 @@
 package inspections.controllers
 
 import groovy.transform.CompileStatic
-import inspections.domains.Inspection
+import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
 import inspections.domains.schedules.EmployeeData
-import inspections.pogos.InspectionInfo
 import inspections.pogos.OrderInfo
 import inspections.services.InspectionService
 import inspections.services.data.*
@@ -24,7 +23,6 @@ class InspectionController {
 
 	@Inject private OrderTimeDataService orderTimeDataService
 	@Inject private InspectionService inspectionService
-	@Inject private InspectionDataService inspectionDataService
 	@Inject private SavedInspectionDataService savedInspectionDataService
 	@Inject private EmployeeDataDataService employeeDataDataService
 	@Inject private LanguageDataService languageDataService
@@ -44,21 +42,6 @@ class InspectionController {
 	)
     List<EmployeeData> getEmployees() {
 		return employeeDataDataService.findAll()
-    }
-
-	@Get
-	@Operation(
-		summary = "Obtiene las revisiones",
-		description = "Obtiene todas las revisiones"
-	)
-	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(type = "array")))
-	@ApiResponse(
-		responseCode = "200",
-		description = "Lista de revisiones",
-		content = @Content(array = @ArraySchema(schema = @Schema(implementation = Inspection)))
-	)
-    List<Inspection> getInspections() {
-		return inspectionDataService.findAll()
     }
 
 	@Get("/language")
@@ -92,6 +75,20 @@ class InspectionController {
 		return inspectionService.findOrderInfo(shortCode)
 	}
 
+	@Get("/savedInspection")
+	@Operation(
+		summary = "Obtiene la revision guardada previamente",
+		description = "Obtiene la revisión guardad previamente, si existe"
+	)
+	@ApiResponse(
+		responseCode = "200",
+		description = "Revisión guardada",
+		content = @Content(schema = @Schema(implementation = SavedInspection))
+	)
+	HttpResponse<SavedInspection> findSavedInspection(@QueryValue int orderNumber) {
+		return HttpResponse.ok(savedInspectionDataService.find(orderNumber))
+    }
+
 	@Get("/inspection")
 	@Operation(
 		summary = "Obtiene la revision asociada",
@@ -101,10 +98,10 @@ class InspectionController {
 	@ApiResponse(
 		responseCode = "200",
 		description = "Lista de revisiones",
-		content = @Content(schema = @Schema(implementation = Inspection))
+		content = @Content(schema = @Schema(implementation = InspectionVehicle))
 	)
-	InspectionInfo findInspection(@QueryValue int orderNumber) {
-		return inspectionService.findInspectionInfo(orderNumber)
+	InspectionVehicle findInspection(@QueryValue int orderNumber) {
+		return inspectionService.findInspection(orderNumber)
     }
 
 	@Post("/inspection")

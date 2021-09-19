@@ -1,11 +1,9 @@
 package inspections.utils
 
 import groovy.transform.CompileStatic
-import inspections.domains.GaragePosition
 import inspections.domains.Image
-import inspections.domains.Inspection
+import inspections.domains.InspectionVehicle
 import inspections.domains.ItemCategory
-import inspections.domains.SavedInspection
 import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.SelectSavedItem
@@ -19,12 +17,10 @@ class Builder {
 
 	private static fillSavedItem(SavedItem savedItem, Map<String, Object> item) {
 		Map<String, Object> category = (Map<String, Object>) ((Map<String, Object>) item.item).category
-		Map<String, Object> garagePosition = (Map<String, Object>) ((Map<String, Object>) item.item).garagePosition
 		savedItem.item = new Item(
 			type: Item.Type.valueOf((String) ((Map<String, Object>) item.item).type),
 			code: (String) ((Map<String, Object>) item.item).code,
-			category: category ? new ItemCategory(code: (String) category.code, name: (String) category.name) : null,
-			garagePosition: garagePosition ? new GaragePosition(code: (String) garagePosition.code, name: (String) garagePosition.name) : null
+			category: category ? new ItemCategory(code: (String) category.code, name: (String) category.name) : null
 		)
 		savedItem.employeeCode = item.employeeCode
 		savedItem.hidden = item.hidden
@@ -48,14 +44,13 @@ class Builder {
 		return (SelectSavedItem) fillSavedItem(savedItem, item)
 	}
 
-	static SavedInspection buildSavedInspection(SavedInspection inspection) {
-		return new SavedInspection(
-			name: inspection.name, orderNumber: inspection.orderNumber, saved: inspection.saved, items: inspection.items
+	static InspectionVehicle buildInspectionVehicle(InspectionVehicle inspectionVehicle, List<Item> items) {
+		items.each {
+			it.vehicleData = it.vehicleDataList.find { it.vehicle == inspectionVehicle.vehicle }
+		}
+		return new InspectionVehicle(
+			inspectionVehicle.inspectionType, inspectionVehicle.vehicle, items.toSet()
 		)
-	}
-
-	static Inspection buildInspection(Inspection inspection, Set<Item> items) {
-		return new Inspection(inspection.code, inspection.name, items)
 	}
 
 }

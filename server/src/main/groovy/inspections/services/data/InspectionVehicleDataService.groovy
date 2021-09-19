@@ -1,0 +1,19 @@
+package inspections.services.data
+
+import grails.gorm.services.Query
+import grails.gorm.services.Service
+import inspections.domains.ArticleCodeInspection
+import inspections.domains.InspectionVehicle
+
+@Service(InspectionVehicle)
+abstract class InspectionVehicleDataService {
+
+	@Query("""
+		select $inspectionVehicle
+		from ${InspectionVehicle inspectionVehicle}
+		join ${ArticleCodeInspection articleCodeInspection = inspectionVehicle.articleCodes}
+		where $articleCodeInspection.articleCode in $articleCodes
+	""")
+	abstract List<InspectionVehicle> findAll(List<Integer> articleCodes)
+
+}
