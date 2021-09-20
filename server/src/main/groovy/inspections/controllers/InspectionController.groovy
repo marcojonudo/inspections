@@ -119,7 +119,7 @@ class InspectionController {
 		SavedInspection savedInspection = inspectionService.saveInspection(
 			inspection, inspection.orderNumber, inspection.employeeCode
 		)
-		return savedInspection ? HttpResponse.created(savedInspection) : HttpResponse.serverError()
+		return savedInspection ? HttpResponse.created(savedInspection.id) : HttpResponse.serverError()
     }
 
 }

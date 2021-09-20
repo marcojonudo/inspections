@@ -1,11 +1,7 @@
 <div
 	*ngFor="let elem of listElements | order; let i = index"
 	class="category"
-	[ngClass]="{
-		'fill': !checkCategoryElement(elem),
-		'page-break': checkCategoryBreak(elem)
-	}"
-	[class.fill]="!checkCategoryElement(elem)">
+	[class.page-break]="checkCategoryBreak(elem)">
 	<mat-card *ngIf="checkCategoryElement(elem); else elementTemplate">
 		<mat-card-header>
 			<mat-icon mat-card-avatar>navigate_next</mat-icon>
