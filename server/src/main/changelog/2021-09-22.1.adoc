@@ -1,0 +1,2 @@
+- [.label-new]#Añadido soporte para campos de texto múltiples (como la edad del neumático).#
+- [.label-improvement]#Añadidas unidades de medida a algunos items de texto.#

@@ -36,6 +36,7 @@ import { TextItem } from '../../objects/inspections/items/text-item';
 import { CameraComponent } from '../bottom-panel/camera/camera.component';
 import { SnackBarService } from '../../services/snack-bar.service';
 import { SeparatorInputModel } from '../separator-input/separator-input.component';
+import { TextItemField } from '../../objects/inspections/items/text-item-field';
 
 @Component({
 	selector: 'app-inspection',
@@ -250,6 +251,10 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 
 	findTextItem(item: Item): TextItem {
 		return item as TextItem;
+	}
+
+	findTextItemField(item: Item): TextItemField {
+		return (item as TextItem).fields[0];
 	}
 
 	checkIndividualTextField(item: TextItem): boolean {

@@ -9,7 +9,8 @@
 			class="separator-input-element"
 			formControlName="field-{{i}}"
 			[maxLength]="field.maxLength"
-			(input)="_handleInput(i)"
+			(input)="handleInput(i)"
+			(keyup.backspace)="handleAutoFocusPrev(i)"
 			#fieldInput>
 		<span *ngIf="!last" class="separator-input-spacer">{{separator}}</span>
 	</div>

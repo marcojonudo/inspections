@@ -167,8 +167,9 @@ export class SeparatorInputComponent
 		}
 	}
 
-	autoFocusNext(control: AbstractControl, nextElement?: HTMLInputElement): void {
-		if (!control.errors && nextElement) {
+	autoFocusNext(control: AbstractControl, field: TextItemField, nextElement?: HTMLInputElement): void {
+		const filledInput = control.value.length === field.maxLength;
+		if (filledInput && nextElement) {
 			this._focusMonitor.focusVia(nextElement, 'program');
 		}
 	}
@@ -186,10 +187,10 @@ export class SeparatorInputComponent
 	}
 
 	onContainerClick() {
-		const validIndex = Object.values(this.parts.controls).findIndex(control => control.valid);
-		if (validIndex !== -1) {
-			this._focusMonitor.focusVia(this.fieldInputs.toArray()[validIndex], 'program');
-		}
+		const controls = Object.values(this.parts.controls);
+		const invalidIndex = controls.findIndex(control => !control.valid);
+		const index = invalidIndex !== -1 ? invalidIndex : controls.length - 1;
+		this._focusMonitor.focusVia(this.fieldInputs.toArray()[index], 'program');
 	}
 
 	writeValue(value: SeparatorInputModel | null): void {
@@ -208,10 +209,20 @@ export class SeparatorInputComponent
 		this.disabled = isDisabled;
 	}
 
-	_handleInput(i: number): void {
-		this.autoFocusNext(this.parts.controls[`field-${i}`], this.fieldInputs.toArray()[i]);
+	handleInput(i: number): void {
+		/* Si no es el último input, se evalúa si se debe enfocar el siguiente */
+		if (i < this.fields.length - 1) {
+			const nextElem = this.fieldInputs.toArray()[(i + 1) % this.fieldInputs.length];
+			this.autoFocusNext(this.parts.controls[`field-${i}`], this.fields[i], nextElem);
+		}
 		if (this.value) {
 			this.onChange(this.value);
+		}
+	}
+
+	handleAutoFocusPrev(i: number): void {
+		if (i > 0) {
+			this.autoFocusPrev(this.parts.controls[`field-${i}`], this.fieldInputs.toArray()[i - 1]);
 		}
 	}
 
