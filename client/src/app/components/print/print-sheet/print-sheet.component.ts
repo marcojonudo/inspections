@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnInit, SkipSelf } from '@angular/core';
 import { ListElement } from '../../../objects/list-elements/list-element';
 import { ChartOptions, ChartType } from 'chart.js';
 import { Color } from 'ng2-charts';
@@ -30,12 +30,18 @@ import { TextItem } from '../../../objects/inspections/items/text-item';
 export class PrintSheetComponent {
 
 	private readonly ROW_ITEMS = 4;
+	private readonly TOP_OFFSET = 11.5;
 
-	listElementsPaginated: ListElement[][];
+	headerHeight: number;
 	listElements: ListElement[];
 	imageListElements: { listElement, pageBreak }[];
 
-	constructor(private printService: PrintService, private orderPipe: OrderPipe) {
+	// @HostBinding('style.top.px') get top(): number {
+	// 	console.log(3, this.headerHeight);
+	// 	return this.headerHeight;
+	// }
+
+	constructor(private printService: PrintService, private orderPipe: OrderPipe, private cdRef: ChangeDetectorRef) {
 		const items = this.savedInspection.items.filter(i =>
 			i.item.header === undefined
 		).filter(i => {
@@ -46,6 +52,10 @@ export class PrintSheetComponent {
 			items, 0, [(savedItem: SavedItem) => savedItem.item.category]
 		);
 		this.imageListElements = this.findImageElements();
+		this.printService.headerHeight$.subscribe(height => {
+			this.headerHeight = height;
+			this.cdRef.detectChanges();
+		});
 	}
 
 	// region Getters / setters
@@ -67,6 +77,10 @@ export class PrintSheetComponent {
 	}
 
 	// endregion
+
+	findTop(headerHeight: number = this.headerHeight, topOffset: number = this.TOP_OFFSET): number {
+		return headerHeight - topOffset;
+	}
 
 	findImageElements(): { listElement, pageBreak }[] {
 		const splittedImageListElements = [];
