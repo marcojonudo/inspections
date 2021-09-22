@@ -15,6 +15,7 @@ export class Item implements ListElement {
 	relations: ItemRelation[];
 	required: boolean;
 	header: string;
+	picture: boolean;
 
 	constructor(item: any) {
 		this.type = item.type;
@@ -26,6 +27,7 @@ export class Item implements ListElement {
 		this.vehicleData = new ItemVehicleData(item.vehicleData);
 		this.required = item.required;
 		this.header = item.header;
+		this.picture = item.picture;
 	}
 
 }

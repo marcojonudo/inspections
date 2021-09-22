@@ -51,7 +51,7 @@
 			</mat-expansion-panel>
 		</mat-accordion>
 		<mat-list *ngIf="checkMenuItems(list)">
-			<mat-list-item *ngFor="let item of findMenuItems(list) | order | hidden">
+			<mat-list-item *ngFor="let item of findMenuItems(list) | order | hidden" [class.picture-item]="item.picture">
 				<div
 					*ngIf="checkItemType(item.type, selectType)"
 					class="item select-item"
@@ -104,6 +104,7 @@
 					</mat-form-field>
 				</div>
 				<button
+					*ngIf="item.picture"
 					mat-icon-button
 					class="camera-button"
 					[class.picture]="checkExistentImage(item)"

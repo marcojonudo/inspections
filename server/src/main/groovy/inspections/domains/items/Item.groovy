@@ -24,6 +24,7 @@ class Item implements GormEntity<Item> {
 	ItemCategory category
 	boolean required
 	HeaderCard header
+	boolean picture
 
 	@JsonIgnore
 	Set<InspectionVehicle> inspectionsVehicle
