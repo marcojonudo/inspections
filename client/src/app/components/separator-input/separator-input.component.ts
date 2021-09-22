@@ -13,6 +13,7 @@ import { Subject } from 'rxjs';
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { TextItemField } from '../../objects/inspections/items/text-item-field';
+import { Constants } from '../../objects/constants';
 
 export class SeparatorInputModel {
 
@@ -224,6 +225,10 @@ export class SeparatorInputComponent
 		if (i > 0) {
 			this.autoFocusPrev(this.parts.controls[`field-${i}`], this.fieldInputs.toArray()[i - 1]);
 		}
+	}
+
+	findMaxLength(field: TextItemField): number {
+		return field.maxLength || Constants.TEXT_ITEM_MAX_LENGTH;
 	}
 
 }

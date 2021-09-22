@@ -85,7 +85,7 @@
 							*ngIf="checkIndividualTextField(findTextItem(item)); else separatorInput"
 							matInput
 							type="tel"
-							[maxLength]="findTextItemField(item).maxLength"
+							[maxLength]="findTextItemFieldMaxLength(item)"
 							[placeholder]="findTextItemField(item).placeholder"
 							[(ngModel)]="findTextSavedItem(item.code).text"
 							(change)="updateText(item)"

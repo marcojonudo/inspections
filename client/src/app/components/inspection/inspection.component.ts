@@ -254,11 +254,15 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	findTextItemField(item: Item): TextItemField {
-		return (item as TextItem).fields[0];
+		return this.findTextItem(item).fields[0];
 	}
 
 	checkIndividualTextField(item: TextItem): boolean {
 		return item.fields.length === 1;
+	}
+
+	findTextItemFieldMaxLength(item: Item): number {
+		return this.findTextItemField(item).maxLength || Constants.TEXT_ITEM_MAX_LENGTH;
 	}
 
 	findSeparatorText(item: TextItem, savedItem: TextSavedItem): SeparatorInputModel {

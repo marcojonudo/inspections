@@ -8,7 +8,7 @@
 		<input
 			class="separator-input-element"
 			formControlName="field-{{i}}"
-			[maxLength]="field.maxLength"
+			[maxLength]="findMaxLength(field)"
 			(input)="handleInput(i)"
 			(keyup.backspace)="handleAutoFocusPrev(i)"
 			#fieldInput>
