@@ -24,12 +24,12 @@
 			"ST": "Revisão a tranquilidade do serviço"
 		},
 		"category": {
-			"CP": "veículo no park",
-			"CB": "veículo no box",
-			"MA": "veículo meia altura",
-			"E": "veículo elevada",
+			"VP": "Veículo no park",
+			"VB": "Veículo no box",
+			"VMA": "Veículo meia altura",
+			"VE": "Veículo elevada",
 			"VM": "Compartimento motor",
-			"CA": "veículo no chão",
+			"VA": "Veículo no chão",
 			"I": "Iluminação",
 			"C": "Carrocería",
 			"RDI": "Roda DD",
