@@ -51,7 +51,7 @@
 			</mat-expansion-panel>
 		</mat-accordion>
 		<mat-list *ngIf="checkMenuItems(list)">
-			<mat-list-item *ngFor="let item of findMenuItems(list) | order | hidden" [class.picture-item]="item.picture">
+			<mat-list-item *ngFor="let item of findMenuItems(list) | order | hidden">
 				<div
 					*ngIf="checkItemType(item.type, selectType)"
 					class="item select-item"
@@ -81,6 +81,9 @@
 				<div *ngIf="checkItemType(item.type, textType)" class="item">
 					<mat-form-field class="text-item-input">
 						<mat-label translate>inspection.item.{{item.code}}</mat-label>
+						<span *ngIf="checkIndividualTextField(findTextItem(item))" matPrefix>
+							{{findTextItemField(item).prefix}}
+						</span>
 						<input
 							*ngIf="checkIndividualTextField(findTextItem(item)); else separatorInput"
 							matInput

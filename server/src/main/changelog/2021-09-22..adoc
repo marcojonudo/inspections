@@ -1,0 +1,3 @@
+- [.label-improvement]#Quitados los apellidos de los empleados de la hoja de impresión.#
+- [.label-fix]#Se evita que la leyenda de la hoja de impresión quede tapada, en algunos casos, por el contenido.#
+- [.label-new]#Añadido prefijo a algunos campos de texto.#

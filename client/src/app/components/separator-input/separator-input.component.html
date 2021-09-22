@@ -5,7 +5,9 @@
 	(focusin)="onFocusIn()"
 	(focusout)="onFocusOut($event)">
 	<div *ngFor="let field of fields; let i = index; let last = last" class="separator-field-wrapper">
+		<span *ngIf="field.prefix" matPrefix>{{field.prefix}}</span>
 		<input
+			type="tel"
 			class="separator-input-element"
 			formControlName="field-{{i}}"
 			[maxLength]="findMaxLength(field)"

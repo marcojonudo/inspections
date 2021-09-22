@@ -1,0 +1,2 @@
+- [.label-fix]#Solucionado fallo al cargar la información del centro, si este no tiene segunda línea de dirección.#
+- [.label-new]#Se muestra el icono de cámara sólo en los elementos que lo requieran, no en todos.#
