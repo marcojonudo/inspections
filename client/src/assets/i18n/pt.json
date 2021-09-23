@@ -20,7 +20,8 @@
 			"SE": "Revisão segurança",
 			"PITV": "Revisão pre-ITV",
 			"GCS": "Revisão garantia de seguro de carro",
-			"PC": "Revisão teste de estrada"
+			"PC": "Revisão teste de estrada",
+			"ST": "Revisão a tranquilidade do serviço"
 		},
 		"category": {
 			"CP": "veículo no park",
