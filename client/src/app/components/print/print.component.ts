@@ -31,7 +31,7 @@ export class PrintComponent implements OnInit, AfterViewInit {
 
 	private readonly GROUP_LABELS: { [key: string]: string[] };
 
-	@ViewChild('header') header: ElementRef;
+	@ViewChild('vehicleSection') vehicleSection: ElementRef;
 
 	today: Dayjs;
 	chartType: ChartType;
@@ -66,7 +66,7 @@ export class PrintComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		this.printService.setHeaderHeight(this.header.nativeElement.clientHeight);
+		this.printService.headerMechanicLines = this.vehicleSection.nativeElement.children.length;
 	}
 
 	// region Getters / setters

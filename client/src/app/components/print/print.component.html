@@ -1,4 +1,4 @@
-<header #header>
+<header>
 	<div id="title" translate="">
 		inspection.type.{{savedInspection.inspectionTypeCode}}
 		<img id="logo" src="assets/img/feuvert-logo.png">
@@ -59,7 +59,7 @@
 				<mat-card-title translate>print.vehicle</mat-card-title>
 			</mat-card-header>
 			<mat-card-content>
-				<section class="key-value-section">
+				<section #vehicleSection class="key-value-section">
 					<div>
 						<div translate>print.numberPlate</div>
 						<div>{{order.vehicle.numberPlate}}</div>

@@ -8,13 +8,9 @@ import { Observable, Subject } from 'rxjs';
 })
 export class PrintService {
 
-	headerHeightSubject: Subject<number>;
-	headerHeight$: Observable<number>;
+	headerMechanicLines: number;
 
-	constructor(private router: Router) {
-		this.headerHeightSubject = new Subject<number>();
-		this.headerHeight$ = this.headerHeightSubject.asObservable();
-	}
+	constructor(private router: Router) {}
 
 	print(): void {
 		this.router.navigate([
@@ -25,10 +21,6 @@ export class PrintService {
 
 	openPrintDialog(): void {
 		setTimeout(() => window.print());
-	}
-
-	setHeaderHeight(height: number): void {
-		this.headerHeightSubject.next(height);
 	}
 
 }

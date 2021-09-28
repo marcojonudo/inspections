@@ -111,7 +111,6 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 
 	ngOnInit(): void {
 		this.handleVersion(false);
-		console.log(InspectionService.inspection.items.find(i => i.code === 'TC'));
 	}
 
 	ngAfterViewInit(): void {

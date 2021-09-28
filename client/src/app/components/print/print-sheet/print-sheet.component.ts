@@ -30,18 +30,14 @@ import { TextItem } from '../../../objects/inspections/items/text-item';
 export class PrintSheetComponent {
 
 	private readonly ROW_ITEMS = 4;
-	private readonly TOP_OFFSET = 11.5;
+	private readonly BASE_TOP = 182;
+	private readonly FIRST_EXTRA_LINE_OFFSET = 13;
+	private readonly EXTRA_LINE_OFFSET = 15;
 
-	headerHeight: number;
 	listElements: ListElement[];
 	imageListElements: { listElement, pageBreak }[];
 
-	// @HostBinding('style.top.px') get top(): number {
-	// 	console.log(3, this.headerHeight);
-	// 	return this.headerHeight;
-	// }
-
-	constructor(private printService: PrintService, private orderPipe: OrderPipe, private cdRef: ChangeDetectorRef) {
+	constructor(private printService: PrintService, private orderPipe: OrderPipe) {
 		const items = this.savedInspection.items.filter(i =>
 			i.item.header === undefined
 		).filter(i => {
@@ -52,10 +48,6 @@ export class PrintSheetComponent {
 			items, 0, [(savedItem: SavedItem) => savedItem.item.category]
 		);
 		this.imageListElements = this.findImageElements();
-		this.printService.headerHeight$.subscribe(height => {
-			this.headerHeight = height;
-			this.cdRef.detectChanges();
-		});
 	}
 
 	// region Getters / setters
@@ -78,8 +70,15 @@ export class PrintSheetComponent {
 
 	// endregion
 
-	findTop(headerHeight: number = this.headerHeight, topOffset: number = this.TOP_OFFSET): number {
-		return headerHeight - topOffset;
+	findTop(): number {
+		let top = this.BASE_TOP;
+		const addedMechanicLines = this.printService.headerMechanicLines - 6;
+		if (addedMechanicLines > 0) {
+			for (let i = 0; i < addedMechanicLines; i++) {
+				top += i === 0 ? this.FIRST_EXTRA_LINE_OFFSET : this.EXTRA_LINE_OFFSET;
+			}
+		}
+		return top;
 	}
 
 	findImageElements(): { listElement, pageBreak }[] {
@@ -165,8 +164,7 @@ export class PrintSheetComponent {
 	checkCategoryBreak(elem: ListElement): boolean {
 		const gasCategory = this.checkCategoryElement(elem) && (elem as Category).code === 'G';
 		if (gasCategory) { return true; }
-		const commentsCategory = !this.checkCategoryElement(elem) && (elem as SavedItem).item.code === 'C';
-		return commentsCategory;
+		return !this.checkCategoryElement(elem) && (elem as SavedItem).item.code === 'C';
 	}
 
 }
