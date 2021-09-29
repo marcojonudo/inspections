@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnInit, SkipSelf } from '@angular/core';
 import { ListElement } from '../../../objects/list-elements/list-element';
 import { ChartOptions, ChartType } from 'chart.js';
 import { Color } from 'ng2-charts';
@@ -18,6 +18,8 @@ import { Utils } from '../../../objects/utils';
 import { SelectSavedItem } from '../../../objects/inspections/saved-items/select-saved-item';
 import { TextSavedItem } from '../../../objects/inspections/saved-items/text-saved-item';
 import { SelectItem } from '../../../objects/inspections/items/select-item';
+import { Item } from '../../../objects/inspections/items/item';
+import { TextItem } from '../../../objects/inspections/items/text-item';
 
 @Component({
 	selector: 'app-print-sheet',
@@ -28,8 +30,10 @@ import { SelectItem } from '../../../objects/inspections/items/select-item';
 export class PrintSheetComponent {
 
 	private readonly ROW_ITEMS = 4;
+	private readonly BASE_TOP = 182;
+	private readonly FIRST_EXTRA_LINE_OFFSET = 13;
+	private readonly EXTRA_LINE_OFFSET = 15;
 
-	listElementsPaginated: ListElement[][];
 	listElements: ListElement[];
 	imageListElements: { listElement, pageBreak }[];
 
@@ -65,6 +69,17 @@ export class PrintSheetComponent {
 	}
 
 	// endregion
+
+	findTop(): number {
+		let top = this.BASE_TOP;
+		const addedMechanicLines = this.printService.headerMechanicLines - 6;
+		if (addedMechanicLines > 0) {
+			for (let i = 0; i < addedMechanicLines; i++) {
+				top += i === 0 ? this.FIRST_EXTRA_LINE_OFFSET : this.EXTRA_LINE_OFFSET;
+			}
+		}
+		return top;
+	}
 
 	findImageElements(): { listElement, pageBreak }[] {
 		const splittedImageListElements = [];
@@ -115,6 +130,10 @@ export class PrintSheetComponent {
 		return item as TextSavedItem;
 	}
 
+	findTextItemUnit(item: SavedItem): string {
+		return this.findTextSavedItem(item).text ? (item.item as TextItem).unit || '' : '';
+	}
+
 	findSelectIcon(item: SelectSavedItem): string {
 		return (item.item as SelectItem).options.find(option => option.code === item.value).printIcon;
 	}
@@ -145,8 +164,7 @@ export class PrintSheetComponent {
 	checkCategoryBreak(elem: ListElement): boolean {
 		const gasCategory = this.checkCategoryElement(elem) && (elem as Category).code === 'G';
 		if (gasCategory) { return true; }
-		const commentsCategory = !this.checkCategoryElement(elem) && (elem as SavedItem).item.code === 'C';
-		return commentsCategory;
+		return !this.checkCategoryElement(elem) && (elem as SavedItem).item.code === 'C';
 	}
 
 }

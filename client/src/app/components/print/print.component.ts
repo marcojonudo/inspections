@@ -1,7 +1,8 @@
 import {
+	AfterViewInit,
 	ChangeDetectionStrategy,
-	Component,
-	OnInit
+	Component, ElementRef,
+	OnInit, ViewChild
 } from '@angular/core';
 import { PrintService } from '../../services/print.service';
 import { InspectionService } from '../../services/inspection.service';
@@ -26,9 +27,11 @@ import * as dayjs from 'dayjs';
 	styleUrls: ['./print.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PrintComponent implements OnInit {
+export class PrintComponent implements OnInit, AfterViewInit {
 
 	private readonly GROUP_LABELS: { [key: string]: string[] };
+
+	@ViewChild('vehicleSection') vehicleSection: ElementRef;
 
 	today: Dayjs;
 	chartType: ChartType;
@@ -60,6 +63,10 @@ export class PrintComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.printService.openPrintDialog();
+	}
+
+	ngAfterViewInit(): void {
+		this.printService.headerMechanicLines = this.vehicleSection.nativeElement.children.length;
 	}
 
 	// region Getters / setters

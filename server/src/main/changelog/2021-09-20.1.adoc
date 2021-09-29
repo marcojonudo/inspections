@@ -1,0 +1,2 @@
+- [.label-new]#Añadidos más tipos de revisiones, tanto de coche, como de moto y de bici y patinete eléctricos.#
+- [.label-improvement]#Actualizado el orden de los elementos en la hoja impresa.#

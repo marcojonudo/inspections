@@ -1,2 +1,2 @@
-- [.label-improvement]#Actualizado cabecero de la revisión impresa (ahora se muestra una ficha 'Información').#
-- [.label-improvement]#Añadido campo de 'Vendedor' en la nueva ficha.#
+- [.label-new]#Añadido icono para sacar una fotos asociada a los distinto elementos. Estas se imprimirán en hojas
+distintas.#

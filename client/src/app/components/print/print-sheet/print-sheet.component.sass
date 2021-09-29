@@ -1,8 +1,7 @@
 @import "abstracts/mixins"
 
-\:host
+.sheet-container
 	position: relative
-	top: 182px
 
 	.image-category-content
 		width: 100%
@@ -101,18 +100,22 @@
 						position: relative
 						display: flex
 						align-items: center
-						padding: 0 $small-gap
+						padding: 0 $small-gap 0 $tiny-gap
 						overflow: hidden
 
 						&-text
-							width: 90%
+							width: 88%
 							overflow: hidden
 							white-space: nowrap
 							text-overflow: ellipsis
 
 						&-data
-							width: 10%
+							width: 12%
 							@include flex-center
+
+							&-unit
+								line-height: 2.1
+								font-size: .8em
 
 						mat-icon
 							font-size: $bigger-font

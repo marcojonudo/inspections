@@ -1,0 +1,4 @@
+- [.label-improvement]#Añadidos mecánicos a cabecero de hoja de impresión.#
+- [.label-improvement]#Eliminados gráficos de categoría en hoja de impresión.#
+- [.label-improvement]#Aumentado el tamaño de fuente den la hoja de impresión.#
+- [.label-improvement]#Añadido cabecero a todas las hojas de impresión, no sólo a la principal.#
