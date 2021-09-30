@@ -1,0 +1,2 @@
+- [.label-improvement]#Aumentados tamaño y separación entre botones.#
+- [.label-fix]#Solución borrado de revisión al hacer clic en imprimir o guardar.#

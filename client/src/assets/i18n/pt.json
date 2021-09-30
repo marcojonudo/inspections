@@ -339,7 +339,8 @@
 		"NON_COMPLETE_INSPECTION": "A revisão não está terminada. Por favor, preencha todos os itens",
 		"WARNING_GOING_BACK": "Tem certeza de que deseja voltar para a tela inicial?",
 		"ERROR_FINDING_EMPLOYEES": "Erro ao obter empregados. Tente novamente em alguns instantes ou envie um e-mail para TI",
-		"CLEARED_LOCAL_STORAGE": "Dados do navegador excluídos"
+		"CLEARED_LOCAL_STORAGE": "Dados do navegador excluídos",
+		"WARNING_RESETTING_INSPECTION": "¿Tem certeza de que deseja excluir a revisão?"
 	},
 	"print": {
 		"info": "Em formação",

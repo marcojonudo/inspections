@@ -133,7 +133,8 @@
 	<app-bottom-bar
 		[employee]="employee"
 		[openedMenu]="openedMenu"
-		(foundInspectionEmitter)="updateGroupedItems()">
+		(foundInspectionEmitter)="updateGroupedItems()"
+		(resetInspectionEmitter)="triggerCd()">
 	</app-bottom-bar>
 </div>
 <div #fillInspection id="fill-inspection"></div>

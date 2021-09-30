@@ -35,7 +35,8 @@ export class Constants {
 		NON_COMPLETE_INSPECTION: 'NON_COMPLETE_INSPECTION',
 		WARNING_GOING_BACK: 'WARNING_GOING_BACK',
 		ERROR_FINDING_EMPLOYEES: 'ERROR_FINDING_EMPLOYEES',
-		CLEARED_LOCAL_STORAGE: 'CLEARED_LOCAL_STORAGE'
+		CLEARED_LOCAL_STORAGE: 'CLEARED_LOCAL_STORAGE',
+		WARNING_RESETTING_INSPECTION: 'WARNING_RESETTING_INSPECTION'
 	};
 
 	static readonly PANEL_INFO_TYPE: any = {
@@ -71,7 +72,7 @@ export class Constants {
 	static readonly EVENT: any = {
 		TOUCH_START: 'touchstart',
 		MOUSE_DOWN: 'mousedown',
-		TOUCHE_END: 'touchend',
+		TOUCH_END: 'touchend',
 		MOUSE_UP: 'mouseup',
 		SCROLL: 'scroll',
 		CLICK: 'click',

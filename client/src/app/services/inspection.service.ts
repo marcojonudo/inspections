@@ -34,8 +34,6 @@ import { CustomImage } from '../objects/inspections/customImage';
 })
 export class InspectionService {
 
-	private static readonly IMAGE_UPLOAD_NAME = 'image';
-
 	static language: string;
 	static countryHandler: CountryHandler;
 	static order: Order;
