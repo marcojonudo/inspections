@@ -65,8 +65,8 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 
 	versionInterval: any;
 
-	@HostListener(Constants.EVENT.TOUCH_START, ['$event'])
-	onTouchStart(event): void {
+	@HostListener(Constants.EVENT.TOUCH_END, ['$event'])
+	onTouchEnd(event): void {
 		this.setResetEmployeeTimeout();
 		this.checkCurrentUrl();
 		this.checkCloseMenu(event.target.className);
@@ -326,6 +326,10 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 
 	updateGroupedItems(): void {
 		this.listElements = InspectionService.findGroupedItems();
+	}
+
+	triggerCd(): void {
+		this.cdRef.detectChanges();
 	}
 
 	setPressingItem(item: Item): void {

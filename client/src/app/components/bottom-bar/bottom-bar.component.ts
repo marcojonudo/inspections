@@ -16,6 +16,8 @@ import { Constants } from '../../objects/constants';
 import { SnackBarService } from '../../services/snack-bar.service';
 import { InspectionVehicle } from '../../objects/inspections/inspection-vehicle';
 import { TranslateService } from '@ngx-translate/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
 	selector: 'app-bottom-bar',
@@ -28,6 +30,7 @@ export class BottomBarComponent {
 	@Input() employee: Employee;
 	@Input() openedMenu: boolean;
 	@Output() foundInspectionEmitter: EventEmitter<boolean>;
+	@Output() resetInspectionEmitter: EventEmitter<boolean>;
 
 	saving: boolean;
 
@@ -37,9 +40,11 @@ export class BottomBarComponent {
 		private translate: TranslateService,
 		private snackBarService: SnackBarService,
 		private bottomSheet: MatBottomSheet,
+		private dialog: MatDialog,
 		private cdRef: ChangeDetectorRef
 	) {
 		this.foundInspectionEmitter = new EventEmitter<boolean>();
+		this.resetInspectionEmitter = new EventEmitter<boolean>();
 	}
 
 	// region Getters / setters
@@ -78,7 +83,7 @@ export class BottomBarComponent {
 	}
 
 	findMenuButtonTranslate(i: number, openedMenu: boolean = this.openedMenu): string {
-		return openedMenu ? `translateY(-${i * 110}%)` : '';
+		return openedMenu ? `translateY(-${i * 120}%)` : '';
 	}
 
 	saveInspection(savedInspection: SavedInspection = this.savedInspection): void {
@@ -105,9 +110,16 @@ export class BottomBarComponent {
 		this.openedMenu = false;
 	}
 
-	resetInspection(): void {
-		InspectionService.resetInspection();
-		this.openedMenu = false;
+	checkResetInspection(): void {
+		const dialogRef = this.dialog.open(
+			ConfirmDialogComponent,
+			{ data: { message: Constants.MESSAGE_CODE.WARNING_RESETTING_INSPECTION } , autoFocus: false }
+		);
+		dialogRef.afterClosed().subscribe((confirm: boolean) => {
+			if (confirm) { InspectionService.resetInspection(); }
+			this.openedMenu = false;
+			this.resetInspectionEmitter.emit(confirm);
+		});
 	}
 
 }

@@ -29,7 +29,7 @@ export class LongPressDirective implements OnChanges {
 		this.longPressEmitter = new EventEmitter<boolean>();
 
 		const startEvents = [Constants.EVENT.TOUCH_START, Constants.EVENT.MOUSE_DOWN];
-		const endEvents = [Constants.EVENT.TOUCHE_END, Constants.EVENT.MOUSE_UP];
+		const endEvents = [Constants.EVENT.TOUCH_END, Constants.EVENT.MOUSE_UP];
 
 		from(startEvents).pipe(
 			mergeMap(event => fromEvent(element.nativeElement, event, {passive: true}))
