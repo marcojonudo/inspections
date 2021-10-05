@@ -38,7 +38,7 @@ export class PrintComponent implements OnInit, AfterViewInit {
 	options: ChartOptions;
 	colors: Color[];
 	avoidLegendItems: string[] = [Constants.SELECT_ITEM_OPTION_CODE.NA];
-	seller: Employee;
+	adviser: Employee;
 	mechanics: Employee[];
 
 	constructor(private printService: PrintService, private orderPipe: OrderPipe) {
@@ -55,7 +55,7 @@ export class PrintComponent implements OnInit, AfterViewInit {
 			backgroundColor: this.findLabels().map(label => this.findIconColor(label.code))
 		}];
 
-		this.seller = EmployeeService.findEmployee(this.order.sellerCode);
+		this.adviser = EmployeeService.findEmployee(this.order.sellerCode);
 		this.mechanics = this.savedInspection.items.map(i => i.employeeCode).filter(
 			(value, index, self) => self.indexOf(value) === index
 		).map(employeeCode => EmployeeService.findEmployee(employeeCode));
