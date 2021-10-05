@@ -340,11 +340,12 @@
 		"WARNING_GOING_BACK": "¿Seguro que quieres volver a la pantalla de inicio?",
 		"ERROR_FINDING_EMPLOYEES": "Error obteniendo empleados. Inténtalo de nuevo en unos instantes, o envía un correo a informática",
 		"CLEARED_LOCAL_STORAGE": "Datos del navegador borrados",
-		"WARNING_RESETTING_INSPECTION": "¿Seguro que quieres borrar la revisión?"
+		"WARNING_RESETTING_INSPECTION": "¿Seguro que quieres borrar la revisión?",
+		"EMPLOYEE_NOT_FOUND": "Empleado no encontrado. Accede a la aplicación de horarios para sincronizarlos y prueba de nuevo"
 	},
 	"print": {
 		"info": "Información",
-		"seller": "Vendedor",
+		"adviser": "Asesor",
 		"mechanic": "Mecánico",
 		"mechanics": "Mecánicos",
 		"day": "Día",

@@ -122,6 +122,10 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 				() => this.orderCodeInput.focus(),
 				0
 			);
+		} else if (employeeCode.value.length === Constants.EMPLOYEE_CODE_MAX_LENGTH) {
+			this.snackBarService.open(
+				Constants.MESSAGE_CODE.EMPLOYEE_NOT_FOUND, Constants.SNACK_BAR.TYPE.WARNING
+			);
 		}
 	}
 

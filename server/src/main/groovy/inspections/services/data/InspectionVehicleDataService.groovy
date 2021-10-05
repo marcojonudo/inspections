@@ -6,7 +6,7 @@ import inspections.domains.ArticleCodeInspection
 import inspections.domains.InspectionVehicle
 
 @Service(InspectionVehicle)
-abstract class InspectionVehicleDataService {
+interface InspectionVehicleDataService {
 
 	@Query("""
 		select $inspectionVehicle
@@ -14,6 +14,6 @@ abstract class InspectionVehicleDataService {
 		join ${ArticleCodeInspection articleCodeInspection = inspectionVehicle.articleCodes}
 		where $articleCodeInspection.articleCode in $articleCodes
 	""")
-	abstract List<InspectionVehicle> findAll(List<Integer> articleCodes)
+	List<InspectionVehicle> findAll(List<Integer> articleCodes)
 
 }
