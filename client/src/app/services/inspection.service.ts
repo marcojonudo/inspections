@@ -61,14 +61,14 @@ export class InspectionService {
 
 	private static readonly ITEM_RELATION_ACTION: any = {
 		HIDE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
-			targetSavedItem.toggleHidden(employeeCode),
+			targetSavedItem.updateHidden(employeeCode, true),
 		REPLICATE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
 			targetSavedItem.update(newValue, employeeCode)
 	};
 
 	private static readonly ITEM_RELATION_RESTORE_ACTION: any = {
 		HIDE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
-			targetSavedItem.toggleHidden(employeeCode),
+			targetSavedItem.updateHidden(employeeCode, false),
 		REPLICATE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
 			targetSavedItem.update(Constants.SELECT_ITEM_OPTION_CODE.P, employeeCode)
 	};
