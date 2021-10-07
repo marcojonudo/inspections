@@ -28,8 +28,10 @@ class Constants {
 
     static class Message {
 
-        static final String FINDING_INSPECTION = "Finding inspection"
-        static final String FIND_INSPECTION_RESULT = "Find inspection result"
+        static final String SEARCHING_ORDER = "Searching order..."
+        static final String FINISHED_SEARCHING_ORDER = "Finished searching order!"
+        static final String SEARCHING_INSPECTION = "Searching inspection"
+        static final String FINISHED_SEARCHING_INSPECTION = "Finished searching inspection!"
         static final String SAVING_INSPECTION = "Saving inspection"
         static final String EXISTENT_INSPECTION = "Existent inspection"
         static final String ERROR_SAVING_INSPECTION = "Error saving inspection"

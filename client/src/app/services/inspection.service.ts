@@ -360,22 +360,22 @@ export class InspectionService {
 		);
 	}
 
-	initInspectionData(orderCode: string): Observable<any> {
+	initInspectionData(orderCode: string, employee: Employee = EmployeeService.employee): Observable<any> {
 		let messageCode = Constants.MESSAGE_CODE.NONEXISTENT_ORDER;
-		return this.findOrderInfo(orderCode).pipe(
+		return this.findOrderInfo(orderCode, employee.code).pipe(
 			concatMap((orderInfo: any) => {
 				const order = InspectionService.setOrder(new Order(orderInfo.order, orderCode));
 				console.log('Order', order);
 				const centre = InspectionService.setCentre(new Centre(orderInfo.centre));
 				console.log('Centre', centre);
 				messageCode = Constants.MESSAGE_CODE.NONEXISTENT_INSPECTIONS;
-				return this.findInspection(order.number, Url.inspection());
+				return this.findInspection(order.number, Url.inspection(), employee.code);
 			}),
 			concatMap(inspection => {
 				if (inspection) {
 					console.log('Received inspection', inspection);
 					InspectionService.initInspection(inspection);
-					return this.findInspection(InspectionService.order.number, Url.savedInspection());
+					return this.findInspection(InspectionService.order.number, Url.savedInspection(), employee.code);
 				}
 			}),
 			concatMap(savedInspection => {
@@ -390,17 +390,17 @@ export class InspectionService {
 		);
 	}
 
-	findOrderInfo(shortCode: string): Observable<any> {
+	findOrderInfo(shortCode: string, employeeCode: string): Observable<any> {
 		const url = `${Url.orderInfo()}?shortCode=${shortCode}`;
-		return this.http.get(url);
+		return this.http.get(url, { headers: { employeeCode } });
 	}
 
-	findInspection(orderNumber: number, url: string): Observable<any> {
+	findInspection(orderNumber: number, url: string, employeeCode: string): Observable<any> {
 		const loaded = this.checkLocalInspection(orderNumber);
 		if (loaded) {
 			return of(undefined);
 		}
-		return loaded ? of(undefined) : this.http.get(`${url}?orderNumber=${orderNumber}`);
+		return loaded ? of(undefined) : this.http.get(`${url}?orderNumber=${orderNumber}`, { headers: { employeeCode } });
 	}
 
 	checkLocalInspection(orderNumber: number): boolean {
