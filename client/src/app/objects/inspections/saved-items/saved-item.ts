@@ -29,8 +29,8 @@ export abstract class SavedItem {
 
 	abstract reset(employeeCode: string): void;
 
-	toggleHidden(employeeCode: string): void {
-		this.hidden = !this.hidden;
+	updateHidden(employeeCode: string, hidden: boolean): void {
+		this.hidden = hidden;
 		this.reset(employeeCode);
 	}
 
