@@ -35,7 +35,8 @@ class InspectionService {
 	 * @param shortCode Código corto de la orden
 	 * @return Orden
 	 */
-	OrderInfo findOrderInfo(String shortCode) {
+	OrderInfo findOrderInfo(String shortCode, String employeeCode) {
+		LOG.info(new Log((Map) [employeeCode: employeeCode, shortCode: shortCode, message: Constants.Message.SEARCHING_ORDER]).toString())
 		Integer orderNumber = orderDataService.find(shortCode)
 		OrderInfo orderInfo = null
 		if (orderNumber) {
@@ -45,6 +46,7 @@ class InspectionService {
 
 			orderInfo = new OrderInfo(order, centre)
 		}
+		LOG.info(new Log((Map) [employeeCode: employeeCode, shortCode: shortCode, orderNumber: orderNumber, message: Constants.Message.FINISHED_SEARCHING_ORDER]).toString())
 		return orderInfo
 	}
 
@@ -53,15 +55,15 @@ class InspectionService {
 	 * @param orderNumber Número de orden
 	 * @return Revisión
 	 */
-	InspectionVehicle findInspection(int orderNumber) {
-		LOG.info(new Log((Map) [orderNumber: orderNumber, message: Constants.Message.FINDING_INSPECTION]).toString())
+	InspectionVehicle findInspection(int orderNumber, String employeeCode) {
+		LOG.info(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, message: Constants.Message.SEARCHING_INSPECTION]).toString())
 		List<Integer> articles = orderDataService.find(orderNumber).lines*.articleCode.toList()
 		List<InspectionVehicle> inspectionsVehicle = inspectionVehicleDataService.findAll(articles)
 		InspectionVehicle inspectionVehicle = null
 		if (inspectionsVehicle) {
 			inspectionVehicle = buildGroupedInspection(inspectionsVehicle)
 		}
-		LOG.info(new Log((Map) [orderNumber: orderNumber, inspectionTypeCode: inspectionVehicle?.inspectionType?.code, vehicle: inspectionVehicle?.vehicle, message: Constants.Message.FIND_INSPECTION_RESULT]).toString())
+		LOG.info(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, inspectionTypeCode: inspectionVehicle?.inspectionType?.code, vehicle: inspectionVehicle?.vehicle, message: Constants.Message.FINISHED_SEARCHING_INSPECTION]).toString())
 		return inspectionVehicle
 	}
 
@@ -89,7 +91,7 @@ class InspectionService {
 	 * @return Revisión guardada
 	 */
 	SavedInspection saveInspection(SavedInspection savedInspection, int orderNumber, String employeeCode) {
-		LOG.info(new Log((Map) [orderNumber: orderNumber, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, employeeCode: employeeCode, message: Constants.Message.SAVING_INSPECTION]).toString())
+		LOG.info(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, message: Constants.Message.SAVING_INSPECTION]).toString())
 		SavedInspection newSavedInspection = null
 		try {
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
@@ -101,10 +103,10 @@ class InspectionService {
 			} else {
 				newSavedInspection = savedInspectionDataService.save(savedInspection)
 			}
-			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, message: Constants.Message.SAVED_INSPECTION]).toString())
+			LOG.info(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, message: Constants.Message.SAVED_INSPECTION]).toString())
 		} catch (all) {
 			all.printStackTrace()
-			LOG.error(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
+			LOG.error(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
 		}
 		return newSavedInspection
 	}

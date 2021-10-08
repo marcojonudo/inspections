@@ -23,7 +23,7 @@ abstract class OrderDataService {
 		List<Integer> numbers = orderTimeDataService.findOrderTimeOrderNumber(
 			shortCode, [sort: 'day', order: 'desc', max: 3]
 		)
-		return find(numbers)?.number
+		return numbers ? find(numbers)?.number : null
 	}
 
 }

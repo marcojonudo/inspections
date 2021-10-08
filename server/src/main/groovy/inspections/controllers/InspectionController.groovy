@@ -71,8 +71,8 @@ class InspectionController {
 	@ApiResponse(
 		responseCode = "404", description = "Número de orden no encontrado"
 	)
-	OrderInfo findOrderInfo(@QueryValue String shortCode) {
-		return inspectionService.findOrderInfo(shortCode)
+	OrderInfo findOrderInfo(@Header String employeeCode, @QueryValue String shortCode) {
+		return inspectionService.findOrderInfo(shortCode, employeeCode)
 	}
 
 	@Get("/savedInspection")
@@ -100,8 +100,8 @@ class InspectionController {
 		description = "Lista de revisiones",
 		content = @Content(schema = @Schema(implementation = InspectionVehicle))
 	)
-	InspectionVehicle findInspection(@QueryValue int orderNumber) {
-		return inspectionService.findInspection(orderNumber)
+	InspectionVehicle findInspection(@Header String employeeCode, @QueryValue int orderNumber) {
+		return inspectionService.findInspection(orderNumber, employeeCode)
     }
 
 	@Post("/inspection")
