@@ -45,7 +45,12 @@ export class Builder {
 	): SavedInspection {
 		const savedItems = inspection.items.map(item => this.savedItemBuilder[item.type](item, employeeCode, undefined));
 		return new SavedInspection(
-			inspection.inspectionType.code, inspection.vehicle, orderNumber, numberPlate, savedItems
+			inspection.inspectionType.code,
+			inspection.vehicle,
+			orderNumber,
+			numberPlate,
+			inspection.orderInspection,
+			savedItems
 		);
 	}
 
@@ -58,6 +63,7 @@ export class Builder {
 			savedInspection.vehicle,
 			savedInspection.orderNumber,
 			savedInspection.numberPlate,
+			savedInspection.orderInspection,
 			savedItems
 		);
 	}

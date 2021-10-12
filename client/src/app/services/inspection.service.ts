@@ -28,6 +28,9 @@ import { CountryHandler } from '../objects/country-info/country-handler';
 import { SpainHandler } from '../objects/country-info/spain-handler';
 import { PortugalHandler } from '../objects/country-info/portugal-handler';
 import { CustomImage } from '../objects/inspections/customImage';
+import { InspectionHandler } from '../objects/order-inspection/inspection-handler';
+import { OrderInspectionHandler } from '../objects/order-inspection/order-inspection-handler';
+import { DetectedFaultsHandler } from '../objects/order-inspection/detected-faults-handler';
 
 @Injectable({
 	providedIn: 'root'
@@ -39,6 +42,7 @@ export class InspectionService {
 	static order: Order;
 	static centre: Centre;
 	static inspection: InspectionVehicle;
+	static inspectionHandler: InspectionHandler;
 	static selectItemOptions: SelectItemOption[];
 	static savedInspection: SavedInspection;
 	static lockTimeout: any;
@@ -80,8 +84,7 @@ export class InspectionService {
 
 	constructor(
 		private translate: TranslateService, private http: HttpClient, private snackBarService: SnackBarService
-	) {
-	}
+	) {}
 
 	static setOrder(order: Order): Order {
 		this.order = order;
@@ -97,6 +100,8 @@ export class InspectionService {
 
 	static initInspection(inspection: any): void {
 		this.inspection = Builder.buildInspection(inspection);
+		this.inspectionHandler = this.inspection.orderInspection ?
+			new OrderInspectionHandler() : new DetectedFaultsHandler();
 		this.selectItemOptions = this.findSelectItemOptions();
 
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.INSPECTION, this.inspection);
@@ -119,6 +124,8 @@ export class InspectionService {
 		let loaded = false;
 		try {
 			this.inspection = Builder.buildInspection(LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION));
+			this.inspectionHandler = this.inspection.orderInspection ?
+				new OrderInspectionHandler() : new DetectedFaultsHandler();
 			this.savedInspection = Builder.loadSavedInspection(
 				LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION)
 			);
@@ -372,11 +379,9 @@ export class InspectionService {
 				return this.findInspection(order.number, Url.inspection(), employee.code);
 			}),
 			concatMap(inspection => {
-				if (inspection) {
-					console.log('Received inspection', inspection);
-					InspectionService.initInspection(inspection);
-					return this.findInspection(InspectionService.order.number, Url.savedInspection(), employee.code);
-				}
+				console.log('Received inspection', inspection);
+				InspectionService.initInspection(inspection);
+				return this.findInspection(InspectionService.order.number, Url.savedInspection(), employee.code);
 			}),
 			concatMap(savedInspection => {
 				console.log('Received saved inspection', savedInspection);
@@ -411,11 +416,16 @@ export class InspectionService {
 		return loaded;
 	}
 
-	saveInspection(inspection: SavedInspection, employee: Employee = EmployeeService.employee): Observable<any> {
-		inspection.employeeCode = employee.code;
-		inspection.saved = dayjs();
-		console.log('Saving inspection', inspection);
-		return this.http.post(Url.inspection(), inspection);
+	saveInspection(
+		savedInspection: SavedInspection,
+		inspection: InspectionVehicle = InspectionService.inspection,
+		employee: Employee = EmployeeService.employee
+	): Observable<any> {
+		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection);
+		body.employeeCode = employee.code;
+		body.saved = dayjs();
+		console.log('Saving inspection', body);
+		return this.http.post(Url.inspection(), body);
 	}
 
 }

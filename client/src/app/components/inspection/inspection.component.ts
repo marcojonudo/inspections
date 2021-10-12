@@ -196,6 +196,10 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		}
 	}
 
+	findInspectionTitleCode(inspectionTypeCode: string): string {
+		return InspectionService.inspectionHandler.findInspectionTitleCode(inspectionTypeCode);
+	}
+
 	findMenuCategories(menuElements: ListElement[]): Category[] {
 		return InspectionService.findMenuCategories(menuElements);
 	}
@@ -298,8 +302,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 
 	toggleSelectOption(item: SelectItem): void {
 		const selectedIndex = this.findOptionIndex(item.code, item.options);
-		/* Con el segundo sumando, se evita que la opción por defecto ('Pendiente') sea seleccionada de nuevo */
-		const newIndex = (selectedIndex + 1) % item.options.length + Math.floor(selectedIndex / (item.options.length - 1));
+		const newIndex = InspectionService.inspectionHandler.findSelectOptionIndex(selectedIndex, item.options.length);
 
 		InspectionService.updateItem(item, item.options[newIndex].code).subscribe();
 	}

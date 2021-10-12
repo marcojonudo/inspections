@@ -53,6 +53,10 @@ export class BottomBarComponent {
 		return InspectionService.order;
 	}
 
+	get inspection(): InspectionVehicle {
+		return InspectionService.inspection;
+	}
+
 	get savedInspection(): SavedInspection {
 		return InspectionService.savedInspection;
 	}
@@ -96,7 +100,10 @@ export class BottomBarComponent {
 			})
 		).subscribe(
 			() => this.snackBarService.open(Constants.MESSAGE_CODE.SAVED_INSPECTION),
-			() => this.snackBarService.open(Constants.MESSAGE_CODE.ERROR_SAVING_INSPECTION, Constants.SNACK_BAR.TYPE.ERROR)
+			(error) => {
+				console.error(error);
+				this.snackBarService.open(Constants.MESSAGE_CODE.ERROR_SAVING_INSPECTION, Constants.SNACK_BAR.TYPE.ERROR)
+			}
 		);
 	}
 

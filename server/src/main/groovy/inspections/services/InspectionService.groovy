@@ -1,6 +1,7 @@
 package inspections.services
 
 import groovy.transform.CompileStatic
+import inspections.domains.InspectionType
 import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Centre
@@ -59,9 +60,19 @@ class InspectionService {
 		LOG.info(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, message: Constants.Message.SEARCHING_INSPECTION]).toString())
 		List<Integer> articles = orderDataService.find(orderNumber).lines*.articleCode.toList()
 		List<InspectionVehicle> inspectionsVehicle = inspectionVehicleDataService.findAll(articles)
-		InspectionVehicle inspectionVehicle = null
+
+		/* Si existen revisiones asociadas a los códigos de artículo de la OR, se construye una revisión a partir de
+		 * ellas. Si no, se obtiene por defecto una revisión de seguridad */
+		InspectionVehicle inspectionVehicle
 		if (inspectionsVehicle) {
 			inspectionVehicle = buildGroupedInspection(inspectionsVehicle)
+		} else {
+			InspectionVehicle securityInspectionVehicle = inspectionVehicleDataService.find(
+				InspectionType.Code.SE.toString(), InspectionVehicle.Vehicle.CAR.toString()
+			)
+			inspectionVehicle = Builder.buildInspectionVehicle(
+				securityInspectionVehicle, securityInspectionVehicle.items.toList(), false
+			)
 		}
 		LOG.info(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, inspectionTypeCode: inspectionVehicle?.inspectionType?.code, vehicle: inspectionVehicle?.vehicle, message: Constants.Message.FINISHED_SEARCHING_INSPECTION]).toString())
 		return inspectionVehicle
@@ -73,14 +84,10 @@ class InspectionService {
 	 * @return Revisión con items agrupados
 	 */
 	static InspectionVehicle buildGroupedInspection(List<InspectionVehicle> inspectionsVehicle) {
-		InspectionVehicle inspectionVehicle = null
-		if (inspectionsVehicle) {
-			/* Se obtienen el código y nombre de la revisión con mayor número de items */
-			InspectionVehicle maxInspection = inspectionsVehicle.max { it.items.size() }
-			List<Item> items = ((List<Item>) inspectionsVehicle.items.flatten()).unique { it.code }
-			inspectionVehicle = Builder.buildInspectionVehicle(maxInspection, items)
-		}
-		return inspectionVehicle
+		/* Se obtienen el código y nombre de la revisión con mayor número de items */
+		InspectionVehicle maxInspection = inspectionsVehicle.max { it.items.size() }
+		List<Item> items = ((List<Item>) inspectionsVehicle.items.flatten()).unique { it.code }
+		return Builder.buildInspectionVehicle(maxInspection, items)
 	}
 
 	/**

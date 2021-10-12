@@ -8,6 +8,9 @@ mat-toolbar
 	color: $white
 	transition: transform $fast-transition
 
+	&.detected-faults
+		background-color: $blue
+
 	& > section
 		@include flex-1
 		height: 100%
@@ -47,7 +50,7 @@ mat-toolbar
 			background-color: $light-green
 
 		#print-inspection-button
-			background-color: #285dc6
+			background-color: $blue
 
 		#reset-inspection-button
 			background-color: #c62828

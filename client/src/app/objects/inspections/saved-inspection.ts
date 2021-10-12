@@ -8,16 +8,23 @@ export class SavedInspection {
 	orderNumber: number;
 	employeeCode: string;
 	numberPlate: string;
+	orderInspection: boolean;
 	items: SavedItem[];
 	saved: Dayjs;
 
 	constructor(
-		inspectionTypeCode: string, vehicle: string, orderNumber: number, numberPlate: string, items: SavedItem[]
+		inspectionTypeCode: string,
+		vehicle: string,
+		orderNumber: number,
+		numberPlate: string,
+		orderInspection: boolean,
+		items: SavedItem[]
 	) {
 		this.inspectionTypeCode = inspectionTypeCode;
 		this.vehicle = vehicle;
 		this.orderNumber = orderNumber;
 		this.numberPlate = numberPlate;
+		this.orderInspection = orderInspection;
 		this.items = items;
 	}
 

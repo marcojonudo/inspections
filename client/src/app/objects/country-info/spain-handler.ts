@@ -1,6 +1,6 @@
-import {CountryHandler} from './country-handler';
-import {ValidatorFn, Validators} from '@angular/forms';
-import {Constants} from '../constants';
+import { CountryHandler } from './country-handler';
+import { ValidatorFn, Validators } from '@angular/forms';
+import { Constants } from '../constants';
 
 export class SpainHandler implements CountryHandler {
 
