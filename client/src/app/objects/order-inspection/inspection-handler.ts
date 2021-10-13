@@ -1,4 +1,5 @@
 import { SavedInspection } from '../inspections/saved-inspection';
+import { Item } from '../inspections/items/item';
 
 export interface InspectionHandler {
 
@@ -6,6 +7,6 @@ export interface InspectionHandler {
 
 	findInspectionTitleCode(inspectionTypeCode: string): string;
 
-	findSavedInspection(savedInspection: SavedInspection): SavedInspection;
+	findSavedInspection(savedInspection: SavedInspection, items: Item[]): SavedInspection;
 
 }

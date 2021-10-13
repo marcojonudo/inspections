@@ -2,6 +2,7 @@ import { InspectionHandler } from './inspection-handler';
 import { SavedInspection } from '../inspections/saved-inspection';
 import { Builder } from '../builder';
 import { Constants } from '../constants';
+import { Item } from '../inspections/items/item';
 
 export class DetectedFaultsHandler implements InspectionHandler {
 
@@ -13,8 +14,8 @@ export class DetectedFaultsHandler implements InspectionHandler {
 		return Constants.DETECTED_FAULTS_CODE;
 	}
 
-	findSavedInspection(savedInspection: SavedInspection): SavedInspection {
-		const newSavedInspection = Builder.loadSavedInspection(savedInspection);
+	findSavedInspection(savedInspection: SavedInspection, items: Item[]): SavedInspection {
+		const newSavedInspection = Builder.loadSavedInspection(savedInspection, items);
 		/* Se obtienen únicamente aquellos items con valor definido. En el caso de los de selección, aquellos cuyo
 		 * valor sea distinto de 'Pendiente', y en los texto, aquellos que tienen algún valor */
 		newSavedInspection.items = newSavedInspection.items.filter(savedItem =>

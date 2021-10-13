@@ -374,8 +374,8 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		});
 	}
 
-	checkExistentImage(item: Item): boolean {
-		return InspectionService.findSavedItem(item.code).image !== undefined;
+	checkExistentImage(itemCode: string): boolean {
+		return InspectionService.findSavedItem(itemCode).image !== undefined;
 	}
 
 	openCamera(itemCode: string): void {

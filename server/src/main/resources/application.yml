@@ -4,13 +4,7 @@ micronaut:
     server:
         cors:
             enabled: true
-    ssl:
-        enabled: true
         port: 8095
-        keyStore:
-            path: classpath:centre-host.pfx
-            password: '!WWd4NpXZKu4yfNw5t67ZJ$sDEyytWE6'
-            type: PKCS12
     router:
         static-resources:
             default:

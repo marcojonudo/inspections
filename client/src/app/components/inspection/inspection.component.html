@@ -125,7 +125,7 @@
 					*ngIf="item.picture"
 					mat-icon-button
 					class="camera-button"
-					[class.picture]="checkExistentImage(item)"
+					[class.picture]="checkExistentImage(item.code)"
 					(click)="openCamera(item.code)">
 					<mat-icon>photo_camera</mat-icon>
 				</button>

@@ -111,7 +111,7 @@ export class InspectionService {
 
 	static initSavedInspection(savedInspection: any, inspection: InspectionVehicle = this.inspection): void {
 		this.savedInspection = savedInspection ?
-			Builder.loadSavedInspection(savedInspection) :
+			Builder.loadSavedInspection(savedInspection, inspection.items) :
 			Builder.buildSavedInspection(
 				inspection, EmployeeService.employee.code, this.order.number, this.order.vehicle.numberPlate
 			);
@@ -127,7 +127,7 @@ export class InspectionService {
 			this.inspectionHandler = this.inspection.orderInspection ?
 				new OrderInspectionHandler() : new DetectedFaultsHandler();
 			this.savedInspection = Builder.loadSavedInspection(
-				LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION)
+				LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION), this.inspection.items
 			);
 
 			this.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
@@ -421,7 +421,7 @@ export class InspectionService {
 		inspection: InspectionVehicle = InspectionService.inspection,
 		employee: Employee = EmployeeService.employee
 	): Observable<any> {
-		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection);
+		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection, inspection.items);
 		body.employeeCode = employee.code;
 		body.saved = dayjs();
 		console.log('Saving inspection', body);
