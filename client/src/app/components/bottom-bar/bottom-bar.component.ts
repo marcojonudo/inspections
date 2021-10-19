@@ -100,7 +100,12 @@ export class BottomBarComponent {
 		);
 	}
 
-	print(inspection: InspectionVehicle = InspectionService.inspection): void {
+	print(
+		inspection: InspectionVehicle = InspectionService.inspection,
+		savedInspection: SavedInspection = this.savedInspection
+	): void {
+		/* Al imprimir la revisión, se guarda automáticamente */
+		this.inspectionService.saveInspection(savedInspection).subscribe();
 		const completeInspection = InspectionService.checkCompleteItems(inspection.items);
 		if (completeInspection) {
 			this.printService.print();
