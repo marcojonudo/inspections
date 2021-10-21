@@ -1,12 +1,13 @@
-package inspections.domains.fviberi
-
+package inspections.domains.fviberi.vehicle
 
 import grails.gorm.annotation.Entity
+import inspections.pogos.vehicles.CarVehicle
+import inspections.pogos.vehicles.Vehicle
 import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
-class Vehicle implements GormEntity<Vehicle> {
+class Car implements GormEntity<Car>, IVehicle {
 
     String numberPlate
     String model
@@ -14,9 +15,9 @@ class Vehicle implements GormEntity<Vehicle> {
     String brand
     Integer registrationYear
 
-    VehicleInfo extraInfo
+    CarInfo extraInfo
 
-    static transients = ['extraInfo']
+    static transients = ['extraInfo', 'type']
 
     static constraints = {
         registrationYear nullable: true
@@ -34,6 +35,19 @@ class Vehicle implements GormEntity<Vehicle> {
 
         id name: 'numberPlate', generator: 'assigned'
         version false
+    }
+
+    Vehicle buildVehicle() {
+        return new CarVehicle(
+            Type.CAR,
+            this.numberPlate,
+            this.brand,
+            this.model,
+            this.cylinder,
+            this.extraInfo?.engineCode,
+            this.extraInfo?.power,
+            this.registrationYear
+        )
     }
 
 }

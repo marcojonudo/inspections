@@ -1,6 +1,7 @@
-import {OrderLine} from './order-line';
-import {Vehicle} from './vehicle';
-import {Client} from './client';
+import { OrderLine } from './order-line';
+import { Client } from './client';
+import { Vehicle } from './vehicles/vehicle';
+import { Builder } from '../builder';
 
 export class Order {
 
@@ -14,7 +15,7 @@ export class Order {
 	constructor(order: any, code: string) {
 		this.number = order.number;
 		this.code = code;
-		this.vehicle = new Vehicle(order.vehicle);
+		this.vehicle = Builder.buildVehicle(order.vehicle);
 		this.client = new Client(order.client);
 		this.sellerCode = order.sellerCode;
 		this.lines = order.lines.map(line => new OrderLine(line));

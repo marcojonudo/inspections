@@ -41,10 +41,6 @@ export class Constants {
 		EMPLOYEE_NOT_FOUND: 'EMPLOYEE_NOT_FOUND'
 	};
 
-	static readonly PANEL_INFO_TYPE: any = {
-		ORDER: 'ORDER'
-	};
-
 	static readonly ITEM_TYPE: any = {
 		SELECT: 'SELECT',
 		TEXT: 'TEXT',
@@ -92,6 +88,11 @@ export class Constants {
 		RR: 'RR',
 		P: 'P',
 		SN: 'SN'
+	};
+
+	static readonly VEHICLE_TYPE: any = {
+		CAR: 'CAR',
+		SCOOTER: 'SCOOTER'
 	};
 
 }

@@ -11,6 +11,9 @@ import { ItemRelation } from './inspections/item-relation';
 import { Category } from './list-elements/category';
 import { NameElement } from './list-elements/name-element';
 import { ListElement } from './list-elements/list-element';
+import { Car } from './orders/vehicles/car';
+import { Scooter } from './orders/vehicles/scooter';
+import { Vehicle } from './orders/vehicles/vehicle';
 
 export class Builder {
 
@@ -18,6 +21,11 @@ export class Builder {
 		TEXT: (item: any) => new TextItem(item),
 		SELECT: (item: any) => new SelectItem(item),
 		TEXT_AREA: (item: any) => new TextAreaItem(item)
+	};
+
+	static vehicleBuilder: { [key: string]: ((vehicle: any) => Vehicle) } = {
+		CAR: (vehicle: any) => new Car(vehicle),
+		SCOOTER: (vehicle: any) => new Scooter(vehicle)
 	};
 
 	static savedItemBuilder: { [key: string]: ((item: Item, employeeCode: string, savedItem: SavedItem) => SavedItem) } = {
@@ -33,9 +41,15 @@ export class Builder {
 		const items = inspection.items.map(item => this.itemBuilder[item.type](item));
 		items.forEach(item => {
 			const baseItem = inspection.items.find(i => i.name === item.name);
-			item.relations = baseItem.relations.map(itemRelation =>
-				new ItemRelation(itemRelation, items.find(i => i.name === itemRelation.targetItem.name))
-			);
+			item.relations = [];
+			baseItem.relations.forEach(itemRelation => {
+				const targetItem = items.find(i => i.name === itemRelation.targetItem.name);
+				/* En algunas revisiones (como de patinete), puede que no estén los target items de las relaciones. En
+				 * esos casos, no se añade la relación */
+				if (targetItem) {
+					item.relations.push(new ItemRelation(itemRelation, targetItem));
+				}
+			});
 		});
 		return new InspectionVehicle(inspection, items);
 	}
@@ -74,6 +88,10 @@ export class Builder {
 		return new Category(
 			new NameElement({ code: category.code, name: category.name, order: category.order }), items
 		);
+	}
+
+	static buildVehicle(vehicle: any): Vehicle {
+		return this.vehicleBuilder[vehicle.type](vehicle);
 	}
 
 }

@@ -24,8 +24,6 @@ class ItemVehicleData implements GormEntity<ItemVehicleData> {
 	}
 
 	static mapping = {
-		tablePerHierarchy false
-
 		garagePosition lazy: false
 		vehicleSection lazy: false
 	}

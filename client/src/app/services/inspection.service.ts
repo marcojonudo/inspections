@@ -113,7 +113,7 @@ export class InspectionService {
 		this.savedInspection = savedInspection ?
 			Builder.loadSavedInspection(savedInspection, inspection.items) :
 			Builder.buildSavedInspection(
-				inspection, EmployeeService.employee.code, this.order.number, this.order.vehicle.numberPlate
+				inspection, EmployeeService.employee.code, this.order.number, this.order.vehicle.identifier
 			);
 
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, this.savedInspection);

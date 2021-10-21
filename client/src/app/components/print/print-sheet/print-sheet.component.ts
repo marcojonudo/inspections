@@ -1,14 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, OnInit, SkipSelf } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ListElement } from '../../../objects/list-elements/list-element';
-import { ChartOptions, ChartType } from 'chart.js';
-import { Color } from 'ng2-charts';
 import { Constants } from '../../../objects/constants';
-import { Employee } from '../../../objects/employee';
 import { PrintService } from '../../../services/print.service';
 import { OrderPipe } from '../../../pipes/order.pipe';
 import { InspectionService } from '../../../services/inspection.service';
 import { SavedItem } from '../../../objects/inspections/saved-items/saved-item';
-import { EmployeeService } from '../../../services/employee.service';
 import { SavedInspection } from '../../../objects/inspections/saved-inspection';
 import { Order } from '../../../objects/orders/order';
 import { Centre } from '../../../objects/orders/centre';
@@ -18,7 +14,6 @@ import { Utils } from '../../../objects/utils';
 import { SelectSavedItem } from '../../../objects/inspections/saved-items/select-saved-item';
 import { TextSavedItem } from '../../../objects/inspections/saved-items/text-saved-item';
 import { SelectItem } from '../../../objects/inspections/items/select-item';
-import { Item } from '../../../objects/inspections/items/item';
 import { TextItem } from '../../../objects/inspections/items/text-item';
 
 @Component({

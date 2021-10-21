@@ -1,13 +1,20 @@
-<mat-card id="car-card">
-	<mat-card-content>
+<mat-card id="car-card" [ngSwitch]="order.vehicle.type">
+	<mat-card-content *ngSwitchCase="carType">
 		<mat-icon inline="true">directions_car</mat-icon>
 		<ul>
-			<li><span class="item-label" translate>order.numberPlate</span>: {{order.vehicle.numberPlate}}</li>
+			<li><span class="item-label" translate>order.numberPlate</span>: {{order.vehicle.identifier}}</li>
 			<li><span class="item-label" translate>order.brandModel</span>: {{order.vehicle.brand}} {{order.vehicle.model}}</li>
-			<li><span class="item-label" translate>order.cylinder</span>: {{order.vehicle.cylinder}}</li>
-			<li><span class="item-label" translate>order.engineCode</span>: {{order.vehicle.engineCode ? order.vehicle.engineCode : '-'}}</li>
-			<li><span class="item-label" translate>order.power</span>: {{order.vehicle.power ? order.vehicle.power + 'cv' : '-'}}</li>
-			<li><span class="item-label" translate>order.registrationYear</span>: {{order.vehicle.registrationYear ? order.vehicle.registrationYear : '-' }}</li>
+			<li><span class="item-label" translate>order.cylinder</span>: {{findCar(order.vehicle).cylinder}}</li>
+			<li><span class="item-label" translate>order.engineCode</span>: {{findCar(order.vehicle).engineCode ? findCar(order.vehicle).engineCode : '-'}}</li>
+			<li><span class="item-label" translate>order.power</span>: {{findCar(order.vehicle).power ? findCar(order.vehicle).power + 'cv' : '-'}}</li>
+			<li><span class="item-label" translate>order.registrationYear</span>: {{findCar(order.vehicle).registrationYear ? findCar(order.vehicle).registrationYear : '-' }}</li>
+		</ul>
+	</mat-card-content>
+	<mat-card-content *ngSwitchCase="scooterType">
+		<mat-icon inline="true">electric_scooter</mat-icon>
+		<ul>
+			<li><span class="item-label" translate>order.numberPlate</span>: {{order.vehicle.identifier}}</li>
+			<li><span class="item-label" translate>order.brandModel</span>: {{order.vehicle.brand}} {{order.vehicle.model}}</li>
 		</ul>
 	</mat-card-content>
 </mat-card>

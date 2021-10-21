@@ -1,4 +1,4 @@
-package inspections.domains.fviberi
+package inspections.domains.fviberi.vehicle
 
 
 import grails.gorm.annotation.Entity
@@ -6,7 +6,7 @@ import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
-class VehicleInfo implements GormEntity<VehicleInfo> {
+class CarInfo implements GormEntity<CarInfo> {
 
     String numberPlate
     String engineCode
