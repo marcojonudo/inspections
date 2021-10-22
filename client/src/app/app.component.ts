@@ -1,11 +1,11 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnInit} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import 'hammerjs';
-import {RouterOutlet} from '@angular/router';
-import {leaveAnimation, routeAnimations} from './animations';
-import {LoadingService} from './services/loading.service';
-import {Constants} from './objects/constants';
-import {TranslateService} from '@ngx-translate/core';
-import {InspectionService} from './services/inspection.service';
+import { RouterOutlet } from '@angular/router';
+import { leaveAnimation, routeAnimations } from './animations';
+import { LoadingService } from './services/loading.service';
+import { Constants } from './objects/constants';
+import { TranslateService } from '@ngx-translate/core';
+import { InspectionService } from './services/inspection.service';
 
 @Component({
 	selector: 'app-root',

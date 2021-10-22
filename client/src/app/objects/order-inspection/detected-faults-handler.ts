@@ -3,6 +3,7 @@ import { SavedInspection } from '../inspections/saved-inspection';
 import { Builder } from '../builder';
 import { Constants } from '../constants';
 import { Item } from '../inspections/items/item';
+import { SavedItem } from '../inspections/saved-items/saved-item';
 
 export class DetectedFaultsHandler implements InspectionHandler {
 
@@ -23,6 +24,14 @@ export class DetectedFaultsHandler implements InspectionHandler {
 				savedItem.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.P : savedItem.isFilled()
 		);
 		return newSavedInspection;
+	}
+
+	checkPrint(items: Item[]): boolean {
+		return true;
+	}
+
+	findSavedItems(savedInspection: SavedInspection): SavedItem[] {
+		return savedInspection.items.filter(i => i.isFilled());
 	}
 
 }

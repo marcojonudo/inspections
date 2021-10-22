@@ -56,9 +56,10 @@ export class PrintComponent implements OnInit, AfterViewInit {
 		}];
 
 		this.adviser = EmployeeService.findEmployee(this.order.sellerCode);
-		this.mechanics = this.savedInspection.items.map(i => i.employeeCode).filter(
-			(value, index, self) => self.indexOf(value) === index
-		).map(employeeCode => EmployeeService.findEmployee(employeeCode));
+		this.mechanics = InspectionService.inspectionHandler.findSavedItems(this.savedInspection)
+			.map(i => i.employeeCode)
+			.filter((value, index, self) => self.indexOf(value) === index)
+			.map(employeeCode => EmployeeService.findEmployee(employeeCode));
 	}
 
 	ngOnInit(): void {

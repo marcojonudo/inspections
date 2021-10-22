@@ -65,7 +65,8 @@ export class Builder {
 			savedInspection.orderNumber,
 			savedInspection.numberPlate,
 			savedInspection.orderInspection,
-			savedItems
+			savedItems,
+			savedInspection.employeeCode
 		);
 	}
 

@@ -1,5 +1,8 @@
 import { InspectionHandler } from './inspection-handler';
 import { SavedInspection } from '../inspections/saved-inspection';
+import { InspectionService } from '../../services/inspection.service';
+import { Item } from '../inspections/items/item';
+import { SavedItem } from '../inspections/saved-items/saved-item';
 
 export class OrderInspectionHandler implements InspectionHandler {
 
@@ -14,6 +17,14 @@ export class OrderInspectionHandler implements InspectionHandler {
 
 	findSavedInspection(savedInspection: SavedInspection): SavedInspection {
 		return savedInspection;
+	}
+
+	checkPrint(items: Item[]): boolean {
+		return InspectionService.checkCompleteItems(items);
+	}
+
+	findSavedItems(savedInspection: SavedInspection): SavedItem[] {
+		return savedInspection.items;
 	}
 
 }

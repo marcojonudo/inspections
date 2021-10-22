@@ -18,7 +18,8 @@ export class SavedInspection {
 		orderNumber: number,
 		numberPlate: string,
 		orderInspection: boolean,
-		items: SavedItem[]
+		items: SavedItem[],
+		employeeCode: string = undefined
 	) {
 		this.inspectionTypeCode = inspectionTypeCode;
 		this.vehicle = vehicle;
@@ -26,6 +27,7 @@ export class SavedInspection {
 		this.numberPlate = numberPlate;
 		this.orderInspection = orderInspection;
 		this.items = items;
+		this.employeeCode = employeeCode;
 	}
 
 }

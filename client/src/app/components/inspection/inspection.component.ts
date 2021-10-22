@@ -171,10 +171,12 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	handleEmployeeDialog(): void {
+		console.log(1);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, true);
 		const dialogRef = this.dialog.open(ResetEmployeeDialogComponent);
 		dialogRef.afterClosed().subscribe(() => {
 			LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, false);
+			console.log(2);
 			this.setResetEmployeeTimeout();
 			this.cdRef.detectChanges();
 		});

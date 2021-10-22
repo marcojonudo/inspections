@@ -38,12 +38,12 @@ export class PrintSheetComponent {
 	imageListElements: { listElement, pageBreak }[];
 
 	constructor(private printService: PrintService, private orderPipe: OrderPipe) {
-		const items = this.savedInspection.items.filter(i =>
-			i.item.header === undefined
-		).filter(i => {
-			const selectItem = i.item.type === Constants.ITEM_TYPE.SELECT;
-			return selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true;
-		});
+		const items = InspectionService.inspectionHandler.findSavedItems(this.savedInspection)
+			.filter(i => i.item.header === undefined)
+			.filter(i => {
+				const selectItem = i.item.type === Constants.ITEM_TYPE.SELECT;
+				return selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true;
+			});
 		this.listElements = InspectionService.findGroupedItems(
 			items, 0, [(savedItem: SavedItem) => savedItem.item.category]
 		);

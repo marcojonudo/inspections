@@ -113,7 +113,7 @@ export class BottomBarComponent {
 	): void {
 		/* Al imprimir la revisión, se guarda automáticamente */
 		this.inspectionService.saveInspection(savedInspection).subscribe();
-		const completeInspection = InspectionService.checkCompleteItems(inspection.items);
+		const completeInspection = InspectionService.inspectionHandler.checkPrint(inspection.items);
 		if (completeInspection) {
 			this.printService.print();
 		} else {
