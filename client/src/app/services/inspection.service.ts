@@ -27,10 +27,10 @@ import { SnackBarService } from './snack-bar.service';
 import { CountryHandler } from '../objects/country-info/country-handler';
 import { SpainHandler } from '../objects/country-info/spain-handler';
 import { PortugalHandler } from '../objects/country-info/portugal-handler';
-import { CustomImage } from '../objects/inspections/customImage';
 import { InspectionHandler } from '../objects/order-inspection/inspection-handler';
 import { OrderInspectionHandler } from '../objects/order-inspection/order-inspection-handler';
 import { DetectedFaultsHandler } from '../objects/order-inspection/detected-faults-handler';
+import { CustomImage } from '../objects/inspections/custom-image';
 
 @Injectable({
 	providedIn: 'root'
@@ -379,13 +379,18 @@ export class InspectionService {
 				return this.findInspection(order.number, Url.inspection(), employee.code);
 			}),
 			concatMap(inspection => {
-				console.log('Received inspection', inspection);
-				InspectionService.initInspection(inspection);
-				return this.findInspection(InspectionService.order.number, Url.savedInspection(), employee.code);
+				if (inspection) {
+					console.log('Received inspection', inspection);
+					InspectionService.initInspection(inspection);
+					return this.findInspection(InspectionService.order.number, Url.savedInspection(), employee.code);
+				}
+				return of(undefined);
 			}),
 			concatMap(savedInspection => {
-				console.log('Received saved inspection', savedInspection);
-				InspectionService.initSavedInspection(savedInspection);
+				if (savedInspection) {
+					console.log('Received saved inspection', savedInspection);
+					InspectionService.initSavedInspection(savedInspection);
+				}
 				return of(true);
 			}),
 			catchError(error => {

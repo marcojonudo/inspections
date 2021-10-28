@@ -6,11 +6,11 @@ import {
 	Inject, OnDestroy,
 	ViewChild
 } from '@angular/core';
-import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
-import {SavedItem} from '../../../objects/inspections/saved-items/saved-item';
-import {InspectionService} from '../../../services/inspection.service';
-import {CustomImage} from '../../../objects/inspections/customImage';
-import {Constants} from '../../../objects/constants';
+import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { SavedItem } from '../../../objects/inspections/saved-items/saved-item';
+import { InspectionService } from '../../../services/inspection.service';
+import { CustomImage } from '../../../objects/inspections/custom-image';
+import { Constants } from '../../../objects/constants';
 
 @Component({
 	selector: 'app-camera',
