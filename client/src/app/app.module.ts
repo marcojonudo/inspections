@@ -108,7 +108,7 @@ export class AppModule {
 
 	constructor() {
 		dayjs.locale(es);
-		dayjs.prototype.toJSON = function () {
+		dayjs.prototype.toJSON = function() {
 			return this.format(Constants.DATE_TIME_FORMAT.yyyy_MM_dd_HH_mm_ss);
 		};
 	}

@@ -27,9 +27,9 @@ import { SnackBarService } from './snack-bar.service';
 import { CountryHandler } from '../objects/country-info/country-handler';
 import { SpainHandler } from '../objects/country-info/spain-handler';
 import { PortugalHandler } from '../objects/country-info/portugal-handler';
-import { InspectionHandler } from '../objects/order-inspection/inspection-handler';
-import { OrderInspectionHandler } from '../objects/order-inspection/order-inspection-handler';
-import { DetectedFaultsHandler } from '../objects/order-inspection/detected-faults-handler';
+import { InspectionHandler } from '../objects/inspection-handler/inspection-handler';
+import { OrderInspectionHandler } from '../objects/inspection-handler/order-inspection-handler';
+import { DetectedFaultsHandler } from '../objects/inspection-handler/detected-faults-handler';
 import { CustomImage } from '../objects/inspections/custom-image';
 
 @Injectable({
@@ -369,28 +369,28 @@ export class InspectionService {
 
 	initInspectionData(orderCode: string, employee: Employee = EmployeeService.employee): Observable<any> {
 		let messageCode = Constants.MESSAGE_CODE.NONEXISTENT_ORDER;
+		let order;
 		return this.findOrderInfo(orderCode, employee.code).pipe(
 			concatMap((orderInfo: any) => {
-				const order = InspectionService.setOrder(new Order(orderInfo.order, orderCode));
+				order = InspectionService.setOrder(new Order(orderInfo.order, orderCode));
 				console.log('Order', order);
 				const centre = InspectionService.setCentre(new Centre(orderInfo.centre));
 				console.log('Centre', centre);
 				messageCode = Constants.MESSAGE_CODE.NONEXISTENT_INSPECTIONS;
-				return this.findInspection(order.number, Url.inspection(), employee.code);
+				return this.findInspection(
+					order.number, Url.inspection(), Constants.LOCAL_STORAGE.INSPECTION, employee.code
+				);
 			}),
 			concatMap(inspection => {
-				if (inspection) {
-					console.log('Received inspection', inspection);
-					InspectionService.initInspection(inspection);
-					return this.findInspection(InspectionService.order.number, Url.savedInspection(), employee.code);
-				}
-				return of(undefined);
+				console.log('Received inspection', inspection);
+				InspectionService.initInspection(inspection);
+				return this.findInspection(
+					order.number, Url.savedInspection(), Constants.LOCAL_STORAGE.SAVED_INSPECTION, employee.code
+				);
 			}),
 			concatMap(savedInspection => {
-				if (savedInspection) {
-					console.log('Received saved inspection', savedInspection);
-					InspectionService.initSavedInspection(savedInspection);
-				}
+				console.log('Received saved inspection', savedInspection);
+				InspectionService.initSavedInspection(savedInspection);
 				return of(true);
 			}),
 			catchError(error => {
@@ -405,20 +405,14 @@ export class InspectionService {
 		return this.http.get(url, { headers: { employeeCode } });
 	}
 
-	findInspection(orderNumber: number, url: string, employeeCode: string): Observable<any> {
-		const loaded = this.checkLocalInspection(orderNumber);
+	findInspection(orderNumber: number, url: string, localStorageKey: string, employeeCode: string): Observable<any> {
+		const loaded = InspectionService.checkLocalInspection(orderNumber);
 		if (loaded) {
-			return of(undefined);
+			const existentInspection = LocalStorageService.getItem(localStorageKey);
+			return of(existentInspection);
+		} else {
+			return this.http.get(`${url}?orderNumber=${orderNumber}`, { headers: { employeeCode } });
 		}
-		return loaded ? of(undefined) : this.http.get(`${url}?orderNumber=${orderNumber}`, { headers: { employeeCode } });
-	}
-
-	checkLocalInspection(orderNumber: number): boolean {
-		let loaded = false;
-		if (InspectionService.checkLocalInspection(orderNumber)) {
-			loaded = InspectionService.loadInfo();
-		}
-		return loaded;
 	}
 
 	saveInspection(
