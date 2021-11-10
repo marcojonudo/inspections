@@ -6,11 +6,13 @@ export class InspectionVehicle {
 	inspectionType: InspectionType;
 	vehicle: string;
 	items: Item[];
+	orderInspection: boolean;
 
 	constructor(inspectionVehicle: any, items: Item[]) {
 		this.inspectionType = new InspectionType(inspectionVehicle.inspectionType);
 		this.vehicle = inspectionVehicle.vehicle;
 		this.items = items;
+		this.orderInspection = inspectionVehicle.orderInspection;
 	}
 
 }

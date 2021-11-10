@@ -10,6 +10,7 @@ export class Constants {
 	static readonly EMPLOYEE_CODE_MIN_LENGTH: string = 'employeeCodeMinLength';
 	static readonly DEFAULT_LANGUAGE: string = 'es';
 	static readonly TEXT_ITEM_MAX_LENGTH = 10;
+	static readonly DETECTED_FAULTS_CODE = 'AD';
 
 	static readonly HEADER_CARD: { [key: string]: string } = {
 		INFO: 'INFO',
@@ -18,7 +19,7 @@ export class Constants {
 	};
 
 	static readonly SNACK_BAR: any = {
-		DURATION: 5000,
+		DURATION: 3000,
 		TYPE: {
 			SUCCESS: 'SUCCESS',
 			WARNING: 'WARNING',

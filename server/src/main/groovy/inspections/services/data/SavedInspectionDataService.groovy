@@ -22,10 +22,7 @@ abstract class SavedInspectionDataService {
 
 	@Transactional
 	SavedInspection save(SavedInspection savedInspection) {
-		savedInspection.items.each {
-			it.savedInspection = savedInspection
-			it.item = itemVehicleDataDataService.find(it.item.code)
-		}
+		savedInspection.items.each { fillSavedItem(it, savedInspection) }
 		savedInspection.state = SavedInspection.State.values().find {
 			((Closure<Boolean>) it.check)(savedInspection.items)
 		}
@@ -33,9 +30,12 @@ abstract class SavedInspectionDataService {
 	}
 
 	SavedInspection update(SavedInspection savedInspection, SavedInspection existentSavedInspection) {
-		existentSavedInspection.items.each { SavedItem existentSavedItem ->
-			SavedItem savedItem = savedInspection.items.find { it.item.code == existentSavedItem.item.code }
-			if (existentSavedItem != savedItem) {
+		savedInspection.items.each { SavedItem savedItem ->
+			SavedItem existentSavedItem = existentSavedInspection.items.find { it.item.code == savedItem.item.code }
+			if (!existentSavedItem) {
+				fillSavedItem(savedItem, existentSavedInspection)
+				savedItemDataService.save(savedItem)
+			} else if (savedItem != existentSavedItem) {
 				savedItemDataService.update(existentSavedItem, savedItem)
 			}
 		}
@@ -43,6 +43,11 @@ abstract class SavedInspectionDataService {
 			((Closure<Boolean>) it.check)(savedInspection.items)
 		}
 		return update(existentSavedInspection.id, state)
+	}
+
+	void fillSavedItem(SavedItem savedItem, SavedInspection savedInspection) {
+		savedItem.savedInspection = savedInspection
+		savedItem.item = itemVehicleDataDataService.find(savedItem.item.code)
 	}
 
 }

@@ -19,6 +19,8 @@ abstract class SavedItemDataService {
 
 	abstract SavedItem update(Serializable id, Image image)
 
+	abstract SavedItem save(SavedItem savedItem)
+
 	@Transactional
 	SavedItem update(SavedItem existent, SavedItem savedItem) {
 		update(existent.id, savedItem.employeeCode, savedItem.hidden, savedItem.filled)

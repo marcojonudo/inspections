@@ -27,7 +27,10 @@ import { SnackBarService } from './snack-bar.service';
 import { CountryHandler } from '../objects/country-info/country-handler';
 import { SpainHandler } from '../objects/country-info/spain-handler';
 import { PortugalHandler } from '../objects/country-info/portugal-handler';
-import { CustomImage } from '../objects/inspections/customImage';
+import { InspectionHandler } from '../objects/inspection-handler/inspection-handler';
+import { OrderInspectionHandler } from '../objects/inspection-handler/order-inspection-handler';
+import { DetectedFaultsHandler } from '../objects/inspection-handler/detected-faults-handler';
+import { CustomImage } from '../objects/inspections/custom-image';
 
 @Injectable({
 	providedIn: 'root'
@@ -39,6 +42,7 @@ export class InspectionService {
 	static order: Order;
 	static centre: Centre;
 	static inspection: InspectionVehicle;
+	static inspectionHandler: InspectionHandler;
 	static selectItemOptions: SelectItemOption[];
 	static savedInspection: SavedInspection;
 	static lockTimeout: any;
@@ -80,8 +84,7 @@ export class InspectionService {
 
 	constructor(
 		private translate: TranslateService, private http: HttpClient, private snackBarService: SnackBarService
-	) {
-	}
+	) {}
 
 	static setOrder(order: Order): Order {
 		this.order = order;
@@ -97,6 +100,8 @@ export class InspectionService {
 
 	static initInspection(inspection: any): void {
 		this.inspection = Builder.buildInspection(inspection);
+		this.inspectionHandler = this.inspection.orderInspection ?
+			new OrderInspectionHandler() : new DetectedFaultsHandler();
 		this.selectItemOptions = this.findSelectItemOptions();
 
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.INSPECTION, this.inspection);
@@ -106,7 +111,7 @@ export class InspectionService {
 
 	static initSavedInspection(savedInspection: any, inspection: InspectionVehicle = this.inspection): void {
 		this.savedInspection = savedInspection ?
-			Builder.loadSavedInspection(savedInspection) :
+			Builder.loadSavedInspection(savedInspection, inspection.items) :
 			Builder.buildSavedInspection(
 				inspection, EmployeeService.employee.code, this.order.number, this.order.vehicle.numberPlate
 			);
@@ -119,8 +124,10 @@ export class InspectionService {
 		let loaded = false;
 		try {
 			this.inspection = Builder.buildInspection(LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION));
+			this.inspectionHandler = this.inspection.orderInspection ?
+				new OrderInspectionHandler() : new DetectedFaultsHandler();
 			this.savedInspection = Builder.loadSavedInspection(
-				LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION)
+				LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION), this.inspection.items
 			);
 
 			this.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
@@ -362,21 +369,24 @@ export class InspectionService {
 
 	initInspectionData(orderCode: string, employee: Employee = EmployeeService.employee): Observable<any> {
 		let messageCode = Constants.MESSAGE_CODE.NONEXISTENT_ORDER;
+		let order;
 		return this.findOrderInfo(orderCode, employee.code).pipe(
 			concatMap((orderInfo: any) => {
-				const order = InspectionService.setOrder(new Order(orderInfo.order, orderCode));
+				order = InspectionService.setOrder(new Order(orderInfo.order, orderCode));
 				console.log('Order', order);
 				const centre = InspectionService.setCentre(new Centre(orderInfo.centre));
 				console.log('Centre', centre);
 				messageCode = Constants.MESSAGE_CODE.NONEXISTENT_INSPECTIONS;
-				return this.findInspection(order.number, Url.inspection(), employee.code);
+				return this.findInspection(
+					order.number, Url.inspection(), Constants.LOCAL_STORAGE.INSPECTION, employee.code
+				);
 			}),
 			concatMap(inspection => {
-				if (inspection) {
-					console.log('Received inspection', inspection);
-					InspectionService.initInspection(inspection);
-					return this.findInspection(InspectionService.order.number, Url.savedInspection(), employee.code);
-				}
+				console.log('Received inspection', inspection);
+				InspectionService.initInspection(inspection);
+				return this.findInspection(
+					order.number, Url.savedInspection(), Constants.LOCAL_STORAGE.SAVED_INSPECTION, employee.code
+				);
 			}),
 			concatMap(savedInspection => {
 				console.log('Received saved inspection', savedInspection);
@@ -395,27 +405,26 @@ export class InspectionService {
 		return this.http.get(url, { headers: { employeeCode } });
 	}
 
-	findInspection(orderNumber: number, url: string, employeeCode: string): Observable<any> {
-		const loaded = this.checkLocalInspection(orderNumber);
+	findInspection(orderNumber: number, url: string, localStorageKey: string, employeeCode: string): Observable<any> {
+		const loaded = InspectionService.checkLocalInspection(orderNumber);
 		if (loaded) {
-			return of(undefined);
+			const existentInspection = LocalStorageService.getItem(localStorageKey);
+			return of(existentInspection);
+		} else {
+			return this.http.get(`${url}?orderNumber=${orderNumber}`, { headers: { employeeCode } });
 		}
-		return loaded ? of(undefined) : this.http.get(`${url}?orderNumber=${orderNumber}`, { headers: { employeeCode } });
 	}
 
-	checkLocalInspection(orderNumber: number): boolean {
-		let loaded = false;
-		if (InspectionService.checkLocalInspection(orderNumber)) {
-			loaded = InspectionService.loadInfo();
-		}
-		return loaded;
-	}
-
-	saveInspection(inspection: SavedInspection, employee: Employee = EmployeeService.employee): Observable<any> {
-		inspection.employeeCode = employee.code;
-		inspection.saved = dayjs();
-		console.log('Saving inspection', inspection);
-		return this.http.post(Url.inspection(), inspection);
+	saveInspection(
+		savedInspection: SavedInspection,
+		inspection: InspectionVehicle = InspectionService.inspection,
+		employee: Employee = EmployeeService.employee
+	): Observable<any> {
+		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection, inspection.items);
+		body.employeeCode = employee.code;
+		body.saved = dayjs();
+		console.log('Saving inspection', body);
+		return this.http.post(Url.inspection(), body);
 	}
 
 }

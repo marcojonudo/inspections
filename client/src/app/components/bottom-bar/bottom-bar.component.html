@@ -1,4 +1,4 @@
-<mat-toolbar class="mat-elevation-z3">
+<mat-toolbar class="mat-elevation-z3" [class.detected-faults]="!inspection.orderInspection">
 	<section matRipple (click)="openEmployee()">
 		<mat-icon>account_circle</mat-icon>
 		<div>

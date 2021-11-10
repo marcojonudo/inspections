@@ -1,7 +1,7 @@
-import {Item} from '../items/item';
-import {Dayjs} from 'dayjs';
+import { Item } from '../items/item';
+import { Dayjs } from 'dayjs';
 import * as dayjs from 'dayjs';
-import {CustomImage} from '../customImage';
+import { CustomImage } from '../custom-image';
 
 export abstract class SavedItem {
 

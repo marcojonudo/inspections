@@ -171,10 +171,12 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	handleEmployeeDialog(): void {
+		console.log(1);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, true);
 		const dialogRef = this.dialog.open(ResetEmployeeDialogComponent);
 		dialogRef.afterClosed().subscribe(() => {
 			LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, false);
+			console.log(2);
 			this.setResetEmployeeTimeout();
 			this.cdRef.detectChanges();
 		});
@@ -194,6 +196,10 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		if (!targetClasses.includes(Constants.MENU_TOGGLE)) {
 			this.openedMenu = this.openedMenu === undefined ? false : undefined;
 		}
+	}
+
+	findInspectionTitleCode(inspectionTypeCode: string): string {
+		return InspectionService.inspectionHandler.findInspectionTitleCode(inspectionTypeCode);
 	}
 
 	findMenuCategories(menuElements: ListElement[]): Category[] {
@@ -298,8 +304,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 
 	toggleSelectOption(item: SelectItem): void {
 		const selectedIndex = this.findOptionIndex(item.code, item.options);
-		/* Con el segundo sumando, se evita que la opción por defecto ('Pendiente') sea seleccionada de nuevo */
-		const newIndex = (selectedIndex + 1) % item.options.length + Math.floor(selectedIndex / (item.options.length - 1));
+		const newIndex = InspectionService.inspectionHandler.findSelectOptionIndex(selectedIndex, item.options.length);
 
 		InspectionService.updateItem(item, item.options[newIndex].code).subscribe();
 	}
@@ -371,8 +376,8 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		});
 	}
 
-	checkExistentImage(item: Item): boolean {
-		return InspectionService.findSavedItem(item.code).image !== undefined;
+	checkExistentImage(itemCode: string): boolean {
+		return InspectionService.findSavedItem(itemCode).image !== undefined;
 	}
 
 	openCamera(itemCode: string): void {

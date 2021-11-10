@@ -45,20 +45,28 @@ export class Builder {
 	): SavedInspection {
 		const savedItems = inspection.items.map(item => this.savedItemBuilder[item.type](item, employeeCode, undefined));
 		return new SavedInspection(
-			inspection.inspectionType.code, inspection.vehicle, orderNumber, numberPlate, savedItems
+			inspection.inspectionType.code,
+			inspection.vehicle,
+			orderNumber,
+			numberPlate,
+			inspection.orderInspection,
+			savedItems
 		);
 	}
 
-	static loadSavedInspection(savedInspection: any): SavedInspection {
-		const savedItems = savedInspection.items.map(savedItem =>
-			this.savedItemBuilder[savedItem.item.type](savedItem.item, savedItem.employeeCode, savedItem)
-		);
+	static loadSavedInspection(savedInspection: any, items: Item[]): SavedInspection {
+		const savedItems = items.map(item => {
+			const savedItem = savedInspection.items.find(i => i.item.code === item.code);
+			return this.savedItemBuilder[item.type](item, savedItem?.employeeCode, savedItem);
+		});
 		return new SavedInspection(
 			savedInspection.inspectionTypeCode,
 			savedInspection.vehicle,
 			savedInspection.orderNumber,
 			savedInspection.numberPlate,
-			savedItems
+			savedInspection.orderInspection,
+			savedItems,
+			savedInspection.employeeCode
 		);
 	}
 
