@@ -28,6 +28,8 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
 	LocalDateTime filled
 
+	boolean restrictive
+
 	static belongsTo = SavedInspection
 
 	static constraints = {
@@ -44,7 +46,7 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	abstract boolean equals(SavedItem savedItem)
 
 	boolean equalsSaveItem(SavedItem savedItem) {
-		return hidden == savedItem.hidden && image == savedItem.image
+		return hidden == savedItem.hidden && image == savedItem.image && restrictive == savedItem.restrictive
 	}
 
 }

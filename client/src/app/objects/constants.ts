@@ -90,7 +90,8 @@ export class Constants {
 		NA: 'NA',
 		RA: 'RA',
 		RR: 'RR',
-		P: 'P'
+		P: 'P',
+		SN: 'SN'
 	};
 
 }

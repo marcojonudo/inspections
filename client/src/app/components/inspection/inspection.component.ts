@@ -380,6 +380,16 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		return InspectionService.findSavedItem(itemCode).image !== undefined;
 	}
 
+	checkShowRestrictiveButton(item: Item): boolean {
+		return item.type === Constants.ITEM_TYPE.SELECT ?
+			InspectionService.findSavedItem(item.code).findValue() === Constants.SELECT_ITEM_OPTION_CODE.SN :
+			false;
+	}
+
+	checkRestrictiveItem(item: Item): boolean {
+		return InspectionService.findSavedItem(item.code).restrictive;
+	}
+
 	openCamera(itemCode: string): void {
 		const savedItem = InspectionService.findSavedItem(itemCode);
 		this.bottomSheet.open(CameraComponent, { data: savedItem });
@@ -389,6 +399,11 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		InspectionService.checkFillInspection(click$).subscribe(() =>
 			this.cdRef.detectChanges()
 		);
+	}
+
+	updateRestrictiveItem(item: Item): void {
+		const savedItem = InspectionService.findSavedItem(item.code);
+		InspectionService.updateRestrictive(savedItem, !savedItem.restrictive);
 	}
 
 }
