@@ -335,6 +335,16 @@ export class InspectionService {
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
+	static updateRestrictive(
+		savedItem: SavedItem,
+		restrictive: boolean,
+		savedInspection: SavedInspection = this.savedInspection,
+		employee: Employee = EmployeeService.employee
+	): void {
+		savedItem.updateRestrictive(restrictive, employee.code);
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
+	}
+
 	static findImageUrl(image: string): string {
 		return `data:image/png;base64,${image}`;
 	}

@@ -10,6 +10,7 @@ export abstract class SavedItem {
 	hidden: boolean;
 	image: CustomImage;
 	filled: Dayjs;
+	restrictive: boolean;
 
 	protected constructor(item: Item, employeeCode: string, savedItem: any) {
 		this.item = item;
@@ -18,6 +19,7 @@ export abstract class SavedItem {
 			this.image = savedItem.image ? new CustomImage(savedItem.image.image, savedItem.image.landscape) : undefined;
 			this.filled = savedItem.filled ? dayjs(savedItem.filled) : undefined;
 			this.hidden = savedItem.hidden;
+			this.restrictive = savedItem.restrictive;
 		}
 	}
 
@@ -41,6 +43,11 @@ export abstract class SavedItem {
 
 	addImage(image: CustomImage, employeeCode: string): void {
 		this.image = image;
+		this.updateCommonFields(employeeCode);
+	}
+
+	updateRestrictive(restrictive: boolean, employeeCode: string): void {
+		this.restrictive = restrictive;
 		this.updateCommonFields(employeeCode);
 	}
 

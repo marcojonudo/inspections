@@ -129,6 +129,14 @@
 					(click)="openCamera(item.code)">
 					<mat-icon>photo_camera</mat-icon>
 				</button>
+				<button
+					*ngIf="checkShowRestrictiveButton(item)"
+					mat-icon-button
+					class="restrictive-button"
+					(click)="updateRestrictiveItem(item)"
+					[class.restrictive]="checkRestrictiveItem(item)">
+					<mat-icon>lock</mat-icon>
+				</button>
 			</mat-list-item>
 		</mat-list>
 	</ng-template>

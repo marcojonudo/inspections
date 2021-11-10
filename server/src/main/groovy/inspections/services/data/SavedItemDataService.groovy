@@ -15,7 +15,9 @@ abstract class SavedItemDataService {
 	@Inject TextSavedItemDataService textSavedItemDataService
 	@Inject SelectSavedItemDataService selectSavedItemDataService
 
-	abstract SavedItem update(Serializable id, String employeeCode, boolean hidden, LocalDateTime filled)
+	abstract SavedItem update(
+		Serializable id, String employeeCode, boolean hidden, boolean restrictive, LocalDateTime filled
+	)
 
 	abstract SavedItem update(Serializable id, Image image)
 
@@ -23,7 +25,7 @@ abstract class SavedItemDataService {
 
 	@Transactional
 	SavedItem update(SavedItem existent, SavedItem savedItem) {
-		update(existent.id, savedItem.employeeCode, savedItem.hidden, savedItem.filled)
+		update(existent.id, savedItem.employeeCode, savedItem.hidden, savedItem.restrictive, savedItem.filled)
 		if (existent.image != savedItem.image) {
 			updateImage(existent, savedItem.image)
 		}

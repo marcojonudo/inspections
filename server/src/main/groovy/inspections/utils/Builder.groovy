@@ -24,6 +24,7 @@ class Builder {
 		)
 		savedItem.employeeCode = item.employeeCode
 		savedItem.hidden = item.hidden
+		savedItem.restrictive = item.restrictive
 		if (item.image) {
 			Map<String, Object> image = (Map<String, Object>) item.image
 			savedItem.image = new Image(((String) image.image).decodeBase64(), (boolean) image.landscape)
