@@ -44,6 +44,8 @@ dependencies {
     annotationProcessor "io.micronaut.configuration:micronaut-openapi:1.5.3"
     compile "io.swagger.core.v3:swagger-annotations"
     compileOnly "io.micronaut.configuration:micronaut-openapi:1.5.3"
+
+    implementation "org.codehaus.janino:janino:3.1.6"
 }
 
 mainClassName = "inspections.Application"

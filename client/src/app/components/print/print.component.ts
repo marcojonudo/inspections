@@ -20,6 +20,8 @@ import { EmployeeService } from '../../services/employee.service';
 import { Employee } from '../../objects/employee';
 import { Dayjs } from 'dayjs';
 import * as dayjs from 'dayjs';
+import { Vehicle } from '../../objects/orders/vehicles/vehicle';
+import { Car } from '../../objects/orders/vehicles/car';
 
 @Component({
 	selector: 'app-print',
@@ -92,7 +94,19 @@ export class PrintComponent implements OnInit, AfterViewInit {
 		return Constants.HEADER_CARD.VEHICLE;
 	}
 
+	get carType(): string {
+		return Constants.VEHICLE_TYPE.CAR;
+	}
+
+	get scooterType(): string {
+		return Constants.VEHICLE_TYPE.SCOOTER;
+	}
+
 	// endregion
+
+	findCar(vehicle: Vehicle): Car {
+		return vehicle as Car;
+	}
 
 	findLabels(): SelectItemOption[] {
 		const labels = this.selectItemOptions.filter(option =>

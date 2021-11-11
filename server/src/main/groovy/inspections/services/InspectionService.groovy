@@ -26,7 +26,7 @@ class InspectionService {
 
 	@Inject OrderDataService orderDataService
 	@Inject CentreDataService centreDataService
-	@Inject VehicleInfoDataService vehicleInfoDataService
+	@Inject CarInfoDataService vehicleInfoDataService
 	@Inject InspectionVehicleDataService inspectionVehicleDataService
 	@Inject SavedInspectionDataService savedInspectionDataService
 	@Inject SavedItemDataService savedItemDataService
@@ -42,7 +42,6 @@ class InspectionService {
 		OrderInfo orderInfo = null
 		if (orderNumber) {
 			Order order = orderDataService.find(orderNumber)
-			order.vehicle.extraInfo = vehicleInfoDataService.find(order.vehicle.numberPlate)
 			Centre centre = centreDataService.find()
 
 			orderInfo = new OrderInfo(order, centre)

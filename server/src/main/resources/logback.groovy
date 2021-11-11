@@ -1,5 +1,7 @@
+import ch.qos.logback.classic.boolex.JaninoEventEvaluator
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.classic.filter.LevelFilter
+import ch.qos.logback.core.filter.EvaluatorFilter
 import ch.qos.logback.core.spi.FilterReply
 
 import java.nio.charset.Charset
@@ -22,6 +24,12 @@ if (System.getProperty('micronaut.environments')?.matches("prod|sta")) {
             level = WARN
             onMatch = FilterReply.DENY
         }
+        filter(EvaluatorFilter) {
+            evaluator(JaninoEventEvaluator) {
+                expression = 'return message.contains("Received fatal alert: certificate_unknown");'
+            }
+            onMatch = FilterReply.DENY
+        }
     }
     root(INFO, ['ROLLING_FILE'])
 } else {
@@ -31,6 +39,12 @@ if (System.getProperty('micronaut.environments')?.matches("prod|sta")) {
         }
         filter(LevelFilter) {
             level = WARN
+            onMatch = FilterReply.DENY
+        }
+        filter(EvaluatorFilter) {
+            evaluator(JaninoEventEvaluator) {
+                expression = 'return message.contains("Received fatal alert: certificate_unknown");'
+            }
             onMatch = FilterReply.DENY
         }
     }
