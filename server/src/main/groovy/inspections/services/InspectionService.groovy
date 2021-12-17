@@ -46,7 +46,7 @@ class InspectionService {
 
 			orderInfo = new OrderInfo(order, centre)
 		}
-		LOG.info(new Log((Map) [employeeCode: employeeCode, shortCode: shortCode, orderNumber: orderNumber, message: Constants.Message.FINISHED_SEARCHING_ORDER]).toString())
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, shortCode: shortCode, message: Constants.Message.FINISHED_SEARCHING_ORDER]).toString())
 		return orderInfo
 	}
 
@@ -56,7 +56,7 @@ class InspectionService {
 	 * @return Revisión
 	 */
 	InspectionVehicle findInspection(int orderNumber, String employeeCode) {
-		LOG.info(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, message: Constants.Message.SEARCHING_INSPECTION]).toString())
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, message: Constants.Message.SEARCHING_INSPECTION]).toString())
 		List<Integer> articles = orderDataService.find(orderNumber).lines*.articleCode.toList()
 		List<InspectionVehicle> inspectionsVehicle = inspectionVehicleDataService.findAll(articles)
 
@@ -73,7 +73,7 @@ class InspectionService {
 				securityInspectionVehicle, securityInspectionVehicle.items.toList(), false
 			)
 		}
-		LOG.info(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, inspectionTypeCode: inspectionVehicle?.inspectionType?.code, vehicle: inspectionVehicle?.vehicle, message: Constants.Message.FINISHED_SEARCHING_INSPECTION]).toString())
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionVehicle.inspectionType.code, vehicle: inspectionVehicle.vehicle, orderInspection: inspectionVehicle.orderInspection, message: Constants.Message.FINISHED_SEARCHING_INSPECTION]).toString())
 		return inspectionVehicle
 	}
 
@@ -86,7 +86,24 @@ class InspectionService {
 		/* Se obtienen el código y nombre de la revisión con mayor número de items */
 		InspectionVehicle maxInspection = inspectionsVehicle.max { it.items.size() }
 		List<Item> items = ((List<Item>) inspectionsVehicle.items.flatten()).unique { it.code }
-		return Builder.buildInspectionVehicle(maxInspection, items)
+		return inspectionsVehicle ? Builder.buildInspectionVehicle(maxInspection, items) : null
+	}
+
+	/**
+	 * Busca una revisión guardad en BD. También acutaliza, si es necesario, el bit orderInspection
+	 * @param orderNumber Número de orden
+	 * @param orderInspection Booleano que indica si es revisión asociada a OR, o anomalías detectadas
+	 * @return Revisión guardada
+	 */
+	SavedInspection findSavedInspection(int orderNumber, boolean orderInspection) {
+		SavedInspection savedInspection = savedInspectionDataService.find(orderNumber)
+		/* Puede darse el caso de que metan un CI de revisión (en cuyo caso, cuando la guarden, el bit orderInspection
+		 * será true), y después quiten o cambien dicho CI. En esta situación, la revisión pasará a ser de anomalías
+		 * detectadas, y deberá actualizarse el bit en BD */
+		if (savedInspection && savedInspection.orderInspection != orderInspection) {
+			savedInspection = savedInspectionDataService.update(savedInspection.id, orderInspection)
+		}
+		return savedInspection
 	}
 
 	/**
@@ -97,11 +114,11 @@ class InspectionService {
 	 * @return Revisión guardada
 	 */
 	SavedInspection saveInspection(SavedInspection savedInspection, int orderNumber, String employeeCode) {
-		LOG.info(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, message: Constants.Message.SAVING_INSPECTION]).toString())
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVING_INSPECTION]).toString())
 		SavedInspection newSavedInspection = null
 		try {
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
-			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, existent: existent as boolean, message: Constants.Message.EXISTENT_INSPECTION]).toString())
+			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, existent: existent as boolean, message: Constants.Message.EXISTENT_INSPECTION]).toString())
 
 			/* Si existe una revisión para ese número de serie, se actualizan los elementos */
 			if (existent) {
@@ -109,10 +126,10 @@ class InspectionService {
 			} else {
 				newSavedInspection = savedInspectionDataService.save(savedInspection)
 			}
-			LOG.info(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, message: Constants.Message.SAVED_INSPECTION]).toString())
+			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVED_INSPECTION]).toString())
 		} catch (all) {
 			all.printStackTrace()
-			LOG.error(new Log((Map) [employeeCode: employeeCode, orderNumber: orderNumber, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
+			LOG.error(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
 		}
 		return newSavedInspection
 	}

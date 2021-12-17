@@ -98,7 +98,7 @@ export class InspectionService {
 		return this.centre;
 	}
 
-	static initInspection(inspection: any): void {
+	static initInspection(inspection: any): InspectionVehicle {
 		this.inspection = Builder.buildInspection(inspection);
 		this.inspectionHandler = this.inspection.orderInspection ?
 			new OrderInspectionHandler() : new DetectedFaultsHandler();
@@ -107,6 +107,7 @@ export class InspectionService {
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.INSPECTION, this.inspection);
 		console.log('Inspection', this.inspection);
 		console.log('Select item options', this.selectItemOptions);
+		return this.inspection;
 	}
 
 	static initSavedInspection(savedInspection: any, inspection: InspectionVehicle = this.inspection): void {
@@ -388,14 +389,17 @@ export class InspectionService {
 				console.log('Centre', centre);
 				messageCode = Constants.MESSAGE_CODE.NONEXISTENT_INSPECTIONS;
 				return this.findInspection(
-					order.number, Url.inspection(), Constants.LOCAL_STORAGE.INSPECTION, employee.code
+					order.number, Url.inspection(order.number), Constants.LOCAL_STORAGE.INSPECTION, employee.code
 				);
 			}),
 			concatMap(inspection => {
 				console.log('Received inspection', inspection);
-				InspectionService.initInspection(inspection);
+				const inspectionVehicle = InspectionService.initInspection(inspection);
 				return this.findInspection(
-					order.number, Url.savedInspection(), Constants.LOCAL_STORAGE.SAVED_INSPECTION, employee.code
+					order.number,
+					Url.savedInspection(order.number, inspectionVehicle.orderInspection),
+					Constants.LOCAL_STORAGE.SAVED_INSPECTION,
+					employee.code
 				);
 			}),
 			concatMap(savedInspection => {
@@ -421,7 +425,7 @@ export class InspectionService {
 			const existentInspection = LocalStorageService.getItem(localStorageKey);
 			return of(existentInspection);
 		} else {
-			return this.http.get(`${url}?orderNumber=${orderNumber}`, { headers: { employeeCode } });
+			return this.http.get(url, { headers: { employeeCode } });
 		}
 	}
 

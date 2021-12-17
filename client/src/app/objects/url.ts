@@ -2,12 +2,12 @@ import {environment} from '../../environments/environment';
 
 export class Url {
 
-	static savedInspection(): string {
-		return `${environment.serverUrl}/inspections/savedInspection`;
+	static savedInspection(orderNumber: number, orderInspection: boolean): string {
+		return `${environment.serverUrl}/inspections/savedInspection?orderNumber=${orderNumber}&orderInspection=${orderInspection}`;
 	}
 
-	static inspection(): string {
-		return `${environment.serverUrl}/inspections/inspection`;
+	static inspection(orderNumber: number = undefined): string {
+		return `${environment.serverUrl}/inspections/inspection?orderNumber=${orderNumber}`;
 	}
 
 	static orderInfo(): string {

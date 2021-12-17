@@ -20,6 +20,8 @@ abstract class SavedInspectionDataService {
 
 	abstract SavedInspection update(Serializable id, SavedInspection.State state)
 
+	abstract SavedInspection update(Serializable id, boolean orderInspection)
+
 	@Transactional
 	SavedInspection save(SavedInspection savedInspection) {
 		savedInspection.items.each { fillSavedItem(it, savedInspection) }
