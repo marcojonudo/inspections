@@ -23,7 +23,6 @@ class InspectionController {
 
 	@Inject private OrderTimeDataService orderTimeDataService
 	@Inject private InspectionService inspectionService
-	@Inject private SavedInspectionDataService savedInspectionDataService
 	@Inject private EmployeeDataDataService employeeDataDataService
 	@Inject private LanguageDataService languageDataService
 	@Inject private ItemDataService itemDataService
@@ -85,8 +84,10 @@ class InspectionController {
 		description = "Revisión guardada",
 		content = @Content(schema = @Schema(implementation = SavedInspection))
 	)
-	HttpResponse<SavedInspection> findSavedInspection(@QueryValue int orderNumber) {
-		return HttpResponse.ok(savedInspectionDataService.find(orderNumber))
+	HttpResponse<SavedInspection> findSavedInspection(
+		@QueryValue int orderNumber, @QueryValue boolean orderInspection
+	) {
+		return HttpResponse.ok(inspectionService.findSavedInspection(orderNumber, orderInspection))
     }
 
 	@Get("/inspection")

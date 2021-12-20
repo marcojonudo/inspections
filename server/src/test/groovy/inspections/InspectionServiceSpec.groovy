@@ -58,7 +58,7 @@ class InspectionServiceSpec extends Specification {
             new InspectionVehicle(
                 new InspectionType(code: "A"),
                 InspectionVehicle.Vehicle.CAR.toString(),
-                [new Item(name: "Item")].toSet()
+                [new Item(name: "Item", vehicleDataList: [])].toSet()
             )
         ]
 
@@ -77,17 +77,17 @@ class InspectionServiceSpec extends Specification {
             new InspectionVehicle(
                 new InspectionType(code: "A"),
                 InspectionVehicle.Vehicle.CAR.toString(),
-                [new Item(name: "Item 1")].toSet()
+                [new Item(name: "Item 1", vehicleDataList: [])].toSet()
             ),
             new InspectionVehicle(
                 new InspectionType(code: "A"),
                 InspectionVehicle.Vehicle.CAR.toString(),
-                [new Item(name: "Item 2"), new Item(name: "Item 3")].toSet()
+                [new Item(name: "Item 2", vehicleDataList: []), new Item(name: "Item 3")].toSet()
             ),
             new InspectionVehicle(
                 new InspectionType(code: "A"),
                 InspectionVehicle.Vehicle.CAR.toString(),
-                [new Item(name: "Item 4")].toSet()
+                [new Item(name: "Item 4", vehicleDataList: [])].toSet()
             )
         ]
 
@@ -115,7 +115,7 @@ class InspectionServiceSpec extends Specification {
         ]
 
         when:
-        InspectionVehicle inspection = inspectionService.findInspection(order1.number)
+        InspectionVehicle inspection = inspectionService.findInspection(order1.number, "")
 
         then:
         inspection.inspectionType.code == InspectionType.Code.SE.toString()
@@ -133,7 +133,7 @@ class InspectionServiceSpec extends Specification {
             )
 
         when:
-        InspectionVehicle inspection = inspectionService.findInspection(order1.number)
+        InspectionVehicle inspection = inspectionService.findInspection(order1.number, "")
 
         then:
         inspection.inspectionType.code == InspectionType.Code.SE.toString()
