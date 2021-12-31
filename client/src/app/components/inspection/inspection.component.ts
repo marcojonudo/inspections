@@ -35,8 +35,10 @@ import { Url } from '../../objects/url';
 import { TextItem } from '../../objects/inspections/items/text-item';
 import { CameraComponent } from '../bottom-panel/camera/camera.component';
 import { SnackBarService } from '../../services/snack-bar.service';
-import { SeparatorInputModel } from '../separator-input/separator-input.component';
 import { TextItemField } from '../../objects/inspections/items/text-item-field';
+import { TextAreaSavedItem } from '../../objects/inspections/saved-items/text-area-saved-item';
+import { TextSavedItemField } from '../../objects/inspections/saved-items/text-saved-item-field';
+import { ItemType } from '../../objects/inspections/items/item-type';
 
 @Component({
 	selector: 'app-inspection',
@@ -149,15 +151,15 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	get selectType(): string {
-		return Constants.ITEM_TYPE.SELECT;
+		return ItemType.SELECT.id;
 	}
 
 	get textType(): string {
-		return Constants.ITEM_TYPE.TEXT;
+		return ItemType.TEXT.id;
 	}
 
 	get textAreaType(): string {
-		return Constants.ITEM_TYPE.TEXT_AREA;
+		return ItemType.TEXT_AREA.id;
 	}
 
 	// endregion
@@ -171,12 +173,10 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	handleEmployeeDialog(): void {
-		console.log(1);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, true);
 		const dialogRef = this.dialog.open(ResetEmployeeDialogComponent);
 		dialogRef.afterClosed().subscribe(() => {
 			LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, false);
-			console.log(2);
 			this.setResetEmployeeTimeout();
 			this.cdRef.detectChanges();
 		});
@@ -271,18 +271,16 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		return this.findTextItemField(item).maxLength || Constants.TEXT_ITEM_MAX_LENGTH;
 	}
 
-	findSeparatorText(item: TextItem, savedItem: TextSavedItem): SeparatorInputModel {
-		return savedItem.text ?
-			new SeparatorInputModel(savedItem.text.split(item.separator), item.separator) :
-			undefined;
-	}
-
 	findSelectSavedItem(itemCode: string, savedInspection: SavedInspection = this.savedInspection): SelectSavedItem {
 		return savedInspection.items.find(savedItem => savedItem.item.code === itemCode) as SelectSavedItem;
 	}
 
 	findTextSavedItem(itemCode: string, savedInspection: SavedInspection = this.savedInspection): TextSavedItem {
 		return savedInspection.items.find(savedItem => savedItem.item.code === itemCode) as TextSavedItem;
+	}
+
+	findTextAreaSavedItem(itemCode: string, savedInspection: SavedInspection = this.savedInspection): TextAreaSavedItem {
+		return savedInspection.items.find(savedItem => savedItem.item.code === itemCode) as TextAreaSavedItem;
 	}
 
 	checkSelectedOption(itemCode: string, optionCode: string): boolean {
@@ -306,24 +304,28 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		const selectedIndex = this.findOptionIndex(item.code, item.options);
 		const newIndex = InspectionService.inspectionHandler.findSelectOptionIndex(selectedIndex, item.options.length);
 
-		InspectionService.updateItem(item, item.options[newIndex].code).subscribe();
+		InspectionService.updateSelectItem(item, item.options[newIndex].code).subscribe();
+	}
+
+	updateTextFields(item: Item): void {
+		const savedItem = this.findTextSavedItem(item.code);
+		InspectionService.updateTextItem(item, savedItem.fields);
 	}
 
 	updateText(item: Item): void {
-		const text = this.findTextSavedItem(item.code).text;
-		InspectionService.updateItem(item, text).subscribe();
+		const savedItem = this.findTextAreaSavedItem(item.code);
+		InspectionService.updateTextAreaItem(item, savedItem.text);
 	}
 
-	updateSeparatorValue(item: Item, value: SeparatorInputModel): void {
-		const text = value.findValue();
-		InspectionService.updateItem(item, text).subscribe();
+	updateSeparatorValue(item: Item, fields: TextSavedItemField[]): void {
+		InspectionService.updateTextItem(item, fields);
 	}
 
 	openLegend(item: SelectItem): void {
 		const bottomSheetRef = this.bottomSheet.open(LegendComponent, { data: item.options });
 		bottomSheetRef.afterDismissed().subscribe((option: SelectItemOption) => {
 			if (option) {
-				InspectionService.updateItem(item, option.code);
+				InspectionService.updateSelectItem(item, option.code);
 				this.cdRef.detectChanges();
 			}
 		});
@@ -381,7 +383,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	checkShowRestrictiveButton(item: Item): boolean {
-		return item.type === Constants.ITEM_TYPE.SELECT ?
+		return item.type === ItemType.SELECT.id ?
 			InspectionService.findSavedItem(item.code).findValue() === Constants.SELECT_ITEM_OPTION_CODE.SN :
 			false;
 	}

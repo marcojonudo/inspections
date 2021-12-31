@@ -31,6 +31,10 @@ import { InspectionHandler } from '../objects/inspection-handler/inspection-hand
 import { OrderInspectionHandler } from '../objects/inspection-handler/order-inspection-handler';
 import { DetectedFaultsHandler } from '../objects/inspection-handler/detected-faults-handler';
 import { CustomImage } from '../objects/inspections/custom-image';
+import { TextSavedItem } from '../objects/inspections/saved-items/text-saved-item';
+import { TextSavedItemField } from '../objects/inspections/saved-items/text-saved-item-field';
+import { ItemType } from '../objects/inspections/items/item-type';
+import { TextAreaSavedItem } from '../objects/inspections/saved-items/text-area-saved-item';
 
 @Injectable({
 	providedIn: 'root'
@@ -192,7 +196,7 @@ export class InspectionService {
 	}
 
 	static findSelectItems(items: Item[] = this.inspection.items): SelectItem[] {
-		return items.filter(item => item.type === Constants.ITEM_TYPE.SELECT) as SelectItem[];
+		return items.filter(item => item.type === ItemType.SELECT.id) as SelectItem[];
 	}
 
 	static findSelectItemOptions(): SelectItemOption[] {
@@ -266,7 +270,7 @@ export class InspectionService {
 		options: SelectItemOption[] = this.selectItemOptions,
 		employee: Employee = EmployeeService.employee
 	): void {
-		const itemNames = items.filter(item => item.type === Constants.ITEM_TYPE.SELECT).map(item => item.name);
+		const itemNames = items.filter(item => item.type === ItemType.SELECT.id).map(item => item.name);
 		const savedItems = this.savedInspection.items.filter(savedItem =>
 			itemNames.find(name => name === savedItem.item.name)
 		);
@@ -282,9 +286,10 @@ export class InspectionService {
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
-	static updateItem(
+	static updateSelectItem(
 		item: Item,
 		value: string,
+		updateStorage: boolean = true,
 		savedInspection: SavedInspection = this.savedInspection,
 		employee: Employee = EmployeeService.employee
 	): Observable<ItemRelation> {
@@ -300,7 +305,9 @@ export class InspectionService {
 
 		return this.updateRelations(savedItem, savedItem.findValue(), item.relations, this.ITEM_RELATION_ACTION).pipe(
 			finalize(() => {
-				LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
+				if (updateStorage) {
+					LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
+				}
 			})
 		);
 	}
@@ -323,6 +330,34 @@ export class InspectionService {
 		if (value === itemRelation.matchText) {
 			const targetSavedItem = this.findSavedItem(itemRelation.targetItem.code);
 			actions[itemRelation.action](targetSavedItem, savedItem.findValue(), employee.code);
+		}
+	}
+
+	static updateTextItem(
+		item: Item,
+		fields: TextSavedItemField[],
+		updateStorage: boolean = true,
+		savedInspection: SavedInspection = this.savedInspection,
+		employee: Employee = EmployeeService.employee
+	): void {
+		const savedItem = savedInspection.items.find(i => i.item.name === item.name) as TextSavedItem;
+		savedItem.update(fields, employee.code);
+		if (updateStorage) {
+			LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
+		}
+	}
+
+	static updateTextAreaItem(
+		item: Item,
+		text: string,
+		updateStorage: boolean = true,
+		savedInspection: SavedInspection = this.savedInspection,
+		employee: Employee = EmployeeService.employee
+	): void {
+		const savedItem = savedInspection.items.find(i => i.item.name === item.name) as TextAreaSavedItem;
+		savedItem.update(text, employee.code);
+		if (updateStorage) {
+			LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 		}
 	}
 
@@ -360,9 +395,11 @@ export class InspectionService {
 	}
 
 	static fillInspection(savedInspection: SavedInspection = this.savedInspection): void {
-		savedInspection.items.forEach(item =>
-			InspectionService.updateItem(item.item, Constants.SELECT_ITEM_OPTION_CODE.C).subscribe()
-		);
+		savedInspection.items.forEach(item => {
+			const itemType = ItemType.parse(item.item.type);
+			itemType.update(item, itemType.findDefaultValue(item));
+		});
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
 	findLanguage(): Observable<string> {
@@ -439,6 +476,7 @@ export class InspectionService {
 		body.saved = dayjs();
 		console.log('Saving inspection', body);
 		return this.http.post(Url.inspection(), body);
+		// return of(true);
 	}
 
 }

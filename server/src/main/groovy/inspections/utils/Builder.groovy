@@ -7,7 +7,9 @@ import inspections.domains.ItemCategory
 import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.SelectSavedItem
+import inspections.domains.savedItems.TextAreaSavedItem
 import inspections.domains.savedItems.TextSavedItem
+import inspections.domains.savedItems.TextSavedItemField
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -36,8 +38,16 @@ class Builder {
 	}
 
 	static TextSavedItem buildTextSavedItem(Map<String, Object> item) {
-		TextSavedItem savedItem = new TextSavedItem(text: (String) item.text)
+		TextSavedItem savedItem = new TextSavedItem()
+		savedItem.fields = ((List<Map<String, Object>>) item.fields).collect {
+			new TextSavedItemField(textSavedItem: savedItem, order: (int) it.order, text: (String) it.text)
+		}.toSet()
 		return (TextSavedItem) fillSavedItem(savedItem, item)
+	}
+
+	static TextAreaSavedItem buildTextAreaSavedItem(Map<String, Object> item) {
+		TextAreaSavedItem savedItem = new TextAreaSavedItem(text: (String) item.text)
+		return (TextAreaSavedItem) fillSavedItem(savedItem, item)
 	}
 
 	static SelectSavedItem buildSelectSavedItem(Map<String, Object> item) {

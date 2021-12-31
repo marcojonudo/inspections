@@ -22,6 +22,7 @@ import { Dayjs } from 'dayjs';
 import * as dayjs from 'dayjs';
 import { Vehicle } from '../../objects/orders/vehicles/vehicle';
 import { Car } from '../../objects/orders/vehicles/car';
+import { ItemType } from '../../objects/inspections/items/item-type';
 
 @Component({
 	selector: 'app-print',
@@ -162,7 +163,7 @@ export class PrintComponent implements OnInit, AfterViewInit {
 	}
 
 	findSelectItems(items: SavedItem[] = this.savedInspection.items): SelectSavedItem[] {
-		return items.filter(item => item.item.type === Constants.ITEM_TYPE.SELECT) as SelectSavedItem[];
+		return items.filter(item => item.item.type === ItemType.SELECT.id) as SelectSavedItem[];
 	}
 
 	findData(items: SavedItem[] = this.savedInspection.items): number[] {

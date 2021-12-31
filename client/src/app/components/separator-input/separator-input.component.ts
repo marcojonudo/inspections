@@ -14,16 +14,7 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { TextItemField } from '../../objects/inspections/items/text-item-field';
 import { Constants } from '../../objects/constants';
-
-export class SeparatorInputModel {
-
-	constructor(public values: string[], public separator: string) {}
-
-	findValue(): string {
-		return this.values.join(this.separator);
-	}
-
-}
+import { TextSavedItemField } from '../../objects/inspections/saved-items/text-saved-item-field';
 
 @Component({
 	selector: 'app-separator-input',
@@ -37,20 +28,19 @@ export class SeparatorInputModel {
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SeparatorInputComponent
-	implements ControlValueAccessor, MatFormFieldControl<SeparatorInputModel>, OnInit, OnDestroy {
+	implements ControlValueAccessor, MatFormFieldControl<TextSavedItemField[]>, OnInit, OnDestroy {
 
 	static nextId = 0;
 
 	@ViewChildren('fieldInput') fieldInputs: QueryList<HTMLInputElement>;
 
 	@Input() fields: TextItemField[];
-	@Input() separator: string;
-	@Input() model: SeparatorInputModel;
-	@Output() valueEmitter: EventEmitter<SeparatorInputModel>;
-
-	values: string[];
+	@Input() model: TextSavedItemField[];
+	@Output() valueEmitter: EventEmitter<TextSavedItemField[]>;
 
 	private _placeholder: string;
+	private _required = false;
+	private _disabled = false;
 
 	@Input() get placeholder(): string {
 		return this._placeholder;
@@ -60,8 +50,6 @@ export class SeparatorInputComponent
 		this._placeholder = value;
 		this.stateChanges.next();
 	}
-
-	private _required = false;
 
 	@Input()
 	get required(): boolean {
@@ -73,19 +61,17 @@ export class SeparatorInputComponent
 		this.stateChanges.next();
 	}
 
-	private _disabled = false;
-
 	@Input() get disabled(): boolean {
 		return this._disabled;
 	}
 
 	set disabled(value: boolean) {
 		this._disabled = coerceBooleanProperty(value);
-		this._disabled ? this.parts.disable() : this.parts.enable();
+		this._disabled ? this.formGroup.disable() : this.formGroup.enable();
 		this.stateChanges.next();
 	}
 
-	parts: FormGroup;
+	formGroup: FormGroup;
 	stateChanges = new Subject<void>();
 	focused = false;
 	touched = false;
@@ -98,7 +84,7 @@ export class SeparatorInputComponent
 	onTouched = () => {};
 
 	get empty() {
-		return !(Object.values(this.parts.controls).find(control => control.value) !== undefined);
+		return !(Object.values(this.formGroup.controls).find(control => control.value) !== undefined);
 	}
 
 	get shouldLabelFloat() {
@@ -106,21 +92,24 @@ export class SeparatorInputComponent
 	}
 
 	@Input()
-	get value(): SeparatorInputModel | null {
-		if (this.parts.valid) {
-			const values = Object.values(this.parts.value).map(value => value) as string[];
-			return new SeparatorInputModel(values, this.separator);
+	get value(): TextSavedItemField[] | null {
+		if (this.formGroup.valid) {
+			const keys = Object.keys(this.formGroup.value);
+			return keys.map(key => {
+				const value = this.formGroup.value[key];
+				return new TextSavedItemField({ text: value, order: this.findKeyOrder(key) });
+			});
 		}
 		return null;
 	}
 
-	set value(value: SeparatorInputModel | null) {
-		this.parts.setValue(new SeparatorInputModel([], this.separator));
+	set value(value: TextSavedItemField[] | null) {
+		this.formGroup.setValue(value);
 		this.stateChanges.next();
 	}
 
 	get errorState(): boolean {
-		return this.parts.invalid && this.touched;
+		return this.formGroup.invalid && this.touched;
 	}
 
 	constructor(
@@ -130,21 +119,29 @@ export class SeparatorInputComponent
 		@Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
 		@Optional() @Self() public ngControl: NgControl
 	) {
-		this.valueEmitter = new EventEmitter<SeparatorInputModel>();
+		this.valueEmitter = new EventEmitter<TextSavedItemField[]>();
 		if (this.ngControl != null) {
 			this.ngControl.valueAccessor = this;
 		}
 	}
 
 	ngOnInit() {
-		this.values = this.model ? this.model.values : this.fields.map(() => '');
 		const controlsConfig = {};
-		this.fields.forEach((field, i) => {
-			controlsConfig[`field-${i}`] = [
-				this.values[i], [Validators.required, Validators.maxLength(field.maxLength)]
+		this.model.forEach(field => {
+			const itemField = this.fields.find(f => f.order === field.order);
+			controlsConfig[this.buildControlKey(field.order)] = [
+				field.text, [Validators.required, Validators.maxLength(itemField.maxLength)]
 			];
 		});
-		this.parts = this.formBuilder.group(controlsConfig);
+		this.formGroup = this.formBuilder.group(controlsConfig);
+	}
+
+	buildControlKey(order: number): string {
+		return `field-${order}`;
+	}
+
+	findKeyOrder(key: string): number {
+		return parseInt(key.split('-')[1], 10);
 	}
 
 	ngOnDestroy() {
@@ -188,13 +185,13 @@ export class SeparatorInputComponent
 	}
 
 	onContainerClick() {
-		const controls = Object.values(this.parts.controls);
+		const controls = Object.values(this.formGroup.controls);
 		const invalidIndex = controls.findIndex(control => !control.valid);
 		const index = invalidIndex !== -1 ? invalidIndex : controls.length - 1;
 		this._focusMonitor.focusVia(this.fieldInputs.toArray()[index], 'program');
 	}
 
-	writeValue(value: SeparatorInputModel | null): void {
+	writeValue(value: TextSavedItemField[] | null): void {
 		this.value = value;
 	}
 
@@ -214,7 +211,7 @@ export class SeparatorInputComponent
 		/* Si no es el último input, se evalúa si se debe enfocar el siguiente */
 		if (i < this.fields.length - 1) {
 			const nextElem = this.fieldInputs.toArray()[(i + 1) % this.fieldInputs.length];
-			this.autoFocusNext(this.parts.controls[`field-${i}`], this.fields[i], nextElem);
+			this.autoFocusNext(this.formGroup.controls[this.buildControlKey(i)], this.fields[i], nextElem);
 		}
 		if (this.value) {
 			this.onChange(this.value);
@@ -223,7 +220,7 @@ export class SeparatorInputComponent
 
 	handleAutoFocusPrev(i: number): void {
 		if (i > 0) {
-			this.autoFocusPrev(this.parts.controls[`field-${i}`], this.fieldInputs.toArray()[i - 1]);
+			this.autoFocusPrev(this.formGroup.controls[this.buildControlKey(i)], this.fieldInputs.toArray()[i - 1]);
 		}
 	}
 

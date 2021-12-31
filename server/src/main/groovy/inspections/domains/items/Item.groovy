@@ -8,6 +8,7 @@ import inspections.domains.ItemCategory
 import inspections.domains.ItemRelation
 import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.SelectSavedItem
+import inspections.domains.savedItems.TextAreaSavedItem
 import inspections.domains.savedItems.TextSavedItem
 import inspections.services.data.SavedItemDataService
 import inspections.utils.Builder
@@ -64,18 +65,18 @@ class Item implements GormEntity<Item> {
 
 		TEXT({ Map<String, Object> item ->
 			return Builder.buildTextSavedItem(item)
-		}, { Serializable id, TextSavedItem savedItem, SavedItemDataService savedItemDataService ->
-			return savedItemDataService.textSavedItemDataService.update(id, savedItem.text)
+		}, { TextSavedItem existent, TextSavedItem savedItem, SavedItemDataService savedItemDataService ->
+			return savedItemDataService.textSavedItemDataService.update(existent, savedItem.fields)
 		}),
 		SELECT({ Map<String, Object> item ->
 			return Builder.buildSelectSavedItem(item)
-		}, { Serializable id, SelectSavedItem savedItem, SavedItemDataService savedItemDataService ->
-			return savedItemDataService.selectSavedItemDataService.update(id, savedItem.value)
+		}, { SelectSavedItem existent, SelectSavedItem savedItem, SavedItemDataService savedItemDataService ->
+			return savedItemDataService.selectSavedItemDataService.update(existent.id, savedItem.value)
 		}),
 		TEXT_AREA({ Map<String, Object> item ->
-			return Builder.buildTextSavedItem(item)
-		}, { Serializable id, TextSavedItem savedItem, SavedItemDataService savedItemDataService ->
-			return savedItemDataService.textSavedItemDataService.update(id, savedItem.text)
+			return Builder.buildTextAreaSavedItem(item)
+		}, { TextAreaSavedItem existent, TextAreaSavedItem savedItem, SavedItemDataService savedItemDataService ->
+			return savedItemDataService.textAreaSavedItemDataService.update(existent.id, savedItem.text)
 		})
 
 		Closure<SavedItem> buildSavedItem

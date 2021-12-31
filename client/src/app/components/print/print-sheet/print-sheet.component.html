@@ -19,7 +19,7 @@
 					<mat-card-title translate>inspection.item.{{elem.item.code}}</mat-card-title>
 				</mat-card-header>
 				<mat-card-content>
-					<div *ngFor="let line of findTextAreaLines(findTextSavedItem(elem))" class="highlight">{{line}}</div>
+					<div *ngFor="let line of findTextAreaLines(findTextAreaSavedItem(elem))" class="highlight">{{line}}</div>
 				</mat-card-content>
 			</mat-card>
 		</ng-template>
@@ -27,7 +27,9 @@
 	<ng-template #itemTemplate let-elem>
 		<div class="items-info">
 			<div *ngFor="let item of elem.items | printOrderPipe" class="item" [class.highlight]="checkWrongItem(item)">
-				<div translate class="item-text">inspection.item.{{item.item.code}}</div>
+				<div translate class="item-text" [class.text-item-fields]="checkMultipleFieldsItem(item)">
+					inspection.item.{{item.item.code}}
+				</div>
 				<mat-icon
 					*ngIf="checkItemType(item.item.type, selectType); else textItemText"
 					class="item-data"
@@ -35,7 +37,7 @@
 					{{findSelectIcon(findSelectSavedItem(item))}}
 				</mat-icon>
 				<ng-template #textItemText>
-					<span class="item-text-value">{{findTextSavedItem(item).text ? findTextSavedItem(item).text : '-'}}</span>
+					<span class="item-text-value">{{findTextSavedItem(item).isFilled() ? findTextSavedItem(item).findValue() : '-'}}</span>
 					<span class="item-unit">{{findTextItemUnit(item)}}</span>
 				</ng-template>
 			</div>

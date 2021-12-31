@@ -94,14 +94,13 @@
 							type="tel"
 							[maxLength]="findTextItemFieldMaxLength(item)"
 							[placeholder]="findTextItemField(item).placeholder"
-							[(ngModel)]="findTextSavedItem(item.code).text"
-							(change)="updateText(item)"
+							[(ngModel)]="findTextSavedItem(item.code).fields[0].text"
+							(change)="updateTextFields(item)"
 							autocomplete="off">
 						<ng-template #separatorInput>
 							<app-separator-input
 								[fields]="findTextItem(item).fields"
-								[separator]="findTextItem(item).separator"
-								[model]="findSeparatorText(findTextItem(item), findTextSavedItem(item.code))"
+								[model]="findTextSavedItem(item.code).fields"
 								(valueEmitter)="updateSeparatorValue(item, $event)">
 							</app-separator-input>
 						</ng-template>
@@ -109,14 +108,14 @@
 					</mat-form-field>
 				</div>
 				<div *ngIf="checkItemType(item.type, textAreaType)" class="item text-item">
-					<mat-form-field class="text-item-input">
+					<mat-form-field class="text-area-item-input">
 						<mat-label translate>inspection.item.{{item.code}}</mat-label>
 						<textarea
 							matInput
 							cdkTextareaAutosize
 							cdkAutosizeMinRows="1"
 							cdkAutosizeMaxRows="5"
-							[(ngModel)]="findTextSavedItem(item.code).text"
+							[(ngModel)]="findTextAreaSavedItem(item.code).text"
 							(change)="updateText(item)">
 						</textarea>
 					</mat-form-field>
