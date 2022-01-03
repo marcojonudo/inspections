@@ -30,11 +30,9 @@ import { ItemType } from '../../objects/inspections/items/item-type';
 	styleUrls: ['./print.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PrintComponent implements OnInit, AfterViewInit {
+export class PrintComponent implements OnInit {
 
 	private readonly GROUP_LABELS: { [key: string]: string[] };
-
-	@ViewChild('vehicleSection') vehicleSection: ElementRef;
 
 	today: Dayjs;
 	chartType: ChartType;
@@ -67,10 +65,6 @@ export class PrintComponent implements OnInit, AfterViewInit {
 
 	ngOnInit(): void {
 		this.printService.openPrintDialog();
-	}
-
-	ngAfterViewInit(): void {
-		this.printService.headerMechanicLines = this.vehicleSection.nativeElement.children.length;
 	}
 
 	// region Getters / setters

@@ -27,9 +27,6 @@ import { TextItem } from '../../../objects/inspections/items/text-item';
 export class PrintSheetComponent {
 
 	private readonly ROW_ITEMS = 4;
-	private readonly BASE_TOP = 182;
-	private readonly FIRST_EXTRA_LINE_OFFSET = 13;
-	private readonly EXTRA_LINE_OFFSET = 15;
 
 	listElements: ListElement[];
 	imageListElements: { listElement, pageBreak }[];
@@ -66,17 +63,6 @@ export class PrintSheetComponent {
 	}
 
 	// endregion
-
-	findTop(): number {
-		let top = this.BASE_TOP;
-		const addedMechanicLines = this.printService.headerMechanicLines - 6;
-		if (addedMechanicLines > 0) {
-			for (let i = 0; i < addedMechanicLines; i++) {
-				top += i === 0 ? this.FIRST_EXTRA_LINE_OFFSET : this.EXTRA_LINE_OFFSET;
-			}
-		}
-		return top;
-	}
 
 	findImageElements(): { listElement, pageBreak }[] {
 		const splittedImageListElements = [];

@@ -73,26 +73,26 @@
 					</div>
 					<div>
 						<div translate>print.cylinder</div>
-						<span>{{findCar(order.vehicle).cylinder}}</span>
+						<span>{{findCar(order.vehicle).cylinder ? findCar(order.vehicle).cylinder : '-'}}</span>
 					</div>
-					<div *ngIf="findCar(order.vehicle).engineCode">
+					<div>
 						<div translate>print.engine</div>
-						<div>{{findCar(order.vehicle).engineCode}}</div>
+						<div>{{findCar(order.vehicle).engineCode ? findCar(order.vehicle).engineCode : '-'}}</div>
 					</div>
-					<div *ngIf="findCar(order.vehicle).power">
+					<div>
 						<div translate>print.power</div>
-						<div>{{findCar(order.vehicle).power + 'cv'}}</div>
+						<div>{{findCar(order.vehicle).power ? findCar(order.vehicle).power + 'cv' : '-'}}</div>
 					</div>
-					<div *ngIf="findCar(order.vehicle).registrationYear">
+					<div>
 						<div translate>print.registration</div>
-						<div>{{findCar(order.vehicle).registrationYear}}</div>
+						<div>{{findCar(order.vehicle).registrationYear ? findCar(order.vehicle).registrationYear : '-'}}</div>
 					</div>
 					<div *ngFor="let item of findHeaderItems(headerVehicleItem)">
 						<div>{{item.item.code | titlecase}}</div>
 						<div>{{item.findValue()}}</div>
 					</div>
 				</section>
-				<section #vehicleSection *ngSwitchCase="scooterType" class="key-value-section">
+				<section *ngSwitchCase="scooterType" class="key-value-section">
 					<div>
 						<div translate>print.numberPlate</div>
 						<div>{{order.vehicle.identifier}}</div>
