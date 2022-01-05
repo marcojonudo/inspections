@@ -13,6 +13,12 @@ class TextSavedItem extends SavedItem implements GormEntity<TextSavedItem> {
 		fields fetch: 'join'
 	}
 
+	void fillRelations() {
+		fields.each {
+			it.textSavedItem = this
+		}
+	}
+
 	boolean equals(SavedItem savedItem) {
 		if (!equalsSaveItem(savedItem)) {
 			return false

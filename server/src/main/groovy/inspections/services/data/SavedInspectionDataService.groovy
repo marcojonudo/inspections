@@ -50,6 +50,7 @@ abstract class SavedInspectionDataService {
 	void fillSavedItem(SavedItem savedItem, SavedInspection savedInspection) {
 		savedItem.savedInspection = savedInspection
 		savedItem.item = itemVehicleDataDataService.find(savedItem.item.code)
+		savedItem.fillRelations()
 	}
 
 }

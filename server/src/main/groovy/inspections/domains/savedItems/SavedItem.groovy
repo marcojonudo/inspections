@@ -3,8 +3,9 @@ package inspections.domains.savedItems
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import grails.gorm.annotation.Entity
-import inspections.deserializers.SavedItemDeserializer
+import inspections.deserializers.ItemDeserializer
 import inspections.domains.Image
 import inspections.domains.SavedInspection
 import inspections.domains.items.Item
@@ -14,18 +15,19 @@ import org.grails.datastore.gorm.GormEntity
 import java.time.LocalDateTime
 
 @Entity
-@JsonDeserialize(using = SavedItemDeserializer)
 abstract class SavedItem implements GormEntity<SavedItem> {
 
 	@JsonIgnore
 	SavedInspection savedInspection
 
+	@JsonDeserialize(using = ItemDeserializer)
 	Item item
 	String employeeCode
 	boolean hidden
 	Image image
 
 	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
+	@JsonDeserialize(using = LocalDateTimeDeserializer)
 	LocalDateTime filled
 
 	boolean restrictive
@@ -42,6 +44,8 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 		item fetch: 'join'
 		image fetch: 'join'
 	}
+
+	abstract void fillRelations()
 
 	abstract boolean equals(SavedItem savedItem)
 

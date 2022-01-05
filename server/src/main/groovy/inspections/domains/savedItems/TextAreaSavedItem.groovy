@@ -13,6 +13,8 @@ class TextAreaSavedItem extends SavedItem implements GormEntity<TextAreaSavedIte
 		text nullable: true
 	}
 
+	void fillRelations() {}
+
 	boolean equals(SavedItem savedItem) {
 		return equalsSaveItem(savedItem) && text == ((TextAreaSavedItem) savedItem).text
 	}

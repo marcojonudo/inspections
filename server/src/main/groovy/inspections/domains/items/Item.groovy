@@ -11,7 +11,6 @@ import inspections.domains.savedItems.SelectSavedItem
 import inspections.domains.savedItems.TextAreaSavedItem
 import inspections.domains.savedItems.TextSavedItem
 import inspections.services.data.SavedItemDataService
-import inspections.utils.Builder
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
@@ -63,27 +62,32 @@ class Item implements GormEntity<Item> {
 
 	enum Type {
 
-		TEXT({ Map<String, Object> item ->
-			return Builder.buildTextSavedItem(item)
-		}, { TextSavedItem existent, TextSavedItem savedItem, SavedItemDataService savedItemDataService ->
-			return savedItemDataService.textSavedItemDataService.update(existent, savedItem.fields)
-		}),
-		SELECT({ Map<String, Object> item ->
-			return Builder.buildSelectSavedItem(item)
-		}, { SelectSavedItem existent, SelectSavedItem savedItem, SavedItemDataService savedItemDataService ->
-			return savedItemDataService.selectSavedItemDataService.update(existent.id, savedItem.value)
-		}),
-		TEXT_AREA({ Map<String, Object> item ->
-			return Builder.buildTextAreaSavedItem(item)
-		}, { TextAreaSavedItem existent, TextAreaSavedItem savedItem, SavedItemDataService savedItemDataService ->
-			return savedItemDataService.textAreaSavedItemDataService.update(existent.id, savedItem.text)
-		})
+		TEXT(
+			TextItem,
+			TextSavedItem,
+			{ TextSavedItem existent, TextSavedItem savedItem, SavedItemDataService savedItemDataService ->
+				return savedItemDataService.textSavedItemDataService.update(existent, savedItem.fields)
+			}),
+		SELECT(
+			SelectItem,
+			SelectSavedItem,
+			{ SelectSavedItem existent, SelectSavedItem savedItem, SavedItemDataService savedItemDataService ->
+				return savedItemDataService.selectSavedItemDataService.update(existent.id, savedItem.value)
+			}),
+		TEXT_AREA(
+			TextAreaItem,
+			TextAreaSavedItem,
+			{ TextAreaSavedItem existent, TextAreaSavedItem savedItem, SavedItemDataService savedItemDataService ->
+				return savedItemDataService.textAreaSavedItemDataService.update(existent.id, savedItem.text)
+			})
 
-		Closure<SavedItem> buildSavedItem
+		Class clazz
+		Class savedItemClazz
 		Closure<SavedItem> updateSavedItem
 
-		Type(Closure<SavedItem> buildSavedItem, Closure<SavedItem> updateSavedItem) {
-			this.buildSavedItem = buildSavedItem
+		Type(Class clazz, Class savedItemClazz, Closure<SavedItem> updateSavedItem) {
+			this.clazz = clazz
+			this.savedItemClazz = savedItemClazz
 			this.updateSavedItem = updateSavedItem
 		}
 

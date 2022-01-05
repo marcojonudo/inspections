@@ -1,6 +1,7 @@
 package inspections.controllers
 
 import groovy.transform.CompileStatic
+import inspections.clients.InspectionsManagementClient
 import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
 import inspections.domains.schedules.EmployeeData
@@ -27,6 +28,7 @@ class InspectionController {
 	@Inject private LanguageDataService languageDataService
 	@Inject private ItemDataService itemDataService
 	@Inject private SavedItemDataService savedItemDataService
+	@Inject private InspectionsManagementClient inspectionsManagementClient
 
 	@Get("/employees")
 	@Operation(
@@ -120,7 +122,12 @@ class InspectionController {
 		SavedInspection savedInspection = inspectionService.saveInspection(
 			inspection, inspection.orderNumber, inspection.employeeCode
 		)
-		return savedInspection ? HttpResponse.created(savedInspection.id) : HttpResponse.serverError()
+		HttpResponse response = null
+		if (savedInspection) {
+			response = HttpResponse.created(savedInspection.id)
+			inspectionsManagementClient.notifySavedInspection(inspection).subscribe()
+		}
+		return response ?: HttpResponse.serverError()
     }
 
 }
