@@ -48,6 +48,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CameraComponent } from './components/bottom-panel/camera/camera.component';
 import { PrintSheetComponent } from './components/print/print-sheet/print-sheet.component';
 import { SeparatorInputComponent } from './components/separator-input/separator-input.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
 	declarations: [
@@ -99,7 +100,8 @@ import { SeparatorInputComponent } from './components/separator-input/separator-
 				useFactory: HttpLoaderFactory,
 				deps: [HttpClient]
 			}
-		})
+		}),
+		MatSelectModule
 	],
 	providers: [OrderPipe],
 	bootstrap: [AppComponent]

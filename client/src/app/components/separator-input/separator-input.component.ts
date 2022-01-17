@@ -23,7 +23,7 @@ import { TextSavedItemField } from '../../objects/inspections/saved-items/text-s
 	providers: [{ provide: MatFormFieldControl, useExisting: SeparatorInputComponent }],
 	host: {
 		'[class.separator-input-floating]': 'shouldLabelFloat',
-		'[id]': 'id',
+		'[id]': 'id'
 	},
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -94,11 +94,7 @@ export class SeparatorInputComponent
 	@Input()
 	get value(): TextSavedItemField[] | null {
 		if (this.formGroup.valid) {
-			const keys = Object.keys(this.formGroup.value);
-			return keys.map(key => {
-				const value = this.formGroup.value[key];
-				return new TextSavedItemField({ text: value, order: this.findKeyOrder(key) });
-			});
+			return this.findValue();
 		}
 		return null;
 	}
@@ -188,7 +184,10 @@ export class SeparatorInputComponent
 		const controls = Object.values(this.formGroup.controls);
 		const invalidIndex = controls.findIndex(control => !control.valid);
 		const index = invalidIndex !== -1 ? invalidIndex : controls.length - 1;
-		this._focusMonitor.focusVia(this.fieldInputs.toArray()[index], 'program');
+		const fieldInput = this.fieldInputs.toArray()[index];
+		if (fieldInput) {
+			this._focusMonitor.focusVia(fieldInput, 'program');
+		}
 	}
 
 	writeValue(value: TextSavedItemField[] | null): void {
@@ -226,6 +225,21 @@ export class SeparatorInputComponent
 
 	findMaxLength(field: TextItemField): number {
 		return field.maxLength || Constants.TEXT_ITEM_MAX_LENGTH;
+	}
+
+	updateSelect(): void {
+		if (this.formGroup.valid) {
+			const textSavedItemFields = this.findValue();
+			this.onChange(textSavedItemFields);
+		}
+	}
+
+	findValue(): TextSavedItemField[] {
+		const keys = Object.keys(this.formGroup.value);
+		return keys.map(key => {
+			const value = this.formGroup.value[key];
+			return new TextSavedItemField({ text: value, order: this.findKeyOrder(key) });
+		});
 	}
 
 }

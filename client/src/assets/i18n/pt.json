@@ -54,6 +54,7 @@
 			"RPF": "Percurso pedal travão",
 			"FFM": "Comprovar travão de estacionamento",
 			"KM": "KM",
+			"FPITV": "Próxima data de ITV",
 			"FCLX": "Comprovar buzina",
 			"FLPB": "Comprovar limpa vidros",
 			"LPDI": "Minimo FE",
@@ -151,6 +152,7 @@
 			"DFTI": "Disco de travão TE",
 			"LAFTI": "Tubo travão TE",
 			"ATI": "Amortecedor TE",
+			"PN": "Medida neumática",
 			"PPN": "Ajuste pressão pneus",
 			"CVGN": "Controlo visual geometria pneus",
 			"SF": "Silencioso final",
@@ -386,6 +388,10 @@
 			"S": "Segurança",
 			"T": "Transmissão"
 		}
+	},,
+	"header": {
+		"KM": "KM",
+		"FPITV": "Próx. data ITV"
 	},
 	"resetEmployee": {
 		"introduceEmployeeCode": "Insira um novo código de empregado novamente"
