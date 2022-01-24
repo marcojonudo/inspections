@@ -90,7 +90,7 @@ class InspectionService {
 	}
 
 	/**
-	 * Busca una revisión guardad en BD. También acutaliza, si es necesario, el bit orderInspection
+	 * Busca una revisión guardad en BD. También actualiza, si es necesario, el bit orderInspection
 	 * @param orderNumber Número de orden
 	 * @param orderInspection Booleano que indica si es revisión asociada a OR, o anomalías detectadas
 	 * @return Revisión guardada

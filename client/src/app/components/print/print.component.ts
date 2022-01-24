@@ -22,6 +22,7 @@ import { Dayjs } from 'dayjs';
 import * as dayjs from 'dayjs';
 import { Vehicle } from '../../objects/orders/vehicles/vehicle';
 import { Car } from '../../objects/orders/vehicles/car';
+import { ItemType } from '../../objects/inspections/items/item-type';
 
 @Component({
 	selector: 'app-print',
@@ -29,11 +30,9 @@ import { Car } from '../../objects/orders/vehicles/car';
 	styleUrls: ['./print.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PrintComponent implements OnInit, AfterViewInit {
+export class PrintComponent implements OnInit {
 
 	private readonly GROUP_LABELS: { [key: string]: string[] };
-
-	@ViewChild('vehicleSection') vehicleSection: ElementRef;
 
 	today: Dayjs;
 	chartType: ChartType;
@@ -66,10 +65,6 @@ export class PrintComponent implements OnInit, AfterViewInit {
 
 	ngOnInit(): void {
 		this.printService.openPrintDialog();
-	}
-
-	ngAfterViewInit(): void {
-		this.printService.headerMechanicLines = this.vehicleSection.nativeElement.children.length;
 	}
 
 	// region Getters / setters
@@ -162,7 +157,7 @@ export class PrintComponent implements OnInit, AfterViewInit {
 	}
 
 	findSelectItems(items: SavedItem[] = this.savedInspection.items): SelectSavedItem[] {
-		return items.filter(item => item.item.type === Constants.ITEM_TYPE.SELECT) as SelectSavedItem[];
+		return items.filter(item => item.item.type === ItemType.SELECT.id) as SelectSavedItem[];
 	}
 
 	findData(items: SavedItem[] = this.savedInspection.items): number[] {

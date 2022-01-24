@@ -21,7 +21,7 @@ class SelectItemOption implements GormEntity<SelectItemOption> {
 
 	static mapping = {
 		order column: '`order`'
-		items joinTable: [name: 'select_item_options', key: 'option_id']
+		items lazy: false, joinTable: [name: 'select_item_options', key: 'option_id']
 	}
 
 }

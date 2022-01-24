@@ -4,6 +4,7 @@ import { Builder } from '../builder';
 import { Constants } from '../constants';
 import { Item } from '../inspections/items/item';
 import { SavedItem } from '../inspections/saved-items/saved-item';
+import { ItemType } from '../inspections/items/item-type';
 
 export class DetectedFaultsHandler implements InspectionHandler {
 
@@ -20,7 +21,7 @@ export class DetectedFaultsHandler implements InspectionHandler {
 		/* Se obtienen únicamente aquellos items con valor definido. En el caso de los de selección, aquellos cuyo
 		 * valor sea distinto de 'Pendiente', y en los texto, aquellos que tienen algún valor */
 		newSavedInspection.items = newSavedInspection.items.filter(savedItem =>
-			savedItem.item.type === Constants.ITEM_TYPE.SELECT ?
+			savedItem.item.type === ItemType.SELECT.id ?
 				savedItem.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.P : savedItem.isFilled()
 		);
 		return newSavedInspection;

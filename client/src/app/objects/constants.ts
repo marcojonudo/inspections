@@ -41,12 +41,6 @@ export class Constants {
 		EMPLOYEE_NOT_FOUND: 'EMPLOYEE_NOT_FOUND'
 	};
 
-	static readonly ITEM_TYPE: any = {
-		SELECT: 'SELECT',
-		TEXT: 'TEXT',
-		TEXT_AREA: 'TEXT_AREA'
-	};
-
 	static readonly PATH: any = {
 		INIT: '/init',
 		INSPECTION: '/inspection',

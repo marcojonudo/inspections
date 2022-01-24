@@ -14,6 +14,8 @@ import { Utils } from '../../../objects/utils';
 import { SelectSavedItem } from '../../../objects/inspections/saved-items/select-saved-item';
 import { TextSavedItem } from '../../../objects/inspections/saved-items/text-saved-item';
 import { SelectItem } from '../../../objects/inspections/items/select-item';
+import { ItemType } from '../../../objects/inspections/items/item-type';
+import { TextAreaSavedItem } from '../../../objects/inspections/saved-items/text-area-saved-item';
 import { TextItem } from '../../../objects/inspections/items/text-item';
 
 @Component({
@@ -25,9 +27,6 @@ import { TextItem } from '../../../objects/inspections/items/text-item';
 export class PrintSheetComponent {
 
 	private readonly ROW_ITEMS = 4;
-	private readonly BASE_TOP = 182;
-	private readonly FIRST_EXTRA_LINE_OFFSET = 13;
-	private readonly EXTRA_LINE_OFFSET = 15;
 
 	listElements: ListElement[];
 	imageListElements: { listElement, pageBreak }[];
@@ -36,7 +35,7 @@ export class PrintSheetComponent {
 		const items = InspectionService.inspectionHandler.findSavedItems(this.savedInspection)
 			.filter(i => i.item.header === undefined)
 			.filter(i => {
-				const selectItem = i.item.type === Constants.ITEM_TYPE.SELECT;
+				const selectItem = i.item.type === ItemType.SELECT.id;
 				return selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true;
 			});
 		this.listElements = InspectionService.findGroupedItems(
@@ -60,21 +59,10 @@ export class PrintSheetComponent {
 	}
 
 	get selectType(): string {
-		return Constants.ITEM_TYPE.SELECT;
+		return ItemType.SELECT.id;
 	}
 
 	// endregion
-
-	findTop(): number {
-		let top = this.BASE_TOP;
-		const addedMechanicLines = this.printService.headerMechanicLines - 6;
-		if (addedMechanicLines > 0) {
-			for (let i = 0; i < addedMechanicLines; i++) {
-				top += i === 0 ? this.FIRST_EXTRA_LINE_OFFSET : this.EXTRA_LINE_OFFSET;
-			}
-		}
-		return top;
-	}
 
 	findImageElements(): { listElement, pageBreak }[] {
 		const splittedImageListElements = [];
@@ -125,8 +113,16 @@ export class PrintSheetComponent {
 		return item as TextSavedItem;
 	}
 
+	findTextAreaSavedItem(item: SavedItem): TextAreaSavedItem {
+		return item as TextAreaSavedItem;
+	}
+
+	checkMultipleFieldsItem(savedItem: SavedItem): boolean {
+		return savedItem.item.type === ItemType.TEXT.id && this.findTextSavedItem(savedItem).fields.length > 2;
+	}
+
 	findTextItemUnit(item: SavedItem): string {
-		return this.findTextSavedItem(item).text ? (item.item as TextItem).unit || '' : '';
+		return this.findTextSavedItem(item).isFilled() ? (item.item as TextItem).unit || '' : '';
 	}
 
 	findSelectIcon(item: SelectSavedItem): string {
@@ -141,7 +137,7 @@ export class PrintSheetComponent {
 		return item instanceof Category;
 	}
 
-	findTextAreaLines(item: TextSavedItem): string[] {
+	findTextAreaLines(item: TextAreaSavedItem): string[] {
 		return item.text ? item.text.split('\n') : [];
 	}
 
@@ -150,7 +146,7 @@ export class PrintSheetComponent {
 	}
 
 	checkWrongItem(savedItem: SavedItem): boolean {
-		if (savedItem.item.type !== Constants.ITEM_TYPE.SELECT) {
+		if (savedItem.item.type !== ItemType.SELECT.id) {
 			return false;
 		}
 		return (savedItem as SelectSavedItem).value !== Constants.SELECT_ITEM_OPTION_CODE.C;

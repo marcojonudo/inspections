@@ -7,6 +7,8 @@ import org.grails.datastore.gorm.GormEntity
 @Entity
 class SelectItem extends Item implements GormEntity<SelectItem> {
 
+	Set<SelectItemOption> options
+
 	static hasMany = [options: SelectItemOption]
 
 	static mapping = {

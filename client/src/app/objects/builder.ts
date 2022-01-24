@@ -14,6 +14,7 @@ import { ListElement } from './list-elements/list-element';
 import { Car } from './orders/vehicles/car';
 import { Scooter } from './orders/vehicles/scooter';
 import { Vehicle } from './orders/vehicles/vehicle';
+import { TextAreaSavedItem } from './inspections/saved-items/text-area-saved-item';
 
 export class Builder {
 
@@ -33,8 +34,8 @@ export class Builder {
 			new TextSavedItem(item, employeeCode, savedItem),
 		SELECT: (item: SelectItem, employeeCode: string, savedItem: any) =>
 			new SelectSavedItem(item, employeeCode, savedItem),
-		TEXT_AREA: (item: TextItem, employeeCode: string, savedItem: any) =>
-			new TextSavedItem(item, employeeCode, savedItem)
+		TEXT_AREA: (item: TextAreaItem, employeeCode: string, savedItem: any) =>
+			new TextAreaSavedItem(item, employeeCode, savedItem)
 	};
 
 	static buildInspection(inspection: any): InspectionVehicle {

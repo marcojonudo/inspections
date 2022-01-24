@@ -1,6 +1,7 @@
 @import "abstracts/mixins"
 
 .sheet-container
+	top: 215px
 	position: relative
 
 	.image-category-content
@@ -108,6 +109,9 @@
 							overflow: hidden
 							white-space: nowrap
 							text-overflow: ellipsis
+
+							&.text-item-fields
+								width: 50% !important
 
 						&-data
 							width: 12%

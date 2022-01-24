@@ -88,20 +88,32 @@
 						<span *ngIf="checkIndividualTextField(findTextItem(item))" matPrefix>
 							{{findTextItemField(item).prefix}}
 						</span>
-						<input
-							*ngIf="checkIndividualTextField(findTextItem(item)); else separatorInput"
-							matInput
-							type="tel"
-							[maxLength]="findTextItemFieldMaxLength(item)"
-							[placeholder]="findTextItemField(item).placeholder"
-							[(ngModel)]="findTextSavedItem(item.code).text"
-							(change)="updateText(item)"
-							autocomplete="off">
+						<ng-container *ngIf="checkIndividualTextField(findTextItem(item)); else separatorInput">
+							<mat-select
+								*ngIf="findTextItemField(item).select; else textInput"
+								[(ngModel)]="findTextSavedItem(item.code).fields[0].text"
+								(selectionChange)="updateTextFields(item)">
+								<mat-option
+									*ngFor="let option of findTextItemField(item).values | order"
+									[value]="option.value">
+									{{option.value}}
+								</mat-option>
+							</mat-select>
+							<ng-template #textInput>
+								<input
+									matInput
+									[type]="findTextItemField(item).inputType"
+									[maxLength]="findTextItemFieldMaxLength(item)"
+									[placeholder]="findTextItemField(item).placeholder"
+									[(ngModel)]="findTextSavedItem(item.code).fields[0].text"
+									(change)="updateTextFields(item)"
+									autocomplete="off">
+							</ng-template>
+						</ng-container>
 						<ng-template #separatorInput>
 							<app-separator-input
 								[fields]="findTextItem(item).fields"
-								[separator]="findTextItem(item).separator"
-								[model]="findSeparatorText(findTextItem(item), findTextSavedItem(item.code))"
+								[model]="findTextSavedItem(item.code).fields"
 								(valueEmitter)="updateSeparatorValue(item, $event)">
 							</app-separator-input>
 						</ng-template>
@@ -109,14 +121,14 @@
 					</mat-form-field>
 				</div>
 				<div *ngIf="checkItemType(item.type, textAreaType)" class="item text-item">
-					<mat-form-field class="text-item-input">
+					<mat-form-field class="text-area-item-input">
 						<mat-label translate>inspection.item.{{item.code}}</mat-label>
 						<textarea
 							matInput
 							cdkTextareaAutosize
 							cdkAutosizeMinRows="1"
 							cdkAutosizeMaxRows="5"
-							[(ngModel)]="findTextSavedItem(item.code).text"
+							[(ngModel)]="findTextAreaSavedItem(item.code).text"
 							(change)="updateText(item)">
 						</textarea>
 					</mat-form-field>
