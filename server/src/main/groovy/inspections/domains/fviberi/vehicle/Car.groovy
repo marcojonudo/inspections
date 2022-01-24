@@ -14,6 +14,8 @@ class Car implements GormEntity<Car>, IVehicle {
     String cylinder
     String brand
     Integer registrationYear
+    String itvDate
+    String expiredItv
 
     CarInfo extraInfo
 
@@ -32,6 +34,8 @@ class Car implements GormEntity<Car>, IVehicle {
         cylinder column: 'nucilind'
         brand column: 'nomarcav'
         registrationYear column: 'nuanomat'
+        itvDate column: 'fechaitv'
+        expiredItv column: 'itvcaducada'
 
         id name: 'numberPlate', generator: 'assigned'
         version false

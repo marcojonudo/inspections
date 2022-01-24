@@ -7,16 +7,20 @@ import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Centre
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
+import inspections.domains.savedItems.TextSavedItem
+import inspections.domains.savedItems.TextSavedItemField
 import inspections.pogos.OrderInfo
 import inspections.pogos.logs.Log
 import inspections.services.data.*
 import inspections.utils.Builder
 import inspections.utils.Constants
+import inspections.utils.Utils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import javax.inject.Inject
 import javax.inject.Singleton
+import java.time.LocalDate
 
 @Singleton
 @CompileStatic
@@ -26,10 +30,9 @@ class InspectionService {
 
 	@Inject OrderDataService orderDataService
 	@Inject CentreDataService centreDataService
-	@Inject CarInfoDataService vehicleInfoDataService
+	@Inject CarDataService carDataService
 	@Inject InspectionVehicleDataService inspectionVehicleDataService
 	@Inject SavedInspectionDataService savedInspectionDataService
-	@Inject SavedItemDataService savedItemDataService
 
 	/**
 	 * Busca una orden asociada al código corto
@@ -126,12 +129,28 @@ class InspectionService {
 			} else {
 				newSavedInspection = savedInspectionDataService.save(savedInspection)
 			}
+			updateItvDate(newSavedInspection)
+
 			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVED_INSPECTION]).toString())
 		} catch (all) {
 			all.printStackTrace()
 			LOG.error(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
 		}
 		return newSavedInspection
+	}
+
+	/**
+	 * Actualiza la fecha de la próxima ITV en fviberi
+	 * @param savedInspection Revisión guardada
+	 */
+	void updateItvDate(SavedInspection savedInspection) {
+		TextSavedItem savedItem = (TextSavedItem) savedInspection.items.find { it.item.code == Constants.Item.FPITV }
+		List<TextSavedItemField> fields = savedItem.fields.sort { it.order }
+		/* Sólo se actualiza la información de ITV si ambos campos tienen valor (mes y año) */
+		if (fields.findAll { it.text }.size() == fields.size()) {
+			LocalDate day = LocalDate.of(fields[1].text as int, fields[0].text as int, 1)
+			carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
+		}
 	}
 
 }

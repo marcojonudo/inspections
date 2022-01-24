@@ -16,7 +16,7 @@ class Constants {
 
     static class DateFormat {
 
-        static final String yyyy_MM_dd = "yyyy-MM-dd"
+        static final String MMM_yyyy = "MMM yyyy"
 
     }
 
@@ -36,6 +36,12 @@ class Constants {
         static final String EXISTENT_INSPECTION = "Existent inspection"
         static final String ERROR_SAVING_INSPECTION = "Error saving inspection"
         static final String SAVED_INSPECTION = "Saved inspection!"
+
+    }
+
+    static class Item {
+
+        static final String FPITV = "FPITV"
 
     }
 
