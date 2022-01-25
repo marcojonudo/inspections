@@ -51,7 +51,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	@ViewChild('toolBar') toolBar: ElementRef;
 	@ViewChild(MatList, { read: ElementRef }) itemsList: ElementRef;
 	@ViewChild('itemsContainer') itemsContainer: ElementRef;
-	@ViewChild('clearStorage', { read: ElementRef }) clearStorage: ElementRef;
+	@ViewChild('clearStorageElem', { read: ElementRef }) clearStorageElem: ElementRef;
 	@ViewChild('fillInspection', { read: ElementRef }) fillInspection: ElementRef;
 
 	bottomBarHeight: number;
@@ -128,7 +128,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		});
 		this.bottomBarHeight = this.toolBar.nativeElement.getBoundingClientRect().height;
 		this.loadingService.stop();
-		this.handleClearStorage(fromEvent(this.clearStorage.nativeElement, Constants.EVENT.CLICK));
+		this.handleClearStorage(fromEvent(this.clearStorageElem.nativeElement, Constants.EVENT.CLICK));
 		this.handleFillInspection(fromEvent(this.fillInspection.nativeElement, Constants.EVENT.CLICK));
 	}
 
@@ -228,14 +228,9 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		);
 		dialogRef.afterClosed().subscribe((confirm: boolean) => {
 			if (confirm) {
-				this.goBack();
+				this.inspectionService.goBack();
 			}
 		});
-	}
-
-	goBack(): void {
-		LocalStorageService.setItem(Constants.LOCAL_STORAGE.MANUAL_EXIT, true);
-		this.router.navigate([Constants.PATH.INIT]);
 	}
 
 	addOpenedCategory(name: string, openedCategories: string[] = this.openedCategories): void {
@@ -372,10 +367,11 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	handleClearStorage(click$: Observable<any>): void {
-		LocalStorageService.checkClearStorage(click$).subscribe(() => {
-			this.snackBarService.open(Constants.MESSAGE_CODE.CLEARED_LOCAL_STORAGE);
-			this.goBack();
-		});
+		LocalStorageService.checkClearStorage(click$).subscribe(() => this.inspectionService.clearStorage(true));
+	}
+
+	clearStorage(): void {
+		this.inspectionService.clearStorage(true);
 	}
 
 	checkExistentImage(itemCode: string): boolean {

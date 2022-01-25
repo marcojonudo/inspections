@@ -32,7 +32,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 	@ViewChild('employeeCodeInput') employeeCodeInput: MatInput;
 	@ViewChild('orderCodeInput') orderCodeInput: MatInput;
 	@ViewChild('searchOrderButton', { read: ElementRef }) searchOrderButton: ElementRef;
-	@ViewChild('clearStorage', { read: ElementRef }) clearStorage: ElementRef;
+	@ViewChild('clearStorageElem', { read: ElementRef }) clearStorageElem: ElementRef;
 
 	employeeCode: FormControl;
 	orderCode: FormControl;
@@ -72,7 +72,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 			EmployeeService.setEmployees(data.employees);
 			this.loadingService.stop();
 		});
-		this.handleClearStorage(fromEvent(this.clearStorage.nativeElement, Constants.EVENT.CLICK));
+		this.handleClearStorage(fromEvent(this.clearStorageElem.nativeElement, Constants.EVENT.CLICK));
 	}
 
 	ngAfterViewInit(): void {
@@ -154,6 +154,10 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		LocalStorageService.checkClearStorage(click$).subscribe(() =>
 			this.snackBarService.open(Constants.MESSAGE_CODE.CLEARED_LOCAL_STORAGE)
 		);
+	}
+
+	clearStorage(): void {
+		this.inspectionService.clearStorage();
 	}
 
 }

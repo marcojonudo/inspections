@@ -35,6 +35,7 @@ import { TextSavedItem } from '../objects/inspections/saved-items/text-saved-ite
 import { TextSavedItemField } from '../objects/inspections/saved-items/text-saved-item-field';
 import { ItemType } from '../objects/inspections/items/item-type';
 import { TextAreaSavedItem } from '../objects/inspections/saved-items/text-area-saved-item';
+import { Router } from '@angular/router';
 
 @Injectable({
 	providedIn: 'root'
@@ -87,7 +88,10 @@ export class InspectionService {
 	};
 
 	constructor(
-		private translate: TranslateService, private http: HttpClient, private snackBarService: SnackBarService
+		private translate: TranslateService,
+		private http: HttpClient,
+		private snackBarService: SnackBarService,
+		private router: Router
 	) {}
 
 	static setOrder(order: Order): Order {
@@ -400,6 +404,19 @@ export class InspectionService {
 			itemType.update(item, itemType.findDefaultValue(item));
 		});
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
+	}
+
+	clearStorage(goBack: boolean = false): void {
+		LocalStorageService.clear();
+		this.snackBarService.open(Constants.MESSAGE_CODE.CLEARED_LOCAL_STORAGE);
+		if (goBack) {
+			this.goBack();
+		}
+	}
+
+	goBack(): void {
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.MANUAL_EXIT, true);
+		this.router.navigate([Constants.PATH.INIT]);
 	}
 
 	findLanguage(): Observable<string> {

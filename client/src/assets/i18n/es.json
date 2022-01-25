@@ -11,6 +11,7 @@
 	"inspection": {
 		"changelog": "Histórico de cambios",
 		"updateVersion": "Actualizar versión",
+		"clearData": "Borrar datos del navegador",
 		"type": {
 			"G": "Revisión gratuita",
 			"E": "Revisión estándar",
