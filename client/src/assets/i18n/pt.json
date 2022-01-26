@@ -23,7 +23,10 @@
 			"PC": "Revisão teste de estrada",
 			"PE": "Revisão scooter eletrica",
 			"ST": "Revisão a tranquilidade do serviço",
-			"AD": "Anomalías detectadas"
+			"AD": "Anomalías detectadas",
+			"N": "Pneu",
+			"AG": "Análise gás",
+			"VF": "Visual Flexicar"
 		},
 		"category": {
 			"VP": "Veículo no park",
