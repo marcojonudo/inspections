@@ -152,7 +152,12 @@ export class PrintSheetComponent {
 		return (savedItem as SelectSavedItem).value !== Constants.SELECT_ITEM_OPTION_CODE.C;
 	}
 
-	checkCategoryBreak(elem: ListElement): boolean {
+	checkCategoryBreak(
+		elem: ListElement, inspectionTypeCode: string = this.savedInspection.inspectionTypeCode
+	): boolean {
+		if (inspectionTypeCode === Constants.INSPECTION_TYPE.N) {
+			return false;
+		}
 		const gasCategory = this.checkCategoryElement(elem) && (elem as Category).code === 'G';
 		if (gasCategory) { return true; }
 		return !this.checkCategoryElement(elem) && (elem as SavedItem).item.code === 'C';

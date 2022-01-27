@@ -89,4 +89,8 @@ export class Constants {
 		SCOOTER: 'SCOOTER'
 	};
 
+	static readonly INSPECTION_TYPE: any = {
+		N: 'N'
+	};
+
 }
