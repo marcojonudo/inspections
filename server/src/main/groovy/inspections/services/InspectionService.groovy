@@ -33,6 +33,7 @@ class InspectionService {
 	@Inject CarDataService carDataService
 	@Inject InspectionVehicleDataService inspectionVehicleDataService
 	@Inject SavedInspectionDataService savedInspectionDataService
+	@Inject SlackService slackService
 
 	/**
 	 * Busca una orden asociada al código corto
@@ -114,10 +115,11 @@ class InspectionService {
 	 * @param inspection Revisión
 	 * @param orderNumber Número de orden
 	 * @param employeeCode Código del empleado que guarda la revisión
+	 * @param centre Código del centro
 	 * @return Revisión guardada
 	 */
-	SavedInspection saveInspection(SavedInspection savedInspection, int orderNumber, String employeeCode) {
-		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVING_INSPECTION]).toString())
+	SavedInspection saveInspection(SavedInspection savedInspection, int orderNumber, String employeeCode, int centre) {
+		LOG.info(new Log((Map) [savedInspection: savedInspection, message: Constants.Message.SAVING_INSPECTION]).toString())
 		SavedInspection newSavedInspection = null
 		try {
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
@@ -135,6 +137,7 @@ class InspectionService {
 		} catch (all) {
 			all.printStackTrace()
 			LOG.error(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
+			slackService.sendMessage(Builder.Slack.buildSavedInspectionMessage(savedInspection, centre, all))
 		}
 		return newSavedInspection
 	}

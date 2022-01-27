@@ -118,9 +118,9 @@ class InspectionController {
 		description = "Revisión creada",
 		content = @Content(schema = @Schema(implementation = SavedInspection))
 	)
-	HttpResponse saveInspection(@Body SavedInspection inspection) {
+	HttpResponse saveInspection(@Header int centre, @Body SavedInspection inspection) {
 		SavedInspection savedInspection = inspectionService.saveInspection(
-			inspection, inspection.orderNumber, inspection.employeeCode
+			inspection, inspection.orderNumber, inspection.employeeCode, centre
 		)
 		HttpResponse response = null
 		if (savedInspection) {

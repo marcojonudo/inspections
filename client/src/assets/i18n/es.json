@@ -11,7 +11,7 @@
 	"inspection": {
 		"changelog": "Histórico de cambios",
 		"updateVersion": "Actualizar versión",
-		"clearData": "Borrar datos del navegador",
+		"clearData": "Restablecer datos de la aplicación",
 		"type": {
 			"G": "Revisión gratuita",
 			"E": "Revisión estándar",

@@ -46,15 +46,17 @@ endpoints:
         enabled: true
         sensitive: false
 
+slack:
+    app:
+        notifier:
+            token: xoxb-531343073222-1104044199923-A6pTaIa10Heu7UFZQ8o0wGib
+    channel:
+        id:
+            inspections: C013RLQTXNC
+
 host:
     ip: ${HOST_IP:localhost}
     local-mysql-port: ${MYSQL_PORT:3306}
-
-ifv:
-    path: https://cuboifv.cloudapp.net:8086/api
-    username: PortalIFVuser
-    password: ifvRest18$
-    centre: ABS
 
 database:
     credentials:

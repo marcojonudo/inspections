@@ -7,8 +7,10 @@ micronaut:
             password: '!WWd4NpXZKu4yfNw5t67ZJ$sDEyytWE6'
             type: PKCS12
 
-ifv:
-    path: https://www.portalifv.com:8086/api
+slack:
+    channel:
+        id:
+            supplier-orders: C030E5NV08K
 
 database:
     credentials:

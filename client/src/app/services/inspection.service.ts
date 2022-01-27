@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { from, Observable, of, throwError } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Url } from '../objects/url';
 import { Order } from '../objects/orders/order';
 import { InspectionVehicle } from '../objects/inspections/inspection-vehicle';
@@ -486,14 +486,14 @@ export class InspectionService {
 	saveInspection(
 		savedInspection: SavedInspection,
 		inspection: InspectionVehicle = InspectionService.inspection,
-		employee: Employee = EmployeeService.employee
+		employee: Employee = EmployeeService.employee,
+		centre: Centre = InspectionService.centre
 	): Observable<any> {
 		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection, inspection.items);
 		body.employeeCode = employee.code;
 		body.saved = dayjs();
 		console.log('Saving inspection', body);
-		return this.http.post(Url.inspection(), body);
-		// return of(true);
+		return this.http.post(Url.inspection(), body, { headers: new HttpHeaders({ centre: `${centre.code}` }) });
 	}
 
 }
