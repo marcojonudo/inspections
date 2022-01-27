@@ -1,0 +1,2 @@
+- [.label-fix]#Se actualiza si la revisión es de orden o de anomalías detectadas si se añade o
+elimina un código de revisión a la misma.#

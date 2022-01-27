@@ -1,0 +1,2 @@
+- [.label-feature]#Actualiación de la fecha de ITV de JPDV al guardar una revisión.#
+- [.label-fix]#Solucionado bug al cargar los textos en portugués.#

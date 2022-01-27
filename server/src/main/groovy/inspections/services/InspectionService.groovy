@@ -1,6 +1,7 @@
 package inspections.services
 
 import groovy.transform.CompileStatic
+import inspections.clients.InspectionsManagementClient
 import inspections.domains.InspectionType
 import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
@@ -34,6 +35,7 @@ class InspectionService {
 	@Inject InspectionVehicleDataService inspectionVehicleDataService
 	@Inject SavedInspectionDataService savedInspectionDataService
 	@Inject SlackService slackService
+	@Inject InspectionsManagementClient inspectionsManagementClient
 
 	/**
 	 * Busca una orden asociada al código corto
@@ -132,6 +134,7 @@ class InspectionService {
 				newSavedInspection = savedInspectionDataService.save(savedInspection)
 			}
 			updateItvDate(newSavedInspection)
+			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
 
 			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVED_INSPECTION]).toString())
 		} catch (all) {
@@ -148,11 +151,13 @@ class InspectionService {
 	 */
 	void updateItvDate(SavedInspection savedInspection) {
 		TextSavedItem savedItem = (TextSavedItem) savedInspection.items.find { it.item.code == Constants.Item.FPITV }
-		List<TextSavedItemField> fields = savedItem.fields.sort { it.order }
-		/* Sólo se actualiza la información de ITV si ambos campos tienen valor (mes y año) */
-		if (fields.findAll { it.text }.size() == fields.size()) {
-			LocalDate day = LocalDate.of(fields[1].text as int, fields[0].text as int, 1)
-			carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
+		if (savedItem) {
+			List<TextSavedItemField> fields = savedItem.fields.sort { it.order }
+			/* Sólo se actualiza la información de ITV si ambos campos tienen valor (mes y año) */
+			if (fields.findAll { it.text }.size() == fields.size()) {
+				LocalDate day = LocalDate.of(fields[1].text as int, fields[0].text as int, 1)
+				carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
+			}
 		}
 	}
 

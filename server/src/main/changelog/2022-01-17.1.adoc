@@ -1,0 +1,2 @@
+- [.label-feature]#Añadido nuevo tipo de item de selección. Al hacer clic en el cuadro de texto, se abre un desplegable
+con un número fijo de opciones para escoger.#

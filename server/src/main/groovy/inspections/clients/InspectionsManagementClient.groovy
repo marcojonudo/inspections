@@ -15,6 +15,6 @@ import javax.inject.Singleton
 interface InspectionsManagementClient {
 
     @Patch("/inspection")
-    Single<SavedInspection> notifySavedInspection(@Body SavedInspection savedInspection)
+    Single<Void> notifySavedInspection(@Body SavedInspection savedInspection)
 
 }
