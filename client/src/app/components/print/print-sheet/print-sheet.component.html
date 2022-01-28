@@ -1,4 +1,4 @@
-<div class="sheet-container">
+<div class="sheet-container" [style.top.px]="findSheetTop()">
 	<div
 		*ngFor="let elem of listElements | order; let i = index"
 		class="category"
