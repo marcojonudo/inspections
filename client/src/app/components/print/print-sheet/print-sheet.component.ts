@@ -27,6 +27,8 @@ import { TextItem } from '../../../objects/inspections/items/text-item';
 export class PrintSheetComponent {
 
 	private readonly ROW_ITEMS = 4;
+	private readonly SCOOTER_TOP = 183;
+	private readonly CAR_TOP = 215;
 
 	listElements: ListElement[];
 	imageListElements: { listElement, pageBreak }[];
@@ -152,10 +154,20 @@ export class PrintSheetComponent {
 		return (savedItem as SelectSavedItem).value !== Constants.SELECT_ITEM_OPTION_CODE.C;
 	}
 
-	checkCategoryBreak(elem: ListElement): boolean {
+	checkCategoryBreak(
+		elem: ListElement, inspectionTypeCode: string = this.savedInspection.inspectionTypeCode
+	): boolean {
+		if (inspectionTypeCode === Constants.INSPECTION_TYPE.N) {
+			return false;
+		}
 		const gasCategory = this.checkCategoryElement(elem) && (elem as Category).code === 'G';
 		if (gasCategory) { return true; }
 		return !this.checkCategoryElement(elem) && (elem as SavedItem).item.code === 'C';
+	}
+
+	findSheetTop(order: Order = this.order): number {
+		// TODO enum
+		return order.vehicle.type === Constants.VEHICLE_TYPE.SCOOTER ? this.SCOOTER_TOP : this.CAR_TOP;
 	}
 
 }
