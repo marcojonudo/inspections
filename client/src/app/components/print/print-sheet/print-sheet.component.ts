@@ -27,8 +27,8 @@ import { TextItem } from '../../../objects/inspections/items/text-item';
 export class PrintSheetComponent {
 
 	private readonly ROW_ITEMS = 4;
-	private readonly SCOOTER_TOP = 183;
-	private readonly CAR_TOP = 215;
+	private readonly BASE_TOP = 183;
+	private readonly HEADER_ROW_TOP = 16;
 
 	listElements: ListElement[];
 	imageListElements: { listElement, pageBreak }[];
@@ -62,6 +62,10 @@ export class PrintSheetComponent {
 
 	get selectType(): string {
 		return ItemType.SELECT.id;
+	}
+
+	get headerVehicleItem(): string {
+		return Constants.HEADER_CARD.VEHICLE;
 	}
 
 	// endregion
@@ -166,8 +170,19 @@ export class PrintSheetComponent {
 	}
 
 	findSheetTop(order: Order = this.order): number {
+		let offset = 0;
+		if (order.vehicle.type === Constants.VEHICLE_TYPE.CAR) {
+			const headerItems = this.findHeaderItems();
+			offset = headerItems.length * this.HEADER_ROW_TOP;
+		}
 		// TODO enum
-		return order.vehicle.type === Constants.VEHICLE_TYPE.SCOOTER ? this.SCOOTER_TOP : this.CAR_TOP;
+		return this.BASE_TOP + offset;
+	}
+
+	findHeaderItems(
+		code: string = this.headerVehicleItem, items: SavedItem[] = this.savedInspection.items
+	): SavedItem[] {
+		return items.filter(item => item.item.header === code);
 	}
 
 }
