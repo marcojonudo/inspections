@@ -1,11 +1,12 @@
 package inspections.services.data
 
-
 import grails.gorm.services.Service
+import grails.gorm.transactions.Transactional
 import inspections.domains.SavedInspection
+import inspections.domains.SavedInspectionData
 import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
-import inspections.utils.Utils
+import inspections.domains.savedItems.SavedItemData
 
 import javax.inject.Inject
 import java.time.LocalDateTime
@@ -14,7 +15,6 @@ import java.time.LocalDateTime
 abstract class SavedInspectionDataService {
 
 	@Inject ItemDataService itemDataService
-	@Inject SavedItemDataService savedItemDataService
 
 	abstract SavedInspection find(int orderNumber)
 
@@ -30,26 +30,34 @@ abstract class SavedInspectionDataService {
 
 	SavedInspection update(SavedInspection savedInspection, SavedInspection existentSavedInspection) {
 		List<Item> items = itemDataService.findAll((List<String>) savedInspection.items.code)
+
+		SavedInspectionData newSavedInspectionData = savedInspection.data
+			.max { it.saved }
+			.tap { it.savedInspection = existentSavedInspection }
+		existentSavedInspection.addToData(newSavedInspectionData)
 		savedInspection.items.each { SavedItem savedItem ->
-			SavedItem existentSavedItem = existentSavedInspection.items.find { it.code == savedItem.code }
+			SavedItem existentSavedItem = existentSavedInspection.items.find { it.item.code == savedItem.item.code }
+			/* Si el item no existe, se crea. Ocurre en anomalías detectadas, si después de guardar la revisión
+			 * completa rellena algún otro item*/
 			if (!existentSavedItem) {
 				fillSavedItem(savedItem, existentSavedInspection)
-				savedItemDataService.save(savedItem)
-			} else if (savedItem != existentSavedItem) {
-				Item item = Utils.findItem(savedItem.code, items)
-				savedItemDataService.update(existentSavedItem, savedItem, item)
+				existentSavedInspection.addToItems(savedItem)
+			} else if (savedItem.data.size() != existentSavedItem.data.size()) {
+				/* Si hay algún elemento nuevo en el array 'data', significa que se ha modificado en el front */
+				SavedItemData data = savedItem.data.max { it.filled }
+				data.fill(existentSavedItem)
+				existentSavedItem.addToData(data)
 			}
 		}
-		SavedInspection.State state = SavedInspection.State.values().find {
+		existentSavedInspection.state = SavedInspection.State.values().find {
 			((Closure<Boolean>) it.check)(savedInspection.items, items)
 		}
-		return update(existentSavedInspection.id, savedInspection.employeeCode, state, LocalDateTime.now())
+		return save(existentSavedInspection)
 	}
 
 	static SavedItem fillSavedItem(SavedItem savedItem, SavedInspection savedInspection) {
 		savedItem.savedInspection = savedInspection
-		savedItem.fillRelations()
-		return savedItem
+		savedItem.data.each { it.fill(savedItem) }
 	}
 
 }

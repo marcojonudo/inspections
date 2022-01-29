@@ -1,15 +1,17 @@
-import { SavedItem } from './saved-item';
 import { TextItem } from '../items/text-item';
-import { TextSavedItemField } from './text-saved-item-field';
+import { TextSavedItemDataField } from './text-saved-item-data-field';
 import { Utils } from '../../utils';
+import { SavedItemData } from './saved-item-data';
 
-export class TextSavedItem extends SavedItem {
+export class TextSavedItemData extends SavedItemData {
 
-	fields: TextSavedItemField[];
+	item: TextItem;
+	fields: TextSavedItemDataField[];
 
-	constructor(item: TextItem, employeeCode: string, savedItem: any) {
-		super(item, employeeCode, savedItem);
-		this.fields = (savedItem ? savedItem : item).fields.map(field => new TextSavedItemField(field));
+	constructor(employeeCode: string, textSavedItemData: any, item: TextItem) {
+		super(employeeCode, textSavedItemData, item);
+		this.item = item;
+		this.fields = (textSavedItemData ? textSavedItemData : item).fields.map(field => new TextSavedItemDataField(field));
 	}
 
 	findValue(): string {
@@ -24,8 +26,10 @@ export class TextSavedItem extends SavedItem {
 		return this.findValue() !== undefined && this.findValue() !== '';
 	}
 
-	update(fields: TextSavedItemField[], employeeCode: string): void {
-		(this.item as TextItem).fields.forEach(field => {
+	update(fields: TextSavedItemDataField[], employeeCode: string): void {
+		// TODO Revisar añadido de fields
+		// (this.item as TextItem).fields.forEach(field => {
+		this.fields.forEach(field => {
 			const updateField = fields.find(f => f.order === field.order);
 			const existentField = this.fields.find(f => f.order === field.order);
 			if (existentField) {
@@ -38,8 +42,9 @@ export class TextSavedItem extends SavedItem {
 	}
 
 	reset(employeeCode: string): void {
-		this.fields = (this.item as TextItem).fields.map(field => new TextSavedItemField(field));
-		this.imageId = undefined;
+		this.fields = (this.item as TextItem).fields.map(field => new TextSavedItemDataField(field));
+		this.image = undefined;
+		// this.imageId = undefined;
 		this.updateCommonFields(employeeCode);
 	}
 

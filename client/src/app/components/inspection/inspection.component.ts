@@ -14,8 +14,8 @@ import { InspectionService } from '../../services/inspection.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { LegendComponent } from '../bottom-panel/legend/legend.component';
 import { SavedInspection } from '../../objects/inspections/saved-inspection';
-import { TextSavedItem } from '../../objects/inspections/saved-items/text-saved-item';
-import { SelectSavedItem } from '../../objects/inspections/saved-items/select-saved-item';
+import { TextSavedItemData } from '../../objects/inspections/saved-items/text-saved-item-data';
+import { SelectSavedItemData } from '../../objects/inspections/saved-items/select-saved-item-data';
 import { Employee } from '../../objects/employee';
 import { EmployeeService } from '../../services/employee.service';
 import { Order } from '../../objects/orders/order';
@@ -36,8 +36,8 @@ import { TextItem } from '../../objects/inspections/items/text-item';
 import { CameraComponent } from '../bottom-panel/camera/camera.component';
 import { SnackBarService } from '../../services/snack-bar.service';
 import { TextItemField } from '../../objects/inspections/items/text-item-field';
-import { TextAreaSavedItem } from '../../objects/inspections/saved-items/text-area-saved-item';
-import { TextSavedItemField } from '../../objects/inspections/saved-items/text-saved-item-field';
+import { TextAreaSavedItemData } from '../../objects/inspections/saved-items/text-area-saved-item-data';
+import { TextSavedItemDataField } from '../../objects/inspections/saved-items/text-saved-item-data-field';
 import { ItemType } from '../../objects/inspections/items/item-type';
 import { CompressService } from '../../services/compress.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -291,16 +291,16 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 		return this.findTextItemField(item).maxLength || Constants.TEXT_ITEM_MAX_LENGTH;
 	}
 
-	findSelectSavedItem(itemCode: string, savedInspection: SavedInspection = this.savedInspection): SelectSavedItem {
-		return savedInspection.items.find(savedItem => savedItem.code === itemCode) as SelectSavedItem;
+	findSelectSavedItem(itemCode: string): SelectSavedItemData {
+		return InspectionService.findSavedItem(itemCode).findData() as SelectSavedItemData;
 	}
 
-	findTextSavedItem(itemCode: string, savedInspection: SavedInspection = this.savedInspection): TextSavedItem {
-		return savedInspection.items.find(savedItem => savedItem.code === itemCode) as TextSavedItem;
+	findTextSavedItemData(itemCode: string): TextSavedItemData {
+		return InspectionService.findSavedItem(itemCode).findData() as TextSavedItemData;
 	}
 
-	findTextAreaSavedItem(itemCode: string, savedInspection: SavedInspection = this.savedInspection): TextAreaSavedItem {
-		return savedInspection.items.find(savedItem => savedItem.code === itemCode) as TextAreaSavedItem;
+	findTextAreaSavedItemData(itemCode: string): TextAreaSavedItemData {
+		return InspectionService.findSavedItem(itemCode).findData() as TextAreaSavedItemData;
 	}
 
 	checkSelectedOption(itemCode: string, optionCode: string): boolean {
@@ -328,16 +328,16 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	updateTextFields(item: Item): void {
-		const savedItem = this.findTextSavedItem(item.code);
+		const savedItem = this.findTextSavedItemData(item.code);
 		InspectionService.updateTextItem(item, savedItem.fields);
 	}
 
 	updateText(item: Item): void {
-		const savedItem = this.findTextAreaSavedItem(item.code);
+		const savedItem = this.findTextAreaSavedItemData(item.code);
 		InspectionService.updateTextAreaItem(item, savedItem.text);
 	}
 
-	updateSeparatorValue(item: Item, fields: TextSavedItemField[]): void {
+	updateSeparatorValue(item: Item, fields: TextSavedItemDataField[]): void {
 		InspectionService.updateTextItem(item, fields);
 	}
 
@@ -398,7 +398,7 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	checkExistentImage(itemCode: string): boolean {
-		return InspectionService.findSavedItem(itemCode).imageId !== undefined;
+		return InspectionService.findSavedItem(itemCode).findImage() !== undefined;
 	}
 
 	checkShowRestrictiveButton(item: Item): boolean {
@@ -408,7 +408,7 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	checkRestrictiveItem(item: Item): boolean {
-		return InspectionService.findSavedItem(item.code).restrictive;
+		return InspectionService.findSavedItem(item.code).findRestrictive();
 	}
 
 	checkSavingImage(itemCode: string, savingImagesCodes: string[] = this.savingImagesCodes): boolean {
@@ -453,7 +453,7 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	updateRestrictiveItem(item: Item): void {
 		const savedItem = InspectionService.findSavedItem(item.code);
-		InspectionService.updateRestrictive(savedItem, !savedItem.restrictive);
+		InspectionService.updateRestrictive(savedItem, !savedItem.findRestrictive());
 	}
 
 	openVersionDialog(): void {

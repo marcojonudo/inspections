@@ -47,7 +47,7 @@ export class PrintComponent {
 		this.images = [];
 		this.adviser = EmployeeService.findEmployee(this.order.sellerCode);
 		this.mechanics = InspectionService.inspectionHandler.findSavedItems(this.savedInspection)
-			.map(i => i.employeeCode)
+			.map(i => i.findEmployeeCode())
 			.filter((value, index, self) => value && self.indexOf(value) === index)
 			.map(employeeCode => EmployeeService.findEmployee(employeeCode));
 

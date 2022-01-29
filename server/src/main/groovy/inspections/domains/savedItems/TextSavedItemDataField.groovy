@@ -3,14 +3,15 @@ package inspections.domains.savedItems
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import grails.gorm.annotation.Entity
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
-class TextSavedItemField implements GormEntity<TextSavedItemField> {
+class TextSavedItemDataField implements GormEntity<TextSavedItemDataField> {
 
 	@JsonIgnore
-	TextSavedItem textSavedItem
+	TextSavedItemData textSavedItemData
 
 	String text
 	int order
@@ -21,10 +22,6 @@ class TextSavedItemField implements GormEntity<TextSavedItemField> {
 
 	static constraints = {
 		text nullable: true
-	}
-
-	boolean equals(TextSavedItemField textSavedItemField) {
-		return text == textSavedItemField.text
 	}
 
 }

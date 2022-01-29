@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.node.ArrayNode
 import groovy.transform.CompileStatic
-import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
 import inspections.pogos.logs.Jackson
 
@@ -24,12 +23,9 @@ class SavedItemsDeserializer extends StdDeserializer<Set<SavedItem>> {
 	@Override
 	Set<SavedItem> deserialize(JsonParser parser, DeserializationContext deserializationContext)
 			throws IOException, JsonProcessingException {
+		//TODO
 		ArrayNode node = (ArrayNode) parser.getCodec().readTree(parser)
-		Set<SavedItem> savedItems = node.collect {
-			Item.Type type = Item.Type.valueOf(it.get("type").asText())
-			return ((SavedItem) Jackson.convertValue(it, type.savedItemClazz))
-		}.toSet()
-		return savedItems
+		return node.collect { ((SavedItem) Jackson.convertValue(it, SavedItem)) }.toSet()
 	}
 
 }

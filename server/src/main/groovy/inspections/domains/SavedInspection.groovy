@@ -1,6 +1,5 @@
 package inspections.domains
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
@@ -13,8 +12,6 @@ import inspections.utils.Constants
 import inspections.utils.Utils
 import org.grails.datastore.gorm.GormEntity
 
-import java.time.LocalDateTime
-
 @Entity
 @TupleConstructor
 class SavedInspection implements GormEntity<SavedInspection> {
@@ -22,7 +19,6 @@ class SavedInspection implements GormEntity<SavedInspection> {
 	String inspectionTypeCode
 	String vehicle
 	int orderNumber
-	String employeeCode
 	String numberPlate
 	State state
 	boolean orderInspection
@@ -34,19 +30,20 @@ class SavedInspection implements GormEntity<SavedInspection> {
 	@JsonDeserialize(using = SavedItemsDeserializer)
 	Set<SavedItem> items
 
-	static hasMany = [items: SavedItem]
+	static hasMany = [items: SavedItem, data: SavedInspectionData]
 
 	static mapping = {
 		items fetch: 'join'
+		data fetch: 'join'
 	}
 
 	enum State {
 
 		STARTED({ Set<SavedItem> savedItems, List<Item> items ->
-			savedItems.find { Utils.findItem(it.code, items).required && !it.filled } as boolean
+			savedItems.find { Utils.findItem(it.code, items).required && !it.data } as boolean
 		}),
 		FINISHED({ Set<SavedItem> savedItems, List<Item> items ->
-			!savedItems.find { Utils.findItem(it.code, items).required && !it.filled } as boolean
+			!savedItems.find { Utils.findItem(it.code, items).required && !it.data } as boolean
 		})
 
 		final Closure<Boolean> check

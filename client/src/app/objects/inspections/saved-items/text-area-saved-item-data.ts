@@ -1,13 +1,13 @@
-import {SavedItem} from './saved-item';
 import { TextAreaItem } from '../items/text-area-item';
+import { SavedItemData } from './saved-item-data';
 
-export class TextAreaSavedItem extends SavedItem {
+export class TextAreaSavedItemData extends SavedItemData {
 
 	text: string;
 
-	constructor(item: TextAreaItem, employeeCode: string, savedItem: any) {
-		super(item, employeeCode, savedItem);
-		this.text = savedItem?.text;
+	constructor(employeeCode: string, textAreaSavedItemData: any, item: TextAreaItem) {
+		super(employeeCode, textAreaSavedItemData, item);
+		this.text = textAreaSavedItemData?.text;
 	}
 
 	findValue(): string {

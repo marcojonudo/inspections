@@ -95,7 +95,7 @@
 						<ng-container *ngIf="checkIndividualTextField(findTextItem(item)); else separatorInput">
 							<mat-select
 								*ngIf="findTextItemField(item).select; else textInput"
-								[(ngModel)]="findTextSavedItem(item.code).fields[0].text"
+								[(ngModel)]="findTextSavedItemData(item.code).fields[0].text"
 								(selectionChange)="updateTextFields(item)">
 								<mat-option
 									*ngFor="let option of findTextItemField(item).values | order"
@@ -109,7 +109,7 @@
 									[type]="findTextItemField(item).inputType"
 									[maxLength]="findTextItemFieldMaxLength(item)"
 									[placeholder]="findTextItemField(item).placeholder"
-									[(ngModel)]="findTextSavedItem(item.code).fields[0].text"
+									[(ngModel)]="findTextSavedItemData(item.code).fields[0].text"
 									(change)="updateTextFields(item)"
 									autocomplete="off">
 							</ng-template>
@@ -117,7 +117,7 @@
 						<ng-template #separatorInput>
 							<app-separator-input
 								[fields]="findTextItem(item).fields"
-								[model]="findTextSavedItem(item.code).fields"
+								[model]="findTextSavedItemData(item.code).fields"
 								(valueEmitter)="updateSeparatorValue(item, $event)">
 							</app-separator-input>
 						</ng-template>
@@ -132,7 +132,7 @@
 							cdkTextareaAutosize
 							cdkAutosizeMinRows="1"
 							cdkAutosizeMaxRows="5"
-							[(ngModel)]="findTextAreaSavedItem(item.code).text"
+							[(ngModel)]="findTextAreaSavedItemData(item.code).text"
 							(change)="updateText(item)">
 						</textarea>
 					</mat-form-field>
