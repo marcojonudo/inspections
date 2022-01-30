@@ -23,7 +23,7 @@ export class Builder {
 	static loadSavedInspection(savedInspection: any, items: Item[], employeeCode: string): SavedInspection {
 		const savedItems = items.map(item => {
 			const savedItem = savedInspection.items.find(i => i.code === item.code);
-			return ItemType.parse(item.type).buildSavedItem(item, employeeCode, savedItem);
+			return new SavedItem(item, employeeCode, savedItem);
 		});
 		return new SavedInspection(savedInspection, savedItems);
 	}

@@ -8,10 +8,16 @@ import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
+import inspections.domains.items.TextItem
+import inspections.domains.items.TextItemField
 import inspections.domains.savedItems.TextSavedItem
 import inspections.domains.savedItems.TextSavedItemField
 import inspections.pogos.logs.Log
-import inspections.services.data.*
+import inspections.services.data.InspectionVehicleDataService
+import inspections.services.data.SavedInspectionDataService
+import inspections.services.data.fviberi.CarDataService
+import inspections.services.data.fviberi.CentreDataService
+import inspections.services.data.fviberi.OrderDataService
 import inspections.utils.Builder
 import inspections.utils.Constants
 import inspections.utils.Utils
@@ -172,10 +178,11 @@ class InspectionService {
 	 * @param savedInspection Revisión guardada
 	 */
 	void updateItvDate(SavedInspection savedInspection, int centre) {
-		TextSavedItem savedItem = (TextSavedItem) savedInspection.items.find { it.code == Constants.Item.FPITV }
+		SavedItem savedItem = savedInspection.items.find { it.code == Constants.Item.FPITV }
 		/* En una anomalía detectada, podría no haber fecha de ITV */
 		if (savedItem) {
-			List<TextSavedItemField> fields = savedItem.fields.sort { it.order }
+            TextSavedItemData data = (TextSavedItemData) savedItem.data.max { it.saved }
+            List<TextSavedItemDataField> fields = data.fields.sort { it.order }
 			LocalDate day = findItvDate(fields)
 			if (day) {
 				carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
@@ -190,7 +197,7 @@ class InspectionService {
 	 * @param savedItem Item guardado
 	 * @return LocalDate
 	 */
-	static LocalDate findItvDate(List<TextSavedItemField> savedFields) {
+	static LocalDate findItvDate(List<TextSavedItemDataField> savedFields) {
 		LocalDate day = null
 		/* Se guarda la fecha de la ITV si todos los campos necesarios están rellenos */
 		boolean data = savedFields.size() == ITV_FIELDS_SIZE &&

@@ -279,7 +279,6 @@ export class InspectionService {
 			savedItem, savedItem.findValue(), relations, this.ITEM_RELATION_RESTORE_ACTION
 		).subscribe();
 		savedItem.findData(employee.code).update(value, employee.code);
-		console.log('toggle', savedItem);
 
 		return this.updateRelations(savedItem, savedItem.findValue(), relations, this.ITEM_RELATION_ACTION).pipe(
 			finalize(() => {
@@ -334,7 +333,6 @@ export class InspectionService {
 	): void {
 		const savedItem = savedInspection.items.find(i => i.item.name === item.name);
 		savedItem.findData(employee.code).update(text, employee.code);
-		console.log('text area item', savedItem);
 		if (updateStorage) {
 			LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 		}
@@ -346,7 +344,8 @@ export class InspectionService {
 		savedInspection: SavedInspection = this.savedInspection,
 		employee: Employee = EmployeeService.employee
 	): void {
-		savedItem.addImageId(imageId, employee.code);
+		// TODO imageId
+		savedItem.findData(employee.code, true).addImage(imageId, employee.code);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
@@ -581,16 +580,16 @@ export class InspectionService {
 	): Observable<any> {
 		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection, inspection.items);
 		console.log('Saving inspection', body);
+		const a = body.items.find(i => i.item.code === 'CT');
+		console.log('ct saved item', a);
 		return this.http.post(Url.inspection(), body, { headers: { centre: `${centre.code}` } }).pipe(
 			tap(
 				(data) => {
-					console.log('received', data);
+					console.log('Received saved inspection data', data);
 					const receivedSavedInspection = Builder.loadSavedInspection(
-						data, data.items.map(i => i.item), EmployeeService.employee.code
+						data, inspection.items, EmployeeService.employee.code
 					);
-					console.log('redeived', receivedSavedInspection);
-					const b = receivedSavedInspection.items.find(i => i.item.code === 'CT');
-					console.log('hola', b);
+					console.log('Received saved inspection', receivedSavedInspection);
 					body.fillSaved(receivedSavedInspection, employee.code);
 				},
 				(error) => {

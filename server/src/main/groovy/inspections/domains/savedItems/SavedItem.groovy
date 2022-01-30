@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import grails.gorm.annotation.Entity
 import inspections.deserializers.SavedItemDataDeserializer
 import inspections.domains.SavedInspection
-import inspections.domains.items.Item
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
@@ -32,7 +31,7 @@ class SavedItem implements GormEntity<SavedItem> {
 	}
 
 	static mapping = {
-		data fetch: 'join', column: 'saved_item_id'
+		data fetch: 'join'
 	}
 
 }

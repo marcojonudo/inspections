@@ -29,12 +29,11 @@ abstract class SavedItemData implements GormEntity<SavedItemData> {
 	@JsonDeserialize(using = LocalDateTimeDeserializer)
 	LocalDateTime saved = LocalDateTime.now()
 
-	static belongsTo = [savedItem: SavedItem]
+	static belongsTo = SavedItem
 
 	static mapping = {
 		tablePerHierarchy false
-//		savedItem fetch: 'join'
-		image fetch: 'join'
+		image lazy: false
 	}
 
 	static constraints = {

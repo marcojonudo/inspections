@@ -10,7 +10,7 @@ import inspections.domains.items.TextItem
 import inspections.domains.items.TextItemField
 import inspections.domains.savedItems.TextSavedItemField
 import inspections.services.data.InspectionVehicleDataService
-import inspections.services.data.OrderDataService
+import inspections.services.data.fviberi.OrderDataService
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
 import spock.lang.Shared

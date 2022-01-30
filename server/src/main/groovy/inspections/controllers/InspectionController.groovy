@@ -48,6 +48,7 @@ class InspectionController {
 		content = @Content(schema = @Schema(implementation = SavedInspection))
 	)
 	HttpResponse saveInspection(@Header int centre, @Body SavedInspection inspection) {
+		// TODO Añadir employee code
 		SavedInspection savedInspection = inspectionService.saveInspection(
 			inspection, inspection.orderNumber, inspection.employeeCode, centre
 		)

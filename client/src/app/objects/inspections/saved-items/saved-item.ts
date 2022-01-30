@@ -8,6 +8,7 @@ export class SavedItem {
 	type: string;
 	code: string;
 	item: Item;
+	itemCode: string;
 	data: SavedItemData[];
 
 	constructor(item: Item, employeeCode: string, savedItem: any) {
@@ -30,16 +31,29 @@ export class SavedItem {
 		return this.findData().isFilled();
 	}
 
-	findData(employeeCode: string = undefined): SavedItemData {
+	findData(employeeCode: string = undefined, replicate: boolean = false): SavedItemData {
 		if (employeeCode && this.data[this.data.length - 1].saved) {
-			this.addData(employeeCode);
+			this.addData(employeeCode, replicate);
 		}
 		return this.data[this.data.length - 1];
 	}
 
-	addData(employeeCode: string, item: Item = this.item): void {
+	addData(employeeCode: string, replicate: boolean, item: Item = this.item): void {
 		const itemType = ItemType.parse(item.type);
-		this.data.push(itemType.buildData(employeeCode, undefined, item));
+		let data;
+		if (replicate) {
+			data = this.replicateData(itemType, item, employeeCode);
+		} else {
+			data = itemType.buildData(employeeCode, undefined, item);
+		}
+		this.data.push(data);
+	}
+
+	replicateData(itemType: ItemType, item: Item, employeeCode: string): SavedItemData {
+		const lastData = this.findData();
+		const data = itemType.buildData(employeeCode, lastData, item)
+		data.saved = undefined;
+		return data;
 	}
 
 	findValue(): string {
@@ -72,7 +86,7 @@ export class SavedItem {
 	}
 
 	updateRestrictive(restrictive: boolean, employeeCode: string): void {
-		this.findData().updateRestrictive(restrictive, employeeCode);
+		this.findData(employeeCode, true).updateRestrictive(restrictive, employeeCode);
 	}
 
 	update(value: any, employeeCode: string): void {

@@ -23,9 +23,19 @@ abstract class SavedInspectionDataService {
 		Serializable id, String employeeCode, SavedInspection.State state, LocalDateTime saved
 	)
 
-	abstract SavedInspection update(
-		Serializable id, String inspectionTypeCode, boolean orderInspection, LocalDateTime saved
-	)
+    abstract SavedInspection update(
+        Serializable id, String inspectionTypeCode, boolean orderInspection, LocalDateTime saved
+    )
+
+	@Transactional
+	SavedInspection save(SavedInspection savedInspection) {
+		//TODO
+		savedInspection.data.each { it.savedInspection = savedInspection }
+		savedInspection.items.each { fillSavedItem(it, savedInspection) }
+		List<Item> items = itemDataService.findAll((List<String>) savedInspection.items.itemCode)
+		savedInspection.state = findState(savedInspection, items)
+		return saveSavedInspection(savedInspection)
+	}
 
 	SavedInspection update(SavedInspection savedInspection, SavedInspection existentSavedInspection) {
 		List<Item> items = itemDataService.findAll((List<String>) savedInspection.items.code)
@@ -35,7 +45,7 @@ abstract class SavedInspectionDataService {
 			.tap { it.savedInspection = existentSavedInspection }
 		existentSavedInspection.addToData(newSavedInspectionData)
 		savedInspection.items.each { SavedItem savedItem ->
-			SavedItem existentSavedItem = existentSavedInspection.items.find { it.item.code == savedItem.item.code }
+			SavedItem existentSavedItem = existentSavedInspection.items.find { it.itemCode == savedItem.itemCode }
 			/* Si el item no existe, se crea. Ocurre en anomalías detectadas, si después de guardar la revisión
 			 * completa rellena algún otro item*/
 			if (!existentSavedItem) {
@@ -48,15 +58,19 @@ abstract class SavedInspectionDataService {
 				existentSavedItem.addToData(data)
 			}
 		}
-		existentSavedInspection.state = SavedInspection.State.values().find {
-			((Closure<Boolean>) it.check)(savedInspection.items, items)
-		}
+		existentSavedInspection.state = findState(savedInspection, items)
 		return save(existentSavedInspection)
 	}
 
-	static SavedItem fillSavedItem(SavedItem savedItem, SavedInspection savedInspection) {
+	static void fillSavedItem(SavedItem savedItem, SavedInspection savedInspection) {
 		savedItem.savedInspection = savedInspection
 		savedItem.data.each { it.fill(savedItem) }
+	}
+
+	static SavedInspection.State findState(SavedInspection savedInspection, List<Item> items) {
+		return SavedInspection.State.values().find {
+			((Closure<Boolean>) it.check)(savedInspection.items, items)
+		}
 	}
 
 }
