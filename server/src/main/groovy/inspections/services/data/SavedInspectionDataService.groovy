@@ -1,7 +1,6 @@
 package inspections.services.data
 
 import grails.gorm.services.Service
-import grails.gorm.transactions.Transactional
 import inspections.domains.SavedInspection
 import inspections.domains.SavedInspectionData
 import inspections.domains.items.Item
