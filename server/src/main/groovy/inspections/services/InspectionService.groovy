@@ -1,6 +1,7 @@
 package inspections.services
 
 import groovy.transform.CompileStatic
+import inspections.clients.InspectionsManagementClient
 import inspections.domains.InspectionType
 import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
@@ -33,6 +34,8 @@ class InspectionService {
 	@Inject CarDataService carDataService
 	@Inject InspectionVehicleDataService inspectionVehicleDataService
 	@Inject SavedInspectionDataService savedInspectionDataService
+	@Inject SlackService slackService
+	@Inject InspectionsManagementClient inspectionsManagementClient
 
 	/**
 	 * Busca una orden asociada al código corto
@@ -114,10 +117,11 @@ class InspectionService {
 	 * @param inspection Revisión
 	 * @param orderNumber Número de orden
 	 * @param employeeCode Código del empleado que guarda la revisión
+	 * @param centre Código del centro
 	 * @return Revisión guardada
 	 */
-	SavedInspection saveInspection(SavedInspection savedInspection, int orderNumber, String employeeCode) {
-		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVING_INSPECTION]).toString())
+	SavedInspection saveInspection(SavedInspection savedInspection, int orderNumber, String employeeCode, int centre) {
+		LOG.info(new Log((Map) [savedInspection: savedInspection, message: Constants.Message.SAVING_INSPECTION]).toString())
 		SavedInspection newSavedInspection = null
 		try {
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
@@ -130,11 +134,13 @@ class InspectionService {
 				newSavedInspection = savedInspectionDataService.save(savedInspection)
 			}
 			updateItvDate(newSavedInspection)
+			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
 
 			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVED_INSPECTION]).toString())
 		} catch (all) {
 			all.printStackTrace()
 			LOG.error(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
+			slackService.sendMessage(Builder.Slack.buildSavedInspectionMessage(savedInspection, centre, all))
 		}
 		return newSavedInspection
 	}
@@ -145,11 +151,13 @@ class InspectionService {
 	 */
 	void updateItvDate(SavedInspection savedInspection) {
 		TextSavedItem savedItem = (TextSavedItem) savedInspection.items.find { it.item.code == Constants.Item.FPITV }
-		List<TextSavedItemField> fields = savedItem.fields.sort { it.order }
-		/* Sólo se actualiza la información de ITV si ambos campos tienen valor (mes y año) */
-		if (fields.findAll { it.text }.size() == fields.size()) {
-			LocalDate day = LocalDate.of(fields[1].text as int, fields[0].text as int, 1)
-			carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
+		if (savedItem) {
+			List<TextSavedItemField> fields = savedItem.fields.sort { it.order }
+			/* Sólo se actualiza la información de ITV si ambos campos tienen valor (mes y año) */
+			if (fields.findAll { it.text }.size() == fields.size()) {
+				LocalDate day = LocalDate.of(fields[1].text as int, fields[0].text as int, 1)
+				carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
+			}
 		}
 	}
 

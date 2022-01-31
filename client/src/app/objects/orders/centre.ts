@@ -1,5 +1,6 @@
 export class Centre {
 
+	code: number;
 	name: string;
 	addressLine1: string;
 	addressLine2: string;
@@ -7,6 +8,7 @@ export class Centre {
 	phoneNumber: string;
 
 	constructor(centre: any) {
+		this.code = parseInt(centre.code, 10);
 		this.name = centre.name.trim();
 		this.addressLine1 = centre.addressLine1.trim();
 		this.addressLine2 = centre.addressLine2?.trim();

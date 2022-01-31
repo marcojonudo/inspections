@@ -1,0 +1,3 @@
+- [.label-improvement]#En la hoja impresa de las revisiones de neumáticos, se muestran las imágenes en la misma
+página que el resumen.#
+- [.label-fix]#Se ajusta la posición del resumen en la hoja de impresión de patinetes.#

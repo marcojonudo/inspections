@@ -1,5 +1,5 @@
 <mat-toolbar
-	#clearStorage
+	#clearStorageElem
 	id="inspection-title"
 	class="mat-elevation-z3 no-print"
 	[class.detected-faults]="!inspection.orderInspection">
@@ -16,6 +16,10 @@
 		<button mat-menu-item (click)="openChangelog()">
 			<mat-icon>timeline</mat-icon>
 			<span translate>inspection.changelog</span>
+		</button>
+		<button mat-menu-item (click)="clearStorage()">
+			<mat-icon>cleaning_services</mat-icon>
+			<span translate>inspection.clearData</span>
 		</button>
 		<button mat-menu-item *ngIf="updateVersion" (click)="refresh()">
 			<mat-icon>upgrade</mat-icon>

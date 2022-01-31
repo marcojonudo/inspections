@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { from, Observable, of, throwError } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Url } from '../objects/url';
 import { Order } from '../objects/orders/order';
 import { InspectionVehicle } from '../objects/inspections/inspection-vehicle';
@@ -35,6 +35,7 @@ import { TextSavedItem } from '../objects/inspections/saved-items/text-saved-ite
 import { TextSavedItemField } from '../objects/inspections/saved-items/text-saved-item-field';
 import { ItemType } from '../objects/inspections/items/item-type';
 import { TextAreaSavedItem } from '../objects/inspections/saved-items/text-area-saved-item';
+import { Router } from '@angular/router';
 
 @Injectable({
 	providedIn: 'root'
@@ -87,7 +88,10 @@ export class InspectionService {
 	};
 
 	constructor(
-		private translate: TranslateService, private http: HttpClient, private snackBarService: SnackBarService
+		private translate: TranslateService,
+		private http: HttpClient,
+		private snackBarService: SnackBarService,
+		private router: Router
 	) {}
 
 	static setOrder(order: Order): Order {
@@ -402,6 +406,19 @@ export class InspectionService {
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
+	clearStorage(goBack: boolean = false): void {
+		LocalStorageService.clear();
+		this.snackBarService.open(Constants.MESSAGE_CODE.CLEARED_LOCAL_STORAGE);
+		if (goBack) {
+			this.goBack();
+		}
+	}
+
+	goBack(): void {
+		LocalStorageService.setItem(Constants.LOCAL_STORAGE.MANUAL_EXIT, true);
+		this.router.navigate([Constants.PATH.INIT]);
+	}
+
 	findLanguage(): Observable<string> {
 		const language = LocalStorageService.getItem(Constants.LOCAL_STORAGE.LANGUAGE);
 		return (language ? of(language) : this.http.get(Url.language(), { responseType: 'text' })).pipe(
@@ -469,14 +486,14 @@ export class InspectionService {
 	saveInspection(
 		savedInspection: SavedInspection,
 		inspection: InspectionVehicle = InspectionService.inspection,
-		employee: Employee = EmployeeService.employee
+		employee: Employee = EmployeeService.employee,
+		centre: Centre = InspectionService.centre
 	): Observable<any> {
 		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection, inspection.items);
 		body.employeeCode = employee.code;
 		body.saved = dayjs();
 		console.log('Saving inspection', body);
-		return this.http.post(Url.inspection(), body);
-		// return of(true);
+		return this.http.post(Url.inspection(), body, { headers: new HttpHeaders({ centre: `${centre.code}` }) });
 	}
 
 }

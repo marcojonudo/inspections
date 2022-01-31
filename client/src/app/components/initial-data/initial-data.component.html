@@ -1,6 +1,6 @@
 <mat-card (click)="setEmployeeFocus()">
 	<mat-card-header class="custom-card-header">
-		<mat-icon #clearStorage mat-card-avatar>account_circle</mat-icon>
+		<mat-icon #clearStorageElem mat-card-avatar>account_circle</mat-icon>
 		<mat-card-title translate>init.introduceEmployeeCode</mat-card-title>
 	</mat-card-header>
 	<mat-card-content>
@@ -44,3 +44,6 @@
 		</button>
 	</mat-card-actions>
 </mat-card>
+<button mat-stroked-button id="clear-button" color="primary" (click)="clearStorage()">
+	<span translate>inspection.clearData</span>
+</button>

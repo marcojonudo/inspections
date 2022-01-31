@@ -3,7 +3,9 @@ package inspections.domains.savedItems
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import grails.gorm.annotation.Entity
 import inspections.deserializers.ItemDeserializer
 import inspections.domains.Image
@@ -28,6 +30,7 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 
 	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
 	@JsonDeserialize(using = LocalDateTimeDeserializer)
+	@JsonSerialize(using = LocalDateTimeSerializer)
 	LocalDateTime filled
 
 	boolean restrictive

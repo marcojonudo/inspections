@@ -59,7 +59,7 @@ export class PrintComponent implements OnInit {
 		this.adviser = EmployeeService.findEmployee(this.order.sellerCode);
 		this.mechanics = InspectionService.inspectionHandler.findSavedItems(this.savedInspection)
 			.map(i => i.employeeCode)
-			.filter((value, index, self) => self.indexOf(value) === index)
+			.filter((value, index, self) => value && self.indexOf(value) === index)
 			.map(employeeCode => EmployeeService.findEmployee(employeeCode));
 	}
 
