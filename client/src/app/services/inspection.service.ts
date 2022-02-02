@@ -445,7 +445,10 @@ export class InspectionService {
 				console.log('Centre', centre);
 				messageCode = Constants.MESSAGE_CODE.NONEXISTENT_INSPECTIONS;
 				return this.findInspection(
-					order.number, Url.inspection(order.number), Constants.LOCAL_STORAGE.INSPECTION, employee.code
+					order.number,
+					Url.inspection(order.number, order.vehicleType),
+					Constants.LOCAL_STORAGE.INSPECTION,
+					employee.code
 				);
 			}),
 			concatMap(inspection => {

@@ -101,8 +101,10 @@ class InspectionController {
 		description = "Lista de revisiones",
 		content = @Content(schema = @Schema(implementation = InspectionVehicle))
 	)
-	InspectionVehicle findInspection(@Header String employeeCode, @QueryValue int orderNumber) {
-		return inspectionService.findInspection(orderNumber, employeeCode)
+	InspectionVehicle findInspection(
+		@Header String employeeCode, @QueryValue int orderNumber, @QueryValue String vehicle
+	) {
+		return inspectionService.findInspection(orderNumber, employeeCode, vehicle)
     }
 
 	@Post("/inspection")

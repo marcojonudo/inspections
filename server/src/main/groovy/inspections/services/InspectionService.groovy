@@ -61,10 +61,12 @@ class InspectionService {
 	 * @param orderNumber Número de orden
 	 * @return Revisión
 	 */
-	InspectionVehicle findInspection(int orderNumber, String employeeCode) {
+	InspectionVehicle findInspection(int orderNumber, String employeeCode, String vehicle) {
 		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, message: Constants.Message.SEARCHING_INSPECTION]).toString())
 		List<Integer> articles = orderDataService.find(orderNumber).lines*.articleCode.toList()
-		List<InspectionVehicle> inspectionsVehicle = inspectionVehicleDataService.findAll(articles)
+		List<InspectionVehicle> inspectionsVehicle = inspectionVehicleDataService.findAll(articles).findAll {
+			it.vehicle == vehicle
+		}
 
 		/* Si existen revisiones asociadas a los códigos de artículo de la OR, se construye una revisión a partir de
 		 * ellas. Si no, se obtiene por defecto una revisión de seguridad */

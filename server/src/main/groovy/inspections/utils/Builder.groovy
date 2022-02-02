@@ -21,7 +21,10 @@ class Builder {
 			it.vehicleData = it.vehicleDataList.find { it.vehicle == inspectionVehicle.vehicle }
 		}
 		return new InspectionVehicle(
-			inspectionVehicle.inspectionType, inspectionVehicle.vehicle, items.toSet(), orderInspection
+			inspectionVehicle.inspectionType,
+			inspectionVehicle.vehicle,
+			items.findAll { it.vehicleData }.toSet(),
+			orderInspection
 		)
 	}
 

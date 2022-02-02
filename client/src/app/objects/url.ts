@@ -6,8 +6,8 @@ export class Url {
 		return `${environment.serverUrl}/inspections/savedInspection?orderNumber=${orderNumber}&orderInspection=${orderInspection}`;
 	}
 
-	static inspection(orderNumber: number = undefined): string {
-		return `${environment.serverUrl}/inspections/inspection?orderNumber=${orderNumber}`;
+	static inspection(orderNumber: number = undefined, vehicleType: string = undefined): string {
+		return `${environment.serverUrl}/inspections/inspection?orderNumber=${orderNumber}&vehicle=${vehicleType}`;
 	}
 
 	static orderInfo(): string {
