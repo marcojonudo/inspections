@@ -164,8 +164,8 @@ export class PrintSheetComponent {
 		if (inspectionTypeCode === Constants.INSPECTION_TYPE.N) {
 			return false;
 		}
-		const gasCategory = this.checkCategoryElement(elem) && (elem as Category).code === 'G';
-		if (gasCategory) { return true; }
+		const brakeCategory = this.checkCategoryElement(elem) && (elem as Category).code === 'F';
+		if (brakeCategory) { return true; }
 		return !this.checkCategoryElement(elem) && (elem as SavedItem).item.code === 'C';
 	}
 
