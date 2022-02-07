@@ -69,10 +69,10 @@ export class Builder {
 		);
 	}
 
-	static loadSavedInspection(savedInspection: any, items: Item[]): SavedInspection {
+	static loadSavedInspection(savedInspection: any, items: Item[], employeeCode: string): SavedInspection {
 		const savedItems = items.map(item => {
 			const savedItem = savedInspection.items.find(i => i.item.code === item.code);
-			return this.savedItemBuilder[item.type](item, savedItem?.employeeCode, savedItem);
+			return this.savedItemBuilder[item.type](item, employeeCode, savedItem);
 		});
 		return new SavedInspection(
 			savedInspection.inspectionTypeCode,

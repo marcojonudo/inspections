@@ -16,6 +16,7 @@ export abstract class SavedItem {
 		this.item = item;
 		this.employeeCode = employeeCode;
 		if (savedItem) {
+			this.employeeCode = savedItem.employeeCode;
 			this.image = savedItem.image ? new CustomImage(savedItem.image.image, savedItem.image.landscape) : undefined;
 			this.filled = savedItem.filled ? dayjs(savedItem.filled) : undefined;
 			this.hidden = savedItem.hidden;
