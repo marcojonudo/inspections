@@ -120,7 +120,7 @@ export class InspectionService {
 
 	static initSavedInspection(savedInspection: any, inspection: InspectionVehicle = this.inspection): void {
 		this.savedInspection = savedInspection ?
-			Builder.loadSavedInspection(savedInspection, inspection.items) :
+			Builder.loadSavedInspection(savedInspection, inspection.items, EmployeeService.employee.code) :
 			Builder.buildSavedInspection(
 				inspection, EmployeeService.employee.code, this.order.number, this.order.vehicle.identifier
 			);
@@ -132,19 +132,21 @@ export class InspectionService {
 	static loadInfo(): boolean {
 		let loaded = false;
 		try {
+			EmployeeService.employee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEE);
+			EmployeeService.employees = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEES);
+
 			this.inspection = Builder.buildInspection(LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION));
 			this.inspectionHandler = this.inspection.orderInspection ?
 				new OrderInspectionHandler() : new DetectedFaultsHandler();
 			this.savedInspection = Builder.loadSavedInspection(
-				LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION), this.inspection.items
+				LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION),
+				this.inspection.items,
+				EmployeeService.employee.code
 			);
 
 			this.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
 			this.centre = LocalStorageService.getItem(Constants.LOCAL_STORAGE.CENTRE);
 			this.selectItemOptions = this.findSelectItemOptions();
-
-			EmployeeService.employee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEE);
-			EmployeeService.employees = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEES);
 
 			console.log('Order', this.order);
 			console.log('Centre', this.centre);

@@ -2,23 +2,23 @@ import {
 	AfterViewInit,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
-	Component, ElementRef, OnInit,
+	Component, ElementRef, HostListener, OnInit,
 	ViewChild
 } from '@angular/core';
-import {EmployeeService} from '../../services/employee.service';
-import {Employee} from '../../objects/employee';
-import {Constants} from '../../objects/constants';
-import {buffer, debounceTime, exhaustMap, filter, finalize, map} from 'rxjs/operators';
-import {InspectionService} from '../../services/inspection.service';
-import {FormControl, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MatInput} from '@angular/material/input';
-import {LoadingService} from '../../services/loading.service';
-import {inOutAnimation, inOutTranslateAnimation} from '../../animations';
-import {LocalStorageService} from '../../services/local-storage.service';
-import {fromEvent, Observable} from 'rxjs';
-import {TranslateService} from '@ngx-translate/core';
-import {SnackBarService} from '../../services/snack-bar.service';
+import { EmployeeService } from '../../services/employee.service';
+import { Employee } from '../../objects/employee';
+import { Constants } from '../../objects/constants';
+import { finalize } from 'rxjs/operators';
+import { InspectionService } from '../../services/inspection.service';
+import { FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatInput } from '@angular/material/input';
+import { LoadingService } from '../../services/loading.service';
+import { inOutAnimation, inOutTranslateAnimation } from '../../animations';
+import { LocalStorageService } from '../../services/local-storage.service';
+import { fromEvent, Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackBarService } from '../../services/snack-bar.service';
 
 @Component({
 	selector: 'app-initial-data',
@@ -41,6 +41,13 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 
 	searchingInspections: boolean;
 	clearStorageCounter: number;
+	refHeight: number;
+	hideClearButton: boolean;
+
+	@HostListener('window:resize', ['$event'])
+	onResize() {
+		this.hideClearButton = window.innerHeight < this.refHeight;
+	}
 
 	constructor(
 		private inspectionService: InspectionService,
@@ -60,6 +67,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		);
 		this.orderCode = new FormControl('', [Validators.required]);
 		this.clearStorageCounter = 0;
+		this.refHeight = window.innerHeight;
 	}
 
 	ngOnInit(): void {

@@ -44,6 +44,6 @@
 		</button>
 	</mat-card-actions>
 </mat-card>
-<button mat-stroked-button id="clear-button" color="primary" (click)="clearStorage()">
+<button mat-stroked-button id="clear-button" color="primary" (click)="clearStorage()" [class.hidden]="hideClearButton">
 	<span translate>inspection.clearData</span>
 </button>
