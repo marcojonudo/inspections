@@ -114,12 +114,22 @@
 			width: 100%
 
 		.camera-button
+			display: flex
 			position: absolute
-			right: 0
+			right: $small-gap
 			color: $dark-grey
 
-			&.picture
+			&.existent-image
 				color: $light-green !important
+
+				label
+					pointer-events: none
+
+			label
+				@include flex-center
+
+			input
+				display: none
 
 		.restrictive-button
 			position: absolute

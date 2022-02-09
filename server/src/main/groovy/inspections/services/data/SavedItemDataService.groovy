@@ -2,7 +2,6 @@ package inspections.services.data
 
 import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
-import inspections.domains.Image
 import inspections.domains.savedItems.SavedItem
 
 import javax.inject.Inject
@@ -16,30 +15,30 @@ abstract class SavedItemDataService {
 	@Inject SelectSavedItemDataService selectSavedItemDataService
 	@Inject TextAreaSavedItemDataService textAreaSavedItemDataService
 
+	abstract SavedItem find(Long imageId)
+
 	abstract SavedItem update(
-		Serializable id, String employeeCode, boolean hidden, boolean restrictive, LocalDateTime filled
+		Serializable id, String employeeCode, boolean hidden, boolean restrictive, Long imageId, LocalDateTime filled
 	)
 
-	abstract SavedItem update(Serializable id, Image image)
+	abstract SavedItem update(Serializable id, Long imageId)
 
 	abstract SavedItem save(SavedItem savedItem)
 
 	@Transactional
 	SavedItem update(SavedItem existent, SavedItem savedItem) {
-		update(existent.id, savedItem.employeeCode, savedItem.hidden, savedItem.restrictive, savedItem.filled)
-		if (existent.image != savedItem.image) {
-			updateImage(existent, savedItem.image)
+		update(
+			existent.id,
+			savedItem.employeeCode,
+			savedItem.hidden,
+			savedItem.restrictive,
+			savedItem.imageId,
+			savedItem.filled
+		)
+		if (existent.imageId && !savedItem.imageId) {
+			imageDataService.delete(existent.imageId)
 		}
 		return ((Closure<SavedItem>) savedItem.item.type.updateSavedItem)(existent, savedItem, this)
-	}
-
-	void updateImage(SavedItem existent, Image image) {
-		if (image) {
-			existent.image ? imageDataService.update(existent.image.id, image.image, image.landscape) : update(existent.id, image)
-		} else {
-			update(existent.id, null)
-			imageDataService.delete(existent.image.id)
-		}
 	}
 
 }

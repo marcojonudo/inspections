@@ -59,9 +59,11 @@ class InspectionService {
 	/**
 	 * Busca la revisión asociada al número de orden
 	 * @param orderNumber Número de orden
+	 * @param employeeCode Código de empleado
+	 * @param numberPlate Identificador del vehículo
 	 * @return Revisión
 	 */
-	InspectionVehicle findInspection(int orderNumber, String employeeCode, String vehicle) {
+	InspectionVehicle findInspection(int orderNumber, String employeeCode, String vehicle, String numberPlate) {
 		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, message: Constants.Message.SEARCHING_INSPECTION]).toString())
 		List<Integer> articles = orderDataService.find(orderNumber).lines*.articleCode.toList()
 		List<InspectionVehicle> inspectionsVehicle = inspectionVehicleDataService.findAll(articles).findAll {
@@ -81,8 +83,29 @@ class InspectionService {
 				securityInspectionVehicle, securityInspectionVehicle.items.toList(), false
 			)
 		}
+		saveStartedSavedInspection(orderNumber, inspectionVehicle, employeeCode, numberPlate)
 		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionVehicle.inspectionType.code, vehicle: inspectionVehicle.vehicle, orderInspection: inspectionVehicle.orderInspection, message: Constants.Message.FINISHED_SEARCHING_INSPECTION]).toString())
 		return inspectionVehicle
+	}
+
+	/**
+	 * Guarda una revisión empezada en base de datos al abrir la misma por primera vez
+	 * @param orderNumber Número de orden
+	 * @param inspectionVehicle Revisión
+	 * @param employeeCode Código de empleado
+	 * @param numberPlate Identificador de vehículo
+	 * @return
+	 */
+	SavedInspection saveStartedSavedInspection(
+		int orderNumber, InspectionVehicle inspectionVehicle, String employeeCode, String numberPlate
+	) {
+		SavedInspection savedInspection = savedInspectionDataService.find(orderNumber)
+		if (!savedInspection) {
+			savedInspection = savedInspectionDataService.saveSavedInspection(
+				Builder.buildSavedInspection(inspectionVehicle, orderNumber, employeeCode, numberPlate)
+			)
+		}
+		return savedInspection
 	}
 
 	/**
@@ -105,6 +128,10 @@ class InspectionService {
 	 */
 	SavedInspection findSavedInspection(int orderNumber, boolean orderInspection) {
 		SavedInspection savedInspection = savedInspectionDataService.find(orderNumber)
+		/* Si sólo se ha guardado la revisión al obtenerla -no al completar los items-, estará guardada sin items.
+		 * A efectos prácticos, es como si no hubiera revisión guardada */
+		savedInspection = savedInspection.items ? savedInspection : null
+
 		/* Puede darse el caso de que metan un CI de revisión (en cuyo caso, cuando la guarden, el bit orderInspection
 		 * será true), y después quiten o cambien dicho CI. En esta situación, la revisión pasará a ser de anomalías
 		 * detectadas, y deberá actualizarse el bit en BD */
@@ -129,12 +156,7 @@ class InspectionService {
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
 			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, existent: existent as boolean, message: Constants.Message.EXISTENT_INSPECTION]).toString())
 
-			/* Si existe una revisión para ese número de serie, se actualizan los elementos */
-			if (existent) {
-				newSavedInspection = savedInspectionDataService.update(savedInspection, existent)
-			} else {
-				newSavedInspection = savedInspectionDataService.save(savedInspection)
-			}
+			newSavedInspection = savedInspectionDataService.update(savedInspection, existent)
 			updateItvDate(newSavedInspection)
 			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
 

@@ -1,8 +1,8 @@
 package inspections.services.data
 
 import grails.gorm.services.Service
-import grails.gorm.transactions.Transactional
 import inspections.domains.SavedInspection
+import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
 
 import javax.inject.Inject
@@ -12,7 +12,6 @@ abstract class SavedInspectionDataService {
 
 	@Inject ItemDataService itemDataService
 	@Inject SavedItemDataService savedItemDataService
-	@Inject ItemVehicleDataDataService itemVehicleDataDataService
 
 	abstract SavedInspection find(int orderNumber)
 
@@ -22,20 +21,12 @@ abstract class SavedInspectionDataService {
 
 	abstract SavedInspection update(Serializable id, boolean orderInspection)
 
-	@Transactional
-	SavedInspection save(SavedInspection savedInspection) {
-		savedInspection.items.each { fillSavedItem(it, savedInspection) }
-		savedInspection.state = SavedInspection.State.values().find {
-			((Closure<Boolean>) it.check)(savedInspection.items)
-		}
-		return saveSavedInspection(savedInspection)
-	}
-
 	SavedInspection update(SavedInspection savedInspection, SavedInspection existentSavedInspection) {
+		List<Item> items = itemDataService.findAll((List<String>) savedInspection.items.item.code)
 		savedInspection.items.each { SavedItem savedItem ->
 			SavedItem existentSavedItem = existentSavedInspection.items.find { it.item.code == savedItem.item.code }
 			if (!existentSavedItem) {
-				fillSavedItem(savedItem, existentSavedInspection)
+				fillSavedItem(savedItem, existentSavedInspection, items)
 				savedItemDataService.save(savedItem)
 			} else if (savedItem != existentSavedItem) {
 				savedItemDataService.update(existentSavedItem, savedItem)
@@ -47,10 +38,11 @@ abstract class SavedInspectionDataService {
 		return update(existentSavedInspection.id, state)
 	}
 
-	void fillSavedItem(SavedItem savedItem, SavedInspection savedInspection) {
+	static SavedItem fillSavedItem(SavedItem savedItem, SavedInspection savedInspection, List<Item> items) {
 		savedItem.savedInspection = savedInspection
-		savedItem.item = itemVehicleDataDataService.find(savedItem.item.code)
+		savedItem.item = items.find { it.code == savedItem.item.code }
 		savedItem.fillRelations()
+		return savedItem
 	}
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import grails.gorm.annotation.Entity
+import groovy.transform.TupleConstructor
 import inspections.deserializers.SavedItemsDeserializer
 import inspections.domains.savedItems.SavedItem
 import inspections.utils.Constants
@@ -13,6 +14,7 @@ import org.grails.datastore.gorm.GormEntity
 import java.time.LocalDateTime
 
 @Entity
+@TupleConstructor
 class SavedInspection implements GormEntity<SavedInspection> {
 
 	String inspectionTypeCode

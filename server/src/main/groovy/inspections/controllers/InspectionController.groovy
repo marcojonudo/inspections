@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 
+import javax.annotation.Nullable
 import javax.inject.Inject
 
 @Controller("/inspections")
@@ -102,9 +103,12 @@ class InspectionController {
 		content = @Content(schema = @Schema(implementation = InspectionVehicle))
 	)
 	InspectionVehicle findInspection(
-		@Header String employeeCode, @QueryValue int orderNumber, @QueryValue String vehicle
+		@Header String employeeCode,
+		@Header @Nullable String numberPlate,
+		@QueryValue int orderNumber,
+		@QueryValue vehicle
 	) {
-		return inspectionService.findInspection(orderNumber, employeeCode, vehicle)
+		return inspectionService.findInspection(orderNumber, employeeCode, vehicle, numberPlate)
     }
 
 	@Post("/inspection")

@@ -28,7 +28,7 @@ import { LocalStorageService } from '../../services/local-storage.service';
 import { ListElement } from '../../objects/list-elements/list-element';
 import { Category } from '../../objects/list-elements/category';
 import { fromEvent, Observable } from 'rxjs';
-import { debounceTime, filter, tap } from 'rxjs/operators';
+import { concatMap, debounceTime, filter, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { VersionService } from '../../services/version.service';
 import { Url } from '../../objects/url';
@@ -39,6 +39,7 @@ import { TextItemField } from '../../objects/inspections/items/text-item-field';
 import { TextAreaSavedItem } from '../../objects/inspections/saved-items/text-area-saved-item';
 import { TextSavedItemField } from '../../objects/inspections/saved-items/text-saved-item-field';
 import { ItemType } from '../../objects/inspections/items/item-type';
+import { CompressService } from '../../services/compress.service';
 
 @Component({
 	selector: 'app-inspection',
@@ -61,11 +62,14 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	openedCategories: string[];
 	openedMenu: boolean;
 	refreshed: boolean;
+	landscape: boolean;
 
 	version: string;
 	updateVersion: boolean;
 
 	versionInterval: any;
+
+	savingImagesCodes: string[];
 
 	@HostListener(Constants.EVENT.TOUCH_END, ['$event'])
 	onTouchEnd(event): void {
@@ -82,7 +86,8 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		private dialog: MatDialog,
 		private snackBarService: SnackBarService,
 		private router: Router,
-		private cdRef: ChangeDetectorRef
+		private cdRef: ChangeDetectorRef,
+		private compressService: CompressService
 	) {
 		this.listElements = InspectionService.findGroupedItems(this.inspection.items);
 		console.log('List elements', this.listElements);
@@ -91,6 +96,9 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 
 		this.version = LocalStorageService.getItem(Constants.LOCAL_STORAGE.VERSION);
 		this.refreshed = false;
+		this.savingImagesCodes = [];
+
+		window.addEventListener(Constants.EVENT.DEVICE_MOTION, (event) => this.watchDeviceMotion(event));
 
 		const resetEmployee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE);
 		if (resetEmployee) {
@@ -163,6 +171,10 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	// endregion
+
+	watchDeviceMotion(event: DeviceMotionEvent): void {
+		this.landscape = event.accelerationIncludingGravity.y < event.accelerationIncludingGravity.x;
+	}
 
 	setResetEmployeeTimeout(): void {
 		clearTimeout(InspectionService.lockTimeout);
@@ -375,7 +387,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	checkExistentImage(itemCode: string): boolean {
-		return InspectionService.findSavedItem(itemCode).image !== undefined;
+		return InspectionService.findSavedItem(itemCode).imageId !== undefined;
 	}
 
 	checkShowRestrictiveButton(item: Item): boolean {
@@ -388,9 +400,36 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 		return InspectionService.findSavedItem(item.code).restrictive;
 	}
 
-	openCamera(itemCode: string): void {
+	checkSavingImage(itemCode: string, savingImagesCodes: string[] = this.savingImagesCodes): boolean {
+		return savingImagesCodes.find(code => code === itemCode) !== undefined;
+	}
+
+	checkOpenCamera(itemCode: string): void {
 		const savedItem = InspectionService.findSavedItem(itemCode);
-		this.bottomSheet.open(CameraComponent, { data: savedItem });
+		if (savedItem.imageId) {
+			const ref = this.bottomSheet.open(
+				CameraComponent, { data: { imageId: savedItem.imageId, itemCode } }
+			);
+			ref.afterDismissed().subscribe((deleted: boolean) => {
+				if (deleted) {
+					this.cdRef.detectChanges();
+				}
+			});
+		}
+	}
+
+	addImage(event, itemCode: string, landscape: boolean = this.landscape): void {
+		this.savingImagesCodes.push(itemCode);
+		const image = event.target.files[0];
+		this.compressService.compress(image).pipe(
+			take(1),
+			concatMap(compressedImage =>
+				this.inspectionService.uploadImage(compressedImage, itemCode, landscape)
+			)
+		).subscribe(() => {
+			this.savingImagesCodes = this.savingImagesCodes.filter(code => code !== itemCode);
+			this.cdRef.detectChanges();
+		});
 	}
 
 	handleFillInspection(click$: Observable<any>): void {

@@ -11,6 +11,8 @@ import inspections.pogos.slack.structure.blocks.SlackFieldsBlock
 import inspections.pogos.slack.structure.elements.SlackBaseElem
 import inspections.pogos.slack.structure.elements.SlackMarkdownElem
 
+import java.time.LocalDateTime
+
 @CompileStatic
 class Builder {
 
@@ -25,6 +27,21 @@ class Builder {
 			inspectionVehicle.vehicle,
 			items.findAll { it.vehicleData }.toSet(),
 			orderInspection
+		)
+	}
+
+	static SavedInspection buildSavedInspection(
+		InspectionVehicle inspection, int orderNumber, String employeeCode, String numberPlate
+	) {
+		return new SavedInspection(
+			inspection.inspectionType.code,
+			inspection.vehicle,
+			orderNumber,
+			employeeCode,
+			numberPlate,
+			SavedInspection.State.STARTED,
+			inspection.orderInspection,
+			LocalDateTime.now()
 		)
 	}
 

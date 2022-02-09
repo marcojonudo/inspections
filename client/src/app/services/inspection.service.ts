@@ -367,13 +367,13 @@ export class InspectionService {
 		}
 	}
 
-	static updateImage(
+	static updateImageId(
 		savedItem: SavedItem,
-		image: CustomImage,
+		imageId: number,
 		savedInspection: SavedInspection = this.savedInspection,
 		employee: Employee = EmployeeService.employee
 	): void {
-		savedItem.addImage(image, employee.code);
+		savedItem.addImageId(imageId, employee.code);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
@@ -448,7 +448,8 @@ export class InspectionService {
 					order.number,
 					Url.inspection(order.number, order.vehicleType),
 					Constants.LOCAL_STORAGE.INSPECTION,
-					employee.code
+					employee.code,
+					order.vehicle.identifier
 				);
 			}),
 			concatMap(inspection => {
@@ -478,14 +479,42 @@ export class InspectionService {
 		return this.http.get(url, { headers: { employeeCode } });
 	}
 
-	findInspection(orderNumber: number, url: string, localStorageKey: string, employeeCode: string): Observable<any> {
+	findInspection(
+		orderNumber: number, url: string, localStorageKey: string, employeeCode: string, numberPlate: string = ''
+	): Observable<any> {
 		const loaded = InspectionService.checkLocalInspection(orderNumber);
 		if (loaded) {
 			const existentInspection = LocalStorageService.getItem(localStorageKey);
 			return of(existentInspection);
 		} else {
-			return this.http.get(url, { headers: { employeeCode } });
+			return this.http.get(url, { headers: { employeeCode, numberPlate } });
 		}
+	}
+
+	uploadImage(
+		file: File, itemCode: string, landscape: boolean, order: Order = InspectionService.order
+	): Observable<any> {
+		const formData = new FormData();
+		formData.append('image', file);
+
+		const url = `${Url.images()}?orderNumber=${order.number}&itemCode=${itemCode}&landscape=${landscape}`;
+		return this.http.post(url, formData).pipe(
+			tap((savedImage: any) => {
+				const savedItem = InspectionService.findSavedItem(itemCode);
+				InspectionService.updateImageId(savedItem, savedImage.id);
+			}),
+			catchError(() => {
+				this.snackBarService.open(
+					Constants.MESSAGE_CODE.ERROR_SAVING_IMAGE, Constants.SNACK_BAR.TYPE.WARNING
+				);
+				return of(true);
+			}),
+		);
+	}
+
+	removeImage(imageId: number, itemCode: string): void {
+		const savedItem = InspectionService.findSavedItem(itemCode);
+		InspectionService.updateImageId(savedItem, undefined);
 	}
 
 	saveInspection(
