@@ -106,7 +106,7 @@ class InspectionController {
 		@Header String employeeCode,
 		@Header @Nullable String numberPlate,
 		@QueryValue int orderNumber,
-		@QueryValue vehicle
+		@QueryValue String vehicle
 	) {
 		return inspectionService.findInspection(orderNumber, employeeCode, vehicle, numberPlate)
     }

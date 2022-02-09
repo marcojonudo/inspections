@@ -2,7 +2,7 @@ import {
 	AfterViewInit,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
-	Component, ElementRef, HostListener, OnInit,
+	Component, ElementRef, HostListener, OnDestroy, OnInit,
 	ViewChild
 } from '@angular/core';
 import { InspectionVehicle } from '../../objects/inspections/inspection-vehicle';
@@ -27,7 +27,7 @@ import { ResetEmployeeDialogComponent } from '../reset-employee-dialog/reset-emp
 import { LocalStorageService } from '../../services/local-storage.service';
 import { ListElement } from '../../objects/list-elements/list-element';
 import { Category } from '../../objects/list-elements/category';
-import { fromEvent, Observable } from 'rxjs';
+import { fromEvent, Observable, Subscription } from 'rxjs';
 import { concatMap, debounceTime, filter, take, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { VersionService } from '../../services/version.service';
@@ -47,7 +47,7 @@ import { CompressService } from '../../services/compress.service';
 	styleUrls: ['./inspection.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InspectionComponent implements OnInit, AfterViewInit {
+export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	@ViewChild('toolBar') toolBar: ElementRef;
 	@ViewChild(MatList, { read: ElementRef }) itemsList: ElementRef;
@@ -70,6 +70,7 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	versionInterval: any;
 
 	savingImagesCodes: string[];
+	employeeSubscription: Subscription;
 
 	@HostListener(Constants.EVENT.TOUCH_END, ['$event'])
 	onTouchEnd(event): void {
@@ -120,7 +121,14 @@ export class InspectionComponent implements OnInit, AfterViewInit {
 	}
 
 	ngOnInit(): void {
+		this.employeeSubscription = InspectionService.employee$.subscribe(() => {
+			this.cdRef.detectChanges();
+		});
 		this.handleVersion(false);
+	}
+
+	ngOnDestroy(): void {
+		this.employeeSubscription.unsubscribe();
 	}
 
 	ngAfterViewInit(): void {

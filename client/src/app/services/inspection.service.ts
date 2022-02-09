@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from, Observable, of, throwError } from 'rxjs';
+import { from, Observable, of, Subject, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Url } from '../objects/url';
 import { Order } from '../objects/orders/order';
@@ -30,12 +30,13 @@ import { PortugalHandler } from '../objects/country-info/portugal-handler';
 import { InspectionHandler } from '../objects/inspection-handler/inspection-handler';
 import { OrderInspectionHandler } from '../objects/inspection-handler/order-inspection-handler';
 import { DetectedFaultsHandler } from '../objects/inspection-handler/detected-faults-handler';
-import { CustomImage } from '../objects/inspections/custom-image';
 import { TextSavedItem } from '../objects/inspections/saved-items/text-saved-item';
 import { TextSavedItemField } from '../objects/inspections/saved-items/text-saved-item-field';
 import { ItemType } from '../objects/inspections/items/item-type';
 import { TextAreaSavedItem } from '../objects/inspections/saved-items/text-area-saved-item';
 import { Router } from '@angular/router';
+import { ResetEmployeeDialogComponent } from '../components/reset-employee-dialog/reset-employee-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
 	providedIn: 'root'
@@ -87,12 +88,19 @@ export class InspectionService {
 		pt: new PortugalHandler()
 	};
 
+	static employeeSubject: Subject<Employee>;
+	static employee$: Observable<Employee>;
+
 	constructor(
 		private translate: TranslateService,
 		private http: HttpClient,
 		private snackBarService: SnackBarService,
-		private router: Router
-	) {}
+		private router: Router,
+		private dialog: MatDialog
+	) {
+		InspectionService.employeeSubject = new Subject<Employee>();
+		InspectionService.employee$ = InspectionService.employeeSubject.asObservable();
+	}
 
 	static setOrder(order: Order): Order {
 		this.order = order;
@@ -127,41 +135,6 @@ export class InspectionService {
 
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, this.savedInspection);
 		console.log('Saved inspection', this.savedInspection);
-	}
-
-	static loadInfo(): boolean {
-		let loaded = false;
-		try {
-			EmployeeService.employee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEE);
-			EmployeeService.employees = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEES);
-
-			this.inspection = Builder.buildInspection(LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION));
-			this.inspectionHandler = this.inspection.orderInspection ?
-				new OrderInspectionHandler() : new DetectedFaultsHandler();
-			this.savedInspection = Builder.loadSavedInspection(
-				LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION),
-				this.inspection.items,
-				EmployeeService.employee.code
-			);
-
-			this.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
-			this.centre = LocalStorageService.getItem(Constants.LOCAL_STORAGE.CENTRE);
-			this.selectItemOptions = this.findSelectItemOptions();
-
-			console.log('Order', this.order);
-			console.log('Centre', this.centre);
-			console.log('Inspection', this.inspection);
-			console.log('Saved inspection', this.savedInspection);
-			console.log('Employees', EmployeeService.employees);
-			console.log('Selected employee', EmployeeService.employee);
-			console.log('Select item options', this.selectItemOptions);
-			loaded = true;
-		} catch (error) {
-			console.error('Error loading data', error);
-			console.log('Clearing local storage');
-			LocalStorageService.clear();
-		}
-		return loaded;
 	}
 
 	static checkLocalInspection(orderNumber: number): boolean {
@@ -406,6 +379,52 @@ export class InspectionService {
 			itemType.update(item, itemType.findDefaultValue(item));
 		});
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
+	}
+
+	loadInfo(): boolean {
+		let loaded = false;
+		try {
+			EmployeeService.employee = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEE);
+			if (!EmployeeService.employee) {
+				const dialogRef = this.dialog.open(ResetEmployeeDialogComponent);
+				dialogRef.afterClosed().subscribe(() => {
+					InspectionService.savedInspection = Builder.loadSavedInspection(
+						LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION),
+						InspectionService.inspection.items,
+						EmployeeService.employee.code
+					);
+					InspectionService.employeeSubject.next(EmployeeService.employee);
+				});
+			}
+			EmployeeService.employees = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEES);
+
+			InspectionService.inspection = Builder.buildInspection(LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION));
+			InspectionService.inspectionHandler = InspectionService.inspection.orderInspection ?
+				new OrderInspectionHandler() : new DetectedFaultsHandler();
+			InspectionService.savedInspection = Builder.loadSavedInspection(
+				LocalStorageService.getItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION),
+				InspectionService.inspection.items,
+				EmployeeService.employee ? EmployeeService.employee.code : ''
+			);
+
+			InspectionService.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
+			InspectionService.centre = LocalStorageService.getItem(Constants.LOCAL_STORAGE.CENTRE);
+			InspectionService.selectItemOptions = InspectionService.findSelectItemOptions();
+
+			console.log('Order', InspectionService.order);
+			console.log('Centre', InspectionService.centre);
+			console.log('Inspection', InspectionService.inspection);
+			console.log('Saved inspection', InspectionService.savedInspection);
+			console.log('Employees', EmployeeService.employees);
+			console.log('Selected employee', EmployeeService.employee);
+			console.log('Select item options', InspectionService.selectItemOptions);
+			loaded = true;
+		} catch (error) {
+			console.error('Error loading data', error);
+			console.log('Clearing local storage');
+			LocalStorageService.clear();
+		}
+		return loaded;
 	}
 
 	clearStorage(goBack: boolean = false): void {

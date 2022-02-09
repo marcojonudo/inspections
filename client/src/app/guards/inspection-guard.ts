@@ -9,7 +9,7 @@ import {InspectionService} from '../services/inspection.service';
 })
 export class InspectionGuard implements CanActivate {
 
-	constructor(private router: Router) {}
+	constructor(private inspectionService: InspectionService, private router: Router) {}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
 		if (InspectionService.inspection) {
@@ -17,7 +17,7 @@ export class InspectionGuard implements CanActivate {
 		}
 		const inspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION);
 		if (inspection) {
-			const loaded = InspectionService.loadInfo();
+			const loaded = this.inspectionService.loadInfo();
 			if (loaded) {
 				return true;
 			}

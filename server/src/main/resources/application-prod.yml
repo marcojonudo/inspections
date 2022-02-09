@@ -10,7 +10,7 @@ micronaut:
 slack:
     channel:
         id:
-            supplier-orders: C030E5NV08K
+            inspections: C030E5NV08K
 
 database:
     credentials:
