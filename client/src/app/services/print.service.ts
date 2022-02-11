@@ -7,8 +7,6 @@ import { Constants } from '../objects/constants';
 })
 export class PrintService {
 
-	headerMechanicLines: number;
-
 	constructor(private router: Router) {}
 
 	print(): void {

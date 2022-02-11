@@ -42,7 +42,7 @@ class ImageController {
     @ApiResponse(
         responseCode = "201",
         description = "Imagen guardada correctamente",
-        content = @Content(array = @ArraySchema(schema = @Schema(implementation = Image)))
+        content = @Content(mediaType = "multipart/form-data")
     )
     Image saveImage(
         @QueryValue int orderNumber,
@@ -51,6 +51,20 @@ class ImageController {
         @Body CompletedFileUpload image
     ) {
         return imageDataService.save(orderNumber, itemCode, image.bytes, landscape)
+    }
+
+    @Get
+    @Operation(
+        summary = "Obtiene una lista de imágenes",
+        description = "Obtiene una lista de imágenes"
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "Imágenes obtenidas correctamente",
+        content = @Content(array = @ArraySchema(schema = @Schema(implementation = Image)))
+    )
+    List<Image> findImages(@QueryValue List<Long> ids) {
+        return imageDataService.findAll(ids)
     }
 
 }

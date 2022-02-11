@@ -9,7 +9,6 @@ export abstract class SavedItem {
 	employeeCode: string;
 	hidden: boolean;
 	imageId: number;
-	image: CustomImage;
 	filled: Dayjs;
 	restrictive: boolean;
 
