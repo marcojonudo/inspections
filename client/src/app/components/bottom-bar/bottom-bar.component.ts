@@ -111,8 +111,11 @@ export class BottomBarComponent {
 		inspection: InspectionVehicle = InspectionService.inspection,
 		savedInspection: SavedInspection = this.savedInspection
 	): void {
-		/* Al imprimir la revisión, se guarda automáticamente */
-		this.inspectionService.saveInspection(savedInspection).subscribe();
+		/* Sólo se guarda la revisión si el usuario no es admin. Esto permite que nosotros podamos hacer pruebas de
+		 * impresión sin persistir la información */
+		if (!EmployeeService.checkAdminEmployee()) {
+			this.inspectionService.saveInspection(savedInspection).subscribe();
+		}
 		const completeInspection = InspectionService.inspectionHandler.checkPrint(inspection.items);
 		if (completeInspection) {
 			this.printService.print();
