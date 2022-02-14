@@ -476,7 +476,9 @@ export class InspectionService {
 				const inspectionVehicle = InspectionService.initInspection(inspection);
 				return this.findInspection(
 					order.number,
-					Url.savedInspection(order.number, inspectionVehicle.orderInspection),
+					Url.savedInspection(
+						order.number, inspectionVehicle.inspectionType.code, inspectionVehicle.orderInspection
+					),
 					Constants.LOCAL_STORAGE.SAVED_INSPECTION,
 					employee.code
 				);

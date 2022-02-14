@@ -2,8 +2,8 @@ import {environment} from '../../environments/environment';
 
 export class Url {
 
-	static savedInspection(orderNumber: number, orderInspection: boolean): string {
-		return `${environment.serverUrl}/inspections/savedInspection?orderNumber=${orderNumber}&orderInspection=${orderInspection}`;
+	static savedInspection(orderNumber: number, inspectionTypeCode: string, orderInspection: boolean): string {
+		return `${environment.serverUrl}/inspections/savedInspection?orderNumber=${orderNumber}&typeCode=${inspectionTypeCode}&orderInspection=${orderInspection}`;
 	}
 
 	static inspection(orderNumber: number = undefined, vehicleType: string = undefined): string {

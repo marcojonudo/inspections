@@ -51,4 +51,8 @@ class SavedInspection implements GormEntity<SavedInspection> {
 
 	}
 
+	boolean updatedOrder(String type, boolean orderInspection) {
+		return this.inspectionTypeCode != type || this.orderInspection != orderInspection
+	}
+
 }

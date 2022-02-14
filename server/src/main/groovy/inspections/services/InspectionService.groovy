@@ -123,20 +123,21 @@ class InspectionService {
 	/**
 	 * Busca una revisión guardad en BD. También actualiza, si es necesario, el bit orderInspection
 	 * @param orderNumber Número de orden
+	 * @param inspectionTypeCode Tipo de revisión
 	 * @param orderInspection Booleano que indica si es revisión asociada a OR, o anomalías detectadas
 	 * @return Revisión guardada
 	 */
-	SavedInspection findSavedInspection(int orderNumber, boolean orderInspection) {
+	SavedInspection findSavedInspection(int orderNumber, String inspectionTypeCode, boolean orderInspection) {
 		SavedInspection savedInspection = savedInspectionDataService.find(orderNumber)
 		/* Si sólo se ha guardado la revisión al obtenerla -no al completar los items-, estará guardada sin items.
 		 * A efectos prácticos, es como si no hubiera revisión guardada */
-		savedInspection = savedInspection.items ? savedInspection : null
+		savedInspection = savedInspection?.items ? savedInspection : null
 
-		/* Puede darse el caso de que metan un CI de revisión (en cuyo caso, cuando la guarden, el bit orderInspection
+		/* Puede darse el caso de que metan un CI de revisión (en cuyo caso, cuando la 46guarden, el bit orderInspection
 		 * será true), y después quiten o cambien dicho CI. En esta situación, la revisión pasará a ser de anomalías
 		 * detectadas, y deberá actualizarse el bit en BD */
-		if (savedInspection && savedInspection.orderInspection != orderInspection) {
-			savedInspection = savedInspectionDataService.update(savedInspection.id, orderInspection)
+		if (savedInspection?.updatedOrder(inspectionTypeCode, orderInspection)) {
+			savedInspection = savedInspectionDataService.update(savedInspection.id, inspectionTypeCode, orderInspection)
 		}
 		return savedInspection
 	}

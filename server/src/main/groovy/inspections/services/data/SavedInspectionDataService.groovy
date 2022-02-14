@@ -19,7 +19,7 @@ abstract class SavedInspectionDataService {
 
 	abstract SavedInspection update(Serializable id, SavedInspection.State state)
 
-	abstract SavedInspection update(Serializable id, boolean orderInspection)
+	abstract SavedInspection update(Serializable id, String inspectionTypeCode, boolean orderInspection)
 
 	SavedInspection update(SavedInspection savedInspection, SavedInspection existentSavedInspection) {
 		List<Item> items = itemDataService.findAll((List<String>) savedInspection.items.item.code)

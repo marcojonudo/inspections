@@ -86,9 +86,9 @@ class InspectionController {
 		content = @Content(schema = @Schema(implementation = SavedInspection))
 	)
 	HttpResponse<SavedInspection> findSavedInspection(
-		@QueryValue int orderNumber, @QueryValue boolean orderInspection
+		@QueryValue int orderNumber, @QueryValue String typeCode, @QueryValue boolean orderInspection
 	) {
-		return HttpResponse.ok(inspectionService.findSavedInspection(orderNumber, orderInspection))
+		return HttpResponse.ok(inspectionService.findSavedInspection(orderNumber, typeCode, orderInspection))
     }
 
 	@Get("/inspection")
