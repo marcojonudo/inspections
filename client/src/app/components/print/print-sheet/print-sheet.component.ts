@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ListElement } from '../../../objects/list-elements/list-element';
 import { Constants } from '../../../objects/constants';
 import { PrintService } from '../../../services/print.service';
@@ -17,6 +17,9 @@ import { SelectItem } from '../../../objects/inspections/items/select-item';
 import { ItemType } from '../../../objects/inspections/items/item-type';
 import { TextAreaSavedItem } from '../../../objects/inspections/saved-items/text-area-saved-item';
 import { TextItem } from '../../../objects/inspections/items/text-item';
+import { HttpClient } from '@angular/common/http';
+import { Url } from '../../../objects/url';
+import { CustomImage } from '../../../objects/inspections/custom-image';
 
 @Component({
 	selector: 'app-print-sheet',
@@ -32,8 +35,14 @@ export class PrintSheetComponent {
 
 	listElements: ListElement[];
 	imageListElements: { listElement, pageBreak }[];
+	images: CustomImage[];
 
-	constructor(private printService: PrintService, private orderPipe: OrderPipe) {
+	constructor(
+		private printService: PrintService,
+		private orderPipe: OrderPipe,
+		private http: HttpClient,
+		private cdRef: ChangeDetectorRef
+	) {
 		const items = InspectionService.inspectionHandler.findSavedItems(this.savedInspection)
 			.filter(i => i.item.header === undefined)
 			.filter(i => {
@@ -43,7 +52,17 @@ export class PrintSheetComponent {
 		this.listElements = InspectionService.findGroupedItems(
 			items, 0, [(savedItem: SavedItem) => savedItem.item.category]
 		);
-		this.imageListElements = this.findImageElements();
+
+		const imageItems = this.savedInspection.items.filter(savedItem => savedItem.imageId);
+		const imageIds = imageItems.map(savedItem => savedItem.imageId);
+		if (imageIds) {
+			this.http.get(Url.images(), { params: { ids: `${imageIds.join(',')}` } }).subscribe((images: CustomImage[]) => {
+				this.images = images;
+				this.imageListElements = this.findImageElements();
+				this.cdRef.detectChanges();
+				this.printService.openPrintDialog();
+			});
+		}
 	}
 
 	// region Getters / setters
@@ -73,7 +92,7 @@ export class PrintSheetComponent {
 	findImageElements(): { listElement, pageBreak }[] {
 		const splittedImageListElements = [];
 		const imageListElements = InspectionService.findGroupedItems(
-			InspectionService.savedInspection.items.filter(i => i.image),
+			InspectionService.savedInspection.items.filter(i => i.imageId),
 			0,
 			[(savedItem: SavedItem) => savedItem.item.category]
 		);
@@ -147,8 +166,13 @@ export class PrintSheetComponent {
 		return item.text ? item.text.split('\n') : [];
 	}
 
-	findImageUrl(image: string): string {
-		return InspectionService.findImageUrl(image);
+	findImage(id: number, images: CustomImage[] = this.images): CustomImage {
+		return images.find(i => i.id === id);
+	}
+
+	findImageUrl(imageId: number): string {
+		const image = this.findImage(imageId);
+		return InspectionService.findImageUrl(image.image);
 	}
 
 	checkWrongItem(savedItem: SavedItem): boolean {

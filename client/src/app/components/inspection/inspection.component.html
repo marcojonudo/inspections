@@ -137,14 +137,23 @@
 						</textarea>
 					</mat-form-field>
 				</div>
-				<button
-					*ngIf="item.picture"
-					mat-icon-button
+				<div
 					class="camera-button"
-					[class.picture]="checkExistentImage(item.code)"
-					(click)="openCamera(item.code)">
-					<mat-icon>photo_camera</mat-icon>
-				</button>
+					[class.existent-image]="checkExistentImage(item.code)"
+					(click)="checkOpenCamera(item.code)">
+					<label [for]="item.code">
+						<mat-spinner *ngIf="checkSavingImage(item.code); else cameraIcon" diameter="24"></mat-spinner>
+						<ng-template #cameraIcon>
+							<mat-icon>photo_camera</mat-icon>
+						</ng-template>
+					</label>
+					<input
+						[id]="item.code"
+						type="file"
+						accept="image/*"
+						capture="camera"
+						(change)="addImage($event, item.code)"/>
+				</div>
 				<button
 					*ngIf="checkShowRestrictiveButton(item)"
 					mat-icon-button

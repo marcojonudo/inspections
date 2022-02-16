@@ -9,7 +9,7 @@ import {InspectionService} from '../services/inspection.service';
 })
 export class InitGuard implements CanActivate {
 
-	constructor(private router: Router) {}
+	constructor(private inspectionService: InspectionService, private router: Router) {}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
 		const manualExit = LocalStorageService.getItem(Constants.LOCAL_STORAGE.MANUAL_EXIT);
@@ -20,7 +20,7 @@ export class InitGuard implements CanActivate {
 			}
 			const inspection = LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION);
 			if (inspection) {
-				const loaded = InspectionService.loadInfo();
+				const loaded = this.inspectionService.loadInfo();
 				if (loaded) {
 					this.router.navigate([Constants.PATH.INSPECTION]);
 					return false;

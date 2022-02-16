@@ -10,6 +10,7 @@ export class Order {
 	vehicle: Vehicle;
 	client: Client;
 	sellerCode: string;
+	vehicleType: string;
 	lines: OrderLine[];
 
 	constructor(order: any, code: string) {
@@ -18,6 +19,7 @@ export class Order {
 		this.vehicle = Builder.buildVehicle(order.vehicle);
 		this.client = new Client(order.client);
 		this.sellerCode = order.sellerCode;
+		this.vehicleType = order.vehicleType;
 		this.lines = order.lines.map(line => new OrderLine(line));
 	}
 

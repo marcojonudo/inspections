@@ -8,7 +8,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import grails.gorm.annotation.Entity
 import inspections.deserializers.ItemDeserializer
-import inspections.domains.Image
 import inspections.domains.SavedInspection
 import inspections.domains.items.Item
 import inspections.utils.Constants
@@ -26,7 +25,7 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	Item item
 	String employeeCode
 	boolean hidden
-	Image image
+	Long imageId
 
 	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
 	@JsonDeserialize(using = LocalDateTimeDeserializer)
@@ -39,13 +38,12 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 
 	static constraints = {
 		filled nullable: true
-		image nullable: true
+		imageId nullable: true
 	}
 
 	static mapping = {
 		tablePerHierarchy false
 		item fetch: 'join'
-		image fetch: 'join'
 	}
 
 	abstract void fillRelations()
@@ -53,7 +51,7 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	abstract boolean equals(SavedItem savedItem)
 
 	boolean equalsSaveItem(SavedItem savedItem) {
-		return hidden == savedItem.hidden && image == savedItem.image && restrictive == savedItem.restrictive
+		return hidden == savedItem.hidden && imageId == savedItem.imageId && restrictive == savedItem.restrictive
 	}
 
 }

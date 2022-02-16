@@ -25,7 +25,7 @@ export class TextAreaSavedItem extends SavedItem {
 
 	reset(employeeCode: string): void {
 		this.text = undefined;
-		this.image = undefined;
+		this.imageId = undefined;
 		this.updateCommonFields(employeeCode);
 	}
 

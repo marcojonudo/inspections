@@ -31,6 +31,7 @@ abstract class OrderDataService {
 
 	Order find(int number) {
 		Order order = findOrder(number)
+		order.vehicleType = Order.VehicleType.valueOf(order.vehicleType).type
 		IVehicle vehicle = carDataService.find(order.carIdentifier) ?: scooterDataService.find(order.carIdentifier)
 		order.vehicle = vehicle.buildVehicle()
 		return order

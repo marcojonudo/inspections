@@ -25,7 +25,7 @@ class TextSavedItem extends SavedItem implements GormEntity<TextSavedItem> {
 		}
 		TextSavedItem textSavedItem = (TextSavedItem) savedItem
 		if (fields.size() != textSavedItem.fields.size()) {
-			return false;
+			return false
 		}
 		TextSavedItemField differentField = fields.find { TextSavedItemField field ->
 			field.text != textSavedItem.fields.find { it.order == field.order }.text

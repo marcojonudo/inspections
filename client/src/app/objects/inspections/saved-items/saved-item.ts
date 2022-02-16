@@ -8,7 +8,7 @@ export abstract class SavedItem {
 	item: Item;
 	employeeCode: string;
 	hidden: boolean;
-	image: CustomImage;
+	imageId: number;
 	filled: Dayjs;
 	restrictive: boolean;
 
@@ -17,7 +17,7 @@ export abstract class SavedItem {
 		this.employeeCode = employeeCode;
 		if (savedItem) {
 			this.employeeCode = savedItem.employeeCode;
-			this.image = savedItem.image ? new CustomImage(savedItem.image.image, savedItem.image.landscape) : undefined;
+			this.imageId = savedItem.imageId;
 			this.filled = savedItem.filled ? dayjs(savedItem.filled) : undefined;
 			this.hidden = savedItem.hidden;
 			this.restrictive = savedItem.restrictive;
@@ -42,8 +42,8 @@ export abstract class SavedItem {
 		this.filled = dayjs();
 	}
 
-	addImage(image: CustomImage, employeeCode: string): void {
-		this.image = image;
+	addImageId(imageId: number, employeeCode: string): void {
+		this.imageId = imageId;
 		this.updateCommonFields(employeeCode);
 	}
 

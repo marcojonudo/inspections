@@ -1,13 +1,41 @@
 package inspections.services.data
 
 import grails.gorm.services.Service
+import grails.gorm.services.Where
 import inspections.domains.Image
+import inspections.domains.SavedInspection
+
+import javax.inject.Inject
 
 @Service(Image)
-interface ImageDataService {
+abstract class ImageDataService {
 
-	Image update(Serializable id, byte[] image, boolean landscape)
+	@Inject SavedInspectionDataService savedInspectionDataService
+	@Inject SavedItemDataService savedItemDataService
 
-	void delete(Serializable id)
+	abstract Image find(Serializable id)
+
+	abstract Image find(Long savedInspectionId, String itemCode)
+
+	@Where({ id in ids })
+	abstract List<Image> findAll(List<Long> ids)
+
+	abstract Image update(Serializable id, byte[] image, boolean landscape)
+
+	abstract Image saveImage(Long savedInspectionId, String itemCode, byte[] image, boolean landscape)
+
+	abstract void delete(Serializable id)
+
+	Image save(int orderNumber, String itemCode, byte[] image, boolean landscape) {
+		SavedInspection savedInspection = savedInspectionDataService.find(orderNumber)
+		Image existent = find(savedInspection.id, itemCode)
+		Image savedImage
+		if (existent) {
+			savedImage = update(existent.id, image, landscape)
+		} else {
+			savedImage = saveImage(savedInspection.id, itemCode, image, landscape)
+		}
+		return savedImage
+	}
 
 }

@@ -30,7 +30,7 @@ import { ItemType } from '../../objects/inspections/items/item-type';
 	styleUrls: ['./print.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PrintComponent implements OnInit {
+export class PrintComponent {
 
 	private readonly GROUP_LABELS: { [key: string]: string[] };
 
@@ -61,10 +61,6 @@ export class PrintComponent implements OnInit {
 			.map(i => i.employeeCode)
 			.filter((value, index, self) => value && self.indexOf(value) === index)
 			.map(employeeCode => EmployeeService.findEmployee(employeeCode));
-	}
-
-	ngOnInit(): void {
-		this.printService.openPrintDialog();
 	}
 
 	// region Getters / setters

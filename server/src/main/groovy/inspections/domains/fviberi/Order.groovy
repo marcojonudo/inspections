@@ -13,6 +13,7 @@ class Order implements GormEntity<Order> {
 	String carIdentifier
 	Client client
 	String sellerCode
+	String vehicleType
 
 	Vehicle vehicle
 
@@ -29,6 +30,7 @@ class Order implements GormEntity<Order> {
 		carIdentifier column: 'numatric'
 		client column: 'coclient', fetch: 'join'
 		sellerCode column: 'covended'
+		vehicleType column: 'tipvehicu'
 		lines fetch: 'join'
 
 		id generator: 'assigned', name: 'number'
@@ -37,6 +39,21 @@ class Order implements GormEntity<Order> {
 
 	static constraints = {
 		vehicle nullable: true
+	}
+
+	enum VehicleType {
+
+		BICICLETA("E-BIKE"),
+		COCHE("CAR"),
+		MOTO("MOTORBIKE"),
+		PATINETE("E-SCOOTER")
+
+		final String type
+
+		VehicleType(String type) {
+			this.type = type
+		}
+
 	}
 
 }

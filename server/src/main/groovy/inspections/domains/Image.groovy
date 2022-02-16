@@ -9,8 +9,15 @@ import org.grails.datastore.gorm.GormEntity
 @TupleConstructor
 class Image implements GormEntity<Image> {
 
+	Long savedInspectionId
+	String itemCode
 	byte[] image
 	boolean landscape
+
+	static constraints = {
+		savedInspectionId nullable: true
+		itemCode nullable: true
+	}
 
 	@Override
 	boolean equals(Object obj) {
