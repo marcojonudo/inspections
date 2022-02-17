@@ -37,6 +37,7 @@ import { TextAreaSavedItem } from '../objects/inspections/saved-items/text-area-
 import { Router } from '@angular/router';
 import { ResetEmployeeDialogComponent } from '../components/reset-employee-dialog/reset-employee-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { VersionService } from './version.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -92,6 +93,7 @@ export class InspectionService {
 	static employee$: Observable<Employee>;
 
 	constructor(
+		private versionService: VersionService,
 		private translate: TranslateService,
 		private http: HttpClient,
 		private snackBarService: SnackBarService,
@@ -381,6 +383,10 @@ export class InspectionService {
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
+	static handleNewVersionData(): void {
+		/* Pensado para actualizar objetos del local storage si hay cambios en la nueva versión */
+	}
+
 	loadInfo(): boolean {
 		let loaded = false;
 		try {
@@ -398,7 +404,9 @@ export class InspectionService {
 			}
 			EmployeeService.employees = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEES);
 
-			InspectionService.inspection = Builder.buildInspection(LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION));
+			InspectionService.inspection = Builder.buildInspection(
+				LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION)
+			);
 			InspectionService.inspectionHandler = InspectionService.inspection.orderInspection ?
 				new OrderInspectionHandler() : new DetectedFaultsHandler();
 			InspectionService.savedInspection = Builder.loadSavedInspection(
@@ -427,9 +435,11 @@ export class InspectionService {
 		return loaded;
 	}
 
-	clearStorage(goBack: boolean = false): void {
+	clearStorage(goBack: boolean, showSnack: boolean = true): void {
 		LocalStorageService.clear();
-		this.snackBarService.open(Constants.MESSAGE_CODE.CLEARED_LOCAL_STORAGE);
+		if (showSnack) {
+			this.snackBarService.open(Constants.MESSAGE_CODE.CLEARED_LOCAL_STORAGE);
+		}
 		if (goBack) {
 			this.goBack();
 		}
@@ -549,6 +559,16 @@ export class InspectionService {
 		body.saved = dayjs();
 		console.log('Saving inspection', body);
 		return this.http.post(Url.inspection(), body, { headers: new HttpHeaders({ centre: `${centre.code}` }) });
+	}
+
+	handleUpdatedVersion(): Observable<string> {
+		return this.versionService.findNewVersion().pipe(
+			tap(newVersion => {
+				if (newVersion) {
+					this.clearStorage(false, false);
+				}
+			})
+		);
 	}
 
 }

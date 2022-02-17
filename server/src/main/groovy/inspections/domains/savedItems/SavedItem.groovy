@@ -2,6 +2,7 @@ package inspections.domains.savedItems
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
@@ -16,6 +17,7 @@ import org.grails.datastore.gorm.GormEntity
 import java.time.LocalDateTime
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 abstract class SavedItem implements GormEntity<SavedItem> {
 
 	@JsonIgnore

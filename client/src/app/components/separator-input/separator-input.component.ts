@@ -123,10 +123,10 @@ export class SeparatorInputComponent
 
 	ngOnInit() {
 		const controlsConfig = {};
-		this.model.forEach(field => {
-			const itemField = this.fields.find(f => f.order === field.order);
-			controlsConfig[this.buildControlKey(field.order)] = [
-				field.text, [Validators.required, Validators.maxLength(itemField.maxLength)]
+		this.fields.forEach(itemField => {
+			const field = this.model.find(f => f.order === itemField.order);
+			controlsConfig[this.buildControlKey(itemField.order)] = [
+				field?.text, [Validators.required, Validators.maxLength(itemField.maxLength)]
 			];
 		});
 		this.formGroup = this.formBuilder.group(controlsConfig);

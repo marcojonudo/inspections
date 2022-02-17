@@ -1,9 +1,9 @@
-import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
-import {Constants} from '../../../objects/constants';
-import {EmployeeService} from '../../../services/employee.service';
-import {MatDialog} from '@angular/material/dialog';
-import {ConfirmDialogComponent} from '../../confirm-dialog/confirm-dialog.component';
-import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { Constants } from '../../../objects/constants';
+import { EmployeeService } from '../../../services/employee.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 
 @Component({
 	selector: 'app-employee-info',
@@ -29,7 +29,10 @@ export class EmployeeInfoComponent {
 	}
 
 	openDialog(newEmployeeCode: string, employeeCode: string = this.employeeCode): void {
-		const data = { message: Constants.MESSAGE_CODE.UPDATE_EMPLOYEE_MESSAGE, params: { employeeCode, newEmployeeCode } };
+		const data = {
+			message: Constants.MESSAGE_CODE.UPDATE_EMPLOYEE_MESSAGE,
+			params: { employeeCode, newEmployeeCode }
+		};
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, { data });
 		dialogRef.afterClosed().subscribe((update: boolean) => {
 			if (update) {

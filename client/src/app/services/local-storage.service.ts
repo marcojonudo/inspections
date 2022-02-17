@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {buffer, debounceTime, filter, map, tap} from 'rxjs/operators';
+import { Constants } from '../objects/constants';
 
 @Injectable({
 	providedIn: 'root'
@@ -22,8 +23,8 @@ export class LocalStorageService {
 		localStorage.removeItem(item);
 	}
 
-	static clear(): void {
-		localStorage.clear();
+	static clear(properties: string[] = Constants.CLEAR_STORAGE_PROPERTIES): void {
+		properties.forEach(property => this.removeItem(property));
 	}
 
 	static checkClearStorage(click$: Observable<any>): Observable<number> {
@@ -31,7 +32,7 @@ export class LocalStorageService {
 			buffer(click$.pipe(debounceTime(300))),
 			map(array => array.length),
 			filter(length => length === this.CLEAR_STORAGE_THRESHOLD),
-			tap(this.clear)
+			tap(() => this.clear())
 		);
 	}
 

@@ -27,7 +27,6 @@ export class InitGuard implements CanActivate {
 				}
 			}
 		}
-		LocalStorageService.removeItem(Constants.LOCAL_STORAGE.MANUAL_EXIT);
 		return true;
 	}
 

@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
 	selector: 'app-dialog',
@@ -8,6 +8,12 @@ import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 })
 export class ConfirmDialogComponent {
 
-	constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+	constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ConfirmDialogComponent>) {
+		dialogRef.disableClose = !this.checkAllowCancel();
+	}
+
+	checkAllowCancel(): boolean {
+		return this.data.allowCancel === undefined || this.data.allowCancel;
+	}
 
 }

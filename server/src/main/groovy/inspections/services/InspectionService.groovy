@@ -44,7 +44,8 @@ class InspectionService {
 	 */
 	OrderInfo findOrderInfo(String shortCode, String employeeCode) {
 		LOG.info(new Log((Map) [employeeCode: employeeCode, shortCode: shortCode, message: Constants.Message.SEARCHING_ORDER]).toString())
-		Integer orderNumber = orderDataService.find(shortCode)
+		Integer orderNumber = shortCode.isNumber() && shortCode.size() > 5 ?
+			shortCode as int : orderDataService.find(shortCode)
 		OrderInfo orderInfo = null
 		if (orderNumber) {
 			Order order = orderDataService.find(orderNumber)
