@@ -1,6 +1,7 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {EmployeeService} from '../../services/employee.service';
-import {MatDialogRef} from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { EmployeeService } from '../../services/employee.service';
+import { MatDialogRef } from '@angular/material/dialog';
+import { InspectionService } from '../../services/inspection.service';
 
 @Component({
 	selector: 'app-reset-employee-dialog',
@@ -14,6 +15,10 @@ export class ResetEmployeeDialogComponent {
 
 	constructor(private dialogRef: MatDialogRef<ResetEmployeeDialogComponent>) {
 		dialogRef.disableClose = true;
+	}
+
+	findEmployeeCodeMaxLength(): number {
+		return InspectionService.countryHandler.findEmployeeCodeLength();
 	}
 
 	searchEmployee(newEmployeeCode: string = this.newEmployeeCode): void {

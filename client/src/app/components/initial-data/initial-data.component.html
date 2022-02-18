@@ -12,7 +12,7 @@
 				#employeeCodeInput="matInput"
 				[placeholder]="findEmployeeCodePlaceholder()"
 				[formControl]="employeeCode"
-				[maxLength]="employeeCodeMaxLength"
+				[maxLength]="findEmployeeCodeMaxLength()"
 				(keyup)="searchEmployee()"
 				autocomplete="off">
 			<mat-error *ngIf="employeeCode.invalid">{{getEmployeeCodeErrorMessage() | async}}</mat-error>

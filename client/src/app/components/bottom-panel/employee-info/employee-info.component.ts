@@ -4,6 +4,7 @@ import { EmployeeService } from '../../../services/employee.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { InspectionService } from '../../../services/inspection.service';
 
 @Component({
 	selector: 'app-employee-info',
@@ -26,6 +27,10 @@ export class EmployeeInfoComponent {
 		if (employee) {
 			this.openDialog(employee.code);
 		}
+	}
+
+	findEmployeeCodeMaxLength(): number {
+		return InspectionService.countryHandler.findEmployeeCodeLength();
 	}
 
 	openDialog(newEmployeeCode: string, employeeCode: string = this.employeeCode): void {

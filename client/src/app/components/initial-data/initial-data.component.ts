@@ -109,10 +109,6 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		});
 	}
 
-	get employeeCodeMaxLength(): number {
-		return Constants.EMPLOYEE_CODE_MAX_LENGTH;
-	}
-
 	setEmployeeFocus(): void {
 		this.employeeCodeInput.focus();
 	}
@@ -129,6 +125,10 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		return InspectionService.countryHandler.findEmployeeCodePlaceholder();
 	}
 
+	findEmployeeCodeMaxLength(): number {
+		return InspectionService.countryHandler.findEmployeeCodeLength();
+	}
+
 	getEmployeeCodeErrorMessage(employeeCode: FormControl = this.employeeCode): Observable<string> {
 		const messageCode = employeeCode.hasError(Constants.REQUIRED) ?
 			Constants.REQUIRED_EMPLOYEE_CODE : Constants.EMPLOYEE_CODE_MIN_LENGTH;
@@ -143,7 +143,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 				() => this.orderCodeInput.focus(),
 				0
 			);
-		} else if (employeeCode.value.length === Constants.EMPLOYEE_CODE_MAX_LENGTH) {
+		} else if (employeeCode.value.length === Constants.SPAIN_EMPLOYEE_CODE_MAX_LENGTH) {
 			this.snackBarService.open(
 				Constants.MESSAGE_CODE.EMPLOYEE_NOT_FOUND, Constants.SNACK_BAR.TYPE.WARNING
 			);

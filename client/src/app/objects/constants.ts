@@ -1,6 +1,6 @@
 export class Constants {
 
-	static readonly EMPLOYEE_CODE_MAX_LENGTH: number = 7;
+	static readonly SPAIN_EMPLOYEE_CODE_MAX_LENGTH: number = 7;
 	static readonly SPLASH_SCREEN_DURATION: number = 1.5;
 	static readonly RESET_EMPLOYEE_INTERVAL: number = 24220;
 	static readonly CHECK_VERSION_INTERVAL: number = 300000;

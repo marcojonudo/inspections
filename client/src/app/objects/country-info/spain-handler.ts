@@ -5,7 +5,7 @@ import { Constants } from '../constants';
 export class SpainHandler implements CountryHandler {
 
 	findEmployeeCodeLength(): number {
-		return Constants.EMPLOYEE_CODE_MAX_LENGTH;
+		return Constants.SPAIN_EMPLOYEE_CODE_MAX_LENGTH;
 	}
 
 	findEmployeeCodeInputType(): string {
@@ -17,7 +17,7 @@ export class SpainHandler implements CountryHandler {
 	}
 
 	findEmployeeCodeCustomValidations(): ValidatorFn[] {
-		return [Validators.minLength(Constants.EMPLOYEE_CODE_MAX_LENGTH)];
+		return [Validators.minLength(Constants.SPAIN_EMPLOYEE_CODE_MAX_LENGTH)];
 	}
 
 }
