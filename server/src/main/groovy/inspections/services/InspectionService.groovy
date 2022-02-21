@@ -8,6 +8,8 @@ import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Centre
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
+import inspections.domains.items.TextItem
+import inspections.domains.items.TextItemField
 import inspections.domains.savedItems.TextSavedItem
 import inspections.domains.savedItems.TextSavedItemField
 import inspections.pogos.OrderInfo
@@ -159,7 +161,7 @@ class InspectionService {
 			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, existent: existent as boolean, message: Constants.Message.EXISTENT_INSPECTION]).toString())
 
 			newSavedInspection = savedInspectionDataService.update(savedInspection, existent)
-			updateItvDate(newSavedInspection)
+			updateItvDate(newSavedInspection, centre)
 			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
 
 			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVED_INSPECTION]).toString())
@@ -175,16 +177,30 @@ class InspectionService {
 	 * Actualiza la fecha de la próxima ITV en fviberi
 	 * @param savedInspection Revisión guardada
 	 */
-	void updateItvDate(SavedInspection savedInspection) {
+	void updateItvDate(SavedInspection savedInspection, int centre) {
 		TextSavedItem savedItem = (TextSavedItem) savedInspection.items.find { it.item.code == Constants.Item.FPITV }
+		/* En una anomalía detectada, podría no haber fecha de ITV */
 		if (savedItem) {
 			List<TextSavedItemField> fields = savedItem.fields.sort { it.order }
-			/* Sólo se actualiza la información de ITV si ambos campos tienen valor (mes y año) */
-			if (fields.findAll { it.text }.size() == fields.size()) {
+			if (checkCorrectItvDate(savedItem)) {
 				LocalDate day = LocalDate.of(fields[1].text as int, fields[0].text as int, 1)
 				carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
+			} else {
+				slackService.sendMessage(Builder.Slack.buildItvDateErrorMessage(savedInspection, centre, fields))
 			}
 		}
+	}
+
+	/**
+	 * Comprueba si el contenido de la fecha de ITV es correcto
+	 * @param savedItem Item guardado
+	 * @return booleano
+	 */
+	static boolean checkCorrectItvDate(TextSavedItem savedItem) {
+		Set<TextItemField> fields = ((TextItem) savedItem.item).fields
+		List<TextSavedItemField> savedFields = savedItem.fields.sort { it.order }
+		/* Se guarda la fecha de la ITV si todos los campos necesarios están rellenos */
+		return fields.size() == savedFields.size() && savedFields.findAll { it.text }.size() == savedFields.size()
 	}
 
 }
