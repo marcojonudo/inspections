@@ -8,6 +8,8 @@ import inspections.domains.savedItems.TextSavedItemField
 @Service(TextSavedItemField)
 interface TextSavedItemFieldDataService {
 
+	TextSavedItemField save(TextSavedItemField field)
+
 	@Query("""
 		update ${TextSavedItemField field}
 		set $field.text = $text

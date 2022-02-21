@@ -561,7 +561,7 @@ export class InspectionService {
 		console.log('Saving inspection', body);
 		return this.http.post(Url.inspection(), body, { headers: { centre: `${centre.code}` } }).pipe(
 			tap(
-				(response) => console.log('response', response),
+				() => {},
 				(error) => {
 					const saveError = new SaveError(savedInspection, error.status, error.message);
 					this.http.post(Url.saveErrors(), saveError, { headers: { centre: `${centre.code}` } }).subscribe();

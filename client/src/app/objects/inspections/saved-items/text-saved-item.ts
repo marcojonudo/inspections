@@ -25,9 +25,14 @@ export class TextSavedItem extends SavedItem {
 	}
 
 	update(fields: TextSavedItemField[], employeeCode: string): void {
-		this.fields.forEach(field => {
+		(this.item as TextItem).fields.forEach(field => {
 			const updateField = fields.find(f => f.order === field.order);
-			field.text = updateField.text;
+			const existentField = this.fields.find(f => f.order === field.order);
+			if (existentField) {
+				existentField.text = updateField.text;
+			} else {
+				this.fields.push(updateField);
+			}
 		});
 		this.updateCommonFields(employeeCode);
 	}
