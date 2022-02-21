@@ -34,4 +34,8 @@ export class Url {
 		return `${environment.serverUrl}/images`;
 	}
 
+	static saveErrors(): string {
+		return `${environment.serverUrl}/saveErrors`;
+	}
+
 }
