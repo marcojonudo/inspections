@@ -2,8 +2,8 @@ import {
 	AfterViewInit,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
-	Component, ElementRef, HostListener, OnDestroy, OnInit,
-	ViewChild
+	Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList,
+	ViewChild, ViewChildren
 } from '@angular/core';
 import { InspectionVehicle } from '../../objects/inspections/inspection-vehicle';
 import { Constants } from '../../objects/constants';
@@ -54,6 +54,7 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 	@ViewChild('itemsContainer') itemsContainer: ElementRef;
 	@ViewChild('clearStorageElem', { read: ElementRef }) clearStorageElem: ElementRef;
 	@ViewChild('fillInspection', { read: ElementRef }) fillInspection: ElementRef;
+	@ViewChildren('cameraInput') cameraInputs: QueryList<ElementRef>;
 
 	bottomBarHeight: number;
 	listElements: ListElement[];
@@ -419,6 +420,8 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 			);
 			ref.afterDismissed().subscribe((deleted: boolean) => {
 				if (deleted) {
+					const cameraInput = this.cameraInputs.toArray().find(input => input.nativeElement.id === itemCode);
+					cameraInput.nativeElement.value = '';
 					this.cdRef.detectChanges();
 				}
 			});
