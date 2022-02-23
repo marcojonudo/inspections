@@ -1,4 +1,10 @@
 <mat-form-field>
 	<mat-label translate>bottomPanel.introduceEmployeeCode</mat-label>
-	<input matInput placeholder="1234567" [(ngModel)]="newEmployeeCode" (keyup)="searchEmployee()" autocomplete="off">
+	<input
+		matInput
+		placeholder="1234567"
+		[(ngModel)]="newEmployeeCode"
+		[maxLength]="findEmployeeCodeMaxLength()"
+		(keyup)="searchEmployee()"
+		autocomplete="off">
 </mat-form-field>

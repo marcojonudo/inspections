@@ -2,8 +2,8 @@ import {
 	AfterViewInit,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
-	Component, ElementRef, HostListener, OnDestroy, OnInit,
-	ViewChild
+	Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList,
+	ViewChild, ViewChildren
 } from '@angular/core';
 import { InspectionVehicle } from '../../objects/inspections/inspection-vehicle';
 import { Constants } from '../../objects/constants';
@@ -54,6 +54,7 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 	@ViewChild('itemsContainer') itemsContainer: ElementRef;
 	@ViewChild('clearStorageElem', { read: ElementRef }) clearStorageElem: ElementRef;
 	@ViewChild('fillInspection', { read: ElementRef }) fillInspection: ElementRef;
+	@ViewChildren('cameraInput') cameraInputs: QueryList<ElementRef>;
 
 	bottomBarHeight: number;
 	listElements: ListElement[];
@@ -115,7 +116,7 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 		});
 
 		this.versionInterval = setInterval(
-			() => this.handleVersion(true),
+			() => this.handleVersion(),
 			Constants.CHECK_VERSION_INTERVAL
 		);
 	}
@@ -124,11 +125,12 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.employeeSubscription = InspectionService.employee$.subscribe(() => {
 			this.cdRef.detectChanges();
 		});
-		this.handleVersion(false);
+		this.handleVersion();
 	}
 
 	ngOnDestroy(): void {
 		this.employeeSubscription.unsubscribe();
+		clearInterval(this.versionInterval);
 	}
 
 	ngAfterViewInit(): void {
@@ -366,13 +368,11 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 		window.location.reload();
 	}
 
-	handleVersion(scheduled: boolean): void {
-		this.versionService.handleVersion(scheduled, this.refreshed).subscribe(showUpdateIndicator => {
-			if (showUpdateIndicator) {
-				this.updateVersion = showUpdateIndicator;
-				this.cdRef.detectChanges();
-			} else {
-				this.version = LocalStorageService.getItem(Constants.LOCAL_STORAGE.VERSION);
+	handleVersion(): void {
+		this.versionService.findNewVersion().subscribe(newVersion => {
+			if (newVersion) {
+				this.updateVersion = true;
+				this.openVersionDialog();
 			}
 		});
 	}
@@ -387,7 +387,7 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	handleClearStorage(click$: Observable<any>): void {
-		LocalStorageService.checkClearStorage(click$).subscribe(() => this.inspectionService.clearStorage(true));
+		LocalStorageService.checkClearStorage(click$).subscribe(() => this.inspectionService.goBack());
 	}
 
 	clearStorage(): void {
@@ -420,6 +420,8 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 			);
 			ref.afterDismissed().subscribe((deleted: boolean) => {
 				if (deleted) {
+					const cameraInput = this.cameraInputs.toArray().find(input => input.nativeElement.id === itemCode);
+					cameraInput.nativeElement.value = '';
 					this.cdRef.detectChanges();
 				}
 			});
@@ -449,6 +451,17 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 	updateRestrictiveItem(item: Item): void {
 		const savedItem = InspectionService.findSavedItem(item.code);
 		InspectionService.updateRestrictive(savedItem, !savedItem.restrictive);
+	}
+
+	openVersionDialog(): void {
+		const dialogRef = this.dialog.open(
+			ConfirmDialogComponent,
+			{ data: { message: Constants.MESSAGE_CODE.UPDATE_CLEAR_DATA, allowCancel: false }, autoFocus: false }
+		);
+		dialogRef.afterClosed().subscribe(() => {
+			InspectionService.handleNewVersionData();
+			this.refresh();
+		});
 	}
 
 }

@@ -8,7 +8,7 @@ import {
 import { EmployeeService } from '../../services/employee.service';
 import { Employee } from '../../objects/employee';
 import { Constants } from '../../objects/constants';
-import { finalize } from 'rxjs/operators';
+import { concatMap, finalize } from 'rxjs/operators';
 import { InspectionService } from '../../services/inspection.service';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +19,7 @@ import { LocalStorageService } from '../../services/local-storage.service';
 import { fromEvent, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBarService } from '../../services/snack-bar.service';
+import { VersionService } from '../../services/version.service';
 
 @Component({
 	selector: 'app-initial-data',
@@ -52,6 +53,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 	constructor(
 		private inspectionService: InspectionService,
 		private loadingService: LoadingService,
+		private versionService: VersionService,
 		private router: Router,
 		private cdRef: ChangeDetectorRef,
 		private activatedRoute: ActivatedRoute,
@@ -68,6 +70,17 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		this.orderCode = new FormControl('', [Validators.required]);
 		this.clearStorageCounter = 0;
 		this.refHeight = window.innerHeight;
+		const manualExit = LocalStorageService.getItem(Constants.LOCAL_STORAGE.MANUAL_EXIT);
+
+		this.inspectionService.handleUpdatedVersion().subscribe(newVersion => {
+			/* Si hay una nueva versión y se viene de la pantalla de revisiones, se recarga la página. Si manualExit
+			 * es false, significa que se ha entrado a la página por primera vez, por lo que no sería necesario
+			 * refrescar el navegador */
+			if (newVersion && manualExit) {
+				window.location.reload();
+				LocalStorageService.removeItem(Constants.LOCAL_STORAGE.MANUAL_EXIT);
+			}
+		});
 	}
 
 	ngOnInit(): void {
@@ -96,10 +109,6 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		});
 	}
 
-	get employeeCodeMaxLength(): number {
-		return Constants.EMPLOYEE_CODE_MAX_LENGTH;
-	}
-
 	setEmployeeFocus(): void {
 		this.employeeCodeInput.focus();
 	}
@@ -116,6 +125,10 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		return InspectionService.countryHandler.findEmployeeCodePlaceholder();
 	}
 
+	findEmployeeCodeMaxLength(): number {
+		return InspectionService.countryHandler.findEmployeeCodeLength();
+	}
+
 	getEmployeeCodeErrorMessage(employeeCode: FormControl = this.employeeCode): Observable<string> {
 		const messageCode = employeeCode.hasError(Constants.REQUIRED) ?
 			Constants.REQUIRED_EMPLOYEE_CODE : Constants.EMPLOYEE_CODE_MIN_LENGTH;
@@ -130,7 +143,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 				() => this.orderCodeInput.focus(),
 				0
 			);
-		} else if (employeeCode.value.length === Constants.EMPLOYEE_CODE_MAX_LENGTH) {
+		} else if (employeeCode.value.length === Constants.SPAIN_EMPLOYEE_CODE_MAX_LENGTH) {
 			this.snackBarService.open(
 				Constants.MESSAGE_CODE.EMPLOYEE_NOT_FOUND, Constants.SNACK_BAR.TYPE.WARNING
 			);
@@ -147,15 +160,19 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		this.searchingInspections = true;
 		this.cdRef.detectChanges();
 
-		this.inspectionService.initInspectionData(orderCode.value).pipe(
+		this.versionService.findNewVersion().pipe(
+			concatMap(newVersion => {
+				if (newVersion) {
+					LocalStorageService.clear(Constants.INSPECTION_STORAGE_PROPERTIES);
+				}
+				return this.inspectionService.initInspectionData(orderCode.value);
+			}),
 			finalize(() => {
 				LocalStorageService.setItem(Constants.LOCAL_STORAGE.RESET_EMPLOYEE, false);
 				this.searchingInspections = false;
 				this.cdRef.detectChanges();
 			})
-		).subscribe(() => {
-			this.router.navigate([Constants.PATH.INSPECTION]);
-		});
+		).subscribe(() => this.router.navigate([Constants.PATH.INSPECTION]));
 	}
 
 	handleClearStorage(click$: Observable<any>): void {
@@ -165,7 +182,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 	}
 
 	clearStorage(): void {
-		this.inspectionService.clearStorage();
+		this.inspectionService.clearStorage(false);
 	}
 
 }

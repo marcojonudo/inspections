@@ -8,6 +8,7 @@
 				matInput type="tel"
 				placeholder="1234567"
 				[(ngModel)]="newEmployeeCode"
+				[maxLength]="findEmployeeCodeMaxLength()"
 				(keyup)="searchEmployee()"
 				autocomplete="off">
 		</mat-form-field>

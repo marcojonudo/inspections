@@ -1,6 +1,6 @@
 export class Constants {
 
-	static readonly EMPLOYEE_CODE_MAX_LENGTH: number = 7;
+	static readonly SPAIN_EMPLOYEE_CODE_MAX_LENGTH: number = 7;
 	static readonly SPLASH_SCREEN_DURATION: number = 1.5;
 	static readonly RESET_EMPLOYEE_INTERVAL: number = 24220;
 	static readonly CHECK_VERSION_INTERVAL: number = 300000;
@@ -39,7 +39,8 @@ export class Constants {
 		CLEARED_LOCAL_STORAGE: 'CLEARED_LOCAL_STORAGE',
 		WARNING_RESETTING_INSPECTION: 'WARNING_RESETTING_INSPECTION',
 		EMPLOYEE_NOT_FOUND: 'EMPLOYEE_NOT_FOUND',
-		ERROR_SAVING_IMAGE: 'ERROR_SAVING_IMAGE'
+		ERROR_SAVING_IMAGE: 'ERROR_SAVING_IMAGE',
+		UPDATE_CLEAR_DATA: 'UPDATE_CLEAR_DATA'
 	};
 
 	static readonly PATH: any = {
@@ -61,6 +62,24 @@ export class Constants {
 		MANUAL_EXIT: 'manualExit',
 		LANGUAGE: 'language'
 	};
+
+	static readonly CLEAR_STORAGE_PROPERTIES = [
+		Constants.LOCAL_STORAGE.INSPECTION,
+		Constants.LOCAL_STORAGE.SAVED_INSPECTION,
+		Constants.LOCAL_STORAGE.ORDER,
+		Constants.LOCAL_STORAGE.EMPLOYEE,
+		Constants.LOCAL_STORAGE.EMPLOYEES,
+		Constants.LOCAL_STORAGE.RESET_EMPLOYEE,
+		Constants.LOCAL_STORAGE.MANUAL_EXIT
+	];
+
+	static readonly INSPECTION_STORAGE_PROPERTIES = [
+		Constants.LOCAL_STORAGE.INSPECTION,
+		Constants.LOCAL_STORAGE.SAVED_INSPECTION,
+		Constants.LOCAL_STORAGE.ORDER,
+		Constants.LOCAL_STORAGE.RESET_EMPLOYEE,
+		Constants.LOCAL_STORAGE.MANUAL_EXIT
+	];
 
 	static readonly EVENT: any = {
 		TOUCH_START: 'touchstart',

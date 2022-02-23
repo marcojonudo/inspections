@@ -37,6 +37,7 @@ class Constants {
         static final String ERROR_SAVING_INSPECTION = "Error saving inspection"
         static final String SAVED_INSPECTION = "Saved inspection!"
         static final String SLACK_WRONG_REQUEST = "Error sending Slack notification"
+        static final String WRONG_FPITV_FIELD = "Wrong FPITV item field"
 
     }
 

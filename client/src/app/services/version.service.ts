@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Url} from '../objects/url';
-import {map} from 'rxjs/operators';
-import {Observable} from 'rxjs';
-import {LocalStorageService} from './local-storage.service';
-import {Constants} from '../objects/constants';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Url } from '../objects/url';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { LocalStorageService } from './local-storage.service';
+import { Constants } from '../objects/constants';
 
 @Injectable({
 	providedIn: 'root'
@@ -19,18 +19,16 @@ export class VersionService {
 		);
 	}
 
-	handleVersion(scheduled: boolean, refreshed: boolean): Observable<boolean> {
+	findNewVersion(): Observable<string> {
 		return this.getVersion().pipe(
 			map(version => {
-				if (version) {
-					const existent = LocalStorageService.getItem(Constants.LOCAL_STORAGE.VERSION);
-					if (!existent || (refreshed && !scheduled)) {
-						LocalStorageService.setItem(Constants.LOCAL_STORAGE.VERSION, version);
-						return false;
-					}
-					return existent !== version;
+				const existent = LocalStorageService.getItem(Constants.LOCAL_STORAGE.VERSION);
+				if (version && version !== existent) {
+					LocalStorageService.setItem(Constants.LOCAL_STORAGE.VERSION, version);
+					console.log(`Updated version from ${existent} to ${version}`);
+					return version;
 				}
-				return false;
+				return undefined;
 			})
 		);
 	}

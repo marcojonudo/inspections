@@ -1,6 +1,6 @@
 <h1 mat-dialog-title translate>dialog.header</h1>
 <div mat-dialog-content translate [translateParams]="data.params">message.{{data.message}}</div>
 <div mat-dialog-actions>
-	<button mat-button mat-dialog-close translate><span translate>dialog.cancel</span></button>
+	<button *ngIf="checkAllowCancel()" mat-button mat-dialog-close translate><span translate>dialog.cancel</span></button>
 	<button mat-button [mat-dialog-close]="true"><span translate>dialog.accept</span></button>
 </div>

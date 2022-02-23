@@ -1,6 +1,7 @@
 package inspections.domains.items
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import grails.gorm.annotation.Entity
 import inspections.domains.InspectionVehicle
@@ -14,11 +15,13 @@ import inspections.services.data.SavedItemDataService
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 class Item implements GormEntity<Item> {
 
 	Type type
 	String code
 	String name
+	String shortName
 	Integer order
 	Integer printOrder
 	ItemCategory category
@@ -45,6 +48,7 @@ class Item implements GormEntity<Item> {
 
 	static constraints = {
 		type maxSize: 25
+		shortName nullable: true
 		order nullable: true
 		printOrder nullable: true
 		category nullable: true

@@ -1,6 +1,7 @@
 package inspections.domains
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import grails.gorm.annotation.Entity
 import inspections.deserializers.ItemDeserializer
@@ -8,6 +9,7 @@ import inspections.domains.items.Item
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 class ItemRelation implements GormEntity<ItemRelation> {
 
 	@JsonIgnore
