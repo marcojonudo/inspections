@@ -17,7 +17,7 @@ abstract class SavedInspectionDataService {
 
 	abstract SavedInspection saveSavedInspection(SavedInspection savedInspection)
 
-	abstract SavedInspection update(Serializable id, SavedInspection.State state)
+	abstract SavedInspection update(Serializable id, String employeeCode, SavedInspection.State state)
 
 	abstract SavedInspection update(Serializable id, String inspectionTypeCode, boolean orderInspection)
 
@@ -35,7 +35,7 @@ abstract class SavedInspectionDataService {
 		SavedInspection.State state = SavedInspection.State.values().find {
 			((Closure<Boolean>) it.check)(savedInspection.items)
 		}
-		return update(existentSavedInspection.id, state)
+		return update(existentSavedInspection.id, savedInspection.employeeCode, state)
 	}
 
 	static SavedItem fillSavedItem(SavedItem savedItem, SavedInspection savedInspection, List<Item> items) {
