@@ -49,6 +49,9 @@ import { CameraComponent } from './components/bottom-panel/camera/camera.compone
 import { PrintSheetComponent } from './components/print/print-sheet/print-sheet.component';
 import { SeparatorInputComponent } from './components/separator-input/separator-input.component';
 import { MatSelectModule } from '@angular/material/select';
+import { TyreSheetComponent } from './components/print/tyre-sheet/tyre-sheet.component';
+import { PrintHeaderComponent } from './components/print/print-header/print-header.component';
+import { ImagesSheetComponent } from './components/print/images-sheet/images-sheet.component';
 
 @NgModule({
 	declarations: [
@@ -69,7 +72,10 @@ import { MatSelectModule } from '@angular/material/select';
 		HiddenPipe,
 		CameraComponent,
 		PrintSheetComponent,
-		SeparatorInputComponent
+		SeparatorInputComponent,
+		TyreSheetComponent,
+		PrintHeaderComponent,
+		ImagesSheetComponent
 	],
 	imports: [
 		BrowserModule,

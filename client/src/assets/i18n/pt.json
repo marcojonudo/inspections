@@ -374,6 +374,11 @@
 		"engine": "Motor",
 		"power": "Potência",
 		"registration": "Cadastro",
+		"tyre": "Pneu",
+		"tyreState": "Estado pneu",
+		"tyreMin": "1.6mm mínimo legal",
+		"tyreDepth": "Profundidade pneu",
+		"tyreAge": "Idade pneu",
 		"category": {
 			"I": "Iluminação",
 			"C": "Carrocería",
@@ -393,11 +398,15 @@
 			"ITV": "Resultado IPO",
 			"S": "Segurança",
 			"T": "Transmissão"
+		},
+		"header": {
+			"KM": "KM",
+			"FPITV": "Próx. data ITV"
+		},
+		"item": {
+			"CVGN": "Controlo visual geometria",
+			"PPN": "Ajuste pressão"
 		}
-	},
-	"header": {
-		"KM": "KM",
-		"FPITV": "Próx. data ITV"
 	},
 	"resetEmployee": {
 		"introduceEmployeeCode": "Insira um novo código de empregado novamente"

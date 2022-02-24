@@ -1,0 +1,38 @@
+@import "abstracts/mixins"
+
+.image-category-content
+	width: 100%
+	display: grid
+	grid-template-columns: repeat(4, 1fr)
+	grid-gap: $default-gap
+
+	.image-item
+		@include flex-column-center
+		text-align: center
+
+		.image-container
+			height: 100%
+			@include flex-1
+			@include flex-center
+
+		img
+			width: 100%
+			height: auto
+			object-fit: cover
+			border-radius: $border-radius
+
+mat-card
+	padding: $tiny-gap
+	margin: 0 $tiny-gap
+
+	.mat-card-header .mat-card-title, .mat-card-content
+		font-size: 1em
+		margin-bottom: 0 !important
+
+	.mat-card-avatar
+		height: auto
+		width: auto
+
+	.mat-card-header-text
+		display: flex
+		align-items: center

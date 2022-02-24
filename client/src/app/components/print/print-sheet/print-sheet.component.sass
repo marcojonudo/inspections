@@ -3,36 +3,8 @@
 .sheet-container
 	position: relative
 
-	.image-category-content
-		width: 100%
-		display: grid
-		grid-template-columns: repeat(4, 1fr)
-		grid-gap: $default-gap
-
-		.image-item
-			@include flex-column-center
-			text-align: center
-
-			.image-container
-				height: 100%
-				@include flex-1
-				@include flex-center
-
-			img
-				width: 100%
-				height: auto
-				object-fit: cover
-				border-radius: $border-radius
-
 	.text-area-card
 		height: 8rem !important
-
-	.page-break
-		page-break-after: always
-
-	canvas
-		display: inline-block !important
-		margin-bottom: 2px
 
 	mat-card
 		padding: $tiny-gap
