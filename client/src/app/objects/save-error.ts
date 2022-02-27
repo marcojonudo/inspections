@@ -11,7 +11,7 @@ export class SaveError {
 
 	constructor(savedInspection: SavedInspection, statusCode: number, error: string) {
 		this.orderNumber = savedInspection.orderNumber;
-		this.employeeCode = savedInspection.employeeCode;
+		this.employeeCode = savedInspection.findData().employeeCode;
 		this.numberPlate = savedInspection.numberPlate;
 		this.savedInspection = JSON.stringify(savedInspection);
 		this.statusCode = statusCode;

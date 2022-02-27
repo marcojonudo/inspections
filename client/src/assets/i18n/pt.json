@@ -47,6 +47,7 @@
 		"WARNING_RESETTING_INSPECTION": "¿Tem certeza de que deseja excluir a revisão?",
 		"EMPLOYEE_NOT_FOUND": "Funcionário não encontrado. Acesse o aplicativo de agendamento para sincronizá-los e tente novamente",
 		"ERROR_SAVING_IMAGE": "A imagem não pôde ser salva. Tenta de novo!",
+		"ERROR_REMOVING_IMAGE": "A imagem não pôde ser excluída. Tenta de novo!",
 		"UPDATE_CLEAR_DATA": "Uma nova versão foi instalada. Você precisa se atualizar!"
 	},
 	"print": {

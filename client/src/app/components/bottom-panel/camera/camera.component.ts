@@ -38,7 +38,7 @@ export class CameraComponent {
 	}
 
 	deleteImage(imageId: number = this.data.imageId, itemCode: string = this.data.itemCode): void {
-		this.inspectionService.removeImage(imageId, itemCode);
+		this.inspectionService.removeImage(imageId, itemCode).subscribe();
 		this.bottomSheet.dismiss(true);
 	}
 

@@ -1,6 +1,5 @@
 package inspections.domains
 
-
 import grails.gorm.annotation.Entity
 import org.grails.datastore.gorm.GormEntity
 

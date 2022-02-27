@@ -1,12 +1,8 @@
 package inspections.domains
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
-
+import com.fasterxml.jackson.annotation.JsonInclude
 import grails.gorm.annotation.Entity
 import groovy.transform.TupleConstructor
-import inspections.deserializers.SavedItemsDeserializer
 import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
 import org.grails.datastore.gorm.GormEntity
@@ -15,14 +11,17 @@ import org.grails.datastore.gorm.GormEntity
 @TupleConstructor
 class SavedInspection implements GormEntity<SavedInspection> {
 
+	int centre
 	String inspectionTypeCode
 	String vehicle
 	int orderNumber
 	String numberPlate
 	State state
 	boolean orderInspection
+	Set<SavedInspectionData> data
 
-	@JsonDeserialize(using = SavedItemsDeserializer)
+//	@JsonDeserialize(using = SavedItemsDeserializer)
+	@JsonInclude
 	Set<SavedItem> items
 
 	static hasMany = [items: SavedItem, data: SavedInspectionData]
@@ -47,6 +46,10 @@ class SavedInspection implements GormEntity<SavedInspection> {
 			this.check = check;
 		}
 
+	}
+
+	SavedInspectionData findData() {
+		return data.max { it.saved }
 	}
 
 	boolean updatedOrder(String type, boolean orderInspection) {

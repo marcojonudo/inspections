@@ -31,11 +31,15 @@ export class SavedItem {
 		return this.findData().isFilled();
 	}
 
+	findLastData(data: SavedItemData[] = this.data): SavedItemData {
+		return data.reduce((prev, current) => (prev.filled > current.filled) ? prev : current);
+	}
+
 	findData(employeeCode: string = undefined, replicate: boolean = false): SavedItemData {
-		if (employeeCode && this.data[this.data.length - 1].saved) {
+		if (employeeCode && this.findLastData().saved) {
 			this.addData(employeeCode, replicate);
 		}
-		return this.data[this.data.length - 1];
+		return this.findLastData();
 	}
 
 	addData(employeeCode: string, replicate: boolean, item: Item = this.item): void {
@@ -51,7 +55,7 @@ export class SavedItem {
 
 	replicateData(itemType: ItemType, item: Item, employeeCode: string): SavedItemData {
 		const lastData = this.findData();
-		const data = itemType.buildData(employeeCode, lastData, item)
+		const data = itemType.buildData(employeeCode, lastData, item);
 		data.saved = undefined;
 		return data;
 	}
@@ -60,8 +64,8 @@ export class SavedItem {
 		return this.findData().findValue();
 	}
 
-	findImage(): CustomImage {
-		return this.findData().image;
+	findImageId(): number {
+		return this.findData().imageId;
 	}
 
 	findRestrictive(): boolean {
@@ -76,21 +80,16 @@ export class SavedItem {
 		this.findData().updateHidden(employeeCode, hidden);
 	}
 
-	addImage(image: CustomImage, employeeCode: string): void {
-		this.findData().addImage(image, employeeCode);
-	}
-
-	addImageId(imageId: number, employeeCode: string): void {
-		// this.imageId = imageId;
-		// this.updateCommonFields(employeeCode);
-	}
-
 	updateRestrictive(restrictive: boolean, employeeCode: string): void {
 		this.findData(employeeCode, true).updateRestrictive(restrictive, employeeCode);
 	}
 
 	update(value: any, employeeCode: string): void {
 		this.findData().update(value, employeeCode);
+	}
+
+	updateImageId(imageId: number, employeeCode: string): void {
+		this.findData(employeeCode, true).updateImageId(imageId, employeeCode);
 	}
 
 }

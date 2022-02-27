@@ -3,6 +3,7 @@ package inspections.controllers
 import groovy.transform.CompileStatic
 import inspections.domains.Image
 import inspections.services.data.ImageDataService
+import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
 import io.micronaut.http.multipart.CompletedFileUpload
@@ -34,25 +35,6 @@ class ImageController {
         return imageDataService.find(id)
     }
 
-    @Post(consumes = MediaType.MULTIPART_FORM_DATA)
-    @Operation(
-        summary = "Guarda una imagen",
-        description = "Guarda una imagen"
-    )
-    @ApiResponse(
-        responseCode = "201",
-        description = "Imagen guardada correctamente",
-        content = @Content(mediaType = "multipart/form-data")
-    )
-    Image saveImage(
-        @QueryValue int orderNumber,
-        @QueryValue String itemCode,
-        @QueryValue boolean landscape,
-        @Body CompletedFileUpload image
-    ) {
-        return imageDataService.save(orderNumber, itemCode, image.bytes, landscape)
-    }
-
     @Get
     @Operation(
         summary = "Obtiene una lista de imágenes",
@@ -65,6 +47,40 @@ class ImageController {
     )
     List<Image> findImages(@QueryValue List<Long> ids) {
         return imageDataService.findAll(ids)
+    }
+
+    @Post(value = "/{orderNumber}/{itemCode}", consumes = MediaType.MULTIPART_FORM_DATA)
+    @Operation(
+        summary = "Guarda una imagen",
+        description = "Guarda una imagen"
+    )
+    @ApiResponse(
+        responseCode = "201",
+        description = "Imagen guardada correctamente",
+        content = @Content(mediaType = "multipart/form-data")
+    )
+    Image saveImage(
+        @PathVariable int orderNumber,
+        @PathVariable String itemCode,
+        @QueryValue boolean landscape,
+        @Body CompletedFileUpload image
+    ) {
+        return imageDataService.save(orderNumber, itemCode, image.bytes, landscape)
+    }
+
+    @Delete("/{id}")
+    @Operation(
+        summary = "Borra una imagen",
+        description = "Borra una imagen"
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "Imagen borrada correctamente",
+        content = @Content(array = @ArraySchema(schema = @Schema(implementation = Image)))
+    )
+    HttpResponse deleteImage(@PathVariable Long id) {
+        imageDataService.delete(id)
+        return HttpResponse.ok()
     }
 
 }

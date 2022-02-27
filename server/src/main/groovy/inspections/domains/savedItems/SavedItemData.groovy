@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import grails.gorm.annotation.Entity
-import inspections.domains.Image
 import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
 
@@ -18,8 +17,8 @@ abstract class SavedItemData implements GormEntity<SavedItemData> {
 	SavedItem savedItem
 	String employeeCode
 	boolean hidden
-	Image image
 	boolean restrictive
+	Long imageId
 
 	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
 	@JsonDeserialize(using = LocalDateTimeDeserializer)
@@ -33,11 +32,9 @@ abstract class SavedItemData implements GormEntity<SavedItemData> {
 
 	static mapping = {
 		tablePerHierarchy false
-		image lazy: false
 	}
 
 	static constraints = {
-		image nullable: true
 		filled nullable: true
 	}
 

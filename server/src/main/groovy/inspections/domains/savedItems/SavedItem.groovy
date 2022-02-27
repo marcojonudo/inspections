@@ -7,6 +7,7 @@ import grails.gorm.annotation.Entity
 import inspections.deserializers.SavedItemDataDeserializer
 import inspections.domains.SavedInspection
 import org.grails.datastore.gorm.GormEntity
+import org.grails.datastore.mapping.core.connections.ConnectionSource
 
 @Entity
 @JsonIgnoreProperties

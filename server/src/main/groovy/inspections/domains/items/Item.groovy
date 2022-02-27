@@ -11,6 +11,7 @@ import inspections.domains.savedItems.SelectSavedItemData
 import inspections.domains.savedItems.TextAreaSavedItemData
 import inspections.domains.savedItems.TextSavedItemData
 import org.grails.datastore.gorm.GormEntity
+import org.grails.datastore.mapping.core.connections.ConnectionSource
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -398,7 +398,7 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	checkExistentImage(itemCode: string): boolean {
-		return InspectionService.findSavedItem(itemCode).findImage() !== undefined;
+		return InspectionService.findSavedItem(itemCode).findImageId() !== undefined;
 	}
 
 	checkShowRestrictiveButton(item: Item): boolean {
@@ -417,9 +417,9 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	checkOpenCamera(itemCode: string): void {
 		const savedItem = InspectionService.findSavedItem(itemCode);
-		if (savedItem.imageId) {
+		if (savedItem.findImageId()) {
 			const ref = this.bottomSheet.open(
-				CameraComponent, { data: { imageId: savedItem.imageId, itemCode } }
+				CameraComponent, { data: { imageId: savedItem.findImageId(), itemCode } }
 			);
 			ref.afterDismissed().subscribe((deleted: boolean) => {
 				if (deleted) {

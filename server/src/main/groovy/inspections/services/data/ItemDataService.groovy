@@ -11,7 +11,4 @@ interface ItemDataService {
 	@Where({ code in codes })
 	List<Item> findAll(List<String> codes)
 
-    @Where({ code in codes })
-    List<Item> findAll(List<String> codes)
-
 }

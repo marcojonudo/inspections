@@ -1,7 +1,9 @@
 package inspections.domains
 
 import grails.gorm.annotation.Entity
+import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
+import org.grails.datastore.mapping.core.connections.ConnectionSource
 
 @Entity
 class VehicleSection implements GormEntity<VehicleSection> {

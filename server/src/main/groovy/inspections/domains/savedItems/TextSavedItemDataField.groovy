@@ -3,7 +3,6 @@ package inspections.domains.savedItems
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import grails.gorm.annotation.Entity
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.grails.datastore.gorm.GormEntity
 
 @Entity

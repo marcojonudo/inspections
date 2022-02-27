@@ -4,8 +4,9 @@ import groovy.transform.CompileStatic
 import inspections.domains.InspectionVehicle
 import inspections.domains.SaveError
 import inspections.domains.SavedInspection
+import inspections.domains.SavedInspectionData
 import inspections.domains.items.Item
-import inspections.domains.savedItems.TextSavedItemField
+import inspections.domains.savedItems.TextSavedItemDataField
 import inspections.pogos.slack.messages.SlackBlocksMessage
 import inspections.pogos.slack.messages.SlackMessage
 import inspections.pogos.slack.structure.blocks.SlackBlock
@@ -42,15 +43,15 @@ class Builder {
 		String numberPlate,
 		boolean orderInspection
 	) {
+		SavedInspectionData data = new SavedInspectionData(employeeCode: employeeCode, saved: LocalDateTime.now())
 		return new SavedInspection(
 			inspectionTypeCode,
 			vehicle,
 			orderNumber,
-			employeeCode,
 			numberPlate,
 			SavedInspection.State.STARTED,
 			orderInspection,
-			LocalDateTime.now()
+            [data].toSet()
 		)
 	}
 
@@ -85,7 +86,7 @@ class Builder {
 			List<SlackBlock> blocks = buildBaseInfoBlocks(
 				centre,
 				savedInspection.orderNumber,
-				savedInspection.employeeCode,
+				savedInspection.findData().employeeCode,
 				savedInspection.numberPlate,
 				[buildExceptionBlock(e)]
 			)
@@ -93,20 +94,20 @@ class Builder {
 		}
 
 		static SlackMessage buildItvDateErrorMessage(
-			SavedInspection savedInspection, int centre, List<TextSavedItemField> savedFields
+			SavedInspection savedInspection, int centre, List<TextSavedItemDataField> savedFields
 		) {
 			List<SlackBlock> blocks = buildBaseInfoBlocks(
 				centre,
 				savedInspection.orderNumber,
-				savedInspection.employeeCode,
+				savedInspection.findData().employeeCode,
 				savedInspection.numberPlate
 			)
 			blocks << new SlackDividerBlock()
 			blocks << new SlackTextBlock(
 				new SlackMarkdownElem(":pencil: *Message*: $Constants.Message.WRONG_FPITV_FIELD")
 			)
-			TextSavedItemField monthField = savedFields.find { it.order == 0 }
-			TextSavedItemField yearField = savedFields.find { it.order == 1 }
+			TextSavedItemDataField monthField = savedFields.find { it.order == 0 }
+			TextSavedItemDataField yearField = savedFields.find { it.order == 1 }
 			blocks << new SlackFieldsBlock([
 				new SlackMarkdownElem(":date: *Month*: ${monthField ? monthField.text ?: '-' : ''}"),
 				new SlackMarkdownElem(":date: *Year*: ${yearField ? yearField.text ?: '-' : ''}"),

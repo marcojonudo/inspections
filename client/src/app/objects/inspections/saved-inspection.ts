@@ -4,6 +4,7 @@ import * as dayjs from 'dayjs';
 
 export class SavedInspection {
 
+	centre: number;
 	inspectionTypeCode: string;
 	vehicle: string;
 	orderNumber: number;
@@ -21,14 +22,11 @@ export class SavedInspection {
 		this.items = items;
 		this.data = savedInspection.data.map(d => new SavedInspectionData(d.employeeCode, d.saved));
 		this.data.push(new SavedInspectionData(employeeCode));
+		this.items = items;
 	}
 
 	findData(): SavedInspectionData {
 		return this.data[this.data.length - 1];
-	}
-
-	addData(employeeCode: string): void {
-		this.data.push(new SavedInspectionData(employeeCode));
 	}
 
 	fillSaved(savedInspection: SavedInspection, employeeCode: string): void {
@@ -38,6 +36,10 @@ export class SavedInspection {
 			savedItem.findData().saved = dayjs(s.findData().saved);
 		});
 		this.addData(employeeCode);
+	}
+
+	addData(employeeCode: string): void {
+		this.data.push(new SavedInspectionData(employeeCode));
 	}
 
 }

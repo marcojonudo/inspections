@@ -11,6 +11,7 @@ class Constants {
 
         static final String FVIBERI = "fviberi"
         static final String SCHEDULES = "schedules"
+        static final String HESTIA_INSPECTION = "hestia-inspection"
 
     }
 

@@ -43,8 +43,7 @@ export class TextSavedItemData extends SavedItemData {
 
 	reset(employeeCode: string): void {
 		this.fields = (this.item as TextItem).fields.map(field => new TextSavedItemDataField(field));
-		this.image = undefined;
-		// this.imageId = undefined;
+		this.imageId = undefined;
 		this.updateCommonFields(employeeCode);
 	}
 

@@ -19,9 +19,7 @@ abstract class SavedInspectionDataService {
 
 	abstract SavedInspection save(SavedInspection savedInspection)
 
-	abstract SavedInspection update(
-		Serializable id, String employeeCode, SavedInspection.State state, LocalDateTime saved
-	)
+//	abstract SavedInspection update(Serializable id, String employeeCode, SavedInspection.State state)
 
     abstract SavedInspection update(
         Serializable id, String inspectionTypeCode, boolean orderInspection, LocalDateTime saved

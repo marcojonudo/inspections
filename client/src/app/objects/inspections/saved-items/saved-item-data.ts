@@ -7,17 +7,17 @@ export abstract class SavedItemData {
 
 	employeeCode: string;
 	hidden: boolean;
-	image: CustomImage;
 	restrictive: boolean;
 	filled: Dayjs;
 	saved: Dayjs;
 	itemType: string;
+	imageId: number;
 
 	protected constructor(employeeCode: string, savedData: any, item: Item) {
 		this.employeeCode = employeeCode;
 		this.itemType = item.type;
 		if (savedData) {
-			this.image = savedData.image ? new CustomImage(savedData.image.image, savedData.image.landscape) : undefined;
+			this.imageId = savedData.imageId;
 			this.filled = savedData.filled ? dayjs(savedData.filled) : undefined;
 			this.hidden = savedData.hidden;
 			this.restrictive = savedData.restrictive;
@@ -43,8 +43,8 @@ export abstract class SavedItemData {
 		this.filled = dayjs();
 	}
 
-	addImage(image: CustomImage, employeeCode: string): void {
-		this.image = image;
+	updateImageId(imageId: number, employeeCode: string): void {
+		this.imageId = imageId;
 		this.updateCommonFields(employeeCode);
 	}
 

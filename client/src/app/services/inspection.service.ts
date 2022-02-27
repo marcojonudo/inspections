@@ -5,7 +5,6 @@ import { Url } from '../objects/url';
 import { Order } from '../objects/orders/order';
 import { InspectionVehicle } from '../objects/inspections/inspection-vehicle';
 import { SavedInspection } from '../objects/inspections/saved-inspection';
-import * as dayjs from 'dayjs';
 import { LocalStorageService } from './local-storage.service';
 import { Constants } from '../objects/constants';
 import { EmployeeService } from './employee.service';
@@ -36,6 +35,8 @@ import { Router } from '@angular/router';
 import { ResetEmployeeDialogComponent } from '../components/reset-employee-dialog/reset-employee-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { VersionService } from './version.service';
+import { SaveError } from '../objects/save-error';
+import { CountryHandlerType } from '../objects/country-info/country-handler-type';
 
 @Injectable({
 	providedIn: 'root'
@@ -82,11 +83,6 @@ export class InspectionService {
 			targetSavedItem.updateHidden(employeeCode, false),
 		REPLICATE: (targetSavedItem: SavedItem, newValue: string, employeeCode: string) =>
 			targetSavedItem.update(Constants.SELECT_ITEM_OPTION_CODE.P, employeeCode)
-	};
-
-	private static readonly COUNTRY_HANDLER_DECIDER: any = {
-		es: new SpainHandler(),
-		pt: new PortugalHandler()
 	};
 
 	static employeeSubject: Subject<Employee>;
@@ -344,8 +340,7 @@ export class InspectionService {
 		savedInspection: SavedInspection = this.savedInspection,
 		employee: Employee = EmployeeService.employee
 	): void {
-		// TODO imageId
-		savedItem.findData(employee.code, true).addImage(imageId, employee.code);
+		savedItem.updateImageId(imageId, employee.code);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
@@ -453,7 +448,7 @@ export class InspectionService {
 			catchError(() => of(Constants.DEFAULT_LANGUAGE)),
 			tap((lang: string) => {
 				InspectionService.language = lang;
-				InspectionService.countryHandler = InspectionService.COUNTRY_HANDLER_DECIDER[lang];
+				InspectionService.countryHandler = CountryHandlerType.parse(lang).handler;
 				LocalStorageService.setItem(Constants.LOCAL_STORAGE.LANGUAGE, lang);
 				console.log('Language', lang);
 			})
@@ -552,7 +547,7 @@ export class InspectionService {
 		const formData = new FormData();
 		formData.append('image', file);
 
-		const url = `${Url.images()}?orderNumber=${order.number}&itemCode=${itemCode}&landscape=${landscape}`;
+		const url = `${Url.images()}/${order.number}/${itemCode}?landscape=${landscape}`;
 		return this.http.post(url, formData).pipe(
 			tap((savedImage: any) => {
 				const savedItem = InspectionService.findSavedItem(itemCode);
@@ -567,22 +562,32 @@ export class InspectionService {
 		);
 	}
 
-	removeImage(imageId: number, itemCode: string): void {
-		const savedItem = InspectionService.findSavedItem(itemCode);
-		InspectionService.updateImageId(savedItem, undefined);
+	removeImage(imageId: number, itemCode: string): Observable<any> {
+		const url = `${Url.images()}/${imageId}`;
+		return this.http.delete(url).pipe(
+			tap(() => {
+				const savedItem = InspectionService.findSavedItem(itemCode);
+				InspectionService.updateImageId(savedItem, undefined);
+			}),
+			catchError(() => {
+				this.snackBarService.open(
+					Constants.MESSAGE_CODE.ERROR_SAVING_IMAGE, Constants.SNACK_BAR.TYPE.WARNING
+				);
+				return of(true);
+			}),
+		);
 	}
 
 	saveInspection(
 		savedInspection: SavedInspection,
 		inspection: InspectionVehicle = InspectionService.inspection,
-		employee: Employee = EmployeeService.employee,
+		employeeCode: string = EmployeeService.employee.code,
 		centre: Centre = InspectionService.centre
 	): Observable<any> {
 		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection, inspection.items);
 		console.log('Saving inspection', body);
-		const a = body.items.find(i => i.item.code === 'CT');
-		console.log('ct saved item', a);
-		return this.http.post(Url.inspection(), body, { headers: { centre: `${centre.code}` } }).pipe(
+		const headers = { headers: { centre: `${centre.code}`, employeeCode } };
+		return this.http.post(Url.savedInspectionApi(), body, headers).pipe(
 			tap(
 				(data) => {
 					console.log('Received saved inspection data', data);
@@ -590,7 +595,7 @@ export class InspectionService {
 						data, inspection.items, EmployeeService.employee.code
 					);
 					console.log('Received saved inspection', receivedSavedInspection);
-					body.fillSaved(receivedSavedInspection, employee.code);
+					body.fillSaved(receivedSavedInspection, employeeCode);
 				},
 				(error) => {
 					const saveError = new SaveError(savedInspection, error.status, error.message);
