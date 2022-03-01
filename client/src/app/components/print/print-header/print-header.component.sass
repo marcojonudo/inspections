@@ -3,37 +3,34 @@
 \:host
 	position: relative
 
-	canvas
-		display: inline-block !important
-		margin-bottom: 2px
-
-	mat-card
-		padding: $tiny-gap
-		margin: 0 $tiny-gap
-
-		.mat-card-header .mat-card-title, .mat-card-content
-			font-size: 1em
-			margin-bottom: 0 !important
-
-		.mat-card-avatar
-			height: auto
-			width: auto
-
-		.mat-card-header-text
-			display: flex
-			align-items: center
-
-		mat-card-header
-
-			mat-icon
-				order: 0
-
 	header
-		//width: 100%
-		//position: fixed
-		//top: 0
 		@include flex-column
 		margin-bottom: $tiny-gap
+
+		mat-card
+			padding: 0
+			margin: 0 $tiny-gap
+			box-shadow: none
+
+			.mat-card-header .mat-card-title, .mat-card-content
+				font-size: 1em
+				margin-bottom: 0 !important
+
+			.mat-card-content
+				padding: 0.12rem .25rem 0.12rem .25rem
+
+			.mat-card-avatar
+				height: auto
+				width: auto
+
+			mat-card-header
+				padding: .12rem .25rem .12rem .25rem
+				background-color: #00764B
+				color: #fff
+				border-radius: $border-radius $border-radius 0 0
+
+				mat-icon
+					order: 0
 
 		#title
 			height: 2.5rem
@@ -54,7 +51,7 @@
 			margin-bottom: $tiny-gap
 
 			& > mat-card, & > div
-				flex: 2 0 0
+				flex: 1 0 0
 
 				mat-card-content
 					@include flex-column
@@ -62,10 +59,7 @@
 					span
 						line-height: 1.4
 
-			#summary-card
-				@include flex-1
-
-			#info-card mat-card-content, #summary-card mat-card-content
+			#info-card mat-card-content
 				height: calc(100% - 24px)
 
 			#info-card .key-value-section > div > div:first-child
@@ -113,14 +107,6 @@
 
 					& > span
 						line-height: 1.5
-
-			#summary-container
-				height: 50%
-				@include flex-center
-
-				#summary
-					width: 65%
-					@include flex-center
 
 		#legend
 			@include flex-center

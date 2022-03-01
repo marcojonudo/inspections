@@ -469,7 +469,7 @@ export class InspectionService {
 		let order;
 		return this.findOrderInfo(orderCode, employee.code).pipe(
 			concatMap((orderInfo: any) => {
-				order = InspectionService.setOrder(new Order(orderInfo.order, orderCode));
+				order = InspectionService.setOrder(new Order(orderInfo.order));
 				console.log('Order', order);
 				const centre = InspectionService.setCentre(new Centre(orderInfo.centre));
 				console.log('Centre', centre);

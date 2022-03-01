@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { CategoryItems } from '../../../objects/print/category-items';
 import { CustomImage } from '../../../objects/inspections/custom-image';
 import { InspectionService } from '../../../services/inspection.service';
+import { VehicleType } from '../../../objects/orders/vehicles/vehicle-type';
 
 @Component({
 	selector: 'app-images-sheet',
@@ -13,6 +14,7 @@ export class ImagesSheetComponent {
 
 	@Input() categories: CategoryItems[];
 	@Input() images: CustomImage[];
+	@Input() vehicleType: VehicleType;
 
 	findImage(id: number, images: CustomImage[] = this.images): CustomImage {
 		return images.find(i => i.id === id);

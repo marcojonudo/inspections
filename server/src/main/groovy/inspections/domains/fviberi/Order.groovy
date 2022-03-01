@@ -9,6 +9,7 @@ import org.grails.datastore.gorm.GormEntity
 class Order implements GormEntity<Order> {
 
 	int number
+	String code
 	String state
 	String carIdentifier
 	Client client
@@ -19,7 +20,7 @@ class Order implements GormEntity<Order> {
 
 	static hasMany = [lines: OrderLine]
 
-	static transients = ['vehicle']
+	static transients = ['code', 'vehicle']
 
 	static mapping = {
 		datasource Constants.DataSource.FVIBERI

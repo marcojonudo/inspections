@@ -1,4 +1,8 @@
-<div id="tyre-sheet-container">
+<div id="tyre-sheet-container" class="card">
+	<div class="card-header">
+		<mat-icon mat-card-avatar>navigate_next</mat-icon>
+		<div translate>print.category.N</div>
+	</div>
 	<div id="central-image">
 		<img src="assets/img/car-axe.svg"/>
 		<svg viewBox="0 0 198 198" xmlns="http://www.w3.org/2000/svg">
@@ -29,7 +33,7 @@
 			<div class="tyre-section-wrapper" [style.order]="i">
 				<div class="tyre-section-header">
 					<div class="measurement-name">
-						<span translate>print.tyre</span> {{tyreInfo.key}}</div>
+						<span translate>print.tyre</span>&nbsp;{{tyreInfo.key}}</div>
 					<div class="measurement-value">{{measurementSavedItem.findValue()}}</div>
 				</div>
 				<div class="photo-wrapper">
@@ -37,7 +41,9 @@
 						*ngIf="findDepthItem(tyreInfo.value).imageId; else emptyImageTemplate"
 						[src]="findImageUrl(findDepthItem(tyreInfo.value).imageId)">
 					<ng-template #emptyImageTemplate>
-						Sin imagen
+						<div class="no-image">
+							<mat-icon>no_photography</mat-icon>
+						</div>
 					</ng-template>
 				</div>
 				<div class="tyre-state">

@@ -104,25 +104,6 @@
 				</section>
 			</mat-card-content>
 		</mat-card>
-		<mat-card id="summary-card">
-			<mat-card-header>
-				<mat-icon mat-card-avatar>summarize</mat-icon>
-				<mat-card-title translate>print.summary</mat-card-title>
-			</mat-card-header>
-			<mat-card-content id="summary-container">
-				<div id="summary">
-					<canvas
-						baseChart
-						width="1px"
-						height="1px"
-						[chartType]="chartType"
-						[options]="options"
-						[colors]="colors"
-						[data]="findData()">
-					</canvas>
-				</div>
-			</mat-card-content>
-		</mat-card>
 	</div>
 	<mat-card>
 		<mat-card-content id="legend">

@@ -1,24 +1,25 @@
 <div class="sheet-container">
+	<img src="assets/img/backgrounds/{{vehicleType.backgroundImage}}.jpg" class="vehicle-background-image"/>
 	<div *ngFor="let cat of categories; let i = index" class="category">
-		<mat-card *ngIf="cat.category; else elementTemplate">
-			<mat-card-header>
+		<div class="card" *ngIf="cat.category; else elementTemplate">
+			<div class="card-header">
 				<mat-icon mat-card-avatar>navigate_next</mat-icon>
-				<mat-card-title translate>print.category.{{cat.category.code}}</mat-card-title>
-			</mat-card-header>
-			<mat-card-content>
+				<div translate>print.category.{{cat.category.code}}</div>
+			</div>
+			<div class="card-content">
 				<ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: cat }"></ng-container>
-			</mat-card-content>
-		</mat-card>
+			</div>
+		</div>
 		<ng-template #elementTemplate>
-			<mat-card class="text-area-card">
-				<mat-card-header>
+			<div class="card text-area-card">
+				<div class="card-header">
 					<mat-icon mat-card-avatar>navigate_next</mat-icon>
-					<mat-card-title translate>inspection.item.{{cat.items[0].item.code}}</mat-card-title>
-				</mat-card-header>
-				<mat-card-content>
+					<div translate>inspection.item.{{cat.items[0].item.code}}</div>
+				</div>
+				<div class="card-content">
 					<div *ngFor="let line of findTextAreaLines(findTextAreaSavedItem(cat.items[0]))" class="highlight">{{line}}</div>
-				</mat-card-content>
-			</mat-card>
+				</div>
+			</div>
 		</ng-template>
 	</div>
 	<ng-template #itemTemplate let-cat>

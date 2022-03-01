@@ -7,8 +7,6 @@ import { SelectItemOption } from '../../../objects/inspections/items/select-item
 import { Constants } from '../../../objects/constants';
 import * as dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
-import { ChartOptions, ChartType } from 'chart.js';
-import { Color } from 'ng2-charts';
 import { Employee } from '../../../objects/employee';
 import { OrderPipe } from '../../../pipes/order.pipe';
 import { Vehicle } from '../../../objects/orders/vehicles/vehicle';
@@ -23,7 +21,7 @@ import { ItemType } from '../../../objects/inspections/items/item-type';
 	styleUrls: ['./print-header.component.sass'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PrintHeaderComponent implements OnInit {
+export class PrintHeaderComponent {
 
 	private readonly GROUP_LABELS: { [key: string]: string[] };
 
@@ -31,9 +29,6 @@ export class PrintHeaderComponent implements OnInit {
 	@Input() mechanics: Employee[];
 
 	today: Dayjs;
-	chartType: ChartType;
-	options: ChartOptions;
-	colors: Color[];
 	avoidLegendItems: string[] = [Constants.SELECT_ITEM_OPTION_CODE.NA];
 
 	constructor(private orderPipe: OrderPipe) {
@@ -43,14 +38,6 @@ export class PrintHeaderComponent implements OnInit {
 			]
 		};
 		this.today = dayjs();
-		this.chartType = 'pie';
-		this.options = { animation: { duration: 0 } };
-		this.colors = [{
-			backgroundColor: this.findLabels().map(label => this.findIconColor(label.code))
-		}];
-	}
-
-	ngOnInit(): void {
 	}
 
 	// region Getters / setters
@@ -100,41 +87,8 @@ export class PrintHeaderComponent implements OnInit {
 		return items.filter(item => item.item.header === code);
 	}
 
-	findData(items: SavedItem[] = this.savedInspection.items): number[] {
-		const labels = this.findLabels();
-		const selectItems = this.findSelectItems(items);
-		const data = [];
-		labels.forEach(label => {
-			data.push(selectItems.filter(item => item.value === label.code).length);
-		});
-		return this.groupData(labels, data);
-	}
-
-	findSelectItems(items: SavedItem[] = this.savedInspection.items): SelectSavedItem[] {
-		return items.filter(item => item.item.type === ItemType.SELECT.id) as SelectSavedItem[];
-	}
-
 	findIconColor(code: string): string {
 		return InspectionService.findIconColor(code);
-	}
-
-	groupData(
-		labels: SelectItemOption[], data: number[], groupLabels: { [key: string]: string[] } = this.GROUP_LABELS
-	): number[] {
-		Object.entries(groupLabels).forEach(([name, codes]) => {
-			const codesLabels = labels.filter(label => codes.find(code => code === label.code));
-			const existentCodes = codesLabels.length === codes.length;
-			if (existentCodes) {
-				const groupedData = data.filter((v: number, i: number) =>
-					codesLabels.find(l => l.order === i + 1)
-				).reduce((a, b) => a + b, 0);
-				codesLabels.forEach(label =>
-					data.splice(data.findIndex((n: number, i: number) => i === label.order - 1), 1)
-				);
-				data.splice(codesLabels[0].order - 1, 0, groupedData);
-			}
-		});
-		return data;
 	}
 
 	groupLabels(

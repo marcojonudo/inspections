@@ -1,4 +1,4 @@
-<div class="page">
+<div *ngIf="showTyreSheet" class="page">
 	<app-print-header [adviser]="adviser" [mechanics]="mechanics"></app-print-header>
 	<app-tyre-sheet
 		[tyreGroupedItems]="tyreGroupedItems"
@@ -10,9 +10,9 @@
 </div>
 <div *ngFor="let categories of groupedCategories" class="page">
 	<app-print-header [adviser]="adviser" [mechanics]="mechanics"></app-print-header>
-	<app-print-sheet [categories]="categories"></app-print-sheet>
+	<app-print-sheet [categories]="categories" [vehicleType]="vehicleType"></app-print-sheet>
 </div>
 <div *ngFor="let categories of groupedImageCategories" class="page">
 	<app-print-header [adviser]="adviser" [mechanics]="mechanics"></app-print-header>
-	<app-images-sheet [categories]="categories" [images]="images"></app-images-sheet>
+	<app-images-sheet [categories]="categories" [images]="images" [vehicleType]="vehicleType"></app-images-sheet>
 </div>

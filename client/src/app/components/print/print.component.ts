@@ -16,6 +16,7 @@ import { CategoryItems } from '../../objects/print/category-items';
 import { Url } from '../../objects/url';
 import { CustomImage } from '../../objects/inspections/custom-image';
 import { HttpClient } from '@angular/common/http';
+import { VehicleType } from '../../objects/orders/vehicles/vehicle-type';
 
 @Component({
 	selector: 'app-print',
@@ -30,7 +31,9 @@ export class PrintComponent {
 
 	adviser: Employee;
 	mechanics: Employee[];
+	vehicleType: VehicleType;
 	tyreGroupedItems: { [key: string]: SavedItem[] };
+	showTyreSheet: boolean;
 	visualControlSavedItem: SavedItem;
 	pressureSavedItem: SavedItem;
 	measurementSavedItem: SavedItem;
@@ -48,6 +51,8 @@ export class PrintComponent {
 			.filter((value, index, self) => value && self.indexOf(value) === index)
 			.map(employeeCode => EmployeeService.findEmployee(employeeCode));
 
+		this.vehicleType = VehicleType.parse(this.savedInspection.vehicle);
+
 		const savedItems = InspectionService.inspectionHandler.findSavedItems(this.savedInspection)
 			.filter(i => i.item.header === undefined)
 			.filter(i => {
@@ -55,6 +60,9 @@ export class PrintComponent {
 				return selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true;
 			});
 		this.tyreGroupedItems = this.findTyreItems(savedItems);
+		const depthCodes = this.CAR_TYRES.map(carTyre => `${Constants.DEPTH_ITEM_CODE}${carTyre}`);
+		const depthItems = savedItems.filter(i => depthCodes.find(c => c === i.item.code) !== undefined);
+		this.showTyreSheet = depthItems.find(i => i.imageId) !== undefined;
 		this.visualControlSavedItem = savedItems.find(i => i.item.code === 'CVGN');
 		this.pressureSavedItem = savedItems.find(i => i.item.code === 'PPN');
 		this.measurementSavedItem = savedItems.find(i => i.item.code === 'PN');
@@ -68,8 +76,11 @@ export class PrintComponent {
 			const imageIds = imageSavedItems.map(savedItem => savedItem.imageId);
 			this.http.get(Url.images(), { params: { ids: `${imageIds.join(',')}` } }).subscribe((images: CustomImage[]) => {
 				this.images = images;
-				const imageCategories = this.buildPrintCategories(imageSavedItems);
-				this.groupedImageCategories = this.buildGroupedImageCategories(imageCategories);
+				const noTyreImages = imageSavedItems.filter(i => depthCodes.find(c => c === i.item.code) === undefined);
+				if (noTyreImages.length) {
+					const imageCategories = this.buildPrintCategories(noTyreImages);
+					this.groupedImageCategories = this.buildGroupedImageCategories(imageCategories);
+				}
 				this.cdRef.detectChanges();
 				this.printService.openPrintDialog();
 			});
@@ -147,7 +158,7 @@ export class PrintComponent {
 	buildGroupedImageCategories(categories: CategoryItems[]): CategoryItems[][] {
 		const groupedCategories = [[]];
 		const sortedCategories = this.sortCategories(categories);
-		sortedCategories.forEach((category, i) => {
+		sortedCategories.forEach(category => {
 			const rows = groupedCategories[groupedCategories.length - 1]
 				.map(cat => Math.ceil(cat.items.length / Constants.ROW_IMAGES))
 				.reduce((a, b) => a + b, 0);
@@ -156,8 +167,8 @@ export class PrintComponent {
 				(newRows - this.IMAGES_ROW_ITEMS > 0 ? newRows - this.IMAGES_ROW_ITEMS : newRows)
 				: 0;
 			const newPageRows = category.imagesRows.length - pageRows;
-			if (newPageRows) {
-				if (pageRows) {
+			if (newPageRows > 0) {
+				if (pageRows > 0) {
 					const samePageItems = [].concat(...category.imagesRows.slice(0, pageRows));
 					const samePageCategoryItems = category.clone(samePageItems);
 					const newPageItems = [].concat(...category.imagesRows.slice(pageRows + 1, category.imagesRows.length));

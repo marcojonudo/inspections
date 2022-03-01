@@ -13,6 +13,7 @@ export class Constants {
 	static readonly DETECTED_FAULTS_CODE = 'AD';
 	static readonly ROW_IMAGES = 4;
 	static readonly TYRE_ITEM_CODES = ['EN', 'FN', 'PN'];
+	static readonly DEPTH_ITEM_CODE = 'PN';
 
 	static readonly HEADER_CARD: { [key: string]: string } = {
 		INFO: 'INFO',

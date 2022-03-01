@@ -12,6 +12,7 @@ import { ItemType } from '../../../objects/inspections/items/item-type';
 import { TextAreaSavedItem } from '../../../objects/inspections/saved-items/text-area-saved-item';
 import { TextItem } from '../../../objects/inspections/items/text-item';
 import { CategoryItems } from '../../../objects/print/category-items';
+import { VehicleType } from '../../../objects/orders/vehicles/vehicle-type';
 
 @Component({
 	selector: 'app-print-sheet',
@@ -22,6 +23,7 @@ import { CategoryItems } from '../../../objects/print/category-items';
 export class PrintSheetComponent {
 
 	@Input() categories: CategoryItems[];
+	@Input() vehicleType: VehicleType;
 
 	// region Getters / setters
 
