@@ -4,6 +4,7 @@ import grails.gorm.services.Service
 import grails.gorm.services.Where
 import grails.gorm.transactions.Transactional
 import inspections.domains.fviberi.Order
+import inspections.domains.fviberi.OrderTime
 import inspections.domains.fviberi.vehicle.IVehicle
 import inspections.utils.Constants
 
@@ -31,6 +32,9 @@ abstract class OrderDataService {
 
 	Order find(int number) {
 		Order order = findOrder(number)
+		OrderTime orderTime = orderTimeDataService.find(number)
+
+		order.code = orderTime.shortCode
 		order.vehicleType = Order.VehicleType.valueOf(order.vehicleType).type
 		IVehicle vehicle = carDataService.find(order.carIdentifier) ?: scooterDataService.find(order.carIdentifier)
 		order.vehicle = vehicle.buildVehicle()

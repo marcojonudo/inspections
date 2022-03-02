@@ -374,6 +374,11 @@
 		"engine": "Motor",
 		"power": "Potencia",
 		"registration": "Matriculación",
+		"tyre": "Neumático",
+		"tyreState": "Estado neumático",
+		"tyreMin": "1.6mm mínimo legal",
+		"tyreDepth": "Profundidad neumático",
+		"tyreAge": "Edad neumático",
 		"category": {
 			"I": "Iluminación",
 			"C": "Carrocería",
@@ -397,6 +402,10 @@
 		"header": {
 			"KM": "KM",
 			"FPITV": "Fecha prox. ITV"
+		},
+		"item": {
+			"CVGN": "Control visual geometría",
+			"PPN": "Puesta a presión"
 		}
 	},
 	"resetEmployee": {

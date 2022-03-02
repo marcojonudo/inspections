@@ -1,25 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { ListElement } from '../../../objects/list-elements/list-element';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Constants } from '../../../objects/constants';
-import { PrintService } from '../../../services/print.service';
-import { OrderPipe } from '../../../pipes/order.pipe';
 import { InspectionService } from '../../../services/inspection.service';
 import { SavedItem } from '../../../objects/inspections/saved-items/saved-item';
 import { SavedInspection } from '../../../objects/inspections/saved-inspection';
 import { Order } from '../../../objects/orders/order';
 import { Centre } from '../../../objects/orders/centre';
-import { Category } from '../../../objects/list-elements/category';
-import { Builder } from '../../../objects/builder';
-import { Utils } from '../../../objects/utils';
 import { SelectSavedItem } from '../../../objects/inspections/saved-items/select-saved-item';
 import { TextSavedItem } from '../../../objects/inspections/saved-items/text-saved-item';
 import { SelectItem } from '../../../objects/inspections/items/select-item';
 import { ItemType } from '../../../objects/inspections/items/item-type';
 import { TextAreaSavedItem } from '../../../objects/inspections/saved-items/text-area-saved-item';
 import { TextItem } from '../../../objects/inspections/items/text-item';
-import { HttpClient } from '@angular/common/http';
-import { Url } from '../../../objects/url';
-import { CustomImage } from '../../../objects/inspections/custom-image';
+import { CategoryItems } from '../../../objects/print/category-items';
+import { VehicleType } from '../../../objects/orders/vehicles/vehicle-type';
 
 @Component({
 	selector: 'app-print-sheet',
@@ -29,41 +22,8 @@ import { CustomImage } from '../../../objects/inspections/custom-image';
 })
 export class PrintSheetComponent {
 
-	private readonly ROW_ITEMS = 4;
-	private readonly BASE_TOP = 183;
-	private readonly HEADER_ROW_TOP = 16;
-
-	listElements: ListElement[];
-	imageListElements: { listElement, pageBreak }[];
-	images: CustomImage[];
-
-	constructor(
-		private printService: PrintService,
-		private orderPipe: OrderPipe,
-		private http: HttpClient,
-		private cdRef: ChangeDetectorRef
-	) {
-		const items = InspectionService.inspectionHandler.findSavedItems(this.savedInspection)
-			.filter(i => i.item.header === undefined)
-			.filter(i => {
-				const selectItem = i.item.type === ItemType.SELECT.id;
-				return selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true;
-			});
-		this.listElements = InspectionService.findGroupedItems(
-			items, 0, [(savedItem: SavedItem) => savedItem.item.category]
-		);
-
-		const imageItems = this.savedInspection.items.filter(savedItem => savedItem.imageId);
-		const imageIds = imageItems.map(savedItem => savedItem.imageId);
-		if (imageIds) {
-			this.http.get(Url.images(), { params: { ids: `${imageIds.join(',')}` } }).subscribe((images: CustomImage[]) => {
-				this.images = images;
-				this.imageListElements = this.findImageElements();
-				this.cdRef.detectChanges();
-				this.printService.openPrintDialog();
-			});
-		}
-	}
+	@Input() categories: CategoryItems[];
+	@Input() vehicleType: VehicleType;
 
 	// region Getters / setters
 
@@ -89,45 +49,8 @@ export class PrintSheetComponent {
 
 	// endregion
 
-	findImageElements(): { listElement, pageBreak }[] {
-		const splittedImageListElements = [];
-		const imageListElements = InspectionService.findGroupedItems(
-			InspectionService.savedInspection.items.filter(i => i.imageId),
-			0,
-			[(savedItem: SavedItem) => savedItem.item.category]
-		);
-		let row = 0;
-		this.orderPipe.transform(imageListElements).forEach(listElement => {
-			if (this.checkCategoryElement(listElement)) {
-				const refCategory = listElement as Category;
-				let category = Builder.buildCategory(refCategory);
-
-				Utils.collate(refCategory.items, this.ROW_ITEMS).forEach(items => {
-					category.items.push(...items);
-					row++;
-
-					const breakPage = this.checkBreak(row);
-					if (breakPage) {
-						splittedImageListElements.push({ listElement: category, pageBreak: this.checkBreak(row) });
-						category = Builder.buildCategory(refCategory);
-					}
-				});
-				if (category.items.length) {
-					splittedImageListElements.push({ listElement: category, pageBreak: this.checkBreak(row) });
-				}
-			} else {
-				splittedImageListElements.push({ listElement, pageBreak: this.checkBreak(row) });
-			}
-		});
-		return splittedImageListElements;
-	}
-
 	checkItemType(optionType: string, type: string): boolean {
 		return optionType === type;
-	}
-
-	checkBreak(i: number): boolean {
-		return i % 3 === 0;
 	}
 
 	findSelectSavedItem(item: SavedItem): SelectSavedItem {
@@ -158,21 +81,8 @@ export class PrintSheetComponent {
 		return InspectionService.findIconColor(code);
 	}
 
-	checkCategoryElement(item: ListElement): boolean {
-		return item instanceof Category;
-	}
-
 	findTextAreaLines(item: TextAreaSavedItem): string[] {
 		return item.text ? item.text.split('\n') : [];
-	}
-
-	findImage(id: number, images: CustomImage[] = this.images): CustomImage {
-		return images.find(i => i.id === id);
-	}
-
-	findImageUrl(imageId: number): string {
-		const image = this.findImage(imageId);
-		return InspectionService.findImageUrl(image.image);
 	}
 
 	checkWrongItem(savedItem: SavedItem): boolean {
@@ -180,33 +90,6 @@ export class PrintSheetComponent {
 			return false;
 		}
 		return (savedItem as SelectSavedItem).value !== Constants.SELECT_ITEM_OPTION_CODE.C;
-	}
-
-	checkCategoryBreak(
-		elem: ListElement, inspectionTypeCode: string = this.savedInspection.inspectionTypeCode
-	): boolean {
-		if (inspectionTypeCode === Constants.INSPECTION_TYPE.N) {
-			return false;
-		}
-		const brakeCategory = this.checkCategoryElement(elem) && (elem as Category).code === 'F';
-		if (brakeCategory) { return true; }
-		return !this.checkCategoryElement(elem) && (elem as SavedItem).item.code === 'C';
-	}
-
-	findSheetTop(order: Order = this.order): number {
-		let offset = 0;
-		if (order.vehicle.type === Constants.VEHICLE_TYPE.CAR) {
-			const headerItems = this.findHeaderItems();
-			offset = headerItems.length * this.HEADER_ROW_TOP;
-		}
-		// TODO enum
-		return this.BASE_TOP + offset;
-	}
-
-	findHeaderItems(
-		code: string = this.headerVehicleItem, items: SavedItem[] = this.savedInspection.items
-	): SavedItem[] {
-		return items.filter(item => item.item.header === code);
 	}
 
 }

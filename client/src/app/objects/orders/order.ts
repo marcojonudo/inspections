@@ -13,9 +13,9 @@ export class Order {
 	vehicleType: string;
 	lines: OrderLine[];
 
-	constructor(order: any, code: string) {
+	constructor(order: any) {
 		this.number = order.number;
-		this.code = code;
+		this.code = order.code;
 		this.vehicle = Builder.buildVehicle(order.vehicle);
 		this.client = new Client(order.client);
 		this.sellerCode = order.sellerCode;
