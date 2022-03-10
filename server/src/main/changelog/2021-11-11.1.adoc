@@ -1,4 +1,4 @@
-- [.label-feature]#Se carga una revisión de anomalías detectadas al introducir un código de orden que no tenga
+- [.label-new]#Se carga una revisión de anomalías detectadas al introducir un código de orden que no tenga
 asociada una revisión.#
-- [.label-feature]#Se leen las revisiones de patinetes.#
-- [.label-feature]#Añadido botón para indicar que un item es limitante.#
+- [.label-new]#Se leen las revisiones de patinetes.#
+- [.label-new]#Añadido botón para indicar que un item es limitante.#

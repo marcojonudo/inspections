@@ -37,7 +37,6 @@ import { SplashScreenComponent } from './components/splash-screen/splash-screen.
 import { ResetEmployeeDialogComponent } from './components/reset-employee-dialog/reset-employee-dialog.component';
 import { PrintComponent } from './components/print/print.component';
 import { MatTableModule } from '@angular/material/table';
-import { ChartsModule } from 'ng2-charts';
 import { PrintOrderPipePipe } from './pipes/saved-item.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { HiddenPipe } from './pipes/hidden.pipe';
@@ -98,7 +97,6 @@ import { ImagesSheetComponent } from './components/print/images-sheet/images-she
 		MatDialogModule,
 		MatExpansionModule,
 		MatTableModule,
-		ChartsModule,
 		MatMenuModule,
 		TranslateModule.forRoot({
 			loader: {
