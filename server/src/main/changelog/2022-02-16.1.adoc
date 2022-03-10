@@ -1,0 +1,2 @@
+- [.label-improvement]#Mejorada la gestión de fotos. Ya no se almacenan en el navegador, evitando así bloqueos de
+la aplicación.#

@@ -1,1 +1,1 @@
-- [.label-feature]#Se guarda la revisión al hacer clic en el botón de impresión.#
+- [.label-new]#Se guarda la revisión al hacer clic en el botón de impresión.#

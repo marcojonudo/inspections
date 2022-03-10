@@ -1,0 +1,2 @@
+- [.label-fix]#Ajustado ancho de impresión del item 'Fecha próxima ITV'.#
+- [.label-fix]#Se evita que se mezclen items de distintos vehículos.#

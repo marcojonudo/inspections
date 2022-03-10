@@ -1,0 +1,2 @@
+- [.label-improvement]#Se oculta el botón de buscar revisión, en la pantalla inicial, al abrir el teclado.#
+- [.label-fix]#Solucionado error al añadir items nuevos a revisión guardada previamente.#

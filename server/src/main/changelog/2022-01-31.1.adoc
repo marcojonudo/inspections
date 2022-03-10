@@ -1,1 +1,1 @@
-- [.label-feature]#Añadido botón para borrar datos de la aplicación.#
+- [.label-new]#Añadido botón para borrar datos de la aplicación.#

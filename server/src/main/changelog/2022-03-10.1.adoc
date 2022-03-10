@@ -1,0 +1,2 @@
+- [.label-fix]#Solución a imagen de fondo saliendo por encima del contenido en la hoja impresa de imágenes.#
+- [.label-fix]#Solución a fallo al imprimir si un item de neumáticos tiene valor 'No aplica'.#

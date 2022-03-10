@@ -1,1 +1,1 @@
-- [.label-feature]#Añadida revisión de neumáticos.#
+- [.label-new]#Añadida revisión de neumáticos.#

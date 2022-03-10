@@ -1,0 +1,1 @@
+- [.label-improvement]#Registrado evento en base de datos cuando se produce un error al guardar una revisión.#
