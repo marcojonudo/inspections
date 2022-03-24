@@ -4,7 +4,7 @@
 		<div class="card" *ngIf="cat.category; else elementTemplate">
 			<div class="card-header">
 				<mat-icon mat-card-avatar>navigate_next</mat-icon>
-				<div translate>print.category.{{cat.category.code}}</div>
+				<div>{{cat.category.name}}</div>
 			</div>
 			<div class="card-content">
 				<ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: cat }"></ng-container>
@@ -14,7 +14,7 @@
 			<div class="card text-area-card">
 				<div class="card-header">
 					<mat-icon mat-card-avatar>navigate_next</mat-icon>
-					<div translate>inspection.item.{{cat.items[0].item.code}}</div>
+					<div [innerHTML]="findItemName(cat.items[0].item)"></div>
 				</div>
 				<div class="card-content">
 					<div *ngFor="let line of findTextAreaLines(findTextAreaSavedItem(cat.items[0]))" class="highlight">{{line}}</div>
@@ -25,8 +25,10 @@
 	<ng-template #itemTemplate let-cat>
 		<div class="items-info">
 			<div *ngFor="let item of cat.items | printOrderPipe" class="item" [class.highlight]="checkWrongItem(item)">
-				<div translate class="item-text" [class.text-item-fields]="checkMultipleFieldsItem(item)">
-					inspection.item.{{item.item.code}}
+				<div
+					class="item-text"
+					[class.text-item-fields]="checkMultipleFieldsItem(item)"
+					[innerHTML]="findItemName(item.item)">
 				</div>
 				<mat-icon
 					*ngIf="checkItemType(item.item.type, selectType); else textItemText"

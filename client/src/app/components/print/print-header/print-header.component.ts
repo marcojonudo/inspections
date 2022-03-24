@@ -12,8 +12,8 @@ import { OrderPipe } from '../../../pipes/order.pipe';
 import { Vehicle } from '../../../objects/orders/vehicles/vehicle';
 import { Car } from '../../../objects/orders/vehicles/car';
 import { SavedItem } from '../../../objects/inspections/saved-items/saved-item';
-import { SelectSavedItem } from '../../../objects/inspections/saved-items/select-saved-item';
-import { ItemType } from '../../../objects/inspections/items/item-type';
+import { InspectionVehicle } from '../../../objects/inspections/inspection-vehicle';
+import { Item } from '../../../objects/inspections/items/item';
 
 @Component({
 	selector: 'app-print-header',
@@ -41,6 +41,10 @@ export class PrintHeaderComponent {
 	}
 
 	// region Getters / setters
+
+	get inspection(): InspectionVehicle {
+		return InspectionService.inspection;
+	}
 
 	get savedInspection(): SavedInspection {
 		return InspectionService.savedInspection;
@@ -89,6 +93,10 @@ export class PrintHeaderComponent {
 
 	findIconColor(code: string): string {
 		return InspectionService.findIconColor(code);
+	}
+
+	findItemName(item: Item): string {
+		return item.shortName || item.name;
 	}
 
 	groupLabels(

@@ -6,7 +6,7 @@
 	<button id="back-icon-button" mat-icon-button (click)="checkGoBack()">
 		<mat-icon>chevron_left</mat-icon>
 	</button>
-	<h1 translate>inspection.type.{{findInspectionTitleCode(inspection.inspectionType.code)}}</h1>
+	<h1>{{findInspectionTitle()}}</h1>
 	<button id="context-button" mat-icon-button [matMenuTriggerFor]="contextMenu" [class.pulse]="updateVersion">
 		<span></span>
 		<span></span>
@@ -45,7 +45,7 @@
 				(opened)="addOpenedCategory(category.name)"
 				(closed)="removeOpenedCategory(category.name)">
 				<mat-expansion-panel-header class="category-title" [class.sub-category-title]="index > 0">
-					<mat-panel-title translate>inspection.category.{{category.code}}</mat-panel-title>
+					<mat-panel-title>{{category.name}}</mat-panel-title>
 					<button mat-icon-button class="category-title-button" (click)="completeCategory($event, category)">
 						<mat-icon [class.rotated]="checkCompleteCategory(category)">pending</mat-icon>
 						<mat-icon [class.rotated]="!checkCompleteCategory(category)">check_circle</mat-icon>
@@ -70,7 +70,7 @@
 					(pressingEmitter)="setPressingItem(item)"
 					(longPressEmitter)="openLegend(findSelectItem(item))">
 					<div class="select-item-content">
-						<div translate>inspection.item.{{item.code}}</div>
+						<div [innerHTML]="item.name"></div>
 						<div class="select-item-icon-container">
 							<mat-icon
 								*ngFor="let option of findSelectItem(item).options | order; let i = index"
@@ -88,7 +88,7 @@
 				</div>
 				<div *ngIf="checkItemType(item.type, textType)" class="item">
 					<mat-form-field class="text-item-input">
-						<mat-label translate>inspection.item.{{item.code}}</mat-label>
+						<mat-label [innerHTML]="item.name"></mat-label>
 						<span *ngIf="checkIndividualTextField(findTextItem(item))" matPrefix>
 							{{findTextItemField(item).prefix}}
 						</span>
@@ -126,7 +126,7 @@
 				</div>
 				<div *ngIf="checkItemType(item.type, textAreaType)" class="item text-item">
 					<mat-form-field class="text-area-item-input">
-						<mat-label translate>inspection.item.{{item.code}}</mat-label>
+						<mat-label [innerHTML]="item.name"></mat-label>
 						<textarea
 							matInput
 							cdkTextareaAutosize

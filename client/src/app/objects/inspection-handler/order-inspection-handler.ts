@@ -3,6 +3,7 @@ import { SavedInspection } from '../inspections/saved-inspection';
 import { InspectionService } from '../../services/inspection.service';
 import { Item } from '../inspections/items/item';
 import { SavedItem } from '../inspections/saved-items/saved-item';
+import { InspectionVehicle } from '../inspections/inspection-vehicle';
 
 export class OrderInspectionHandler implements InspectionHandler {
 
@@ -11,8 +12,8 @@ export class OrderInspectionHandler implements InspectionHandler {
 		return (selectedIndex + 1) % options + Math.floor(selectedIndex / (options - 1));
 	}
 
-	findInspectionTitleCode(inspectionTypeCode: string): string {
-		return inspectionTypeCode;
+	findInspectionTitle(inspectionVehicle: InspectionVehicle): string {
+		return inspectionVehicle.inspectionType.name;
 	}
 
 	findSavedInspection(savedInspection: SavedInspection): SavedInspection {
