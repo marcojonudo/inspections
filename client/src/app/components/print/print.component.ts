@@ -65,7 +65,7 @@ export class PrintComponent {
 
 		const existentSavedItems = savedItems.filter(i => {
 			const selectItem = i.item.type === ItemType.SELECT.id;
-			return selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true;
+			return !i.hidden && (selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true);
 		});
 		const categories = this.buildPrintCategories(existentSavedItems);
 		this.groupedCategories = this.buildGroupedCategories(categories);
