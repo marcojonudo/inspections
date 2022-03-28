@@ -17,6 +17,7 @@ export class Item implements ListElement {
 	required: boolean;
 	header: string;
 	picture: boolean;
+	print: boolean;
 
 	constructor(item: any) {
 		this.type = item.type;
@@ -30,6 +31,7 @@ export class Item implements ListElement {
 		this.required = item.required;
 		this.header = item.header;
 		this.picture = item.picture;
+		this.print = item.print;
 	}
 
 }
