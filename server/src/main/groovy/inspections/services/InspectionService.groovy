@@ -9,7 +9,6 @@ import inspections.domains.fviberi.Centre
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
 import inspections.domains.items.TextItem
-import inspections.domains.items.TextItemField
 import inspections.domains.savedItems.TextSavedItem
 import inspections.domains.savedItems.TextSavedItemField
 import inspections.pogos.OrderInfo
@@ -182,8 +181,8 @@ class InspectionService {
 		/* En una anomalía detectada, podría no haber fecha de ITV */
 		if (savedItem) {
 			List<TextSavedItemField> fields = savedItem.fields.sort { it.order }
-			if (checkCorrectItvDate(savedItem)) {
-				LocalDate day = LocalDate.of(fields[1].text as int, fields[0].text as int, 1)
+			LocalDate day = findItvDate((TextItem) savedItem.item, fields)
+			if (day) {
 				carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
 			} else {
 				slackService.sendMessage(Builder.Slack.buildItvDateErrorMessage(savedInspection, centre, fields))
@@ -192,15 +191,21 @@ class InspectionService {
 	}
 
 	/**
-	 * Comprueba si el contenido de la fecha de ITV es correcto
+	 * Comprueba si el contenido de la fecha de ITV es correcto, en cuyo caso devuelve la fecha
 	 * @param savedItem Item guardado
-	 * @return booleano
+	 * @return LocalDate
 	 */
-	static boolean checkCorrectItvDate(TextSavedItem savedItem) {
-		Set<TextItemField> fields = ((TextItem) savedItem.item).fields
-		List<TextSavedItemField> savedFields = savedItem.fields.sort { it.order }
+	static LocalDate findItvDate(TextItem item, List<TextSavedItemField> savedFields) {
+		LocalDate day = null
 		/* Se guarda la fecha de la ITV si todos los campos necesarios están rellenos */
-		return fields.size() == savedFields.size() && savedFields.findAll { it.text }.size() == savedFields.size()
+		boolean data = item.fields.size() == savedFields.size() &&
+			savedFields.findAll { it.text }.size() == savedFields.size()
+		if (data) {
+			try {
+				day = LocalDate.of(savedFields[1].text as int, savedFields[0].text as int, 1)
+			} catch (ignore) {}
+		}
+		return day
 	}
 
 }

@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 class Utils {
 
 	static String formatItvDate(LocalDate day) {
-		return day.format(DateTimeFormatter.ofPattern(Constants.DateFormat.MMM_yyyy)).toUpperCase()
+		return day.format(DateTimeFormatter.ofPattern(Constants.DateFormat.yyyy_MM))
 	}
 
 	static String parseExpiredItv(LocalDate day) {

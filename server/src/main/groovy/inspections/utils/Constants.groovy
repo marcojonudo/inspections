@@ -16,7 +16,7 @@ class Constants {
 
     static class DateFormat {
 
-        static final String MMM_yyyy = "MMM yyyy"
+        static final String yyyy_MM = "yyyy-MM"
 
     }
 
