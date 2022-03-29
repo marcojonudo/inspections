@@ -1,4 +1,4 @@
-package inspections
+package inspections.services
 
 
 import inspections.services.SlackService

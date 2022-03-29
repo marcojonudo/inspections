@@ -1,6 +1,6 @@
 <header>
 	<div id="title" translate="">
-		inspection.type.{{savedInspection.inspectionTypeCode}}
+		{{inspection.inspectionType.name}}
 		<img id="logo" src="assets/img/feuvert-logo.png">
 	</div>
 	<div id="info">
@@ -88,7 +88,7 @@
 						<div>{{findCar(order.vehicle).registrationYear ? findCar(order.vehicle).registrationYear : '-'}}</div>
 					</div>
 					<div *ngFor="let item of findHeaderItems(headerVehicleItem) | printOrderPipe">
-						<div translate>print.header.{{item.item.code}}</div>
+						<div>{{findItemName(item.item)}}</div>
 						<div>{{item.findValue()}}</div>
 					</div>
 				</section>
@@ -109,7 +109,7 @@
 		<mat-card-content id="legend">
 			<div *ngFor="let label of groupLabels(findLabels())" class="label">
 				<div class="label-color" [style.background-color]="findIconColor(label.code)"></div>
-				<span translate>inspection.selectItemOption.{{label.code}}</span>
+				<span>{{label.name}}</span>
 			</div>
 		</mat-card-content>
 	</mat-card>

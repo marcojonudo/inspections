@@ -53,9 +53,8 @@ export class PrintComponent {
 
 		this.vehicleType = VehicleType.parse(this.savedInspection.vehicle);
 
-		const savedItems = InspectionService.inspectionHandler.findSavedItems(this.savedInspection).filter(i =>
-			i.item.header === undefined
-		);
+		const savedItems = InspectionService.inspectionHandler.findSavedItems(this.savedInspection)
+			.filter(i => i.item.header === undefined && i.item.print);
 		this.tyreGroupedItems = this.findTyreItems(savedItems);
 		const depthCodes = this.CAR_TYRES.map(carTyre => `${Constants.DEPTH_ITEM_CODE}${carTyre}`);
 		const depthItems = savedItems.filter(i => depthCodes.find(c => c === i.item.code) !== undefined);
@@ -66,7 +65,7 @@ export class PrintComponent {
 
 		const existentSavedItems = savedItems.filter(i => {
 			const selectItem = i.item.type === ItemType.SELECT.id;
-			return selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true;
+			return !i.hidden && (selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true);
 		});
 		const categories = this.buildPrintCategories(existentSavedItems);
 		this.groupedCategories = this.buildGroupedCategories(categories);

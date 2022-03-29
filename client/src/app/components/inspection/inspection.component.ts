@@ -40,6 +40,7 @@ import { TextAreaSavedItem } from '../../objects/inspections/saved-items/text-ar
 import { TextSavedItemField } from '../../objects/inspections/saved-items/text-saved-item-field';
 import { ItemType } from '../../objects/inspections/items/item-type';
 import { CompressService } from '../../services/compress.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-inspection',
@@ -89,7 +90,8 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 		private snackBarService: SnackBarService,
 		private router: Router,
 		private cdRef: ChangeDetectorRef,
-		private compressService: CompressService
+		private compressService: CompressService,
+		private translateService: TranslateService
 	) {
 		this.listElements = InspectionService.findGroupedItems(this.inspection.items);
 		console.log('List elements', this.listElements);
@@ -220,8 +222,9 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 	}
 
-	findInspectionTitleCode(inspectionTypeCode: string): string {
-		return InspectionService.inspectionHandler.findInspectionTitleCode(inspectionTypeCode);
+	findInspectionTitle(inspection: InspectionVehicle = this.inspection): string {
+		return InspectionService.inspectionHandler.findInspectionTitle(inspection) ||
+			this.translateService.instant(`inspection.type.${Constants.DETECTED_FAULTS_CODE}`);
 	}
 
 	findMenuCategories(menuElements: ListElement[]): Category[] {

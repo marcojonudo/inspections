@@ -13,6 +13,7 @@ import { TextAreaSavedItem } from '../../../objects/inspections/saved-items/text
 import { TextItem } from '../../../objects/inspections/items/text-item';
 import { CategoryItems } from '../../../objects/print/category-items';
 import { VehicleType } from '../../../objects/orders/vehicles/vehicle-type';
+import { Item } from '../../../objects/inspections/items/item';
 
 @Component({
 	selector: 'app-print-sheet',
@@ -83,6 +84,10 @@ export class PrintSheetComponent {
 
 	findTextAreaLines(item: TextAreaSavedItem): string[] {
 		return item.text ? item.text.split('\n') : [];
+	}
+
+	findItemName(item: Item): string {
+		return item.shortName || item.name;
 	}
 
 	checkWrongItem(savedItem: SavedItem): boolean {

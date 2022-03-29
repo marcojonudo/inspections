@@ -6,6 +6,7 @@ import { Item } from '../inspections/items/item';
 import { SavedItem } from '../inspections/saved-items/saved-item';
 import { ItemType } from '../inspections/items/item-type';
 import { EmployeeService } from '../../services/employee.service';
+import { InspectionVehicle } from '../inspections/inspection-vehicle';
 
 export class DetectedFaultsHandler implements InspectionHandler {
 
@@ -13,8 +14,8 @@ export class DetectedFaultsHandler implements InspectionHandler {
 		return (selectedIndex + 1) % options;
 	}
 
-	findInspectionTitleCode(): string {
-		return Constants.DETECTED_FAULTS_CODE;
+	findInspectionTitle(inspectionVehicle: InspectionVehicle): string {
+		return undefined;
 	}
 
 	findSavedInspection(savedInspection: SavedInspection, items: Item[]): SavedInspection {
