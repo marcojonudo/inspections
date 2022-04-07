@@ -1,6 +1,7 @@
 package inspections.services
 
 import groovy.transform.CompileStatic
+import inspections.async.SaveInspectionSemaphore
 import inspections.clients.InspectionsManagementClient
 import inspections.domains.InspectionType
 import inspections.domains.InspectionVehicle
@@ -153,13 +154,17 @@ class InspectionService {
 	 * @return Revisión guardada
 	 */
 	SavedInspection saveInspection(SavedInspection savedInspection, int orderNumber, String employeeCode, int centre) {
-		LOG.info(new Log((Map) [savedInspection: savedInspection, message: Constants.Message.SAVING_INSPECTION]).toString())
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, message: Constants.Message.SAVING_INSPECTION]).toString())
 		SavedInspection newSavedInspection = null
 		try {
+			/* Se utiliza un semáforo por número de orden para evitar escrituras simultáneas */
+			SaveInspectionSemaphore.acquire(orderNumber)
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
 			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, existent: existent as boolean, message: Constants.Message.EXISTENT_INSPECTION]).toString())
 
 			newSavedInspection = savedInspectionDataService.update(savedInspection, existent)
+			SaveInspectionSemaphore.release(orderNumber)
+
 			updateItvDate(newSavedInspection, centre)
 			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
 
