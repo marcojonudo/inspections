@@ -7,8 +7,10 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import grails.gorm.annotation.Entity
 import groovy.transform.TupleConstructor
 import inspections.deserializers.SavedItemsDeserializer
+import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
 import inspections.utils.Constants
+import inspections.utils.Utils
 import org.grails.datastore.gorm.GormEntity
 
 import java.time.LocalDateTime
@@ -40,8 +42,12 @@ class SavedInspection implements GormEntity<SavedInspection> {
 
 	enum State {
 
-		STARTED({ Set<SavedItem> items -> items.find { it.item.required && !it.filled } as boolean }),
-		FINISHED({ Set<SavedItem> items -> !items.find { it.item.required && !it.filled } as boolean })
+		STARTED({ Set<SavedItem> savedItems, List<Item> items ->
+			savedItems.find { Utils.findItem(items, it.itemCode).required && !it.filled } as boolean
+		}),
+		FINISHED({ Set<SavedItem> savedItems, List<Item> items ->
+			!savedItems.find { Utils.findItem(items, it.itemCode).required && !it.filled } as boolean
+		})
 
 		final Closure<Boolean> check
 

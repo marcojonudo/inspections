@@ -1,10 +1,10 @@
 import { Item } from '../items/item';
 import { Dayjs } from 'dayjs';
 import * as dayjs from 'dayjs';
-import { CustomImage } from '../custom-image';
 
 export abstract class SavedItem {
 
+	itemCode: string;
 	item: Item;
 	employeeCode: string;
 	hidden: boolean;
@@ -14,6 +14,7 @@ export abstract class SavedItem {
 
 	protected constructor(item: Item, employeeCode: string, savedItem: any) {
 		this.item = item;
+		this.itemCode = item.code;
 		this.employeeCode = employeeCode;
 		if (savedItem) {
 			this.employeeCode = savedItem.employeeCode;

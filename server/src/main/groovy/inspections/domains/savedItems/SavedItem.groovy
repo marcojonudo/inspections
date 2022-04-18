@@ -8,9 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import grails.gorm.annotation.Entity
-import inspections.deserializers.ItemDeserializer
 import inspections.domains.SavedInspection
-import inspections.domains.items.Item
 import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
 
@@ -23,8 +21,7 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	@JsonIgnore
 	SavedInspection savedInspection
 
-	@JsonDeserialize(using = ItemDeserializer)
-	Item item
+	String itemCode
 	String employeeCode
 	boolean hidden
 	Long imageId
@@ -39,13 +36,13 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	static belongsTo = SavedInspection
 
 	static constraints = {
+		itemCode nullable: true
 		filled nullable: true
 		imageId nullable: true
 	}
 
 	static mapping = {
 		tablePerHierarchy false
-		item fetch: 'join'
 	}
 
 	abstract void fillRelations()

@@ -1,5 +1,6 @@
 package inspections.services.data
 
+
 import grails.gorm.services.Service
 import inspections.domains.SavedInspection
 import inspections.domains.items.Item
@@ -15,32 +16,31 @@ abstract class SavedInspectionDataService {
 
 	abstract SavedInspection find(int orderNumber)
 
-	abstract SavedInspection saveSavedInspection(SavedInspection savedInspection)
+	abstract SavedInspection save(SavedInspection savedInspection)
 
 	abstract SavedInspection update(Serializable id, String employeeCode, SavedInspection.State state)
 
 	abstract SavedInspection update(Serializable id, String inspectionTypeCode, boolean orderInspection)
 
 	SavedInspection update(SavedInspection savedInspection, SavedInspection existentSavedInspection) {
-		List<Item> items = itemDataService.findAll((List<String>) savedInspection.items.item.code)
+		List<Item> items = itemDataService.findAll((List<String>) savedInspection.items.itemCode)
 		savedInspection.items.each { SavedItem savedItem ->
-			SavedItem existentSavedItem = existentSavedInspection.items.find { it.item.code == savedItem.item.code }
+			SavedItem existentSavedItem = existentSavedInspection.items.find { it.itemCode == savedItem.itemCode }
 			if (!existentSavedItem) {
-				fillSavedItem(savedItem, existentSavedInspection, items)
+				fillSavedItem(savedItem, existentSavedInspection)
 				savedItemDataService.save(savedItem)
 			} else if (savedItem != existentSavedItem) {
-				savedItemDataService.update(existentSavedItem, savedItem)
+				savedItemDataService.update(existentSavedItem, savedItem, items)
 			}
 		}
 		SavedInspection.State state = SavedInspection.State.values().find {
-			((Closure<Boolean>) it.check)(savedInspection.items)
+			((Closure<Boolean>) it.check)(savedInspection.items, items)
 		}
 		return update(existentSavedInspection.id, savedInspection.employeeCode, state)
 	}
 
-	static SavedItem fillSavedItem(SavedItem savedItem, SavedInspection savedInspection, List<Item> items) {
+	static SavedItem fillSavedItem(SavedItem savedItem, SavedInspection savedInspection) {
 		savedItem.savedInspection = savedInspection
-		savedItem.item = items.find { it.code == savedItem.item.code }
 		savedItem.fillRelations()
 		return savedItem
 	}

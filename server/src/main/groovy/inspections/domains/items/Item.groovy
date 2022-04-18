@@ -36,12 +36,9 @@ class Item implements GormEntity<Item> {
 	@JsonIgnore
 	Set<ItemVehicleData> vehicleDataList
 
-	@JsonInclude
-	Set<ItemRelation> relations
-
 	ItemVehicleData vehicleData
 
-	static hasMany = [inspectionsVehicle: InspectionVehicle, vehicleDataList: ItemVehicleData, relations: ItemRelation]
+	static hasMany = [inspectionsVehicle: InspectionVehicle, vehicleDataList: ItemVehicleData]
 
 	static belongsTo = InspectionVehicle
 
@@ -62,7 +59,6 @@ class Item implements GormEntity<Item> {
 		order column: '`order`'
 		category lazy: false
 		vehicleDataList fetch: 'join'
-		relations fetch: 'join'
 	}
 
 	enum Type {

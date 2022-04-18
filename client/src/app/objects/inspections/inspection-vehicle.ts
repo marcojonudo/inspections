@@ -1,5 +1,6 @@
 import { Item } from './items/item';
 import { InspectionType } from './inspection-type';
+import { ItemType } from './items/item-type';
 
 export class InspectionVehicle {
 
@@ -8,10 +9,10 @@ export class InspectionVehicle {
 	items: Item[];
 	orderInspection: boolean;
 
-	constructor(inspectionVehicle: any, items: Item[]) {
+	constructor(inspectionVehicle: any) {
 		this.inspectionType = new InspectionType(inspectionVehicle.inspectionType);
 		this.vehicle = inspectionVehicle.vehicle;
-		this.items = items;
+		this.items = inspectionVehicle.items.map(item => ItemType.parse(item.type).buildItem(item));
 		this.orderInspection = inspectionVehicle.orderInspection;
 	}
 
