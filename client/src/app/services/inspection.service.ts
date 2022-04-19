@@ -376,7 +376,7 @@ export class InspectionService {
 
 	static fillInspection(savedInspection: SavedInspection = this.savedInspection): void {
 		savedInspection.items.forEach(item => {
-			const itemType = ItemType.parse(item.item.type);
+			const itemType = ItemType.parse(item.type);
 			itemType.update(item, itemType.findDefaultValue(item));
 		});
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);

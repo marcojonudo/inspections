@@ -57,15 +57,15 @@ export class TyreSheetComponent implements OnInit {
 	}
 
 	findStateItem(savedItems: SavedItem[]): SavedItem {
-		return savedItems.find(savedItem => savedItem.item.code.startsWith(Constants.TYRE_ITEM_CODES[0]));
+		return savedItems.find(savedItem => savedItem.code.startsWith(Constants.TYRE_ITEM_CODES[0]));
 	}
 
 	findAgeItem(savedItems: SavedItem[]): SavedItem {
-		return savedItems.find(savedItem => savedItem.item.code.startsWith(Constants.TYRE_ITEM_CODES[1]));
+		return savedItems.find(savedItem => savedItem.code.startsWith(Constants.TYRE_ITEM_CODES[1]));
 	}
 
 	findDepthItem(savedItems: SavedItem[]): SavedItem {
-		return savedItems.find(savedItem => savedItem.item.code.startsWith(Constants.TYRE_ITEM_CODES[2]));
+		return savedItems.find(savedItem => savedItem.code.startsWith(Constants.TYRE_ITEM_CODES[2]));
 	}
 
 	findOption(savedItem: SavedItem): SelectItemOption {

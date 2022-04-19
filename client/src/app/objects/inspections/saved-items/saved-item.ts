@@ -4,7 +4,8 @@ import * as dayjs from 'dayjs';
 
 export abstract class SavedItem {
 
-	itemCode: string;
+	type: string;
+	code: string;
 	item: Item;
 	employeeCode: string;
 	hidden: boolean;
@@ -14,7 +15,8 @@ export abstract class SavedItem {
 
 	protected constructor(item: Item, employeeCode: string, savedItem: any) {
 		this.item = item;
-		this.itemCode = item.code;
+		this.type = item.type;
+		this.code = item.code;
 		this.employeeCode = employeeCode;
 		if (savedItem) {
 			this.employeeCode = savedItem.employeeCode;

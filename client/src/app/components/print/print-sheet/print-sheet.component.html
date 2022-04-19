@@ -31,7 +31,7 @@
 					[innerHTML]="findItemName(item.item)">
 				</div>
 				<mat-icon
-					*ngIf="checkItemType(item.item.type, selectType); else textItemText"
+					*ngIf="checkItemType(item.type, selectType); else textItemText"
 					class="item-data"
 					[style.color]="findIconColor(findSelectSavedItem(item).value)">
 					{{findSelectIcon(findSelectSavedItem(item))}}

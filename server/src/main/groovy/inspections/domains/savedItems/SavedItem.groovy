@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import grails.gorm.annotation.Entity
 import inspections.domains.SavedInspection
+import inspections.domains.items.Item
 import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
 
@@ -21,7 +22,8 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	@JsonIgnore
 	SavedInspection savedInspection
 
-	String itemCode
+	Item.Type type
+	String code
 	String employeeCode
 	boolean hidden
 	Long imageId
@@ -36,7 +38,7 @@ abstract class SavedItem implements GormEntity<SavedItem> {
 	static belongsTo = SavedInspection
 
 	static constraints = {
-		itemCode nullable: true
+		code nullable: true
 		filled nullable: true
 		imageId nullable: true
 	}

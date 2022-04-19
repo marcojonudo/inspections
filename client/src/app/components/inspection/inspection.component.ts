@@ -292,15 +292,15 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	findSelectSavedItem(itemCode: string, savedInspection: SavedInspection = this.savedInspection): SelectSavedItem {
-		return savedInspection.items.find(savedItem => savedItem.item.code === itemCode) as SelectSavedItem;
+		return savedInspection.items.find(savedItem => savedItem.code === itemCode) as SelectSavedItem;
 	}
 
 	findTextSavedItem(itemCode: string, savedInspection: SavedInspection = this.savedInspection): TextSavedItem {
-		return savedInspection.items.find(savedItem => savedItem.item.code === itemCode) as TextSavedItem;
+		return savedInspection.items.find(savedItem => savedItem.code === itemCode) as TextSavedItem;
 	}
 
 	findTextAreaSavedItem(itemCode: string, savedInspection: SavedInspection = this.savedInspection): TextAreaSavedItem {
-		return savedInspection.items.find(savedItem => savedItem.item.code === itemCode) as TextAreaSavedItem;
+		return savedInspection.items.find(savedItem => savedItem.code === itemCode) as TextAreaSavedItem;
 	}
 
 	checkSelectedOption(itemCode: string, optionCode: string): boolean {

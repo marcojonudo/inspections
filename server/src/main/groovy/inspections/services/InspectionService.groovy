@@ -168,7 +168,7 @@ class InspectionService {
 	 * @param savedInspection Revisión guardada
 	 */
 	void updateItvDate(SavedInspection savedInspection, int centre) {
-		TextSavedItem savedItem = (TextSavedItem) savedInspection.items.find { it.itemCode == Constants.Item.FPITV }
+		TextSavedItem savedItem = (TextSavedItem) savedInspection.items.find { it.code == Constants.Item.FPITV }
 		/* En una anomalía detectada, podría no haber fecha de ITV */
 		if (savedItem) {
 			List<TextSavedItemField> fields = savedItem.fields.sort { it.order }

@@ -23,7 +23,7 @@ export class DetectedFaultsHandler implements InspectionHandler {
 		/* Se obtienen únicamente aquellos items con valor definido. En el caso de los de selección, aquellos cuyo
 		 * valor sea distinto de 'Pendiente', y en los texto, aquellos que tienen algún valor */
 		newSavedInspection.items = newSavedInspection.items.filter(savedItem =>
-			savedItem.item.type === ItemType.SELECT.id ?
+			savedItem.type === ItemType.SELECT.id ?
 				savedItem.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.P : savedItem.isFilled()
 		);
 		return newSavedInspection;

@@ -23,7 +23,7 @@ abstract class SavedItemDataService {
 	)
 
 	@Transactional
-	SavedItem update(SavedItem existent, SavedItem savedItem, List<Item> items) {
+	SavedItem update(SavedItem existent, SavedItem savedItem, Item item) {
 		update(
 			existent.id,
 			savedItem.employeeCode,
@@ -35,7 +35,6 @@ abstract class SavedItemDataService {
 		if (existent.imageId && !savedItem.imageId) {
 			imageDataService.delete(existent.imageId)
 		}
-		Item item = items.find { it.code == savedItem.itemCode }
 		return ((Closure<SavedItem>) item.type.updateSavedItem)(existent, savedItem, this)
 	}
 

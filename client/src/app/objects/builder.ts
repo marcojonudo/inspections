@@ -1,7 +1,6 @@
 import { SavedInspection } from './inspections/saved-inspection';
 import { InspectionVehicle } from './inspections/inspection-vehicle';
 import { Item } from './inspections/items/item';
-import { ItemRelation } from './inspections/item-relation';
 import { Car } from './orders/vehicles/car';
 import { Scooter } from './orders/vehicles/scooter';
 import { Vehicle } from './orders/vehicles/vehicle';
@@ -23,7 +22,7 @@ export class Builder {
 
 	static loadSavedInspection(savedInspection: any, items: Item[], employeeCode: string): SavedInspection {
 		const savedItems = items.map(item => {
-			const savedItem = savedInspection.items.find(i => i.itemCode === item.code);
+			const savedItem = savedInspection.items.find(i => i.code === item.code);
 			return ItemType.parse(item.type).buildSavedItem(item, employeeCode, savedItem);
 		});
 		return new SavedInspection(savedInspection, savedItems);

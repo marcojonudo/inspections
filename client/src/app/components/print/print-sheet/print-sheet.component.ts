@@ -67,7 +67,7 @@ export class PrintSheetComponent {
 	}
 
 	checkMultipleFieldsItem(savedItem: SavedItem): boolean {
-		return savedItem.item.type === ItemType.TEXT.id && this.findTextSavedItem(savedItem).fields.length > 2;
+		return savedItem.type === ItemType.TEXT.id && this.findTextSavedItem(savedItem).fields.length > 2;
 	}
 
 	findTextItemUnit(item: SavedItem): string {
@@ -91,7 +91,7 @@ export class PrintSheetComponent {
 	}
 
 	checkWrongItem(savedItem: SavedItem): boolean {
-		if (savedItem.item.type !== ItemType.SELECT.id) {
+		if (savedItem.type !== ItemType.SELECT.id) {
 			return false;
 		}
 		return (savedItem as SelectSavedItem).value !== Constants.SELECT_ITEM_OPTION_CODE.C;

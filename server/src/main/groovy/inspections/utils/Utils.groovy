@@ -17,7 +17,7 @@ class Utils {
 		return day.isAfter(LocalDate.now()) ? "N" : "S"
 	}
 
-	static Item findItem(List<Item> items, String itemCode) {
+	static Item findItem(String itemCode, List<Item> items) {
 		return items.find { it.code == itemCode }
 	}
 
