@@ -12,22 +12,14 @@ export class SavedInspection {
 	items: SavedItem[];
 	saved: Dayjs;
 
-	constructor(
-		inspectionTypeCode: string,
-		vehicle: string,
-		orderNumber: number,
-		numberPlate: string,
-		orderInspection: boolean,
-		items: SavedItem[],
-		employeeCode: string = undefined
-	) {
-		this.inspectionTypeCode = inspectionTypeCode;
-		this.vehicle = vehicle;
-		this.orderNumber = orderNumber;
-		this.numberPlate = numberPlate;
-		this.orderInspection = orderInspection;
+	constructor(savedInspection: any, items: SavedItem[]) {
+		this.inspectionTypeCode = savedInspection.inspectionTypeCode;
+		this.vehicle = savedInspection.vehicle;
+		this.orderNumber = savedInspection.orderNumber;
+		this.numberPlate = savedInspection.numberPlate;
+		this.orderInspection = savedInspection.orderInspection;
+		this.employeeCode = savedInspection.employeeCode;
 		this.items = items;
-		this.employeeCode = employeeCode;
 	}
 
 }

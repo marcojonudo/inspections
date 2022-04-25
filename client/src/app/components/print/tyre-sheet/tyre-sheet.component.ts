@@ -57,15 +57,15 @@ export class TyreSheetComponent implements OnInit {
 	}
 
 	findStateItem(savedItems: SavedItem[]): SavedItem {
-		return savedItems.find(savedItem => savedItem.item.code.startsWith(Constants.TYRE_ITEM_CODES[0]));
+		return savedItems.find(savedItem => savedItem.code.startsWith(Constants.TYRE_ITEM_CODES[0]));
 	}
 
 	findAgeItem(savedItems: SavedItem[]): SavedItem {
-		return savedItems.find(savedItem => savedItem.item.code.startsWith(Constants.TYRE_ITEM_CODES[1]));
+		return savedItems.find(savedItem => savedItem.code.startsWith(Constants.TYRE_ITEM_CODES[1]));
 	}
 
 	findDepthItem(savedItems: SavedItem[]): SavedItem {
-		return savedItems.find(savedItem => savedItem.item.code.startsWith(Constants.TYRE_ITEM_CODES[2]));
+		return savedItems.find(savedItem => savedItem.code.startsWith(Constants.TYRE_ITEM_CODES[2]));
 	}
 
 	findOption(savedItem: SavedItem): SelectItemOption {
@@ -81,7 +81,9 @@ export class TyreSheetComponent implements OnInit {
 	}
 
 	findIndicatorLeft(depth: string): number {
-		return this.DEPTH_BAR_MARGIN + (parseFloat(depth || '0') * this.barWidth / this.BAR_WIDTH_MM) - 6;
+		let d = parseFloat(depth || '0');
+		d = d > this.BAR_WIDTH_MM ? this.BAR_WIDTH_MM : (d < 0 ? 0 : d);
+		return this.DEPTH_BAR_MARGIN + (d * this.barWidth / this.BAR_WIDTH_MM) - 6;
 	}
 
 	findVisualControlColorName(value: string): string {

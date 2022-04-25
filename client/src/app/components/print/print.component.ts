@@ -64,7 +64,7 @@ export class PrintComponent {
 		this.measurementSavedItem = savedItems.find(i => i.item.code === 'PN');
 
 		const existentSavedItems = savedItems.filter(i => {
-			const selectItem = i.item.type === ItemType.SELECT.id;
+			const selectItem = i.type === ItemType.SELECT.id;
 			return !i.hidden && (selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true);
 		});
 		const categories = this.buildPrintCategories(existentSavedItems);

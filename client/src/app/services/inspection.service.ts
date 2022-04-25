@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from, Observable, of, Subject, throwError } from 'rxjs';
+import { forkJoin, from, Observable, of, Subject, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Url } from '../objects/url';
 import { Order } from '../objects/orders/order';
@@ -49,6 +49,7 @@ export class InspectionService {
 	static countryHandler: CountryHandler;
 	static order: Order;
 	static centre: Centre;
+	static relations: ItemRelation[];
 	static inspection: InspectionVehicle;
 	static inspectionHandler: InspectionHandler;
 	static selectItemOptions: SelectItemOption[];
@@ -112,14 +113,8 @@ export class InspectionService {
 		return this.order;
 	}
 
-	static setCentre(centre: Centre): Centre {
-		this.centre = centre;
-		LocalStorageService.setItem(Constants.LOCAL_STORAGE.CENTRE, centre);
-		return this.centre;
-	}
-
 	static initInspection(inspection: any): InspectionVehicle {
-		this.inspection = Builder.buildInspection(inspection);
+		this.inspection = new InspectionVehicle(inspection);
 		this.inspectionHandler = this.inspection.orderInspection ?
 			new OrderInspectionHandler() : new DetectedFaultsHandler();
 		this.selectItemOptions = this.findSelectItemOptions();
@@ -131,11 +126,9 @@ export class InspectionService {
 	}
 
 	static initSavedInspection(savedInspection: any, inspection: InspectionVehicle = this.inspection): void {
-		this.savedInspection = savedInspection ?
+		this.savedInspection = savedInspection.items ?
 			Builder.loadSavedInspection(savedInspection, inspection.items, EmployeeService.employee.code) :
-			Builder.buildSavedInspection(
-				inspection, EmployeeService.employee.code, this.order.number, this.order.vehicle.identifier
-			);
+			Builder.buildSavedInspection(savedInspection, inspection);
 
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, this.savedInspection);
 		console.log('Saved inspection', this.savedInspection);
@@ -211,6 +204,10 @@ export class InspectionService {
 		return menuElements.filter(elem => elem instanceof Category) as Category[];
 	}
 
+	static findRelations(itemCode: string, relations: ItemRelation[] = InspectionService.relations): ItemRelation[] {
+		return relations.filter(r => r.itemCode === itemCode);
+	}
+
 	static checkCompleteCategory(category: Category): boolean {
 		const items = this.findMenuItems(category.items);
 		const completeItems = this.checkCompleteItems(items);
@@ -277,16 +274,16 @@ export class InspectionService {
 		employee: Employee = EmployeeService.employee
 	): Observable<ItemRelation> {
 		const savedItem = savedInspection.items.find(i => i.item.name === item.name);
-
+		const relations = this.findRelations(item.code);
 		/* Antes de actualizar el valor, se debe comprobar si hay alguna relación que deshacer. Por ejemplo, al tener
 		 * 'Pastilla de freno' el valor 'No aplica', el espesor está oculto; sin embargo, en cuanto se actualiza el
 		 * valor de la primera, el segundo debe volver a aparecer (se está deshaciendo la relación) */
 		this.updateRelations(
-			savedItem, savedItem.findValue(), item.relations, this.ITEM_RELATION_RESTORE_ACTION
+			savedItem, savedItem.findValue(), relations, this.ITEM_RELATION_RESTORE_ACTION
 		).subscribe();
 		savedItem.update(value, employee.code);
 
-		return this.updateRelations(savedItem, savedItem.findValue(), item.relations, this.ITEM_RELATION_ACTION).pipe(
+		return this.updateRelations(savedItem, savedItem.findValue(), relations, this.ITEM_RELATION_ACTION).pipe(
 			finalize(() => {
 				if (updateStorage) {
 					LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
@@ -311,7 +308,7 @@ export class InspectionService {
 		employee: Employee = EmployeeService.employee
 	): void {
 		if (value === itemRelation.matchText) {
-			const targetSavedItem = this.findSavedItem(itemRelation.targetItem.code);
+			const targetSavedItem = this.findSavedItem(itemRelation.targetItemCode);
 			actions[itemRelation.action](targetSavedItem, savedItem.findValue(), employee.code);
 		}
 	}
@@ -379,7 +376,7 @@ export class InspectionService {
 
 	static fillInspection(savedInspection: SavedInspection = this.savedInspection): void {
 		savedInspection.items.forEach(item => {
-			const itemType = ItemType.parse(item.item.type);
+			const itemType = ItemType.parse(item.type);
 			itemType.update(item, itemType.findDefaultValue(item));
 		});
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
@@ -406,7 +403,7 @@ export class InspectionService {
 			}
 			EmployeeService.employees = LocalStorageService.getItem(Constants.LOCAL_STORAGE.EMPLOYEES);
 
-			InspectionService.inspection = Builder.buildInspection(
+			InspectionService.inspection = new InspectionVehicle(
 				LocalStorageService.getItem(Constants.LOCAL_STORAGE.INSPECTION)
 			);
 			InspectionService.inspectionHandler = InspectionService.inspection.orderInspection ?
@@ -454,7 +451,7 @@ export class InspectionService {
 
 	findLanguage(): Observable<string> {
 		const language = LocalStorageService.getItem(Constants.LOCAL_STORAGE.LANGUAGE);
-		return (language ? of(language) : this.http.get(Url.language(), { responseType: 'text' })).pipe(
+		return (language ? of(language) : this.http.get(Url.languages(), { responseType: 'text' })).pipe(
 			catchError(() => of(Constants.DEFAULT_LANGUAGE)),
 			tap((lang: string) => {
 				InspectionService.language = lang;
@@ -465,32 +462,49 @@ export class InspectionService {
 		);
 	}
 
+	findCentre(): Observable<string> {
+		const centre = LocalStorageService.getItem(Constants.LOCAL_STORAGE.CENTRE);
+		return (centre ? of(centre) : this.http.get(Url.centres())).pipe(
+			tap(cen => {
+				InspectionService.centre = new Centre(cen);
+				LocalStorageService.setItem(Constants.LOCAL_STORAGE.CENTRE, InspectionService.centre);
+				console.log('Centre', InspectionService.centre);
+			})
+		);
+	}
+
 	initInspectionData(orderCode: string, employee: Employee = EmployeeService.employee): Observable<any> {
 		let messageCode = Constants.MESSAGE_CODE.NONEXISTENT_ORDER;
 		let order;
-		return this.findOrderInfo(orderCode, employee.code).pipe(
-			concatMap((orderInfo: any) => {
-				order = InspectionService.setOrder(new Order(orderInfo.order));
+		return this.findOrder(orderCode, employee.code).pipe(
+			concatMap(or => {
+				order = InspectionService.setOrder(new Order(or));
 				console.log('Order', order);
-				const centre = InspectionService.setCentre(new Centre(orderInfo.centre));
-				console.log('Centre', centre);
 				messageCode = Constants.MESSAGE_CODE.NONEXISTENT_INSPECTIONS;
-				return this.findInspection(
-					order.number,
-					Url.inspection(order.number, order.vehicleType),
-					Constants.LOCAL_STORAGE.INSPECTION,
-					employee.code,
-					order.vehicle.identifier
-				);
+				return forkJoin([
+					this.findRelations(),
+					this.findInspection(
+						order.number,
+						Url.inspection(order.number, order.vehicleType),
+						Constants.LOCAL_STORAGE.INSPECTION,
+						employee.code
+					)
+				]);
 			}),
-			concatMap(inspection => {
-				console.log('Received inspection', inspection);
-				const inspectionVehicle = InspectionService.initInspection(inspection);
+			concatMap(data => {
+				console.log('Received inspection', data[1]);
+				const inspectionVehicle = InspectionService.initInspection(data[1]);
+				const url = Url.savedInspection(
+					order.number,
+					employee.code,
+					inspectionVehicle.inspectionType.code,
+					inspectionVehicle.vehicle,
+					order.vehicle.identifier,
+					inspectionVehicle.orderInspection
+				);
 				return this.findInspection(
 					order.number,
-					Url.savedInspection(
-						order.number, inspectionVehicle.inspectionType.code, inspectionVehicle.orderInspection
-					),
+					url,
 					Constants.LOCAL_STORAGE.SAVED_INSPECTION,
 					employee.code
 				);
@@ -507,20 +521,30 @@ export class InspectionService {
 		);
 	}
 
-	findOrderInfo(shortCode: string, employeeCode: string): Observable<any> {
-		const url = `${Url.orderInfo()}?shortCode=${shortCode}`;
-		return this.http.get(url, { headers: { employeeCode } });
+	findOrder(shortCode: string, employeeCode: string): Observable<any> {
+		return this.http.get(Url.orders(shortCode), { headers: { employeeCode } });
+	}
+
+	findRelations(): Observable<string> {
+		const rel = LocalStorageService.getItem(Constants.LOCAL_STORAGE.RELATIONS);
+		return (rel ? of(rel) : this.http.get(Url.itemRelations())).pipe(
+			tap(relations => {
+				InspectionService.relations = relations.map(r => new ItemRelation(r));
+				LocalStorageService.setItem(Constants.LOCAL_STORAGE.RELATIONS, InspectionService.relations);
+				console.log('Item relations', InspectionService.relations);
+			})
+		);
 	}
 
 	findInspection(
-		orderNumber: number, url: string, localStorageKey: string, employeeCode: string, numberPlate: string = ''
+		orderNumber: number, url: string, localStorageKey: string, employeeCode: string
 	): Observable<any> {
 		const loaded = InspectionService.checkLocalInspection(orderNumber);
 		if (loaded) {
 			const existentInspection = LocalStorageService.getItem(localStorageKey);
 			return of(existentInspection);
 		} else {
-			return this.http.get(url, { headers: { employeeCode, numberPlate } });
+			return this.http.get(url, { headers: { employeeCode } });
 		}
 	}
 

@@ -6,6 +6,7 @@ import { LoadingService } from './services/loading.service';
 import { Constants } from './objects/constants';
 import { TranslateService } from '@ngx-translate/core';
 import { InspectionService } from './services/inspection.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
 	selector: 'app-root',
@@ -30,7 +31,10 @@ export class AppComponent implements OnInit {
 		this.showSplashScreen = true;
 		this.loading = true;
 
-		this.inspectionService.findLanguage().subscribe(() =>
+		forkJoin([
+			this.inspectionService.findLanguage(),
+			this.inspectionService.findCentre()
+		]).subscribe(() =>
 			this.translate.setDefaultLang(InspectionService.language)
 		);
 	}

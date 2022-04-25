@@ -1,25 +1,40 @@
-import {environment} from '../../environments/environment';
+import { environment } from '../../environments/environment';
 
 export class Url {
 
-	static savedInspection(orderNumber: number, inspectionTypeCode: string, orderInspection: boolean): string {
-		return `${environment.serverUrl}/inspections/savedInspection?orderNumber=${orderNumber}&typeCode=${inspectionTypeCode}&orderInspection=${orderInspection}`;
+	static savedInspection(
+		orderNumber: number,
+		employeeCode: string,
+		inspectionTypeCode: string,
+		vehicle: string,
+		numberPlate: string,
+		orderInspection: boolean
+	): string {
+		return `${environment.serverUrl}/savedInspections/${orderNumber}?employeeCode=${employeeCode}&inspectionTypeCode=${inspectionTypeCode}&vehicle=${vehicle}&numberPlate=${numberPlate}&orderInspection=${orderInspection}`;
 	}
 
-	static inspection(orderNumber: number = undefined, vehicleType: string = undefined): string {
-		return `${environment.serverUrl}/inspections/inspection?orderNumber=${orderNumber}&vehicle=${vehicleType}`;
+	static inspection(orderNumber: number = undefined, vehicleType: string = ''): string {
+		let url = `${environment.serverUrl}/inspections`;
+		if (orderNumber) {
+			url += `/${orderNumber}`;
+		}
+		return `${url}?vehicle=${vehicleType}`;
 	}
 
-	static orderInfo(): string {
-		return `${environment.serverUrl}/inspections/order`;
+	static orders(shortCode: string): string {
+		return `${environment.serverUrl}/orders/${shortCode}`;
 	}
 
 	static employees(): string {
-		return `${environment.serverUrl}/inspections/employees`;
+		return `${environment.serverUrl}/employees`;
 	}
 
-	static language(): string {
-		return `${environment.serverUrl}/inspections/language`;
+	static languages(): string {
+		return `${environment.serverUrl}/languages`;
+	}
+
+	static centres(): string {
+		return `${environment.serverUrl}/centres`;
 	}
 
 	static info(): string {
@@ -36,6 +51,10 @@ export class Url {
 
 	static saveErrors(): string {
 		return `${environment.serverUrl}/saveErrors`;
+	}
+
+	static itemRelations(): string {
+		return `${environment.serverUrl}/itemRelations`;
 	}
 
 }

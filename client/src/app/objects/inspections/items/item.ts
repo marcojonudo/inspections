@@ -2,6 +2,7 @@ import { ItemCategory } from '../item-category';
 import { ListElement } from '../../list-elements/list-element';
 import { ItemRelation } from '../item-relation';
 import { ItemVehicleData } from './item-vehicle-data';
+import { ItemType } from './item-type';
 
 export class Item implements ListElement {
 

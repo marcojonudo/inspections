@@ -63,7 +63,8 @@ export class Constants {
 		CENTRE: 'centre',
 		VERSION: 'version',
 		MANUAL_EXIT: 'manualExit',
-		LANGUAGE: 'language'
+		LANGUAGE: 'language',
+		RELATIONS: 'relations'
 	};
 
 	static readonly CLEAR_STORAGE_PROPERTIES = [

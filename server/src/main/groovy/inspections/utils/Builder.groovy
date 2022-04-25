@@ -35,16 +35,21 @@ class Builder {
 	}
 
 	static SavedInspection buildSavedInspection(
-		InspectionVehicle inspection, int orderNumber, String employeeCode, String numberPlate
+		int orderNumber,
+		String employeeCode,
+		String inspectionTypeCode,
+		String vehicle,
+		String numberPlate,
+		boolean orderInspection
 	) {
 		return new SavedInspection(
-			inspection.inspectionType.code,
-			inspection.vehicle,
+			inspectionTypeCode,
+			vehicle,
 			orderNumber,
 			employeeCode,
 			numberPlate,
 			SavedInspection.State.STARTED,
-			inspection.orderInspection,
+			orderInspection,
 			LocalDateTime.now()
 		)
 	}
