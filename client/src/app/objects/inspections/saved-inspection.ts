@@ -19,7 +19,6 @@ export class SavedInspection {
 		this.orderNumber = savedInspection.orderNumber;
 		this.numberPlate = savedInspection.numberPlate;
 		this.orderInspection = savedInspection.orderInspection;
-		this.items = items;
 		this.data = savedInspection.data.map(d => new SavedInspectionData(d.employeeCode, d.saved));
 		this.data.push(new SavedInspectionData(employeeCode));
 		this.items = items;
@@ -32,7 +31,7 @@ export class SavedInspection {
 	fillSaved(savedInspection: SavedInspection, employeeCode: string): void {
 		this.findData().saved = dayjs(savedInspection.findData().saved);
 		this.items.forEach(savedItem => {
-			const s = savedInspection.items.find(i => i.item.code === savedItem.item.code);
+			const s = savedInspection.items.find(i => i.code === savedItem.code);
 			savedItem.findData().saved = dayjs(s.findData().saved);
 		});
 		this.addData(employeeCode);

@@ -12,7 +12,7 @@ export class InspectionVehicle {
 	constructor(inspectionVehicle: any) {
 		this.inspectionType = new InspectionType(inspectionVehicle.inspectionType);
 		this.vehicle = inspectionVehicle.vehicle;
-		this.items = inspectionVehicle.items.map(item => ItemType.parse(item.type).buildItem(item));
+		this.items = inspectionVehicle.items.map(item => ItemType.parse(item.type).build(item));
 		this.orderInspection = inspectionVehicle.orderInspection;
 	}
 

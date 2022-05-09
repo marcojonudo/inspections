@@ -33,4 +33,5 @@ class InspectionController {
 	) {
 		return inspectionService.findInspection(orderNumber, employeeCode, vehicle)
     }
+
 }

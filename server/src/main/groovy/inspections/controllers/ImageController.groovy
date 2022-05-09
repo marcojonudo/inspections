@@ -3,7 +3,6 @@ package inspections.controllers
 import groovy.transform.CompileStatic
 import inspections.domains.Image
 import inspections.services.data.ImageDataService
-import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.*
 import io.micronaut.http.multipart.CompletedFileUpload
@@ -66,21 +65,6 @@ class ImageController {
         @Body CompletedFileUpload image
     ) {
         return imageDataService.save(orderNumber, itemCode, image.bytes, landscape)
-    }
-
-    @Delete("/{id}")
-    @Operation(
-        summary = "Borra una imagen",
-        description = "Borra una imagen"
-    )
-    @ApiResponse(
-        responseCode = "200",
-        description = "Imagen borrada correctamente",
-        content = @Content(array = @ArraySchema(schema = @Schema(implementation = Image)))
-    )
-    HttpResponse deleteImage(@PathVariable Long id) {
-        imageDataService.delete(id)
-        return HttpResponse.ok()
     }
 
 }

@@ -8,10 +8,9 @@ import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
-import inspections.domains.items.TextItem
-import inspections.domains.items.TextItemField
-import inspections.domains.savedItems.TextSavedItem
-import inspections.domains.savedItems.TextSavedItemField
+import inspections.domains.savedItems.SavedItem
+import inspections.domains.savedItems.TextSavedItemData
+import inspections.domains.savedItems.TextSavedItemDataField
 import inspections.pogos.logs.Log
 import inspections.services.data.InspectionVehicleDataService
 import inspections.services.data.SavedInspectionDataService

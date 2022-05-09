@@ -19,7 +19,7 @@ abstract class ImageDataService {
 	@Where({ id in ids })
 	abstract List<Image> findAll(List<Long> ids)
 
-	abstract Image update(Serializable id, byte[] image, boolean landscape)
+	abstract List<Image> findAll(Long savedInspectionId)
 
 	abstract Image save(Long savedInspectionId, String itemCode, byte[] image, boolean landscape)
 
@@ -27,14 +27,7 @@ abstract class ImageDataService {
 
 	Image save(int orderNumber, String itemCode, byte[] image, boolean landscape) {
 		SavedInspection savedInspection = savedInspectionDataService.find(orderNumber)
-		Image existent = find(savedInspection.id, itemCode)
-		Image savedImage
-		if (existent) {
-			savedImage = update(existent.id, image, landscape)
-		} else {
-			savedImage = save(savedInspection.id, itemCode, image, landscape)
-		}
-		return savedImage
+		return save(savedInspection.id, itemCode, image, landscape)
 	}
 
 }

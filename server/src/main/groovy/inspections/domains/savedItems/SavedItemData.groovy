@@ -35,6 +35,7 @@ abstract class SavedItemData implements GormEntity<SavedItemData> {
 	}
 
 	static constraints = {
+		imageId nullable: true
 		filled nullable: true
 	}
 

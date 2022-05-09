@@ -17,7 +17,7 @@
 					<div [innerHTML]="findItemName(cat.items[0].item)"></div>
 				</div>
 				<div class="card-content">
-					<div *ngFor="let line of findTextAreaLines(findTextAreaSavedItem(cat.items[0]))" class="highlight">{{line}}</div>
+					<div *ngFor="let line of findTextAreaLines(cat.items[0])" class="highlight">{{line}}</div>
 				</div>
 			</div>
 		</ng-template>

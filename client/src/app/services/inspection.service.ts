@@ -119,9 +119,9 @@ export class InspectionService {
 	}
 
 	static initSavedInspection(savedInspection: any, inspection: InspectionVehicle = this.inspection): void {
-		this.savedInspection = savedInspection.items ?
-			Builder.loadSavedInspection(savedInspection, inspection.items, EmployeeService.employee.code) :
-			Builder.buildSavedInspection(savedInspection, inspection);
+		this.savedInspection = Builder.loadSavedInspection(
+			savedInspection, inspection.items, EmployeeService.employee.code
+		);
 
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, this.savedInspection);
 		console.log('Saved inspection', this.savedInspection);
@@ -182,7 +182,7 @@ export class InspectionService {
 	}
 
 	static findSavedItem(code: string, savedInspection = this.savedInspection): SavedItem {
-		return savedInspection.items.find(i => i.item.code === code);
+		return savedInspection.items.find(i => i.code === code);
 	}
 
 	static findIconColor(code: string, selectIconColor: { [key: string]: string } = this.SELECT_ICON_COLOR): string {
@@ -315,6 +315,7 @@ export class InspectionService {
 	): void {
 		const savedItem = savedInspection.items.find(i => i.item.name === item.name);
 		savedItem.findData(employee.code).update(fields, employee.code);
+		console.log('saved item', savedItem);
 		if (updateStorage) {
 			LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 		}
@@ -410,6 +411,7 @@ export class InspectionService {
 			InspectionService.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
 			InspectionService.centre = LocalStorageService.getItem(Constants.LOCAL_STORAGE.CENTRE);
 			InspectionService.selectItemOptions = InspectionService.findSelectItemOptions();
+			InspectionService.relations = LocalStorageService.getItem(Constants.LOCAL_STORAGE.RELATIONS);
 
 			console.log('Order', InspectionService.order);
 			console.log('Centre', InspectionService.centre);
@@ -418,6 +420,7 @@ export class InspectionService {
 			console.log('Employees', EmployeeService.employees);
 			console.log('Selected employee', EmployeeService.employee);
 			console.log('Select item options', InspectionService.selectItemOptions);
+			console.log('Relations', InspectionService.relations);
 			loaded = true;
 		} catch (error) {
 			console.error('Error loading data', error);
@@ -487,7 +490,7 @@ export class InspectionService {
 			concatMap(data => {
 				console.log('Received inspection', data[1]);
 				const inspectionVehicle = InspectionService.initInspection(data[1]);
-				const url = Url.savedInspection(
+				const url = Url.savedInspections(
 					order.number,
 					employee.code,
 					inspectionVehicle.inspectionType.code,
@@ -562,22 +565,6 @@ export class InspectionService {
 		);
 	}
 
-	removeImage(imageId: number, itemCode: string): Observable<any> {
-		const url = `${Url.images()}/${imageId}`;
-		return this.http.delete(url).pipe(
-			tap(() => {
-				const savedItem = InspectionService.findSavedItem(itemCode);
-				InspectionService.updateImageId(savedItem, undefined);
-			}),
-			catchError(() => {
-				this.snackBarService.open(
-					Constants.MESSAGE_CODE.ERROR_SAVING_IMAGE, Constants.SNACK_BAR.TYPE.WARNING
-				);
-				return of(true);
-			}),
-		);
-	}
-
 	saveInspection(
 		savedInspection: SavedInspection,
 		inspection: InspectionVehicle = InspectionService.inspection,
@@ -587,10 +574,9 @@ export class InspectionService {
 		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection, inspection.items);
 		console.log('Saving inspection', body);
 		const headers = { headers: { centre: `${centre.code}`, employeeCode } };
-		return this.http.post(Url.savedInspectionApi(), body, headers).pipe(
+		return this.http.post(Url.savedInspectionsApi(), body, headers).pipe(
 			tap(
 				(data) => {
-					console.log('Received saved inspection data', data);
 					const receivedSavedInspection = Builder.loadSavedInspection(
 						data, inspection.items, EmployeeService.employee.code
 					);

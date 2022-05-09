@@ -5,22 +5,20 @@ import grails.gorm.annotation.Entity
 import groovy.transform.TupleConstructor
 import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
+import inspections.utils.Utils
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
 @TupleConstructor
 class SavedInspection implements GormEntity<SavedInspection> {
 
-	int centre
 	String inspectionTypeCode
 	String vehicle
 	int orderNumber
 	String numberPlate
 	State state
 	boolean orderInspection
-	Set<SavedInspectionData> data
 
-//	@JsonDeserialize(using = SavedItemsDeserializer)
 	@JsonInclude
 	Set<SavedItem> items
 

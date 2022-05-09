@@ -3,12 +3,14 @@ package inspections.domains
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import grails.gorm.annotation.Entity
+import groovy.transform.TupleConstructor
 import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
 
 import java.time.LocalDateTime
 
 @Entity
+@TupleConstructor(excludes = 'savedInspection')
 class SavedInspectionData implements GormEntity<SavedInspectionData> {
 
 	@JsonIgnore

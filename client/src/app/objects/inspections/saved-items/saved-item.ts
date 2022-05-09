@@ -8,7 +8,6 @@ export class SavedItem {
 	type: string;
 	code: string;
 	item: Item;
-	itemCode: string;
 	data: SavedItemData[];
 
 	constructor(item: Item, employeeCode: string, savedItem: any) {
@@ -44,12 +43,7 @@ export class SavedItem {
 
 	addData(employeeCode: string, replicate: boolean, item: Item = this.item): void {
 		const itemType = ItemType.parse(item.type);
-		let data;
-		if (replicate) {
-			data = this.replicateData(itemType, item, employeeCode);
-		} else {
-			data = itemType.buildData(employeeCode, undefined, item);
-		}
+		const data = this.replicateData(itemType, item, employeeCode);
 		this.data.push(data);
 	}
 

@@ -21,7 +21,7 @@ export abstract class SavedItemData {
 			this.filled = savedData.filled ? dayjs(savedData.filled) : undefined;
 			this.hidden = savedData.hidden;
 			this.restrictive = savedData.restrictive;
-			this.saved = dayjs(savedData.saved);
+			this.saved = savedData.saved ? dayjs(savedData.saved) : undefined;
 		}
 	}
 

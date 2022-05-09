@@ -41,8 +41,6 @@ export class ItemType {
 	buildData: (e: string, data: any, item: Item) => SavedItemData;
 	update: any;
 	findDefaultValue: any;
-	buildItem: any;
-	buildSavedItem: any;
 
 	constructor(id: string, build: any, buildData: any, update: any, findDefaultValue: any) {
 		this.id = id;

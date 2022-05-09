@@ -27,9 +27,7 @@ export class TextSavedItemData extends SavedItemData {
 	}
 
 	update(fields: TextSavedItemDataField[], employeeCode: string): void {
-		// TODO Revisar añadido de fields
-		// (this.item as TextItem).fields.forEach(field => {
-		this.fields.forEach(field => {
+		this.item.fields.forEach(field => {
 			const updateField = fields.find(f => f.order === field.order);
 			const existentField = this.fields.find(f => f.order === field.order);
 			if (existentField) {

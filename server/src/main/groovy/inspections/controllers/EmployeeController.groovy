@@ -2,7 +2,7 @@ package inspections.controllers
 
 import groovy.transform.CompileStatic
 import inspections.domains.schedules.EmployeeData
-import inspections.services.data.EmployeeDataDataService
+import inspections.services.data.schedules.EmployeeDataDataService
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.swagger.v3.oas.annotations.Operation

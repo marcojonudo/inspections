@@ -6,6 +6,7 @@ import inspections.domains.SaveError
 import inspections.domains.SavedInspection
 import inspections.domains.SavedInspectionData
 import inspections.domains.items.Item
+import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.TextSavedItemDataField
 import inspections.pogos.slack.messages.SlackBlocksMessage
 import inspections.pogos.slack.messages.SlackMessage
@@ -43,16 +44,17 @@ class Builder {
 		String numberPlate,
 		boolean orderInspection
 	) {
-		SavedInspectionData data = new SavedInspectionData(employeeCode: employeeCode, saved: LocalDateTime.now())
 		return new SavedInspection(
 			inspectionTypeCode,
 			vehicle,
 			orderNumber,
 			numberPlate,
 			SavedInspection.State.STARTED,
-			orderInspection,
-            [data].toSet()
-		)
+			orderInspection
+		).tap {
+			addToData(new SavedInspectionData(employeeCode, LocalDateTime.now()))
+			items = (Set<SavedItem>) []
+		}
 	}
 
 	class Slack {
