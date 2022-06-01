@@ -8,6 +8,7 @@ import inspections.domains.savedItems.SavedItem
 import inspections.utils.Utils
 
 import javax.inject.Inject
+import java.time.LocalDateTime
 
 @Service(SavedInspection)
 abstract class SavedInspectionDataService {
@@ -19,9 +20,13 @@ abstract class SavedInspectionDataService {
 
 	abstract SavedInspection save(SavedInspection savedInspection)
 
-	abstract SavedInspection update(Serializable id, String employeeCode, SavedInspection.State state)
+	abstract SavedInspection update(
+		Serializable id, String employeeCode, SavedInspection.State state, LocalDateTime saved
+	)
 
-	abstract SavedInspection update(Serializable id, String inspectionTypeCode, boolean orderInspection)
+	abstract SavedInspection update(
+		Serializable id, String inspectionTypeCode, boolean orderInspection, LocalDateTime saved
+	)
 
 	SavedInspection update(SavedInspection savedInspection, SavedInspection existentSavedInspection) {
 		List<Item> items = itemDataService.findAll((List<String>) savedInspection.items.code)
@@ -38,7 +43,7 @@ abstract class SavedInspectionDataService {
 		SavedInspection.State state = SavedInspection.State.values().find {
 			((Closure<Boolean>) it.check)(savedInspection.items, items)
 		}
-		return update(existentSavedInspection.id, savedInspection.employeeCode, state)
+		return update(existentSavedInspection.id, savedInspection.employeeCode, state, LocalDateTime.now())
 	}
 
 	static SavedItem fillSavedItem(SavedItem savedItem, SavedInspection savedInspection) {

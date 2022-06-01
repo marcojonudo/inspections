@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import javax.inject.Singleton
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Singleton
 @CompileStatic
@@ -113,12 +114,15 @@ class InspectionService {
 		String numberPlate,
 		boolean orderInspection
 	) {
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, message: Constants.Message.SEARCHING_SAVED_INSPECTION]).toString())
 		SavedInspection savedInspection = savedInspectionDataService.find(orderNumber)
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, existent: savedInspection as boolean, message: Constants.Message.EXISTENT_SAVED_INSPECTION]).toString())
 		/* Si existe revisión y se ha actualizado el tipo de revisión (en lo que respecta a la orden), se actualiza */
 		if (savedInspection) {
 			if (savedInspection.updatedOrder(inspectionTypeCode, orderInspection)) {
+				LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, message: Constants.Message.UPDATED_ORDER]).toString())
 				savedInspection = savedInspectionDataService.update(
-					savedInspection.id, inspectionTypeCode, orderInspection
+					savedInspection.id, inspectionTypeCode, orderInspection, LocalDateTime.now()
 				)
 			}
 		} else {
@@ -140,7 +144,7 @@ class InspectionService {
 	 * @return Revisión guardada
 	 */
 	SavedInspection saveInspection(SavedInspection savedInspection, int orderNumber, String employeeCode, int centre) {
-		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVING_INSPECTION]).toString())
+		LOG.info(new Log((Map) [employeeCode: employeeCode, savedInspection: savedInspection, message: Constants.Message.SAVING_INSPECTION]).toString())
 		SavedInspection newSavedInspection = null
 		try {
 			/* Se utiliza un semáforo por número de orden para evitar escrituras simultáneas */
