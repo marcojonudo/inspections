@@ -315,7 +315,6 @@ export class InspectionService {
 	): void {
 		const savedItem = savedInspection.items.find(i => i.item.name === item.name);
 		savedItem.findData(employee.code).update(fields, employee.code);
-		console.log('saved item', savedItem);
 		if (updateStorage) {
 			LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 		}

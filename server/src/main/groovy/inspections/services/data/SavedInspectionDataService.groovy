@@ -9,7 +9,6 @@ import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.SavedItemData
 
 import javax.inject.Inject
-import java.time.LocalDateTime
 
 @Service(SavedInspection)
 abstract class SavedInspectionDataService {
@@ -21,9 +20,16 @@ abstract class SavedInspectionDataService {
 
 	abstract SavedInspection save(SavedInspection savedInspection)
 
-	abstract SavedInspection update(
-		Serializable id, String inspectionTypeCode, boolean orderInspection, LocalDateTime saved
-	)
+	SavedInspection update(
+		SavedInspection savedInspection, String inspectionTypeCode, boolean orderInspection, String employeeCode
+	) {
+		savedInspection.inspectionTypeCode = inspectionTypeCode
+		savedInspection.orderInspection = orderInspection
+
+		SavedInspectionData newData = new SavedInspectionData(employeeCode, SavedInspectionData.Reason.UPDATED_ORDER)
+		savedInspection.addToData(newData)
+		return save(savedInspection)
+	}
 
 	SavedInspection update(SavedInspection savedInspection, SavedInspection existentSavedInspection) {
 		List<Item> items = itemDataService.findAll((List<String>) savedInspection.items.code)
@@ -31,7 +37,10 @@ abstract class SavedInspectionDataService {
 
 		SavedInspectionData newSavedInspectionData = savedInspection.data
 			.max { it.saved }
-			.tap { it.savedInspection = existentSavedInspection }
+			.tap {
+				it.savedInspection = existentSavedInspection
+				it.reason = SavedInspectionData.Reason.UPDATED
+			}
 		existentSavedInspection.addToData(newSavedInspectionData)
 		savedInspection.items.each { SavedItem savedItem ->
 			SavedItem existentSavedItem = existentSavedInspection.items.find { it.code == savedItem.code }

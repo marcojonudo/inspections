@@ -17,8 +17,6 @@ import inspections.pogos.slack.structure.blocks.SlackTextBlock
 import inspections.pogos.slack.structure.elements.SlackBaseElem
 import inspections.pogos.slack.structure.elements.SlackMarkdownElem
 
-import java.time.LocalDateTime
-
 @CompileStatic
 class Builder {
 
@@ -52,7 +50,7 @@ class Builder {
 			SavedInspection.State.STARTED,
 			orderInspection
 		).tap {
-			addToData(new SavedInspectionData(employeeCode, LocalDateTime.now()))
+			addToData(new SavedInspectionData(employeeCode))
 			items = (Set<SavedItem>) []
 		}
 	}

@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import javax.inject.Singleton
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Singleton
 @CompileStatic
@@ -125,9 +124,9 @@ class InspectionService {
 		/* Si existe revisión y se ha actualizado el tipo de revisión (en lo que respecta a la orden), se actualiza */
 		if (savedInspection) {
 			if (savedInspection.updatedOrder(inspectionTypeCode, orderInspection)) {
-				LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, message: Constants.Message.UPDATED_ORDER]).toString())
+				LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, oldType: savedInspection.inspectionTypeCode, newType: inspectionTypeCode, oldOrderInspection: savedInspection.orderInspection, newOrderInspection: orderInspection, message: Constants.Message.UPDATED_ORDER]).toString())
 				savedInspection = savedInspectionDataService.update(
-					savedInspection.id, inspectionTypeCode, orderInspection, LocalDateTime.now()
+					savedInspection, inspectionTypeCode, orderInspection, employeeCode
 				)
 			}
 		} else {
@@ -137,6 +136,7 @@ class InspectionService {
 			)
 			savedInspection = savedInspectionDataService.save(builtInspection)
 		}
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, existent: savedInspection as boolean, message: Constants.Message.FINISHED_SEARCHING_SAVED_INSPECTION]).toString())
 		return savedInspection
 	}
 
