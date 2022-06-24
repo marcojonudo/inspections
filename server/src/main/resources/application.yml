@@ -46,6 +46,8 @@ endpoints:
         enabled: true
         sensitive: false
 
+cron.text-values: '0 0 0 1 1 ?'
+
 slack:
     app:
         notifier:

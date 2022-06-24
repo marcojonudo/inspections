@@ -8,12 +8,18 @@ import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
+import inspections.domains.items.TextItem
+import inspections.domains.items.TextItemField
+import inspections.domains.items.TextItemFieldValue
 import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.TextSavedItemData
 import inspections.domains.savedItems.TextSavedItemDataField
 import inspections.pogos.logs.Log
 import inspections.services.data.InspectionVehicleDataService
+import inspections.services.data.ItemDataService
 import inspections.services.data.SavedInspectionDataService
+import inspections.services.data.TextItemDataService
+import inspections.services.data.TextItemFieldValueDataService
 import inspections.services.data.fviberi.CarDataService
 import inspections.services.data.fviberi.CentreDataService
 import inspections.services.data.fviberi.OrderDataService
@@ -42,6 +48,9 @@ class InspectionService {
 	@Inject SavedInspectionDataService savedInspectionDataService
 	@Inject SlackService slackService
 	@Inject InspectionsManagementClient inspectionsManagementClient
+	@Inject ItemDataService itemDataService
+	@Inject TextItemDataService textItemDataService
+	@Inject TextItemFieldValueDataService textItemFieldValueDataService
 
 	/**
 	 * Busca una orden asociada al código corto
@@ -207,6 +216,28 @@ class InspectionService {
 			} catch (ignore) {}
 		}
 		return day
+	}
+
+	void updateTextValues() {
+		TextItem itvItem = textItemDataService.find(itemDataService.findItemId(Constants.Item.FPITV))
+		List<TextItem> tyreAgeItems = textItemDataService.findAll(
+			itemDataService.findAllItemId(Constants.TYRE_AGE_CODES)
+		)
+		LocalDate today = LocalDate.now()
+		handleTextItemYearValue(itvItem, today.plusYears(5).year)
+		tyreAgeItems.each { handleTextItemYearValue(it, today.year) }
+	}
+
+	List<TextItemFieldValue> handleTextItemYearValue(TextItem item, int refYear) {
+		List<TextItemFieldValue> values = []
+		TextItemField yearField = item.fields.find { it.order == 1 }
+		int maxYear = yearField.values*.value.max { it as int } as int
+		if (maxYear < refYear) {
+			yearField.values.each {
+				values << textItemFieldValueDataService.update(it.id, ((it.value as int) + 1) as String)
+			}
+		}
+		return values
 	}
 
 }

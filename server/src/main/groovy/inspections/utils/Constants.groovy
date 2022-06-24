@@ -6,6 +6,7 @@ import groovy.transform.CompileStatic
 class Constants {
 
     static final String SPAIN_TIMEZONE = "Europe/Madrid"
+    static final List<String> TYRE_AGE_CODES = [Item.FNDI, Item.FNDD, Item.FNTI, Item.FNTD]
 
     static class DataSource {
 
@@ -49,6 +50,10 @@ class Constants {
     static class Item {
 
         static final String FPITV = "FPITV"
+        static final String FNDI = "FNDI"
+        static final String FNDD = "FNDD"
+        static final String FNTI = "FNTI"
+        static final String FNTD = "FNTD"
 
     }
 

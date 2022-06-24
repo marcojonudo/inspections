@@ -1,5 +1,6 @@
 package inspections.services
 
+import inspections.clients.InspectionsManagementClient
 import inspections.domains.InspectionType
 import inspections.domains.InspectionVehicle
 import inspections.domains.fviberi.Order
@@ -8,8 +9,15 @@ import inspections.domains.items.Item
 import inspections.domains.items.ItemVehicleData
 import inspections.domains.items.TextItem
 import inspections.domains.items.TextItemField
-import inspections.domains.savedItems.TextSavedItemField
+import inspections.domains.items.TextItemFieldValue
+import inspections.domains.savedItems.TextSavedItemDataField
 import inspections.services.data.InspectionVehicleDataService
+import inspections.services.data.ItemDataService
+import inspections.services.data.SavedInspectionDataService
+import inspections.services.data.TextItemDataService
+import inspections.services.data.TextItemFieldValueDataService
+import inspections.services.data.fviberi.CarDataService
+import inspections.services.data.fviberi.CentreDataService
 import inspections.services.data.fviberi.OrderDataService
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
@@ -25,6 +33,39 @@ class InspectionServiceSpec extends Specification {
     @Inject InspectionService inspectionService
     @Inject OrderDataService orderDataService
     @Inject InspectionVehicleDataService inspectionVehicleDataService
+    @Inject CentreDataService centreDataService
+    @Inject CarDataService carDataService
+    @Inject SavedInspectionDataService savedInspectionDataService
+    @Inject SlackService slackService
+    @Inject InspectionsManagementClient inspectionsManagementClient
+    @Inject ItemDataService itemDataService
+    @Inject TextItemDataService textItemDataService
+    @Inject TextItemFieldValueDataService textItemFieldValueDataService
+
+    @MockBean(TextItemFieldValueDataService)
+    TextItemFieldValueDataService textItemFieldValueDataService() {
+        Mock(TextItemFieldValueDataService)
+    }
+
+    @MockBean(TextItemDataService)
+    TextItemDataService textItemDataService() {
+        Mock(TextItemDataService)
+    }
+
+    @MockBean(ItemDataService)
+    ItemDataService itemDataService() {
+        Mock(ItemDataService)
+    }
+
+    @MockBean(InspectionsManagementClient)
+    InspectionsManagementClient inspectionsManagementClient() {
+        Mock(InspectionsManagementClient)
+    }
+
+    @MockBean(SlackService)
+    SlackService slackService() {
+        Mock(SlackService)
+    }
 
     @MockBean(OrderDataService)
     OrderDataService orderDataService() {
@@ -34,6 +75,21 @@ class InspectionServiceSpec extends Specification {
     @MockBean(InspectionVehicleDataService)
     InspectionVehicleDataService inspectionVehicleDataService() {
         Mock(InspectionVehicleDataService)
+    }
+
+    @MockBean(CentreDataService)
+    CentreDataService centreDataService() {
+        Mock(CentreDataService)
+    }
+
+    @MockBean(CarDataService)
+    CarDataService carDataService() {
+        Mock(CarDataService)
+    }
+
+    @MockBean(SavedInspectionDataService)
+    SavedInspectionDataService savedInspectionDataService() {
+        Mock(SavedInspectionDataService)
     }
 
     @Shared Order order1
@@ -125,7 +181,7 @@ class InspectionServiceSpec extends Specification {
 
         when:
         InspectionVehicle inspection = inspectionService.findInspection(
-            order1.number, "", InspectionVehicle.Vehicle.CAR.toString(), ""
+            order1.number, "", InspectionVehicle.Vehicle.CAR.toString()
         )
 
         then:
@@ -144,7 +200,7 @@ class InspectionServiceSpec extends Specification {
             )
 
         when:
-        InspectionVehicle inspection = inspectionService.findInspection(order1.number, "", "", "")
+        InspectionVehicle inspection = inspectionService.findInspection(order1.number, "", "")
 
         then:
         inspection.inspectionType.code == InspectionType.Code.SE.toString()
@@ -156,11 +212,10 @@ class InspectionServiceSpec extends Specification {
 
     void "test check correct fields empty saved fields"() {
         given:
-        TextItem item = new TextItem(fields: [new TextItemField(), new TextItemField()])
-        List<TextSavedItemField> fields = []
+        List<TextSavedItemDataField> fields = []
 
         when:
-        LocalDate day = inspectionService.findItvDate(item, fields)
+        LocalDate day = inspectionService.findItvDate(fields)
 
         then:
         !day
@@ -168,11 +223,10 @@ class InspectionServiceSpec extends Specification {
 
     void "test check correct fields different size saved fields"() {
         given:
-        TextItem item = new TextItem(fields: [new TextItemField(), new TextItemField()])
-        List<TextSavedItemField> fields = [new TextSavedItemField()]
+        List<TextSavedItemDataField> fields = [new TextSavedItemDataField()]
 
         when:
-        LocalDate day = inspectionService.findItvDate(item, fields)
+        LocalDate day = inspectionService.findItvDate(fields)
 
         then:
         !day
@@ -180,11 +234,10 @@ class InspectionServiceSpec extends Specification {
 
     void "test check correct fields save size saved fields with empty values"() {
         given:
-        TextItem item = new TextItem(fields: [new TextItemField(), new TextItemField()])
-        List<TextSavedItemField> fields = [new TextSavedItemField(), new TextSavedItemField()]
+        List<TextSavedItemDataField> fields = [new TextSavedItemDataField(), new TextSavedItemDataField()]
 
         when:
-        LocalDate day = inspectionService.findItvDate(item, fields)
+        LocalDate day = inspectionService.findItvDate(fields)
 
         then:
         !day
@@ -192,14 +245,50 @@ class InspectionServiceSpec extends Specification {
 
     void "test check correct fields save size saved fields with wrong month value"() {
         given:
-        TextItem item = new TextItem(fields: [new TextItemField(), new TextItemField()])
-        List<TextSavedItemField> fields = [new TextSavedItemField(text: "0"), new TextSavedItemField(text: "2022")]
+        List<TextSavedItemDataField> fields = [new TextSavedItemDataField(text: "0"), new TextSavedItemDataField(text: "2022")]
 
         when:
-        LocalDate day = inspectionService.findItvDate(item, fields)
+        LocalDate day = inspectionService.findItvDate(fields)
 
         then:
         !day
+    }
+
+    // endregion
+
+    // region Update text item year value
+
+    void "test update text item year value ITV item correct max year"() {
+        given:
+        LocalDate today = LocalDate.now()
+        int refYear = today.plusYears(5).year
+        TextItem item = new TextItem(fields: [
+            new TextItemField(order: 1, values: [new TextItemFieldValue(value: "${today.plusYears(6).year}")])
+        ])
+
+        when:
+        List<TextItemFieldValue> values = inspectionService.handleTextItemYearValue(item, refYear)
+
+        then:
+        !values
+    }
+
+    void "test update text item year value ITV item wrong max year"() {
+        given:
+        LocalDate today = LocalDate.now()
+        int refYear = today.plusYears(5).year
+        TextItem item = new TextItem(fields: [
+            new TextItemField(order: 1, values: [new TextItemFieldValue(id: 1, value: "${today.plusYears(4).year}")])
+        ])
+        textItemFieldValueDataService.update(_, _) >> new TextItemFieldValue(id: 1, value: refYear as String)
+
+        when:
+        List<TextItemFieldValue> values = inspectionService.handleTextItemYearValue(item, refYear)
+
+        then:
+        values
+        values.size() == 1
+        values[0].value == refYear as String
     }
 
     // endregion

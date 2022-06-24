@@ -32,7 +32,8 @@ class SavedInspectionData implements GormEntity<SavedInspectionData> {
 
 		SAVED,
 		UPDATED,
-		UPDATED_ORDER
+		UPDATED_ORDER,
+		SENT
 
 	}
 
