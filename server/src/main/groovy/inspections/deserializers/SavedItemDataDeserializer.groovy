@@ -7,29 +7,28 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.node.ArrayNode
 import groovy.transform.CompileStatic
 import inspections.domains.items.Item
-import inspections.domains.savedItems.SavedItem
+import inspections.domains.savedItems.SavedItemData
 import inspections.pogos.logs.Jackson
 
 @CompileStatic
-class SavedItemsDeserializer extends StdDeserializer<Set<SavedItem>> {
+class SavedItemDataDeserializer extends StdDeserializer<Set<SavedItemData>> {
 
-	SavedItemsDeserializer() {
+	SavedItemDataDeserializer() {
 		this(null)
 	}
 
-	SavedItemsDeserializer(Class<SavedItem> savedItemClass) {
-		super(savedItemClass)
+    SavedItemDataDeserializer(Class<SavedItemData> clazz) {
+		super(clazz)
 	}
 
 	@Override
-	Set<SavedItem> deserialize(JsonParser parser, DeserializationContext deserializationContext)
+	Set<SavedItemData> deserialize(JsonParser parser, DeserializationContext deserializationContext)
 			throws IOException, JsonProcessingException {
 		ArrayNode node = (ArrayNode) parser.getCodec().readTree(parser)
-		Set<SavedItem> savedItems = node.collect {
-			Item.Type type = Item.Type.valueOf(it.get("type").asText())
-			return ((SavedItem) Jackson.convertValue(it, type.savedItemClazz))
+		return node.collect {
+			Item.Type type = Item.Type.valueOf(it.get("itemType").asText())
+			return (SavedItemData) Jackson.convertValue(it, type.savedItemDataClazz)
 		}.toSet()
-		return savedItems
 	}
 
 }

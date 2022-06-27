@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { SavedItem } from '../../../objects/inspections/saved-items/saved-item';
 import { Constants } from '../../../objects/constants';
-import { SelectItem } from '../../../objects/inspections/items/select-item';
 import { InspectionService } from '../../../services/inspection.service';
 import { SelectItemOption } from '../../../objects/inspections/items/select-item-option';
 import { CustomImage } from '../../../objects/inspections/custom-image';

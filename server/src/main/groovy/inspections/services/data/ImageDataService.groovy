@@ -11,7 +11,6 @@ import javax.inject.Inject
 abstract class ImageDataService {
 
 	@Inject SavedInspectionDataService savedInspectionDataService
-	@Inject SavedItemDataService savedItemDataService
 
 	abstract Image find(Serializable id)
 
@@ -20,22 +19,15 @@ abstract class ImageDataService {
 	@Where({ id in ids })
 	abstract List<Image> findAll(List<Long> ids)
 
-	abstract Image update(Serializable id, byte[] image, boolean landscape)
+	abstract List<Image> findAll(Long savedInspectionId)
 
-	abstract Image saveImage(Long savedInspectionId, String itemCode, byte[] image, boolean landscape)
+	abstract Image save(Long savedInspectionId, String itemCode, byte[] image, boolean landscape)
 
 	abstract void delete(Serializable id)
 
 	Image save(int orderNumber, String itemCode, byte[] image, boolean landscape) {
 		SavedInspection savedInspection = savedInspectionDataService.find(orderNumber)
-		Image existent = find(savedInspection.id, itemCode)
-		Image savedImage
-		if (existent) {
-			savedImage = update(existent.id, image, landscape)
-		} else {
-			savedImage = saveImage(savedInspection.id, itemCode, image, landscape)
-		}
-		return savedImage
+		return save(savedInspection.id, itemCode, image, landscape)
 	}
 
 }

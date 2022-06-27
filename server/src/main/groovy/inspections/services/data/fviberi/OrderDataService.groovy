@@ -1,4 +1,4 @@
-package inspections.services.data
+package inspections.services.data.fviberi
 
 import grails.gorm.services.Service
 import grails.gorm.services.Where
@@ -32,12 +32,14 @@ abstract class OrderDataService {
 
 	Order find(int number) {
 		Order order = findOrder(number)
-		OrderTime orderTime = orderTimeDataService.find(number)
+		if (order) {
+			OrderTime orderTime = orderTimeDataService.find(number)
 
-		order.code = orderTime.shortCode
-		order.vehicleType = Order.VehicleType.valueOf(order.vehicleType).type
-		IVehicle vehicle = carDataService.find(order.carIdentifier) ?: scooterDataService.find(order.carIdentifier)
-		order.vehicle = vehicle.buildVehicle()
+			order.code = orderTime.shortCode
+			order.vehicleType = Order.VehicleType.valueOf(order.vehicleType).type
+			IVehicle vehicle = carDataService.find(order.carIdentifier) ?: scooterDataService.find(order.carIdentifier)
+			order.vehicle = vehicle.buildVehicle()
+		}
 		return order
 	}
 

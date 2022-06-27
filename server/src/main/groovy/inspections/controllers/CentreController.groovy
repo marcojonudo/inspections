@@ -2,7 +2,7 @@ package inspections.controllers
 
 import groovy.transform.CompileStatic
 import inspections.domains.fviberi.Centre
-import inspections.services.data.CentreDataService
+import inspections.services.data.fviberi.CentreDataService
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.swagger.v3.oas.annotations.Operation

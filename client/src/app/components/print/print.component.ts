@@ -47,7 +47,7 @@ export class PrintComponent {
 		this.images = [];
 		this.adviser = EmployeeService.findEmployee(this.order.sellerCode);
 		this.mechanics = InspectionService.inspectionHandler.findSavedItems(this.savedInspection)
-			.map(i => i.employeeCode)
+			.map(i => i.findEmployeeCode())
 			.filter((value, index, self) => value && self.indexOf(value) === index)
 			.map(employeeCode => EmployeeService.findEmployee(employeeCode));
 
@@ -57,26 +57,26 @@ export class PrintComponent {
 			.filter(i => i.item.header === undefined && i.item.print);
 		this.tyreGroupedItems = this.findTyreItems(savedItems);
 		const depthCodes = this.CAR_TYRES.map(carTyre => `${Constants.DEPTH_ITEM_CODE}${carTyre}`);
-		const depthItems = savedItems.filter(i => depthCodes.find(c => c === i.item.code) !== undefined);
-		this.showTyreSheet = depthItems.find(i => i.imageId) !== undefined;
-		this.visualControlSavedItem = savedItems.find(i => i.item.code === 'CVGN');
-		this.pressureSavedItem = savedItems.find(i => i.item.code === 'PPN');
-		this.measurementSavedItem = savedItems.find(i => i.item.code === 'PN');
+		const depthItems = savedItems.filter(i => depthCodes.find(c => c === i.code) !== undefined);
+		this.showTyreSheet = depthItems.find(i => i.findImageId()) !== undefined;
+		this.visualControlSavedItem = savedItems.find(i => i.code === 'CVGN');
+		this.pressureSavedItem = savedItems.find(i => i.code === 'PPN');
+		this.measurementSavedItem = savedItems.find(i => i.code === 'PN');
 
 		const existentSavedItems = savedItems.filter(i => {
 			const selectItem = i.type === ItemType.SELECT.id;
-			return !i.hidden && (selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true);
+			return !i.isHidden() && (selectItem ? i.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.NA : true);
 		});
 		const categories = this.buildPrintCategories(existentSavedItems);
 		this.groupedCategories = this.buildGroupedCategories(categories);
 
 		const imageSavedItems = InspectionService.inspectionHandler.findSavedItems(this.savedInspection)
-			.filter(savedItem => savedItem.imageId);
+			.filter(savedItem => savedItem.findImageId());
 		if (imageSavedItems.length) {
-			const imageIds = imageSavedItems.map(savedItem => savedItem.imageId);
+			const imageIds = imageSavedItems.map(savedItem => savedItem.findImageId());
 			this.http.get(Url.images(), { params: { ids: `${imageIds.join(',')}` } }).subscribe((images: CustomImage[]) => {
 				this.images = images;
-				const noTyreImages = imageSavedItems.filter(i => depthCodes.find(c => c === i.item.code) === undefined);
+				const noTyreImages = imageSavedItems.filter(i => depthCodes.find(c => c === i.code) === undefined);
 				if (noTyreImages.length) {
 					const imageCategories = this.buildPrintCategories(noTyreImages);
 					this.groupedImageCategories = this.buildGroupedImageCategories(imageCategories);
@@ -110,7 +110,7 @@ export class PrintComponent {
 		this.CAR_TYRES.forEach(carTyre => {
 			tyreSavedItems[carTyre] = [];
 			Constants.TYRE_ITEM_CODES.forEach(tyreCode => {
-				const savedItem = savedItems.find(s => s.item.code === `${tyreCode}${carTyre}`);
+				const savedItem = savedItems.find(s => s.code === `${tyreCode}${carTyre}`);
 				/* Si un neumático tiene valor 'No aplica', no se encontrará saved item */
 				if (savedItem) {
 					tyreSavedItems[carTyre].push(savedItem);

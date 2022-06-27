@@ -1,14 +1,14 @@
-import {SavedItem} from './saved-item';
-import {SelectItem} from '../items/select-item';
-import {Constants} from '../../constants';
+import { Constants } from '../../constants';
+import { SavedItemData } from './saved-item-data';
+import { SelectItem } from '../items/select-item';
 
-export class SelectSavedItem extends SavedItem {
+export class SelectSavedItemData extends SavedItemData {
 
 	value: string;
 
-	constructor(item: SelectItem, employeeCode: string, savedItem: SelectSavedItem) {
-		super(item, employeeCode, savedItem);
-		this.value = savedItem ? savedItem.value : Constants.SELECT_ITEM_OPTION_CODE.P;
+	constructor(employeeCode: string, selectSavedItemData: any, item: SelectItem) {
+		super(employeeCode, selectSavedItemData, item);
+		this.value = selectSavedItemData ? selectSavedItemData.value : Constants.SELECT_ITEM_OPTION_CODE.P;
 	}
 
 	findValue(): string {

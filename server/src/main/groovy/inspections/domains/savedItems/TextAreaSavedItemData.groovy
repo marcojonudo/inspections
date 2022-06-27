@@ -6,14 +6,16 @@ import org.grails.datastore.gorm.GormEntity
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
-class SelectSavedItem extends SavedItem implements GormEntity<SelectSavedItem> {
+class TextAreaSavedItemData extends SavedItemData implements GormEntity<TextAreaSavedItemData> {
 
-	String value
+	String text
 
-	void fillRelations() {}
+	static constraints = {
+		text nullable: true
+	}
 
-	boolean equals(SavedItem savedItem) {
-		return equalsSaveItem(savedItem) && value == ((SelectSavedItem) savedItem).value
+	SavedItemData fill(SavedItem savedItem) {
+		return fillSavedItem(savedItem)
 	}
 
 }

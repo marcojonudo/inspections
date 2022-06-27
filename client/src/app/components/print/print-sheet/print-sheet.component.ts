@@ -5,11 +5,9 @@ import { SavedItem } from '../../../objects/inspections/saved-items/saved-item';
 import { SavedInspection } from '../../../objects/inspections/saved-inspection';
 import { Order } from '../../../objects/orders/order';
 import { Centre } from '../../../objects/orders/centre';
-import { SelectSavedItem } from '../../../objects/inspections/saved-items/select-saved-item';
-import { TextSavedItem } from '../../../objects/inspections/saved-items/text-saved-item';
+import { TextSavedItemData } from '../../../objects/inspections/saved-items/text-saved-item-data';
 import { SelectItem } from '../../../objects/inspections/items/select-item';
 import { ItemType } from '../../../objects/inspections/items/item-type';
-import { TextAreaSavedItem } from '../../../objects/inspections/saved-items/text-area-saved-item';
 import { TextItem } from '../../../objects/inspections/items/text-item';
 import { CategoryItems } from '../../../objects/print/category-items';
 import { VehicleType } from '../../../objects/orders/vehicles/vehicle-type';
@@ -54,36 +52,24 @@ export class PrintSheetComponent {
 		return optionType === type;
 	}
 
-	findSelectSavedItem(item: SavedItem): SelectSavedItem {
-		return item as SelectSavedItem;
-	}
-
-	findTextSavedItem(item: SavedItem): TextSavedItem {
-		return item as TextSavedItem;
-	}
-
-	findTextAreaSavedItem(item: SavedItem): TextAreaSavedItem {
-		return item as TextAreaSavedItem;
-	}
-
 	checkMultipleFieldsItem(savedItem: SavedItem): boolean {
-		return savedItem.type === ItemType.TEXT.id && this.findTextSavedItem(savedItem).fields.length > 2;
+		return savedItem.item.type === ItemType.TEXT.id && (savedItem.findData() as TextSavedItemData).fields.length > 2;
 	}
 
 	findTextItemUnit(item: SavedItem): string {
-		return this.findTextSavedItem(item).isFilled() ? (item.item as TextItem).unit || '' : '';
+		return item.isFilled() ? (item.item as TextItem).unit || '' : '';
 	}
 
-	findSelectIcon(item: SelectSavedItem): string {
-		return (item.item as SelectItem).options.find(option => option.code === item.value).printIcon;
+	findSelectIcon(item: SavedItem): string {
+		return (item.item as SelectItem).options.find(option => option.code === item.findValue()).printIcon;
 	}
 
 	findIconColor(code: string): string {
 		return InspectionService.findIconColor(code);
 	}
 
-	findTextAreaLines(item: TextAreaSavedItem): string[] {
-		return item.text ? item.text.split('\n') : [];
+	findTextAreaLines(item: SavedItem): string[] {
+		return item.findValue() ? item.findValue().split('\n') : [];
 	}
 
 	findItemName(item: Item): string {
@@ -94,7 +80,7 @@ export class PrintSheetComponent {
 		if (savedItem.type !== ItemType.SELECT.id) {
 			return false;
 		}
-		return (savedItem as SelectSavedItem).value !== Constants.SELECT_ITEM_OPTION_CODE.C;
+		return savedItem.findValue() !== Constants.SELECT_ITEM_OPTION_CODE.C;
 	}
 
 }

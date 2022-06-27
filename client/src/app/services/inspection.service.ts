@@ -5,12 +5,11 @@ import { Url } from '../objects/url';
 import { Order } from '../objects/orders/order';
 import { InspectionVehicle } from '../objects/inspections/inspection-vehicle';
 import { SavedInspection } from '../objects/inspections/saved-inspection';
-import * as dayjs from 'dayjs';
 import { LocalStorageService } from './local-storage.service';
 import { Constants } from '../objects/constants';
 import { EmployeeService } from './employee.service';
 import { catchError, concatMap, debounceTime, filter, finalize, map, tap, buffer } from 'rxjs/operators';
-import { SelectSavedItem } from '../objects/inspections/saved-items/select-saved-item';
+import { SelectSavedItemData } from '../objects/inspections/saved-items/select-saved-item-data';
 import { Builder } from '../objects/builder';
 import { Employee } from '../objects/employee';
 import { Centre } from '../objects/orders/centre';
@@ -30,15 +29,14 @@ import { PortugalHandler } from '../objects/country-info/portugal-handler';
 import { InspectionHandler } from '../objects/inspection-handler/inspection-handler';
 import { OrderInspectionHandler } from '../objects/inspection-handler/order-inspection-handler';
 import { DetectedFaultsHandler } from '../objects/inspection-handler/detected-faults-handler';
-import { TextSavedItem } from '../objects/inspections/saved-items/text-saved-item';
-import { TextSavedItemField } from '../objects/inspections/saved-items/text-saved-item-field';
+import { TextSavedItemDataField } from '../objects/inspections/saved-items/text-saved-item-data-field';
 import { ItemType } from '../objects/inspections/items/item-type';
-import { TextAreaSavedItem } from '../objects/inspections/saved-items/text-area-saved-item';
 import { Router } from '@angular/router';
 import { ResetEmployeeDialogComponent } from '../components/reset-employee-dialog/reset-employee-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { VersionService } from './version.service';
 import { SaveError } from '../objects/save-error';
+import { CountryHandlerType } from '../objects/country-info/country-handler-type';
 
 @Injectable({
 	providedIn: 'root'
@@ -74,22 +72,17 @@ export class InspectionService {
 	];
 
 	private static readonly ITEM_RELATION_ACTION: any = {
-		HIDE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
+		HIDE: (targetSavedItem: SavedItem, newValue: string, employeeCode: string) =>
 			targetSavedItem.updateHidden(employeeCode, true),
-		REPLICATE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
+		REPLICATE: (targetSavedItem: SavedItem, newValue: string, employeeCode: string) =>
 			targetSavedItem.update(newValue, employeeCode)
 	};
 
 	private static readonly ITEM_RELATION_RESTORE_ACTION: any = {
-		HIDE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
+		HIDE: (targetSavedItem: SavedItem, newValue: string, employeeCode: string) =>
 			targetSavedItem.updateHidden(employeeCode, false),
-		REPLICATE: (targetSavedItem: SelectSavedItem, newValue: string, employeeCode: string) =>
+		REPLICATE: (targetSavedItem: SavedItem, newValue: string, employeeCode: string) =>
 			targetSavedItem.update(Constants.SELECT_ITEM_OPTION_CODE.P, employeeCode)
-	};
-
-	private static readonly COUNTRY_HANDLER_DECIDER: any = {
-		es: new SpainHandler(),
-		pt: new PortugalHandler()
 	};
 
 	static employeeSubject: Subject<Employee>;
@@ -126,9 +119,9 @@ export class InspectionService {
 	}
 
 	static initSavedInspection(savedInspection: any, inspection: InspectionVehicle = this.inspection): void {
-		this.savedInspection = savedInspection.items ?
-			Builder.loadSavedInspection(savedInspection, inspection.items, EmployeeService.employee.code) :
-			Builder.buildSavedInspection(savedInspection, inspection);
+		this.savedInspection = Builder.loadSavedInspection(
+			savedInspection, inspection.items, EmployeeService.employee.code
+		);
 
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, this.savedInspection);
 		console.log('Saved inspection', this.savedInspection);
@@ -189,7 +182,7 @@ export class InspectionService {
 	}
 
 	static findSavedItem(code: string, savedInspection = this.savedInspection): SavedItem {
-		return savedInspection.items.find(i => i.item.code === code);
+		return savedInspection.items.find(i => i.code === code);
 	}
 
 	static findIconColor(code: string, selectIconColor: { [key: string]: string } = this.SELECT_ICON_COLOR): string {
@@ -225,7 +218,7 @@ export class InspectionService {
 
 		/* Tampoco se tienen en cuenta aquellos items ocultos */
 		const savedItems = savedInspection.items.filter(savedItem =>
-			!savedItem.hidden && itemNames.find(name => name === savedItem.item.name)
+			!savedItem.isHidden() && itemNames.find(name => name === savedItem.item.name)
 		);
 		return !(savedItems.find(savedItem => !savedItem.isFilled()) !== undefined);
 	}
@@ -255,14 +248,14 @@ export class InspectionService {
 			itemNames.find(name => name === savedItem.item.name)
 		);
 		savedItems.forEach(savedItem =>
-			(savedItem as SelectSavedItem).update(Constants.SELECT_ITEM_OPTION_CODE.C, employee.code)
+			(savedItem.findData() as SelectSavedItemData).update(Constants.SELECT_ITEM_OPTION_CODE.C, employee.code)
 		);
 	}
 
 	static resetInspection(
 		savedInspection: SavedInspection = this.savedInspection, employee: Employee = EmployeeService.employee
 	): void {
-		savedInspection.items.forEach(item => item.reset(employee.code));
+		savedInspection.items.forEach(item => item.findData().reset(employee.code));
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
@@ -281,7 +274,7 @@ export class InspectionService {
 		this.updateRelations(
 			savedItem, savedItem.findValue(), relations, this.ITEM_RELATION_RESTORE_ACTION
 		).subscribe();
-		savedItem.update(value, employee.code);
+		savedItem.findData(employee.code).update(value, employee.code);
 
 		return this.updateRelations(savedItem, savedItem.findValue(), relations, this.ITEM_RELATION_ACTION).pipe(
 			finalize(() => {
@@ -315,13 +308,13 @@ export class InspectionService {
 
 	static updateTextItem(
 		item: Item,
-		fields: TextSavedItemField[],
+		fields: TextSavedItemDataField[],
 		updateStorage: boolean = true,
 		savedInspection: SavedInspection = this.savedInspection,
 		employee: Employee = EmployeeService.employee
 	): void {
-		const savedItem = savedInspection.items.find(i => i.item.name === item.name) as TextSavedItem;
-		savedItem.update(fields, employee.code);
+		const savedItem = savedInspection.items.find(i => i.item.name === item.name);
+		savedItem.findData(employee.code).update(fields, employee.code);
 		if (updateStorage) {
 			LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 		}
@@ -334,8 +327,8 @@ export class InspectionService {
 		savedInspection: SavedInspection = this.savedInspection,
 		employee: Employee = EmployeeService.employee
 	): void {
-		const savedItem = savedInspection.items.find(i => i.item.name === item.name) as TextAreaSavedItem;
-		savedItem.update(text, employee.code);
+		const savedItem = savedInspection.items.find(i => i.item.name === item.name);
+		savedItem.findData(employee.code).update(text, employee.code);
 		if (updateStorage) {
 			LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 		}
@@ -347,7 +340,7 @@ export class InspectionService {
 		savedInspection: SavedInspection = this.savedInspection,
 		employee: Employee = EmployeeService.employee
 	): void {
-		savedItem.addImageId(imageId, employee.code);
+		savedItem.updateImageId(imageId, employee.code);
 		LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, savedInspection);
 	}
 
@@ -417,6 +410,7 @@ export class InspectionService {
 			InspectionService.order = LocalStorageService.getItem(Constants.LOCAL_STORAGE.ORDER);
 			InspectionService.centre = LocalStorageService.getItem(Constants.LOCAL_STORAGE.CENTRE);
 			InspectionService.selectItemOptions = InspectionService.findSelectItemOptions();
+			InspectionService.relations = LocalStorageService.getItem(Constants.LOCAL_STORAGE.RELATIONS);
 
 			console.log('Order', InspectionService.order);
 			console.log('Centre', InspectionService.centre);
@@ -425,6 +419,7 @@ export class InspectionService {
 			console.log('Employees', EmployeeService.employees);
 			console.log('Selected employee', EmployeeService.employee);
 			console.log('Select item options', InspectionService.selectItemOptions);
+			console.log('Relations', InspectionService.relations);
 			loaded = true;
 		} catch (error) {
 			console.error('Error loading data', error);
@@ -455,7 +450,7 @@ export class InspectionService {
 			catchError(() => of(Constants.DEFAULT_LANGUAGE)),
 			tap((lang: string) => {
 				InspectionService.language = lang;
-				InspectionService.countryHandler = InspectionService.COUNTRY_HANDLER_DECIDER[lang];
+				InspectionService.countryHandler = CountryHandlerType.parse(lang).handler;
 				LocalStorageService.setItem(Constants.LOCAL_STORAGE.LANGUAGE, lang);
 				console.log('Language', lang);
 			})
@@ -494,7 +489,7 @@ export class InspectionService {
 			concatMap(data => {
 				console.log('Received inspection', data[1]);
 				const inspectionVehicle = InspectionService.initInspection(data[1]);
-				const url = Url.savedInspection(
+				const url = Url.savedInspections(
 					order.number,
 					employee.code,
 					inspectionVehicle.inspectionType.code,
@@ -554,7 +549,7 @@ export class InspectionService {
 		const formData = new FormData();
 		formData.append('image', file);
 
-		const url = `${Url.images()}?orderNumber=${order.number}&itemCode=${itemCode}&landscape=${landscape}`;
+		const url = `${Url.images()}/${order.number}/${itemCode}?landscape=${landscape}`;
 		return this.http.post(url, formData).pipe(
 			tap((savedImage: any) => {
 				const savedItem = InspectionService.findSavedItem(itemCode);
@@ -569,24 +564,24 @@ export class InspectionService {
 		);
 	}
 
-	removeImage(imageId: number, itemCode: string): void {
-		const savedItem = InspectionService.findSavedItem(itemCode);
-		InspectionService.updateImageId(savedItem, undefined);
-	}
-
 	saveInspection(
 		savedInspection: SavedInspection,
 		inspection: InspectionVehicle = InspectionService.inspection,
-		employee: Employee = EmployeeService.employee,
+		employeeCode: string = EmployeeService.employee.code,
 		centre: Centre = InspectionService.centre
 	): Observable<any> {
 		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection, inspection.items);
-		body.employeeCode = employee.code;
-		body.saved = dayjs();
 		console.log('Saving inspection', body);
-		return this.http.post(Url.inspection(), body, { headers: { centre: `${centre.code}` } }).pipe(
+		const headers = { headers: { centre: `${centre.code}`, employeeCode } };
+		return this.http.post(Url.savedInspectionsApi(), body, headers).pipe(
 			tap(
-				() => {},
+				(data) => {
+					const receivedSavedInspection = Builder.loadSavedInspection(
+						data, inspection.items, EmployeeService.employee.code
+					);
+					console.log('Received saved inspection', receivedSavedInspection);
+					body.fillSaved(receivedSavedInspection, employeeCode);
+				},
 				(error) => {
 					const saveError = new SaveError(savedInspection, error.status, error.message);
 					this.http.post(Url.saveErrors(), saveError, { headers: { centre: `${centre.code}` } }).subscribe();

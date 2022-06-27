@@ -46,6 +46,8 @@ endpoints:
         enabled: true
         sensitive: false
 
+cron.text-values: '0 0 0 1 1 ?'
+
 slack:
     app:
         notifier:
@@ -70,7 +72,7 @@ hibernate:
 services:
     inspections-management:
         port: ${INSPECTIONS_MANAGEMENT_PORT:8096}
-        url: http://${host.ip}:${services.inspections-management.port}/realTime
+        url: http://localhost:${services.inspections-management.port}/realTime
 
 dataSource:
     dbCreate: validate

@@ -7,12 +7,11 @@ import grails.gorm.annotation.Entity
 import inspections.domains.InspectionVehicle
 import inspections.domains.ItemCategory
 import inspections.domains.ItemRelation
-import inspections.domains.savedItems.SavedItem
-import inspections.domains.savedItems.SelectSavedItem
-import inspections.domains.savedItems.TextAreaSavedItem
-import inspections.domains.savedItems.TextSavedItem
-import inspections.services.data.SavedItemDataService
+import inspections.domains.savedItems.SelectSavedItemData
+import inspections.domains.savedItems.TextAreaSavedItemData
+import inspections.domains.savedItems.TextSavedItemData
 import org.grails.datastore.gorm.GormEntity
+import org.grails.datastore.mapping.core.connections.ConnectionSource
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -63,33 +62,16 @@ class Item implements GormEntity<Item> {
 
 	enum Type {
 
-		TEXT(
-			TextItem,
-			TextSavedItem,
-			{ TextSavedItem existent, TextSavedItem savedItem, SavedItemDataService savedItemDataService ->
-				return savedItemDataService.textSavedItemDataService.update(existent, savedItem.fields)
-			}),
-		SELECT(
-			SelectItem,
-			SelectSavedItem,
-			{ SelectSavedItem existent, SelectSavedItem savedItem, SavedItemDataService savedItemDataService ->
-				return savedItemDataService.selectSavedItemDataService.update(existent.id, savedItem.value)
-			}),
-		TEXT_AREA(
-			TextAreaItem,
-			TextAreaSavedItem,
-			{ TextAreaSavedItem existent, TextAreaSavedItem savedItem, SavedItemDataService savedItemDataService ->
-				return savedItemDataService.textAreaSavedItemDataService.update(existent.id, savedItem.text)
-			})
+		TEXT(TextItem, TextSavedItemData),
+		SELECT(SelectItem, SelectSavedItemData),
+		TEXT_AREA(TextAreaItem, TextAreaSavedItemData)
 
 		Class clazz
-		Class savedItemClazz
-		Closure<SavedItem> updateSavedItem
+		Class savedItemDataClazz
 
-		Type(Class clazz, Class savedItemClazz, Closure<SavedItem> updateSavedItem) {
+		Type(Class clazz, Class savedItemDataClazz) {
 			this.clazz = clazz
-			this.savedItemClazz = savedItemClazz
-			this.updateSavedItem = updateSavedItem
+			this.savedItemDataClazz = savedItemDataClazz
 		}
 
 	}

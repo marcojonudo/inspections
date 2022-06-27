@@ -4,9 +4,12 @@ import groovy.transform.CompileStatic
 import inspections.domains.SavedInspection
 import inspections.services.InspectionService
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Header
 import io.micronaut.http.annotation.PathVariable
+import io.micronaut.http.annotation.Post
 import io.micronaut.http.annotation.QueryValue
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -43,6 +46,24 @@ class SavedInspectionController {
 			orderNumber, employeeCode, inspectionTypeCode, vehicle, numberPlate, orderInspection
 		)
 		return HttpResponse.ok(savedInspection)
+	}
+
+	@Post
+	@Operation(
+		summary = "Guarda una revisión",
+		description = "Guarda una revisión con los items asociados"
+	)
+	@ApiResponse(content = @Content(mediaType = "application/json"))
+	@ApiResponse(
+		responseCode = "201",
+		description = "Revisión creada",
+		content = @Content(schema = @Schema(implementation = SavedInspection))
+	)
+	HttpResponse saveInspection(@Header int centre, @Header String employeeCode, @Body SavedInspection inspection) {
+		SavedInspection savedInspection = inspectionService.saveInspection(
+			inspection, inspection.orderNumber, employeeCode, centre
+		)
+		return savedInspection ? HttpResponse.created(savedInspection) : HttpResponse.serverError()
 	}
 
 }

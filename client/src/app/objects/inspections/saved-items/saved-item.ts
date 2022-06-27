@@ -1,58 +1,89 @@
 import { Item } from '../items/item';
-import { Dayjs } from 'dayjs';
-import * as dayjs from 'dayjs';
+import { CustomImage } from '../custom-image';
+import { ItemType } from '../items/item-type';
+import { SavedItemData } from './saved-item-data';
 
-export abstract class SavedItem {
+export class SavedItem {
 
 	type: string;
 	code: string;
 	item: Item;
-	employeeCode: string;
-	hidden: boolean;
-	imageId: number;
-	filled: Dayjs;
-	restrictive: boolean;
+	data: SavedItemData[];
 
-	protected constructor(item: Item, employeeCode: string, savedItem: any) {
+	constructor(item: Item, employeeCode: string, savedItem: any) {
 		this.item = item;
 		this.type = item.type;
 		this.code = item.code;
-		this.employeeCode = employeeCode;
+		const itemType = ItemType.parse(item.type);
 		if (savedItem) {
-			this.employeeCode = savedItem.employeeCode;
-			this.imageId = savedItem.imageId;
-			this.filled = savedItem.filled ? dayjs(savedItem.filled) : undefined;
-			this.hidden = savedItem.hidden;
-			this.restrictive = savedItem.restrictive;
+			this.data = savedItem.data.map(d => itemType.buildData(d.employeeCode, d, item));
+		} else {
+			this.data = [itemType.buildData(employeeCode, undefined, item)];
 		}
 	}
 
-	abstract findValue(): string;
+	isHidden(): boolean {
+		return this.findData().hidden;
+	}
 
-	abstract isFilled(): boolean;
+	isFilled(): boolean {
+		return this.findData().isFilled();
+	}
 
-	abstract update(value: any, employeeCode: string): void;
+	findLastData(data: SavedItemData[] = this.data): SavedItemData {
+		return data.reduce((prev, current) => (prev.filled > current.filled) ? prev : current);
+	}
 
-	abstract reset(employeeCode: string): void;
+	findData(employeeCode: string = undefined, replicate: boolean = false): SavedItemData {
+		if (employeeCode && this.findLastData().saved) {
+			this.addData(employeeCode, replicate);
+		}
+		return this.findLastData();
+	}
+
+	addData(employeeCode: string, replicate: boolean, item: Item = this.item): void {
+		const itemType = ItemType.parse(item.type);
+		const data = this.replicateData(itemType, item, employeeCode);
+		this.data.push(data);
+	}
+
+	replicateData(itemType: ItemType, item: Item, employeeCode: string): SavedItemData {
+		const lastData = this.findData();
+		const data = itemType.buildData(employeeCode, lastData, item);
+		data.saved = undefined;
+		return data;
+	}
+
+	findValue(): string {
+		return this.findData().findValue();
+	}
+
+	findImageId(): number {
+		return this.findData().imageId;
+	}
+
+	findRestrictive(): boolean {
+		return this.findData().restrictive;
+	}
+
+	findEmployeeCode(): string {
+		return this.findData().employeeCode;
+	}
 
 	updateHidden(employeeCode: string, hidden: boolean): void {
-		this.hidden = hidden;
-		this.reset(employeeCode);
-	}
-
-	updateCommonFields(employeeCode: string): void {
-		this.employeeCode = employeeCode;
-		this.filled = dayjs();
-	}
-
-	addImageId(imageId: number, employeeCode: string): void {
-		this.imageId = imageId;
-		this.updateCommonFields(employeeCode);
+		this.findData().updateHidden(employeeCode, hidden);
 	}
 
 	updateRestrictive(restrictive: boolean, employeeCode: string): void {
-		this.restrictive = restrictive;
-		this.updateCommonFields(employeeCode);
+		this.findData(employeeCode, true).updateRestrictive(restrictive, employeeCode);
+	}
+
+	update(value: any, employeeCode: string): void {
+		this.findData().update(value, employeeCode);
+	}
+
+	updateImageId(imageId: number, employeeCode: string): void {
+		this.findData(employeeCode, true).updateImageId(imageId, employeeCode);
 	}
 
 }

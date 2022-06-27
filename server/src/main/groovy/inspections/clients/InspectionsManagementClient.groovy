@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Client("\${services.inspections-management.url}")
 interface InspectionsManagementClient {
 
-    @Patch("/inspection")
+    @Patch("/inspections")
     Single<Void> notifySavedInspection(@Body SavedInspection savedInspection)
 
 }

@@ -1,19 +1,12 @@
 package inspections.domains
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
+import com.fasterxml.jackson.annotation.JsonInclude
 import grails.gorm.annotation.Entity
 import groovy.transform.TupleConstructor
-import inspections.deserializers.SavedItemsDeserializer
 import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
-import inspections.utils.Constants
 import inspections.utils.Utils
 import org.grails.datastore.gorm.GormEntity
-
-import java.time.LocalDateTime
 
 @Entity
 @TupleConstructor
@@ -22,31 +15,27 @@ class SavedInspection implements GormEntity<SavedInspection> {
 	String inspectionTypeCode
 	String vehicle
 	int orderNumber
-	String employeeCode
 	String numberPlate
 	State state
 	boolean orderInspection
 
-	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
-	@JsonSerialize(using = LocalDateTimeSerializer)
-	LocalDateTime saved
-
-	@JsonDeserialize(using = SavedItemsDeserializer)
+	@JsonInclude
 	Set<SavedItem> items
 
-	static hasMany = [items: SavedItem]
+	static hasMany = [items: SavedItem, data: SavedInspectionData]
 
 	static mapping = {
 		items fetch: 'join'
+		data fetch: 'join'
 	}
 
 	enum State {
 
 		STARTED({ Set<SavedItem> savedItems, List<Item> items ->
-			savedItems.find { Utils.findItem(it.code, items).required && !it.filled } as boolean
+			savedItems.find { Utils.findItem(it.code, items).required && !it.data } as boolean
 		}),
 		FINISHED({ Set<SavedItem> savedItems, List<Item> items ->
-			!savedItems.find { Utils.findItem(it.code, items).required && !it.filled } as boolean
+			!savedItems.find { Utils.findItem(it.code, items).required && !it.data } as boolean
 		})
 
 		final Closure<Boolean> check
@@ -55,6 +44,10 @@ class SavedInspection implements GormEntity<SavedInspection> {
 			this.check = check;
 		}
 
+	}
+
+	SavedInspectionData findData() {
+		return data.max { it.saved }
 	}
 
 	boolean updatedOrder(String type, boolean orderInspection) {

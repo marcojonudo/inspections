@@ -8,10 +8,21 @@ import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
-import inspections.domains.savedItems.TextSavedItem
-import inspections.domains.savedItems.TextSavedItemField
+import inspections.domains.items.TextItem
+import inspections.domains.items.TextItemField
+import inspections.domains.items.TextItemFieldValue
+import inspections.domains.savedItems.SavedItem
+import inspections.domains.savedItems.TextSavedItemData
+import inspections.domains.savedItems.TextSavedItemDataField
 import inspections.pogos.logs.Log
-import inspections.services.data.*
+import inspections.services.data.InspectionVehicleDataService
+import inspections.services.data.ItemDataService
+import inspections.services.data.SavedInspectionDataService
+import inspections.services.data.TextItemDataService
+import inspections.services.data.TextItemFieldValueDataService
+import inspections.services.data.fviberi.CarDataService
+import inspections.services.data.fviberi.CentreDataService
+import inspections.services.data.fviberi.OrderDataService
 import inspections.utils.Builder
 import inspections.utils.Constants
 import inspections.utils.Utils
@@ -37,6 +48,9 @@ class InspectionService {
 	@Inject SavedInspectionDataService savedInspectionDataService
 	@Inject SlackService slackService
 	@Inject InspectionsManagementClient inspectionsManagementClient
+	@Inject ItemDataService itemDataService
+	@Inject TextItemDataService textItemDataService
+	@Inject TextItemFieldValueDataService textItemFieldValueDataService
 
 	/**
 	 * Busca una orden asociada al código corto
@@ -113,12 +127,15 @@ class InspectionService {
 		String numberPlate,
 		boolean orderInspection
 	) {
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, message: Constants.Message.SEARCHING_SAVED_INSPECTION]).toString())
 		SavedInspection savedInspection = savedInspectionDataService.find(orderNumber)
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, existent: savedInspection as boolean, message: Constants.Message.EXISTENT_SAVED_INSPECTION]).toString())
 		/* Si existe revisión y se ha actualizado el tipo de revisión (en lo que respecta a la orden), se actualiza */
 		if (savedInspection) {
 			if (savedInspection.updatedOrder(inspectionTypeCode, orderInspection)) {
+				LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, oldType: savedInspection.inspectionTypeCode, newType: inspectionTypeCode, oldOrderInspection: savedInspection.orderInspection, newOrderInspection: orderInspection, message: Constants.Message.UPDATED_ORDER]).toString())
 				savedInspection = savedInspectionDataService.update(
-					savedInspection.id, inspectionTypeCode, orderInspection
+					savedInspection, inspectionTypeCode, orderInspection, employeeCode
 				)
 			}
 		} else {
@@ -128,6 +145,7 @@ class InspectionService {
 			)
 			savedInspection = savedInspectionDataService.save(builtInspection)
 		}
+		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, existent: savedInspection as boolean, message: Constants.Message.FINISHED_SEARCHING_SAVED_INSPECTION]).toString())
 		return savedInspection
 	}
 
@@ -140,7 +158,7 @@ class InspectionService {
 	 * @return Revisión guardada
 	 */
 	SavedInspection saveInspection(SavedInspection savedInspection, int orderNumber, String employeeCode, int centre) {
-		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVING_INSPECTION]).toString())
+		LOG.info(new Log((Map) [employeeCode: employeeCode, savedInspection: savedInspection, message: Constants.Message.SAVING_INSPECTION]).toString())
 		SavedInspection newSavedInspection = null
 		try {
 			/* Se utiliza un semáforo por número de orden para evitar escrituras simultáneas */
@@ -168,10 +186,11 @@ class InspectionService {
 	 * @param savedInspection Revisión guardada
 	 */
 	void updateItvDate(SavedInspection savedInspection, int centre) {
-		TextSavedItem savedItem = (TextSavedItem) savedInspection.items.find { it.code == Constants.Item.FPITV }
+		SavedItem savedItem = savedInspection.items.find { it.code == Constants.Item.FPITV }
 		/* En una anomalía detectada, podría no haber fecha de ITV */
 		if (savedItem) {
-			List<TextSavedItemField> fields = savedItem.fields.sort { it.order }
+            TextSavedItemData data = (TextSavedItemData) savedItem.data.max { it.saved }
+            List<TextSavedItemDataField> fields = data.fields.sort { it.order }
 			LocalDate day = findItvDate(fields)
 			if (day) {
 				carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
@@ -186,7 +205,7 @@ class InspectionService {
 	 * @param savedItem Item guardado
 	 * @return LocalDate
 	 */
-	static LocalDate findItvDate(List<TextSavedItemField> savedFields) {
+	static LocalDate findItvDate(List<TextSavedItemDataField> savedFields) {
 		LocalDate day = null
 		/* Se guarda la fecha de la ITV si todos los campos necesarios están rellenos */
 		boolean data = savedFields.size() == ITV_FIELDS_SIZE &&
@@ -197,6 +216,28 @@ class InspectionService {
 			} catch (ignore) {}
 		}
 		return day
+	}
+
+	void updateTextValues() {
+		TextItem itvItem = textItemDataService.find(itemDataService.findItemId(Constants.Item.FPITV))
+		List<TextItem> tyreAgeItems = textItemDataService.findAll(
+			itemDataService.findAllItemId(Constants.TYRE_AGE_CODES)
+		)
+		LocalDate today = LocalDate.now()
+		handleTextItemYearValue(itvItem, today.plusYears(5).year)
+		tyreAgeItems.each { handleTextItemYearValue(it, today.year) }
+	}
+
+	List<TextItemFieldValue> handleTextItemYearValue(TextItem item, int refYear) {
+		List<TextItemFieldValue> values = []
+		TextItemField yearField = item.fields.find { it.order == 1 }
+		int maxYear = yearField.values*.value.max { it as int } as int
+		if (maxYear < refYear) {
+			yearField.values.each {
+				values << textItemFieldValueDataService.update(it.id, ((it.value as int) + 1) as String)
+			}
+		}
+		return values
 	}
 
 }

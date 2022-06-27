@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import grails.gorm.annotation.Entity
+import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
+import org.grails.datastore.mapping.core.connections.ConnectionSource
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)

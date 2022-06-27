@@ -17,7 +17,7 @@
 					<div [innerHTML]="findItemName(cat.items[0].item)"></div>
 				</div>
 				<div class="card-content">
-					<div *ngFor="let line of findTextAreaLines(findTextAreaSavedItem(cat.items[0]))" class="highlight">{{line}}</div>
+					<div *ngFor="let line of findTextAreaLines(cat.items[0])" class="highlight">{{line}}</div>
 				</div>
 			</div>
 		</ng-template>
@@ -33,11 +33,11 @@
 				<mat-icon
 					*ngIf="checkItemType(item.type, selectType); else textItemText"
 					class="item-data"
-					[style.color]="findIconColor(findSelectSavedItem(item).value)">
-					{{findSelectIcon(findSelectSavedItem(item))}}
+					[style.color]="findIconColor(item.findValue())">
+					{{findSelectIcon(item)}}
 				</mat-icon>
 				<ng-template #textItemText>
-					<span class="item-text-value">{{findTextSavedItem(item).isFilled() ? findTextSavedItem(item).findValue() : '-'}}</span>
+					<span class="item-text-value">{{item.isFilled() ? item.findValue() : '-'}}</span>
 					<span class="item-unit">{{findTextItemUnit(item)}}</span>
 				</ng-template>
 			</div>

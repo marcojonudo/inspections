@@ -1,14 +1,14 @@
-package inspections.services.data
+package inspections.services.data.fviberi
 
 import grails.gorm.services.Service
 import grails.gorm.transactions.Transactional
-import inspections.domains.fviberi.vehicle.Scooter
+import inspections.domains.fviberi.vehicle.CarInfo
 import inspections.utils.Constants
 
-@Service(Scooter)
+@Service(CarInfo)
 @Transactional(connection = Constants.DataSource.FVIBERI)
-interface ScooterDataService {
+interface CarInfoDataService {
 
-	Scooter find(String serialNumber)
+	CarInfo find(String numberPlate)
 
 }

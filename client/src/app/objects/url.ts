@@ -2,7 +2,11 @@ import { environment } from '../../environments/environment';
 
 export class Url {
 
-	static savedInspection(
+	static savedInspectionsApi(): string {
+		return `${environment.serverUrl}/savedInspections`;
+	}
+
+	static savedInspections(
 		orderNumber: number,
 		employeeCode: string,
 		inspectionTypeCode: string,
@@ -10,7 +14,7 @@ export class Url {
 		numberPlate: string,
 		orderInspection: boolean
 	): string {
-		return `${environment.serverUrl}/savedInspections/${orderNumber}?employeeCode=${employeeCode}&inspectionTypeCode=${inspectionTypeCode}&vehicle=${vehicle}&numberPlate=${numberPlate}&orderInspection=${orderInspection}`;
+		return `${this.savedInspectionsApi()}/${orderNumber}?employeeCode=${employeeCode}&inspectionTypeCode=${inspectionTypeCode}&vehicle=${vehicle}&numberPlate=${numberPlate}&orderInspection=${orderInspection}`;
 	}
 
 	static inspection(orderNumber: number = undefined, vehicleType: string = ''): string {

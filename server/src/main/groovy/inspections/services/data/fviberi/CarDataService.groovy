@@ -1,4 +1,4 @@
-package inspections.services.data
+package inspections.services.data.fviberi
 
 import grails.gorm.services.Query
 import grails.gorm.services.Service
