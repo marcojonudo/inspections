@@ -7,15 +7,12 @@ import inspections.domains.SavedInspection
 import inspections.domains.SavedInspectionData
 import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
-import inspections.domains.savedItems.TextSavedItemDataField
 import inspections.pogos.slack.messages.SlackBlocksMessage
 import inspections.pogos.slack.messages.SlackMessage
-import inspections.pogos.slack.structure.blocks.SlackBlock
-import inspections.pogos.slack.structure.blocks.SlackDividerBlock
-import inspections.pogos.slack.structure.blocks.SlackFieldsBlock
-import inspections.pogos.slack.structure.blocks.SlackTextBlock
+import inspections.pogos.slack.structure.blocks.*
 import inspections.pogos.slack.structure.elements.SlackBaseElem
 import inspections.pogos.slack.structure.elements.SlackMarkdownElem
+import inspections.pogos.slack.structure.elements.SlackPlainTextElem
 
 @CompileStatic
 class Builder {
@@ -65,63 +62,40 @@ class Builder {
 		}
 
 		static List<SlackBlock> buildBaseInfoBlocks(
+			String message,
 			int centre,
 			int orderNumber,
 			String employeeCode,
 			String numberPlate,
 			List<SlackBlock> blocks = []
 		) {
-			blocks << new SlackFieldsBlock([
-				new SlackMarkdownElem(":classical_building: *Centre:* $centre"),
-				new SlackMarkdownElem(":label: *Order:* $orderNumber"),
-			] as List<SlackBaseElem>)
-			blocks << new SlackFieldsBlock([
-				new SlackMarkdownElem(":car: *Number plate:* $numberPlate"),
-				new SlackMarkdownElem(":man-raising-hand: *Employee code:* $employeeCode")
-			] as List<SlackBaseElem>)
+			blocks << new SlackHeaderBlock(new SlackPlainTextElem(message))
+			blocks << new SlackContextBlock([
+				(SlackBaseElem) new SlackMarkdownElem("$centre | $orderNumber | $numberPlate | $employeeCode")
+			])
+			blocks << new SlackDividerBlock()
 			return blocks
 		}
 
-		static SlackMessage buildSavedInspectionMessage(SavedInspection savedInspection, int centre, Exception e) {
+		static SlackMessage buildSavedInspectionErrorMessage(SavedInspection savedInspection, int centre, Exception e) {
 			List<SlackBlock> blocks = buildBaseInfoBlocks(
-				centre,
-				savedInspection.orderNumber,
-				savedInspection.findData().employeeCode,
-				savedInspection.numberPlate,
-				[buildExceptionBlock(e)]
-			)
-			return new SlackBlocksMessage(blocks)
-		}
-
-		static SlackMessage buildItvDateErrorMessage(
-			SavedInspection savedInspection, int centre, List<TextSavedItemDataField> savedFields
-		) {
-			List<SlackBlock> blocks = buildBaseInfoBlocks(
+				Constants.Message.ERROR_SAVING_INSPECTION,
 				centre,
 				savedInspection.orderNumber,
 				savedInspection.findData().employeeCode,
 				savedInspection.numberPlate
 			)
-			blocks << new SlackDividerBlock()
-			blocks << new SlackTextBlock(
-				new SlackMarkdownElem(":pencil: *Message*: $Constants.Message.WRONG_FPITV_FIELD")
-			)
-			TextSavedItemDataField monthField = savedFields.find { it.order == 0 }
-			TextSavedItemDataField yearField = savedFields.find { it.order == 1 }
-			blocks << new SlackFieldsBlock([
-				new SlackMarkdownElem(":date: *Month*: ${monthField ? monthField.text ?: '-' : ''}"),
-				new SlackMarkdownElem(":date: *Year*: ${yearField ? yearField.text ?: '-' : ''}"),
-			] as List<SlackBaseElem>)
+			blocks << buildExceptionBlock(e)
 			return new SlackBlocksMessage(blocks)
 		}
 
 		static SlackMessage buildSaveErrorMessage(SaveError saveError, int centre) {
 			List<SlackBlock> blocks = buildBaseInfoBlocks(
-				centre, saveError.orderNumber, saveError.employeeCode, saveError.numberPlate
-			)
-			blocks << new SlackDividerBlock()
-			blocks << new SlackTextBlock(
-				new SlackMarkdownElem(":pencil: *Message*: $Constants.Message.ERROR_SAVING_INSPECTION")
+				Constants.Message.ERROR_SAVING_INSPECTION,
+				centre,
+				saveError.orderNumber,
+				saveError.employeeCode,
+				saveError.numberPlate
 			)
 			blocks << new SlackFieldsBlock([
 				new SlackMarkdownElem(":1234: *Status code:*\n$saveError.statusCode"),
