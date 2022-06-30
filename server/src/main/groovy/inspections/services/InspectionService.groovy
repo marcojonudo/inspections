@@ -169,14 +169,14 @@ class InspectionService {
 			newSavedInspection = savedInspectionDataService.update(savedInspection, existent)
 			SaveInspectionSemaphore.release(orderNumber)
 
-			updateItvDate(savedInspection, centre)
+			updateItvDate(savedInspection)
 			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
 
 			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVED_INSPECTION]).toString())
 		} catch (all) {
 			all.printStackTrace()
 			LOG.error(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
-			slackService.sendMessage(Builder.Slack.buildSavedInspectionMessage(savedInspection, centre, all))
+			slackService.sendMessage(Builder.Slack.buildSavedInspectionErrorMessage(savedInspection, centre, all))
 		}
 		return newSavedInspection
 	}
@@ -185,7 +185,7 @@ class InspectionService {
 	 * Actualiza la fecha de la próxima ITV en fviberi
 	 * @param savedInspection Revisión guardada
 	 */
-	void updateItvDate(SavedInspection savedInspection, int centre) {
+	void updateItvDate(SavedInspection savedInspection) {
 		SavedItem savedItem = savedInspection.items.find { it.code == Constants.Item.FPITV }
 		/* En una anomalía detectada, podría no haber fecha de ITV */
 		if (savedItem) {
@@ -195,7 +195,8 @@ class InspectionService {
 			if (day) {
 				carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
 			} else {
-				slackService.sendMessage(Builder.Slack.buildItvDateErrorMessage(savedInspection, centre, fields))
+				String value = "${fields.find { it.order == 0 }?.text}/${fields.find { it.order == 1 }?.text}"
+				LOG.error(new Log((Map) [orderNumber: savedInspection.orderNumber, employeeCode: savedInspection.findData().employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, fields: value, message: Constants.Message.WRONG_FPITV_FIELD]).toString())
 			}
 		}
 	}
