@@ -581,6 +581,7 @@ export class InspectionService {
 					);
 					console.log('Received saved inspection', receivedSavedInspection);
 					body.fillSaved(receivedSavedInspection, employeeCode);
+					LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, body);
 				},
 				(error) => {
 					const saveError = new SaveError(savedInspection, error.status, error.message);
