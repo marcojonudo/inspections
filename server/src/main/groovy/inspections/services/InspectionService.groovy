@@ -226,7 +226,7 @@ class InspectionService {
 		)
 		LocalDate today = LocalDate.now()
 		handleTextItemYearValue(itvItem, today.plusYears(5).year)
-		tyreAgeItems.each { handleTextItemYearValue(it, today.year) }
+		tyreAgeItems.each { handleTextItemYearValue(it, "$today.year"[2..-1] as int) }
 	}
 
 	List<TextItemFieldValue> handleTextItemYearValue(TextItem item, int refYear) {

@@ -291,6 +291,39 @@ class InspectionServiceSpec extends Specification {
         values[0].value == refYear as String
     }
 
+    void "test update text item year value tyre age item correct max year"() {
+        given:
+        LocalDate today = LocalDate.now()
+        int refYear = today.year
+        TextItem item = new TextItem(fields: [
+            new TextItemField(order: 1, values: [new TextItemFieldValue(value: "${today.year}"[2..-1])])
+        ])
+
+        when:
+        List<TextItemFieldValue> values = inspectionService.handleTextItemYearValue(item, "$refYear"[2..-1] as int)
+
+        then:
+        !values
+    }
+
+    void "test update text item year value tyre age item wrong max year"() {
+        given:
+        LocalDate today = LocalDate.now()
+        int refYear = today.plusYears(1).year
+        TextItem item = new TextItem(fields: [
+            new TextItemField(order: 1, values: [new TextItemFieldValue(id: 1, value: "${today.year}"[2..-1])])
+        ])
+        textItemFieldValueDataService.update(_, _) >> new TextItemFieldValue(id: 1, value: "$refYear"[2..-1])
+
+        when:
+        List<TextItemFieldValue> values = inspectionService.handleTextItemYearValue(item, "$refYear"[2..-1] as int)
+
+        then:
+        values
+        values.size() == 1
+        values[0].value == "$refYear"[2..-1]
+    }
+
     // endregion
 
 }
