@@ -24,8 +24,6 @@ import { SavedItem } from '../objects/inspections/saved-items/saved-item';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBarService } from './snack-bar.service';
 import { CountryHandler } from '../objects/country-info/country-handler';
-import { SpainHandler } from '../objects/country-info/spain-handler';
-import { PortugalHandler } from '../objects/country-info/portugal-handler';
 import { InspectionHandler } from '../objects/inspection-handler/inspection-handler';
 import { OrderInspectionHandler } from '../objects/inspection-handler/order-inspection-handler';
 import { DetectedFaultsHandler } from '../objects/inspection-handler/detected-faults-handler';

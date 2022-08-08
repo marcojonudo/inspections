@@ -1,6 +1,5 @@
 import { Dayjs } from 'dayjs';
 import * as dayjs from 'dayjs';
-import { CustomImage } from '../custom-image';
 import { Item } from '../items/item';
 
 export abstract class SavedItemData {
