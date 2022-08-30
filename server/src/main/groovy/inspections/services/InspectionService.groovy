@@ -1,7 +1,9 @@
 package inspections.services
 
 import groovy.transform.CompileStatic
+import inspections.clients.DbApiClient
 import inspections.clients.InspectionsManagementClient
+import inspections.clients.OrdersManagementClient
 import inspections.domains.InspectionType
 import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
@@ -12,8 +14,10 @@ import inspections.domains.items.TextItem
 import inspections.domains.items.TextItemField
 import inspections.domains.items.TextItemFieldValue
 import inspections.domains.savedItems.SavedItem
+import inspections.domains.savedItems.SelectSavedItemData
 import inspections.domains.savedItems.TextSavedItemData
 import inspections.domains.savedItems.TextSavedItemDataField
+import inspections.pogos.budgets.*
 import inspections.pogos.logs.Log
 import inspections.services.data.*
 import inspections.services.data.fviberi.CarDataService
@@ -22,6 +26,9 @@ import inspections.services.data.fviberi.OrderDataService
 import inspections.utils.Builder
 import inspections.utils.Constants
 import inspections.utils.Utils
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
+import io.micronaut.http.client.exceptions.HttpClientResponseException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -38,6 +45,7 @@ class InspectionService {
 	private static final Logger LOG = LoggerFactory.getLogger(InspectionService)
 
 	private static final int ITV_FIELDS_SIZE = 2
+	private static final int TYRE_MEASUREMENT_FIELDS_SIZE = 5
 
 	@Inject OrderDataService orderDataService
 	@Inject CentreDataService centreDataService
@@ -49,6 +57,8 @@ class InspectionService {
 	@Inject ItemDataService itemDataService
 	@Inject TextItemDataService textItemDataService
 	@Inject TextItemFieldValueDataService textItemFieldValueDataService
+	@Inject OrdersManagementClient ordersManagementClient
+	@Inject DbApiClient dbApiClient
 
 	/**
 	 * Busca una orden asociada al código corto
@@ -167,7 +177,8 @@ class InspectionService {
 			LOG.info(new Log((Map) [message: Constants.Message.SAVE_INSPECTION_DURATION, orderNumber: orderNumber, duration: ChronoUnit.MILLIS.between(refTime, LocalTime.now())]).toString())
 
 			updateItvDate(savedInspection)
-			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
+			handleBudgetCreation(savedInspection)
+//			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
 
 			LOG.info(new Log((Map) [message: Constants.Message.SAVED_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection]).toString())
 		} catch (all) {
@@ -206,7 +217,7 @@ class InspectionService {
 				carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
 			} else {
 				String value = "${fields.find { it.order == 0 }?.text}/${fields.find { it.order == 1 }?.text}"
-				LOG.error(new Log((Map) [message: Constants.Message.WRONG_FPITV_FIELD, orderNumber: savedInspection.orderNumber, employeeCode: savedInspection.findData().employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, fields: value]).toString())
+				LOG.info(new Log((Map) [message: Constants.Message.WRONG_FPITV_FIELD, orderNumber: savedInspection.orderNumber, employeeCode: savedInspection.findData().employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, fields: value]).toString())
 			}
 		}
 	}
@@ -229,6 +240,148 @@ class InspectionService {
 		return day
 	}
 
+	/**
+	 * Gestiona la creación de un presupuesto de neumáticos
+	 * @param savedInspection Revisión guardada
+	 * @return Lista de códigos de artículo
+	 */
+	Budget handleBudgetCreation(SavedInspection savedInspection) {
+		/* Se comprueba que en la revisión haya información necesaria para crear el presupuesto */
+		BudgetData budgetData = findBudgetFields(savedInspection)
+		if (!budgetData) { return null }
+
+		/* Se buscan los códigos de artículo a presupuestar */
+		Integer budgetArticle = findBudgetArticle(budgetData.tyreData, budgetData.units, savedInspection.orderNumber)
+		if (!budgetArticle) { return null }
+
+		/* Se comprueba que no exista otro presupuesto para esos mismos artículos en BD */
+		boolean create = checkCreateBudget(savedInspection.orderNumber, budgetArticle)
+		return create ? createBudget(budgetArticle, savedInspection.orderNumber, budgetData.units) : null
+	}
+
+	/**
+	 * Obtiene la información de revisión necesaria para crear un presupuesto
+	 * @param savedInspection Revisión guardada
+	 * @return Información de revisión
+	 */
+	static BudgetData findBudgetFields(SavedInspection savedInspection) {
+		/* Se comprueba que exista valor para el item de la medida del neumático */
+		TyreMeasurementData tyreData = findTyreMeasurementData(
+			savedInspection.items.find { it.code == Constants.Item.PN }
+		)
+		if (!tyreData) {
+			LOG.error(new Log((Map) [orderNumber: savedInspection.orderNumber, employeeCode: savedInspection.findData().employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.INCOMPLETE_FIELDS]).toString())
+			return null
+		}
+
+		/* Se comprueba si hay algún item de neumático en mal estado */
+		Set<SavedItem> wrongTyreItems = findTyreWrongItems(savedInspection.items)
+		if (!wrongTyreItems) {
+			LOG.info(new Log((Map) [orderNumber: savedInspection.orderNumber, employeeCode: savedInspection.findData().employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.CORRECT_TYRE_ITEMS]).toString())
+			return null
+		}
+
+		float units = findTyreUnits(wrongTyreItems)
+		return new BudgetData(tyreData, units)
+	}
+
+	/**
+	 * Filtra los items de neumático en mal estado
+	 * @param savedItems Items guardados
+	 * @param tyreCodes Códigos de neumáticos
+	 * @return Lista de items de neumáticos en mal estado
+	 */
+	static Set<SavedItem> findTyreWrongItems(
+		Set<SavedItem> savedItems, List<String> tyreCodes = Constants.TYRE_STATE_CODES
+	) {
+		return savedItems
+			.findAll { it.code in tyreCodes }
+			.findAll {
+				SelectSavedItemData data = (SelectSavedItemData) it.findData()
+				return data.value != Constants.PENDING_SELECT_OPTION && !data.isCorrect()
+			}
+	}
+
+	/**
+	 * Obtiene, si todos los campos están rellenos, los campos de la medida del neumático
+	 * @param savedItem Item guardado
+	 * @param fieldsSize Número de campos del item
+	 * @return Campos del item
+	 */
+	static TyreMeasurementData findTyreMeasurementData(
+		SavedItem savedItem, int fieldsSize = TYRE_MEASUREMENT_FIELDS_SIZE
+	) {
+		Set<TextSavedItemDataField> fields = ((TextSavedItemData) savedItem.findData()).fields
+
+		/* Si hay 5 campos con texto, la información está completa y correcta, por lo que se puede hacer pto */
+		return fields.size() == fieldsSize && !fields.find { !it.text } ? new TyreMeasurementData(
+			fields.find { it.order == 0 }.text,
+			fields.find { it.order == 1 }.text,
+			fields.find { it.order == 2 }.text,
+			fields.find { it.order == 3 }.text,
+			fields.find { it.order == 4 }.text
+		) : null
+	}
+
+	/**
+	 * Obtiene el código de artículo a presupuestar
+	 * @param tyreData Medidas del neumático
+	 * @param units Unidades necesarias
+	 * @param orderNumber Número de orden
+	 * @return Código de artículo a presupuestar
+	 */
+	Integer findBudgetArticle(TyreMeasurementData tyreData, float units, int orderNumber) {
+		Integer budgetArticle = null
+		try {
+			HttpResponse<Integer> tyreArticlesResponse = ordersManagementClient.findTyreBudget(
+				tyreData.measurement, tyreData.serialNumber, tyreData.tyre, tyreData.load, tyreData.speed, units
+			)
+			budgetArticle = tyreArticlesResponse.body()
+			LOG.info(new Log((Map) [orderNumber: orderNumber, budgetArticle: budgetArticle, message: Constants.Message.TYRE_BUDGET_ARTICLE_CODES]).toString())
+		} catch (all) {
+			all.printStackTrace()
+			LOG.error(new Log((Map) [orderNumber: orderNumber, exception: all.class.simpleName, exceptionMessage: all.message, message: Constants.Message.WRONG_ORDERS_MANAGEMENT_REQUEST]).toString())
+		}
+		return budgetArticle
+	}
+
+	boolean checkCreateBudget(int orderNumber, Integer articleCode) {
+		boolean create = false
+		try {
+			Budget existent = dbApiClient.findBudget(orderNumber)
+			// TODO Comprobar estado?
+			create = existent ? !existent.lines.find { BudgetLine l -> l.article.code == articleCode } : true
+			LOG.info(new Log((Map) [orderNumber: orderNumber, existentBudget: existent, message: Constants.Message.ALREADY_EXISTENT_BUDGET]).toString())
+		} catch (all) {
+			if (!(all instanceof HttpClientResponseException) ||
+					(all as HttpClientResponseException).status != HttpStatus.NOT_FOUND) {
+				all.printStackTrace()
+				LOG.error(new Log((Map) [orderNumber: orderNumber, message: Constants.Message.ERROR_REQUESTING_BUDGET]).toString())
+			}
+		}
+		return create
+	}
+
+	/**
+	 * Calcula las unidades de neumáticos a presupuestar
+	 * @param tyreSavedItems Lista de items de neumáticos
+	 * @param frontTyreCodes Códigos de items de neumáticos frontales
+	 * @param backTyreCodes Códigos de items de neumáticos traseros
+	 * @return Unidades a presupuestar
+	 */
+	static float findTyreUnits(
+		Set<SavedItem> tyreSavedItems,
+		List<String> frontTyreCodes = Constants.FRONT_TYRE_CODES,
+		List<String> backTyreCodes = Constants.BACK_TYRE_CODES
+	) {
+		boolean frontTyres = tyreSavedItems.find { SavedItem item -> item.code in frontTyreCodes }
+		boolean backTyres = tyreSavedItems.find { SavedItem item -> item.code in backTyreCodes }
+		return (frontTyres ? 2 : 0) + (backTyres ? 2 : 0)
+	}
+
+	/**
+	 * Actualiza los valores por defecto de items de texto en función del año actual
+	 */
 	void updateTextValues() {
 		TextItem itvItem = textItemDataService.find(itemDataService.findItemId(Constants.Item.FPITV))
 		List<TextItem> tyreAgeItems = textItemDataService.findAll(
@@ -239,6 +392,27 @@ class InspectionService {
 		tyreAgeItems.each { handleTextItemYearValue(it, "$today.year"[2..-1] as int) }
 	}
 
+	Budget createBudget(Integer budgetArticle, int orderNumber, float units) {
+		Budget budget = null
+		try {
+			HttpResponse response = ordersManagementClient.createBudget(
+				[new Article(code: budgetArticle, units: units)], orderNumber
+			)
+			budget = response.body()
+			LOG.info(new Log((Map) [orderNumber: orderNumber, budget: budget.number, message: Constants.Message.CREATED_BUDGET]).toString())
+		} catch (all) {
+			all.printStackTrace()
+			LOG.error(new Log((Map) [orderNumber: orderNumber, exception: all.class.simpleName, exceptionMessage: all.message, message: Constants.Message.WRONG_CREATE_BUDGET_REQUEST]).toString())
+		}
+		return budget
+	}
+
+	/**
+	 * Actualiza los valores por defecto de un item de texto en función del año de referencia
+	 * @param item Item de texto
+	 * @param refYear Año de referencia
+	 * @return Lista de valores actualizados
+	 */
 	List<TextItemFieldValue> handleTextItemYearValue(TextItem item, int refYear) {
 		List<TextItemFieldValue> values = []
 		TextItemField yearField = item.fields.find { it.order == 1 }

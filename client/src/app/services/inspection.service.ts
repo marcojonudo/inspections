@@ -35,6 +35,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { VersionService } from './version.service';
 import { SaveError } from '../objects/save-error';
 import { CountryHandlerType } from '../objects/country-info/country-handler-type';
+import { TextSavedItemData } from '../objects/inspections/saved-items/text-saved-item-data';
+import { TextItem } from '../objects/inspections/items/text-item';
+import { TextItemField } from '../objects/inspections/items/text-item-field';
 
 @Injectable({
 	providedIn: 'root'
@@ -573,6 +576,11 @@ export class InspectionService {
 		savedInspection.addData(employeeCode);
 		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection, inspection.items);
 		console.log('Saving inspection', body);
+		// const tyreMeasurementItem = body.items.find(i => i.code === Constants.TYRE_MEASUREMENT_ITEM_CODE);
+		// const pendingFields = this.findTyreMeasurementPendingFields(tyreMeasurementItem);
+		// if (pendingFields.length) {
+		// 	this.snackBarService.open(Constants.MESSAGE_CODE.SAVED_INSPECTION);
+		// }
 		const headers = { headers: { centre: `${centre.code}`, employeeCode } };
 		return this.http.post(Url.savedInspectionsApi(), body, headers).pipe(
 			tap(
@@ -590,6 +598,13 @@ export class InspectionService {
 			)
 		);
 	}
+
+	// findTyreMeasurementPendingFields(savedItem: SavedItem): TextItemField[] {
+	// 	const savedFields = (savedItem.findData() as TextSavedItemData).fields;
+	// 	return (savedItem.item as TextItem).fields.filter(f =>
+	// 		savedFields.find(savedField => savedField.order === f.order && savedField.isEmpty()) !== undefined
+	// 	);
+	// }
 
 	handleUpdatedVersion(): Observable<string> {
 		return this.versionService.findNewVersion().pipe(
