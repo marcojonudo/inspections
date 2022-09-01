@@ -14,6 +14,6 @@ import javax.inject.Singleton
 interface DbApiClient {
 
     @Get("/budgets")
-    Budget findBudget(@QueryValue int orderNumber)
+    List<Budget> findBudgets(@QueryValue int orderNumber)
 
 }

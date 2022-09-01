@@ -339,7 +339,6 @@ class InspectionService {
 			budgetArticle = tyreArticlesResponse.body()
 			LOG.info(new Log((Map) [orderNumber: orderNumber, budgetArticle: budgetArticle, message: Constants.Message.TYRE_BUDGET_ARTICLE_CODES]).toString())
 		} catch (all) {
-			all.printStackTrace()
 			LOG.error(new Log((Map) [orderNumber: orderNumber, exception: all.class.simpleName, exceptionMessage: all.message, message: Constants.Message.WRONG_ORDERS_MANAGEMENT_REQUEST]).toString())
 		}
 		return budgetArticle
@@ -348,9 +347,11 @@ class InspectionService {
 	boolean checkCreateBudget(int orderNumber, Integer articleCode) {
 		boolean create = false
 		try {
-			Budget existent = dbApiClient.findBudget(orderNumber)
+			List<Budget> existent = dbApiClient.findBudgets(orderNumber)
 			// TODO Comprobar estado?
-			create = existent ? !existent.lines.find { BudgetLine l -> l.article.code == articleCode } : true
+			create = existent ?
+				!existent.find { it.lines.find { BudgetLine l -> l.article.code == articleCode } } :
+				true
 			LOG.info(new Log((Map) [orderNumber: orderNumber, existentBudget: existent, message: Constants.Message.ALREADY_EXISTENT_BUDGET]).toString())
 		} catch (all) {
 			if (!(all instanceof HttpClientResponseException) ||
@@ -396,7 +397,7 @@ class InspectionService {
 		Budget budget = null
 		try {
 			HttpResponse response = ordersManagementClient.createBudget(
-				[new Article(code: budgetArticle, units: units)], orderNumber
+				new Article(code: budgetArticle, units: units), orderNumber
 			)
 			budget = response.body()
 			LOG.info(new Log((Map) [orderNumber: orderNumber, budget: budget.number, message: Constants.Message.CREATED_BUDGET]).toString())

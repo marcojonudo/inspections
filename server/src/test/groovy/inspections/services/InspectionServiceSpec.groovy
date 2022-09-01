@@ -658,7 +658,7 @@ class InspectionServiceSpec extends Specification {
     void "test check create budget error requesting budget"() {
         given:
         int orderNumber = 1
-        dbApiClient.findBudget(orderNumber) >> { throw new Exception("Error!") }
+        dbApiClient.findBudgets(orderNumber) >> { throw new Exception("Error!") }
 
         when:
         boolean create = inspectionService.checkCreateBudget(orderNumber, 1)
@@ -670,10 +670,33 @@ class InspectionServiceSpec extends Specification {
     void "test check create budget not found budget"() {
         given:
         int orderNumber = 1
-        dbApiClient.findBudget(orderNumber) >> { throw new HttpClientResponseException("", HttpResponse.notFound()) }
+        dbApiClient.findBudgets(orderNumber) >> { throw new HttpClientResponseException("", HttpResponse.notFound()) }
 
         when:
         boolean create = inspectionService.checkCreateBudget(orderNumber, 1)
+
+        then:
+        !create
+    }
+
+    void "test check create budget found budget already created budget"() {
+        given:
+        int orderNumber = 1
+        Integer articleCode = 1
+        dbApiClient.findBudgets(orderNumber) >> [
+            new Budget(1, LocalDateTime.now(), [
+                new BudgetLine(article: new Article(code: 3)), new BudgetLine(article: new Article(code: 4))
+            ]),
+            new Budget(2, LocalDateTime.now(), [
+                new BudgetLine(article: new Article(code: 1)), new BudgetLine(article: new Article(code: 4))
+            ]),
+            new Budget(3, LocalDateTime.now(), [
+                new BudgetLine(article: new Article(code: 4)), new BudgetLine(article: new Article(code: 4))
+            ])
+        ]
+
+        when:
+        boolean create = inspectionService.checkCreateBudget(orderNumber, articleCode)
 
         then:
         !create
@@ -683,10 +706,17 @@ class InspectionServiceSpec extends Specification {
         given:
         int orderNumber = 1
         Integer articleCode = 1
-        dbApiClient.findBudget(orderNumber) >> new Budget(
-            1, LocalDateTime.now(), [
-            new BudgetLine(article: new Article(code: 3)), new BudgetLine(article: new Article(code: 4))
-        ])
+        dbApiClient.findBudgets(orderNumber) >> [
+            new Budget(1, LocalDateTime.now(), [
+                new BudgetLine(article: new Article(code: 3)), new BudgetLine(article: new Article(code: 4))
+            ]),
+            new Budget(2, LocalDateTime.now(), [
+                new BudgetLine(article: new Article(code: 4)), new BudgetLine(article: new Article(code: 4))
+            ]),
+            new Budget(3, LocalDateTime.now(), [
+                new BudgetLine(article: new Article(code: 5)), new BudgetLine(article: new Article(code: 4))
+            ])
+        ]
 
         when:
         boolean create = inspectionService.checkCreateBudget(orderNumber, articleCode)

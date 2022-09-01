@@ -576,11 +576,6 @@ export class InspectionService {
 		savedInspection.addData(employeeCode);
 		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection, inspection.items);
 		console.log('Saving inspection', body);
-		// const tyreMeasurementItem = body.items.find(i => i.code === Constants.TYRE_MEASUREMENT_ITEM_CODE);
-		// const pendingFields = this.findTyreMeasurementPendingFields(tyreMeasurementItem);
-		// if (pendingFields.length) {
-		// 	this.snackBarService.open(Constants.MESSAGE_CODE.SAVED_INSPECTION);
-		// }
 		const headers = { headers: { centre: `${centre.code}`, employeeCode } };
 		return this.http.post(Url.savedInspectionsApi(), body, headers).pipe(
 			tap(

@@ -28,6 +28,6 @@ interface OrdersManagementClient {
     )
 
     @Post("/budgets")
-    HttpResponse<Budget> createBudget(@Body List<Article> articles, @QueryValue int orderNumber)
+    HttpResponse<Budget> createBudget(@Body Article article, @QueryValue int orderNumber)
 
 }
