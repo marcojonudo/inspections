@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import javax.inject.Singleton
 import java.time.LocalDate
+import java.util.concurrent.CompletableFuture
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
@@ -177,8 +178,10 @@ class InspectionService {
 			LOG.info(new Log((Map) [message: Constants.Message.SAVE_INSPECTION_DURATION, orderNumber: orderNumber, duration: ChronoUnit.MILLIS.between(refTime, LocalTime.now())]).toString())
 
 			updateItvDate(savedInspection)
-			handleBudgetCreation(savedInspection)
-//			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
+			CompletableFuture.runAsync({
+				handleBudgetCreation(savedInspection)
+			})
+			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
 
 			LOG.info(new Log((Map) [message: Constants.Message.SAVED_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection]).toString())
 		} catch (all) {
@@ -251,12 +254,12 @@ class InspectionService {
 		if (!budgetData) { return null }
 
 		/* Se buscan los códigos de artículo a presupuestar */
-		Integer budgetArticle = findBudgetArticle(budgetData.tyreData, budgetData.units, savedInspection.orderNumber)
-		if (!budgetArticle) { return null }
+		List<Article> budgetArticles = findBudgetArticles(budgetData.tyreData, budgetData.units, savedInspection.orderNumber)
+		if (!budgetArticles) { return null }
 
 		/* Se comprueba que no exista otro presupuesto para esos mismos artículos en BD */
-		boolean create = checkCreateBudget(savedInspection.orderNumber, budgetArticle)
-		return create ? createBudget(budgetArticle, savedInspection.orderNumber, budgetData.units) : null
+		boolean create = checkCreateBudget(savedInspection.orderNumber, budgetArticles.code)
+		return create ? createBudget(budgetArticles, savedInspection.orderNumber, budgetData.units) : null
 	}
 
 	/**
@@ -330,27 +333,26 @@ class InspectionService {
 	 * @param orderNumber Número de orden
 	 * @return Código de artículo a presupuestar
 	 */
-	Integer findBudgetArticle(TyreMeasurementData tyreData, float units, int orderNumber) {
-		Integer budgetArticle = null
+	List<Article> findBudgetArticles(TyreMeasurementData tyreData, float units, int orderNumber) {
+		List<Article> budgetArticles = null
 		try {
-			HttpResponse<Integer> tyreArticlesResponse = ordersManagementClient.findTyreBudget(
+			HttpResponse<List<Article>> tyreArticlesResponse = ordersManagementClient.findTyreBudget(
 				tyreData.measurement, tyreData.serialNumber, tyreData.tyre, tyreData.load, tyreData.speed, units
 			)
-			budgetArticle = tyreArticlesResponse.body()
-			LOG.info(new Log((Map) [orderNumber: orderNumber, budgetArticle: budgetArticle, message: Constants.Message.TYRE_BUDGET_ARTICLE_CODES]).toString())
+			budgetArticles = tyreArticlesResponse.body()
+			LOG.info(new Log((Map) [orderNumber: orderNumber, budgetArticles: budgetArticles.code, message: Constants.Message.TYRE_BUDGET_ARTICLE_CODES]).toString())
 		} catch (all) {
 			LOG.error(new Log((Map) [orderNumber: orderNumber, exception: all.class.simpleName, exceptionMessage: all.message, message: Constants.Message.WRONG_ORDERS_MANAGEMENT_REQUEST]).toString())
 		}
-		return budgetArticle
+		return budgetArticles
 	}
 
-	boolean checkCreateBudget(int orderNumber, Integer articleCode) {
+	boolean checkCreateBudget(int orderNumber, List<Integer> articleCodes) {
 		boolean create = false
 		try {
 			List<Budget> existent = dbApiClient.findBudgets(orderNumber)
-			// TODO Comprobar estado?
 			create = existent ?
-				!existent.find { it.lines.find { BudgetLine l -> l.article.code == articleCode } } :
+				!existent.find { it.lines.find { BudgetLine l -> l.article.code in articleCodes } } :
 				true
 			LOG.info(new Log((Map) [orderNumber: orderNumber, existentBudget: existent, message: Constants.Message.ALREADY_EXISTENT_BUDGET]).toString())
 		} catch (all) {
@@ -393,11 +395,11 @@ class InspectionService {
 		tyreAgeItems.each { handleTextItemYearValue(it, "$today.year"[2..-1] as int) }
 	}
 
-	Budget createBudget(Integer budgetArticle, int orderNumber, float units) {
+	Budget createBudget(List<Article> budgetArticles, int orderNumber, float units) {
 		Budget budget = null
 		try {
 			HttpResponse response = ordersManagementClient.createBudget(
-				new Article(code: budgetArticle, units: units), orderNumber
+				budgetArticles.collect { it.clone(units) }, orderNumber
 			)
 			budget = response.body()
 			LOG.info(new Log((Map) [orderNumber: orderNumber, budget: budget.number, message: Constants.Message.CREATED_BUDGET]).toString())

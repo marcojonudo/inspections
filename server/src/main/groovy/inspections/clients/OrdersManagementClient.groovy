@@ -18,7 +18,7 @@ import javax.inject.Singleton
 interface OrdersManagementClient {
 
     @Get("/budgets/tyres")
-    HttpResponse<Integer> findTyreBudget(
+    HttpResponse<List<Article>> findTyreBudget(
         @QueryValue String measurement,
         @QueryValue String serialNumber,
         @QueryValue String tyre,
@@ -27,7 +27,7 @@ interface OrdersManagementClient {
         @QueryValue float units
     )
 
-    @Post("/budgets")
-    HttpResponse<Budget> createBudget(@Body Article article, @QueryValue int orderNumber)
+    @Post("/budgets/tyres")
+    HttpResponse<Budget> createBudget(@Body List<Article> articles, @QueryValue int orderNumber)
 
 }

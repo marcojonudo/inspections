@@ -632,23 +632,26 @@ class InspectionServiceSpec extends Specification {
         }
 
         when:
-        Integer budgetArticle = inspectionService.findBudgetArticle(tyreData, 1, 1)
+        List<Article> budgetArticles = inspectionService.findBudgetArticles(tyreData, 1, 1)
 
         then:
-        !budgetArticle
+        !budgetArticles
 }
 
     void "test find budget article successful request"() {
         given:
         TyreMeasurementData tyreData = new TyreMeasurementData("A", "B", "C", "D", "E")
-        ordersManagementClient.findTyreBudget("A", "B", "C", "D", "E", 1) >> HttpResponse.ok(1)
+        ordersManagementClient.findTyreBudget("A", "B", "C", "D", "E", 1) >>
+            HttpResponse.ok([new Article(code: 1), new Article(code: 2)])
 
         when:
-        Integer budgetArticle = inspectionService.findBudgetArticle(tyreData, 1, 1)
+        List<Article> budgetArticles = inspectionService.findBudgetArticles(tyreData, 1, 1)
 
         then:
-        budgetArticle
-        budgetArticle == 1
+        budgetArticles
+        budgetArticles.size() == 2
+        budgetArticles[0].code == 1
+        budgetArticles[1].code == 2
     }
 
     // endregion
@@ -661,7 +664,7 @@ class InspectionServiceSpec extends Specification {
         dbApiClient.findBudgets(orderNumber) >> { throw new Exception("Error!") }
 
         when:
-        boolean create = inspectionService.checkCreateBudget(orderNumber, 1)
+        boolean create = inspectionService.checkCreateBudget(orderNumber, [])
 
         then:
         !create
@@ -673,7 +676,7 @@ class InspectionServiceSpec extends Specification {
         dbApiClient.findBudgets(orderNumber) >> { throw new HttpClientResponseException("", HttpResponse.notFound()) }
 
         when:
-        boolean create = inspectionService.checkCreateBudget(orderNumber, 1)
+        boolean create = inspectionService.checkCreateBudget(orderNumber, [])
 
         then:
         !create
@@ -682,7 +685,7 @@ class InspectionServiceSpec extends Specification {
     void "test check create budget found budget already created budget"() {
         given:
         int orderNumber = 1
-        Integer articleCode = 1
+        List<Article> budgetArticles = [new Article(code: 1)]
         dbApiClient.findBudgets(orderNumber) >> [
             new Budget(1, LocalDateTime.now(), [
                 new BudgetLine(article: new Article(code: 3)), new BudgetLine(article: new Article(code: 4))
@@ -696,7 +699,7 @@ class InspectionServiceSpec extends Specification {
         ]
 
         when:
-        boolean create = inspectionService.checkCreateBudget(orderNumber, articleCode)
+        boolean create = inspectionService.checkCreateBudget(orderNumber, budgetArticles.code)
 
         then:
         !create
@@ -705,7 +708,7 @@ class InspectionServiceSpec extends Specification {
     void "test check create budget found budget with different article codes"() {
         given:
         int orderNumber = 1
-        Integer articleCode = 1
+        List<Article> budgetArticles = [new Article(code: 1)]
         dbApiClient.findBudgets(orderNumber) >> [
             new Budget(1, LocalDateTime.now(), [
                 new BudgetLine(article: new Article(code: 3)), new BudgetLine(article: new Article(code: 4))
@@ -719,7 +722,7 @@ class InspectionServiceSpec extends Specification {
         ]
 
         when:
-        boolean create = inspectionService.checkCreateBudget(orderNumber, articleCode)
+        boolean create = inspectionService.checkCreateBudget(orderNumber, budgetArticles.code)
 
         then:
         create

@@ -10,4 +10,8 @@ class Article {
 	String name
 	Float units
 
+	Article clone(float units) {
+		return new Article(code: code, name: name, units: units)
+	}
+
 }

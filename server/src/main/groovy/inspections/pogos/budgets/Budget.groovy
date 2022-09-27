@@ -2,6 +2,8 @@ package inspections.pogos.budgets
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
 import inspections.deserializers.CustomLocalDateTimeDeserializer
@@ -17,6 +19,7 @@ class Budget {
 
 	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
 	@JsonDeserialize(using = CustomLocalDateTimeDeserializer)
+	@JsonSerialize(using = LocalDateTimeSerializer)
 	LocalDateTime date
 
 	List<BudgetLine> lines
