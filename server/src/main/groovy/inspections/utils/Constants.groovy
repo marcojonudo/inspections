@@ -12,7 +12,6 @@ class Constants {
 
         static final String FVIBERI = "fviberi"
         static final String SCHEDULES = "schedules"
-        static final String HESTIA_INSPECTION = "hestia-inspection"
 
     }
 
@@ -36,6 +35,9 @@ class Constants {
         static final String FINISHED_SEARCHING_INSPECTION = "Finished searching inspection!"
         static final String SEARCHING_SAVED_INSPECTION = "Searching saved inspection"
         static final String EXISTENT_SAVED_INSPECTION = "Existent saved inspection"
+        static final String EXISTENT_INSPECTION_SAVED = "Existent inspection saved values"
+        static final String NEW_DATA_SAVED = "New inspection data saved value"
+        static final String ADDING_DATA_ITEM = "Adding data item"
         static final String UPDATED_ORDER = "Updated order!"
         static final String FINISHED_SEARCHING_SAVED_INSPECTION = "Finished searching saved inspection!"
         static final String SAVING_INSPECTION = "Saving inspection"

@@ -5,10 +5,12 @@ export class SavedInspectionData {
 
 	employeeCode: string;
 	saved: Dayjs;
+	reason: string;
 
-	constructor(employeeCode: string, saved: any = undefined) {
+	constructor(employeeCode: string, reason: string, saved: Dayjs = undefined) {
 		this.employeeCode = employeeCode;
-		this.saved = saved ? dayjs(saved) : undefined;
+		this.saved = saved ? saved : dayjs();
+		this.reason = reason;
 	}
 
 }

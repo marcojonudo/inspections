@@ -1,5 +1,4 @@
 import { Item } from '../items/item';
-import { CustomImage } from '../custom-image';
 import { ItemType } from '../items/item-type';
 import { SavedItemData } from './saved-item-data';
 
@@ -31,17 +30,24 @@ export class SavedItem {
 	}
 
 	findLastData(data: SavedItemData[] = this.data): SavedItemData {
-		return data.reduce((prev, current) => !current.filled || (prev.filled > current.filled) ? prev : current);
+		const savedData = data.filter(d => d.saved);
+		/* Si todos los elementos tienen saved, se obtiene en último que se haya guardado (y por tanto, con el valor más
+		 * reciente). Si no, se obtiene aquel que no tenga saved (y por tanto, no se haya guardado aún) */
+		return savedData.length === data.length ?
+			data.reduce((d1, d2) => d1.saved > d2.saved ? d1 : d2) :
+			data.find(d => !d.saved);
 	}
 
-	findData(employeeCode: string = undefined, replicate: boolean = false): SavedItemData {
+	findData(employeeCode: string = undefined): SavedItemData {
+		/* Si hay código de empleado, y los últimos datos ya están guardados, significa que se debe crear un registro
+		 * nuevo para el item */
 		if (employeeCode && this.findLastData().saved) {
-			this.addData(employeeCode, replicate);
+			this.addData(employeeCode);
 		}
 		return this.findLastData();
 	}
 
-	addData(employeeCode: string, replicate: boolean, item: Item = this.item): void {
+	addData(employeeCode: string, item: Item = this.item): void {
 		const itemType = ItemType.parse(item.type);
 		const data = this.replicateData(itemType, item, employeeCode);
 		this.data.push(data);
@@ -75,7 +81,7 @@ export class SavedItem {
 	}
 
 	updateRestrictive(restrictive: boolean, employeeCode: string): void {
-		this.findData(employeeCode, true).updateRestrictive(restrictive, employeeCode);
+		this.findData(employeeCode).updateRestrictive(restrictive, employeeCode);
 	}
 
 	update(value: any, employeeCode: string): void {
@@ -83,7 +89,7 @@ export class SavedItem {
 	}
 
 	updateImageId(imageId: number, employeeCode: string): void {
-		this.findData(employeeCode, true).updateImageId(imageId, employeeCode);
+		this.findData(employeeCode).updateImageId(imageId, employeeCode);
 	}
 
 }

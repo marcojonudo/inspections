@@ -246,7 +246,9 @@ export class InspectionService {
 			itemNames.find(name => name === savedItem.item.name)
 		);
 		savedItems.forEach(savedItem =>
-			(savedItem.findData() as SelectSavedItemData).update(Constants.SELECT_ITEM_OPTION_CODE.C, employee.code)
+			(savedItem.findData(employee.code) as SelectSavedItemData).update(
+				Constants.SELECT_ITEM_OPTION_CODE.C, employee.code
+			)
 		);
 	}
 
@@ -568,20 +570,20 @@ export class InspectionService {
 		employeeCode: string = EmployeeService.employee.code,
 		centre: Centre = InspectionService.centre
 	): Observable<any> {
+		savedInspection.addData(employeeCode);
 		const body = InspectionService.inspectionHandler.findSavedInspection(savedInspection, inspection.items);
 		console.log('Saving inspection', body);
 		const headers = { headers: { centre: `${centre.code}`, employeeCode } };
 		return this.http.post(Url.savedInspectionsApi(), body, headers).pipe(
 			tap(
 				(data) => {
-					const receivedSavedInspection = Builder.loadSavedInspection(
-						data, inspection.items, EmployeeService.employee.code
-					);
-					console.log('Received saved inspection', receivedSavedInspection);
-					body.fillSaved(receivedSavedInspection, employeeCode);
+					console.log('Received saved inspection', data);
 					LocalStorageService.setItem(Constants.LOCAL_STORAGE.SAVED_INSPECTION, body);
 				},
 				(error) => {
+					console.error('Error saving inspection', error);
+					savedInspection.restoreSaved();
+
 					const saveError = new SaveError(savedInspection, error.status, error.message);
 					this.http.post(Url.saveErrors(), saveError, { headers: { centre: `${centre.code}` } }).subscribe();
 				}
