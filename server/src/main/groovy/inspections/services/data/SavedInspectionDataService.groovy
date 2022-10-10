@@ -13,6 +13,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import javax.inject.Inject
+import java.time.LocalDateTime
 
 @Service(SavedInspection)
 abstract class SavedInspectionDataService {
@@ -32,7 +33,9 @@ abstract class SavedInspectionDataService {
 		savedInspection.inspectionTypeCode = inspectionTypeCode
 		savedInspection.orderInspection = orderInspection
 
-		SavedInspectionData newData = new SavedInspectionData(employeeCode, SavedInspectionData.Reason.UPDATED_ORDER)
+		SavedInspectionData newData = new SavedInspectionData(
+			employeeCode, SavedInspectionData.Reason.UPDATED_ORDER, LocalDateTime.now()
+		)
 		savedInspection.addToData(newData)
 		return save(savedInspection)
 	}
@@ -54,8 +57,7 @@ abstract class SavedInspectionDataService {
 			if (!existentSavedItem) {
 				fillSavedItem(savedItem, existentSavedInspection)
 				existentSavedInspection.addToItems(savedItem)
-			} else if (savedItem.data.size() != existentSavedItem.data.size()) {
-				LOG.info(new Log((Map) [message: Constants.Message.ADDING_DATA_ITEM, orderNumber: savedInspection.orderNumber, employeeCode: savedInspection.findData().employeeCode, itemCode: existentSavedItem.code, existentSaved: existentSavedItem.data.saved.sort()*.toString(), newSaved: savedItem.data.saved.sort()*.toString()]).toString())
+			} else if (checkNewItemData(savedItem.data, existentSavedItem.data)) {
 				addSavedItem(savedItem, existentSavedItem)
 			}
 			handleImages(savedItem, images)
@@ -67,6 +69,10 @@ abstract class SavedInspectionDataService {
 	static void fillSavedItem(SavedItem savedItem, SavedInspection savedInspection) {
 		savedItem.savedInspection = savedInspection
 		savedItem.data.each { it.fill(savedItem) }
+	}
+
+	static boolean checkNewItemData(Set<SavedItemData> data, Set<SavedItemData> existentData) {
+		return data.saved.max() > existentData.saved.max()
 	}
 
 	void addSavedItem(SavedItem savedItem, SavedItem existentSavedItem) {

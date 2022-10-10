@@ -15,11 +15,7 @@ import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.TextSavedItemData
 import inspections.domains.savedItems.TextSavedItemDataField
 import inspections.pogos.logs.Log
-import inspections.services.data.InspectionVehicleDataService
-import inspections.services.data.ItemDataService
-import inspections.services.data.SavedInspectionDataService
-import inspections.services.data.TextItemDataService
-import inspections.services.data.TextItemFieldValueDataService
+import inspections.services.data.*
 import inspections.services.data.fviberi.CarDataService
 import inspections.services.data.fviberi.CentreDataService
 import inspections.services.data.fviberi.OrderDataService
@@ -164,10 +160,8 @@ class InspectionService {
 			/* Se utiliza un semáforo por número de orden para evitar escrituras simultáneas */
 			SaveInspectionSemaphore.acquire(orderNumber)
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
-			LOG.info(new Log((Map) [message: Constants.Message.EXISTENT_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, existent: existent as boolean]).toString())
 
 			newSavedInspection = savedInspectionDataService.update(savedInspection, existent)
-			SaveInspectionSemaphore.release(orderNumber)
 
 			updateItvDate(savedInspection)
 			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
@@ -177,6 +171,8 @@ class InspectionService {
 			all.printStackTrace()
 			LOG.error(new Log((Map) [message: Constants.Message.ERROR_SAVING_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, exceptionMessage: all.message]).toString())
 			slackService.sendMessage(Builder.Slack.buildSavedInspectionErrorMessage(savedInspection, centre, all))
+		} finally {
+			SaveInspectionSemaphore.release(orderNumber)
 		}
 		return newSavedInspection
 	}
