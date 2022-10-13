@@ -7,11 +7,18 @@ import inspections.domains.SavedInspectionData
 import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.SavedItemData
+import inspections.pogos.logs.Log
+import inspections.utils.Constants
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import javax.inject.Inject
+import java.time.LocalDateTime
 
 @Service(SavedInspection)
 abstract class SavedInspectionDataService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(SavedInspectionDataService)
 
 	@Inject ItemDataService itemDataService
 	@Inject ImageDataService imageDataService
@@ -26,7 +33,9 @@ abstract class SavedInspectionDataService {
 		savedInspection.inspectionTypeCode = inspectionTypeCode
 		savedInspection.orderInspection = orderInspection
 
-		SavedInspectionData newData = new SavedInspectionData(employeeCode, SavedInspectionData.Reason.UPDATED_ORDER)
+		SavedInspectionData newData = new SavedInspectionData(
+			employeeCode, SavedInspectionData.Reason.UPDATED_ORDER, LocalDateTime.now()
+		)
 		savedInspection.addToData(newData)
 		return save(savedInspection)
 	}
@@ -35,12 +44,11 @@ abstract class SavedInspectionDataService {
 		List<Item> items = itemDataService.findAll((List<String>) savedInspection.items.code)
 		List<Image> images = imageDataService.findAll(existentSavedInspection.id)
 
+		LOG.info(new Log((Map) [message: Constants.Message.EXISTENT_INSPECTION_SAVED, orderNumber: savedInspection.orderNumber, employeeCode: savedInspection.findData().employeeCode, saved: existentSavedInspection.data.saved.sort()*.toString()]).toString())
 		SavedInspectionData newSavedInspectionData = savedInspection.data
 			.max { it.saved }
-			.tap {
-				it.savedInspection = existentSavedInspection
-				it.reason = SavedInspectionData.Reason.UPDATED
-			}
+			.tap { it.savedInspection = existentSavedInspection }
+		LOG.info(new Log((Map) [message: Constants.Message.NEW_DATA_SAVED, orderNumber: savedInspection.orderNumber, employeeCode: savedInspection.findData().employeeCode, saved: newSavedInspectionData.saved.toString()]).toString())
 		existentSavedInspection.addToData(newSavedInspectionData)
 		savedInspection.items.each { SavedItem savedItem ->
 			SavedItem existentSavedItem = existentSavedInspection.items.find { it.code == savedItem.code }
@@ -49,7 +57,7 @@ abstract class SavedInspectionDataService {
 			if (!existentSavedItem) {
 				fillSavedItem(savedItem, existentSavedInspection)
 				existentSavedInspection.addToItems(savedItem)
-			} else if (savedItem.data.size() != existentSavedItem.data.size()) {
+			} else if (checkNewItemData(savedItem.data, existentSavedItem.data)) {
 				addSavedItem(savedItem, existentSavedItem)
 			}
 			handleImages(savedItem, images)
@@ -63,10 +71,14 @@ abstract class SavedInspectionDataService {
 		savedItem.data.each { it.fill(savedItem) }
 	}
 
+	static boolean checkNewItemData(Set<SavedItemData> data, Set<SavedItemData> existentData) {
+		return data.saved.max() > existentData.saved.max()
+	}
+
 	void addSavedItem(SavedItem savedItem, SavedItem existentSavedItem) {
 		/* Si hay algún elemento nuevo en el array 'data', significa que se ha modificado en el front */
-		SavedItemData data = savedItem.data.max { it.filled }
-		SavedItemData existentSavedData = existentSavedItem.data.max { it.filled }
+		SavedItemData data = savedItem.data.max { it.saved }
+		SavedItemData existentSavedData = existentSavedItem.data.max { it.saved }
 		data.fill(existentSavedItem)
 
 		/* Si se ha eliminado la foto, directamente se borra de BD para que no ocupe espacio innecesario, ya que la

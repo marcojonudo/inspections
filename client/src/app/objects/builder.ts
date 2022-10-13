@@ -18,7 +18,7 @@ export class Builder {
 			const savedItem = savedInspection.items.find(i => i.code === item.code);
 			return new SavedItem(item, employeeCode, savedItem);
 		});
-		return new SavedInspection(savedInspection, savedItems, employeeCode);
+		return new SavedInspection(savedInspection, savedItems);
 	}
 
 	static buildVehicle(vehicle: any): Vehicle {

@@ -20,11 +20,12 @@ class SavedInspectionData implements GormEntity<SavedInspectionData> {
 
 	String employeeCode
 
-	Reason reason = Reason.SAVED
+	// TODO Plantear eliminar
+	Reason reason = Reason.UPDATED
 
 	@JsonFormat(pattern = Constants.DateTimeFormat.yyyy_MM_dd_HH_mm_ss, timezone = Constants.SPAIN_TIMEZONE)
 	@JsonSerialize(using = LocalDateTimeSerializer)
-	LocalDateTime saved = LocalDateTime.now()
+	LocalDateTime saved
 
 	static belongsTo = SavedInspection
 

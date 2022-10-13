@@ -89,7 +89,6 @@ dataSource:
         testOnBorrow: true
         validationQuery: SELECT 1
         validationInterval: 15000
-    logSql: true
 
 dataSources:
     fviberi:
@@ -107,7 +106,6 @@ dataSources:
             testOnBorrow: true
             validationQuery: SELECT 1
             validationInterval: 15000
-        logSql: true
     schedules:
         dbCreate: validate
         driverClassName: com.mysql.jdbc.Driver
@@ -123,4 +121,3 @@ dataSources:
             testOnBorrow: true
             validationQuery: SELECT 1
             validationInterval: 15000
-        logSql: true

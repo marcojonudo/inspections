@@ -6,9 +6,9 @@ export class SelectSavedItemData extends SavedItemData {
 
 	value: string;
 
-	constructor(employeeCode: string, selectSavedItemData: any, item: SelectItem) {
-		super(employeeCode, selectSavedItemData, item);
-		this.value = selectSavedItemData ? selectSavedItemData.value : Constants.SELECT_ITEM_OPTION_CODE.P;
+	constructor(employeeCode: string, data: any, item: SelectItem) {
+		super(employeeCode, data, item);
+		this.value = data ? data.value : Constants.SELECT_ITEM_OPTION_CODE.P;
 	}
 
 	findValue(): string {

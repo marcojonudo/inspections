@@ -15,11 +15,7 @@ import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.TextSavedItemData
 import inspections.domains.savedItems.TextSavedItemDataField
 import inspections.pogos.logs.Log
-import inspections.services.data.InspectionVehicleDataService
-import inspections.services.data.ItemDataService
-import inspections.services.data.SavedInspectionDataService
-import inspections.services.data.TextItemDataService
-import inspections.services.data.TextItemFieldValueDataService
+import inspections.services.data.*
 import inspections.services.data.fviberi.CarDataService
 import inspections.services.data.fviberi.CentreDataService
 import inspections.services.data.fviberi.OrderDataService
@@ -58,11 +54,11 @@ class InspectionService {
 	 * @return Orden
 	 */
 	Order findOrder(String shortCode, String employeeCode) {
-		LOG.info(new Log((Map) [employeeCode: employeeCode, shortCode: shortCode, message: Constants.Message.SEARCHING_ORDER]).toString())
+		LOG.info(new Log((Map) [message: Constants.Message.SEARCHING_ORDER, employeeCode: employeeCode, shortCode: shortCode]).toString())
 		Integer orderNumber = shortCode.isNumber() && shortCode.size() > 5 ?
 			shortCode as int : orderDataService.find(shortCode)
 		Order order = orderNumber ? orderDataService.find(orderNumber) : null
-		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, shortCode: shortCode, message: Constants.Message.FINISHED_SEARCHING_ORDER]).toString())
+		LOG.info(new Log((Map) [message: Constants.Message.FINISHED_SEARCHING_ORDER, orderNumber: orderNumber, employeeCode: employeeCode, shortCode: shortCode]).toString())
 		return order
 	}
 
@@ -74,7 +70,7 @@ class InspectionService {
 	 * @return Revisión
 	 */
 	InspectionVehicle findInspection(int orderNumber, String employeeCode, String vehicle) {
-		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, message: Constants.Message.SEARCHING_INSPECTION]).toString())
+		LOG.info(new Log((Map) [message: Constants.Message.SEARCHING_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode]).toString())
 		List<Integer> articles = orderDataService.find(orderNumber).lines*.articleCode.toList()
 		List<InspectionVehicle> inspectionsVehicle = inspectionVehicleDataService.findAll(articles).findAll {
 			it.vehicle == vehicle
@@ -93,7 +89,7 @@ class InspectionService {
 				securityInspectionVehicle, securityInspectionVehicle.items.toList(), false
 			)
 		}
-		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionVehicle.inspectionType.code, vehicle: inspectionVehicle.vehicle, orderInspection: inspectionVehicle.orderInspection, message: Constants.Message.FINISHED_SEARCHING_INSPECTION]).toString())
+		LOG.info(new Log((Map) [message: Constants.Message.FINISHED_SEARCHING_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionVehicle.inspectionType.code, vehicle: inspectionVehicle.vehicle, orderInspection: inspectionVehicle.orderInspection]).toString())
 		return inspectionVehicle
 	}
 
@@ -127,13 +123,13 @@ class InspectionService {
 		String numberPlate,
 		boolean orderInspection
 	) {
-		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, message: Constants.Message.SEARCHING_SAVED_INSPECTION]).toString())
+		LOG.info(new Log((Map) [message: Constants.Message.SEARCHING_SAVED_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection]).toString())
 		SavedInspection savedInspection = savedInspectionDataService.find(orderNumber)
-		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, existent: savedInspection as boolean, message: Constants.Message.EXISTENT_SAVED_INSPECTION]).toString())
+		LOG.info(new Log((Map) [message: Constants.Message.EXISTENT_SAVED_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, existent: savedInspection as boolean]).toString())
 		/* Si existe revisión y se ha actualizado el tipo de revisión (en lo que respecta a la orden), se actualiza */
 		if (savedInspection) {
 			if (savedInspection.updatedOrder(inspectionTypeCode, orderInspection)) {
-				LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, oldType: savedInspection.inspectionTypeCode, newType: inspectionTypeCode, oldOrderInspection: savedInspection.orderInspection, newOrderInspection: orderInspection, message: Constants.Message.UPDATED_ORDER]).toString())
+				LOG.info(new Log((Map) [message: Constants.Message.UPDATED_ORDER, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, oldType: savedInspection.inspectionTypeCode, newType: inspectionTypeCode, oldOrderInspection: savedInspection.orderInspection, newOrderInspection: orderInspection]).toString())
 				savedInspection = savedInspectionDataService.update(
 					savedInspection, inspectionTypeCode, orderInspection, employeeCode
 				)
@@ -145,7 +141,7 @@ class InspectionService {
 			)
 			savedInspection = savedInspectionDataService.save(builtInspection)
 		}
-		LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, existent: savedInspection as boolean, message: Constants.Message.FINISHED_SEARCHING_SAVED_INSPECTION]).toString())
+		LOG.info(new Log((Map) [message: Constants.Message.FINISHED_SEARCHING_SAVED_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: inspectionTypeCode, vehicle: vehicle, numberPlate: numberPlate, orderInspection: orderInspection, existent: savedInspection as boolean]).toString())
 		return savedInspection
 	}
 
@@ -158,25 +154,25 @@ class InspectionService {
 	 * @return Revisión guardada
 	 */
 	SavedInspection saveInspection(SavedInspection savedInspection, int orderNumber, String employeeCode, int centre) {
-		LOG.info(new Log((Map) [employeeCode: employeeCode, savedInspection: savedInspection, message: Constants.Message.SAVING_INSPECTION]).toString())
+		LOG.info(new Log((Map) [message: Constants.Message.SAVING_INSPECTION, employeeCode: employeeCode, savedInspection: savedInspection]).toString())
 		SavedInspection newSavedInspection = null
 		try {
 			/* Se utiliza un semáforo por número de orden para evitar escrituras simultáneas */
 			SaveInspectionSemaphore.acquire(orderNumber)
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
-			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, existent: existent as boolean, message: Constants.Message.EXISTENT_INSPECTION]).toString())
 
 			newSavedInspection = savedInspectionDataService.update(savedInspection, existent)
-			SaveInspectionSemaphore.release(orderNumber)
 
 			updateItvDate(savedInspection)
 			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
 
-			LOG.info(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, message: Constants.Message.SAVED_INSPECTION]).toString())
+			LOG.info(new Log((Map) [message: Constants.Message.SAVED_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection]).toString())
 		} catch (all) {
 			all.printStackTrace()
-			LOG.error(new Log((Map) [orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, exceptionMessage: all.message, message: Constants.Message.ERROR_SAVING_INSPECTION]).toString())
+			LOG.error(new Log((Map) [message: Constants.Message.ERROR_SAVING_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, exceptionMessage: all.message]).toString())
 			slackService.sendMessage(Builder.Slack.buildSavedInspectionErrorMessage(savedInspection, centre, all))
+		} finally {
+			SaveInspectionSemaphore.release(orderNumber)
 		}
 		return newSavedInspection
 	}
@@ -196,7 +192,7 @@ class InspectionService {
 				carDataService.update(savedInspection.numberPlate, Utils.formatItvDate(day), Utils.parseExpiredItv(day))
 			} else {
 				String value = "${fields.find { it.order == 0 }?.text}/${fields.find { it.order == 1 }?.text}"
-				LOG.error(new Log((Map) [orderNumber: savedInspection.orderNumber, employeeCode: savedInspection.findData().employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, fields: value, message: Constants.Message.WRONG_FPITV_FIELD]).toString())
+				LOG.error(new Log((Map) [message: Constants.Message.WRONG_FPITV_FIELD, orderNumber: savedInspection.orderNumber, employeeCode: savedInspection.findData().employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, fields: value]).toString())
 			}
 		}
 	}
