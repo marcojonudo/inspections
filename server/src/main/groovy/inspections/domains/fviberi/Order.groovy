@@ -44,10 +44,10 @@ class Order implements GormEntity<Order> {
 
 	enum VehicleType {
 
-		BICICLETA("E-BIKE"),
+		BICICLETA("E_BIKE"),
 		COCHE("CAR"),
 		MOTO("MOTORBIKE"),
-		PATINETE("E-SCOOTER")
+		PATINETE("E_SCOOTER")
 
 		final String type
 
