@@ -19,18 +19,13 @@ class CentreController {
 	@Inject private CentreDataService centreDataService
 
 	@Get
-	@Operation(
-		summary = "Obtiene el centro",
-		description = "Obtiene el centro"
-	)
+	@Operation(summary = "Obtiene el centro", description = "Obtiene el centro")
 	@ApiResponse(
 		responseCode = "200",
-		description = "Número de orden encontrado",
+		description = "Centro encontrado",
 		content = @Content(mediaType = "application/json", schema = @Schema(implementation = Centre))
 	)
-	@ApiResponse(
-		responseCode = "404", description = "Número de orden no encontrado"
-	)
+	@ApiResponse(responseCode = "404", description = "Centro no encontrado")
 	Centre get() {
 		return centreDataService.find()
 	}

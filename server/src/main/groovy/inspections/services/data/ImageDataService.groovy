@@ -19,8 +19,6 @@ abstract class ImageDataService {
 	@Where({ id in ids })
 	abstract List<Image> findAll(List<Long> ids)
 
-	abstract List<Image> findAll(Long savedInspectionId)
-
 	abstract Image save(Long savedInspectionId, String itemCode, byte[] image, boolean landscape)
 
 	abstract void delete(Serializable id)
