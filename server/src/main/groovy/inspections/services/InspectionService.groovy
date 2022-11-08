@@ -1,7 +1,6 @@
 package inspections.services
 
 import groovy.transform.CompileStatic
-import inspections.async.SaveInspectionSemaphore
 import inspections.clients.InspectionsManagementClient
 import inspections.domains.InspectionType
 import inspections.domains.InspectionVehicle
@@ -28,6 +27,8 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import javax.inject.Singleton
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 
 @Singleton
 @CompileStatic
@@ -158,10 +159,11 @@ class InspectionService {
 		SavedInspection newSavedInspection = null
 		try {
 			/* Se utiliza un semáforo por número de orden para evitar escrituras simultáneas */
-			SaveInspectionSemaphore.acquire(orderNumber)
 			SavedInspection existent = savedInspectionDataService.find(orderNumber)
 
+			LocalTime refTime = LocalTime.now()
 			newSavedInspection = savedInspectionDataService.update(savedInspection, existent)
+			LOG.info(new Log((Map) [message: Constants.Message.SAVE_INSPECTION_DURATION, orderNumber: orderNumber, duration: ChronoUnit.MILLIS.between(refTime, LocalTime.now())]).toString())
 
 			updateItvDate(savedInspection)
 			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
@@ -171,8 +173,6 @@ class InspectionService {
 			all.printStackTrace()
 			LOG.error(new Log((Map) [message: Constants.Message.ERROR_SAVING_INSPECTION, orderNumber: orderNumber, employeeCode: employeeCode, inspectionTypeCode: savedInspection.inspectionTypeCode, vehicle: savedInspection.vehicle, state: savedInspection.state, orderInspection: savedInspection.orderInspection, exceptionMessage: all.message]).toString())
 			slackService.sendMessage(Builder.Slack.buildSavedInspectionErrorMessage(savedInspection, centre, all))
-		} finally {
-			SaveInspectionSemaphore.release(orderNumber)
 		}
 		return newSavedInspection
 	}

@@ -30,4 +30,9 @@ class SavedItem implements GormEntity<SavedItem> {
 		data fetch: 'join'
 	}
 
+	SavedItem fill() {
+		data.each { it.fill(this) }
+		return this
+	}
+
 }

@@ -214,10 +214,10 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 	}
 
-	checkCloseMenu(targetClasses: string): void {
+	checkCloseMenu(targetClasses: any): void {
 		/* Se actualiza la variable si se hace clic fuera del botón de menú. En caso contrario, ya se gestiona su
 		 * apertura y cierre desde el evento del propio botón */
-		if (!targetClasses.includes(Constants.MENU_TOGGLE)) {
+		if (targetClasses instanceof String && !targetClasses.includes(Constants.MENU_TOGGLE)) {
 			this.openedMenu = this.openedMenu === undefined ? false : undefined;
 		}
 	}

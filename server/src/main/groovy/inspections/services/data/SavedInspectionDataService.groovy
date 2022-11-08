@@ -1,7 +1,6 @@
 package inspections.services.data
 
 import grails.gorm.services.Service
-import inspections.domains.Image
 import inspections.domains.SavedInspection
 import inspections.domains.SavedInspectionData
 import inspections.domains.items.Item
@@ -42,7 +41,6 @@ abstract class SavedInspectionDataService {
 
 	SavedInspection update(SavedInspection savedInspection, SavedInspection existentSavedInspection) {
 		List<Item> items = itemDataService.findAll((List<String>) savedInspection.items.code)
-		List<Image> images = imageDataService.findAll(existentSavedInspection.id)
 
 		LOG.info(new Log((Map) [message: Constants.Message.EXISTENT_INSPECTION_SAVED, orderNumber: savedInspection.orderNumber, employeeCode: savedInspection.findData().employeeCode, saved: existentSavedInspection.data.saved.sort()*.toString()]).toString())
 		SavedInspectionData newSavedInspectionData = savedInspection.data
@@ -55,20 +53,13 @@ abstract class SavedInspectionDataService {
 			/* Si el item no existe, se crea. Ocurre en anomalías detectadas, si después de guardar la revisión
 			 * completa rellena algún otro item*/
 			if (!existentSavedItem) {
-				fillSavedItem(savedItem, existentSavedInspection)
-				existentSavedInspection.addToItems(savedItem)
+				existentSavedInspection.addToItems(savedItem.fill())
 			} else if (checkNewItemData(savedItem.data, existentSavedItem.data)) {
 				addSavedItem(savedItem, existentSavedItem)
 			}
-			handleImages(savedItem, images)
 		}
 		existentSavedInspection.state = findState(savedInspection, items)
 		return save(existentSavedInspection)
-	}
-
-	static void fillSavedItem(SavedItem savedItem, SavedInspection savedInspection) {
-		savedItem.savedInspection = savedInspection
-		savedItem.data.each { it.fill(savedItem) }
 	}
 
 	static boolean checkNewItemData(Set<SavedItemData> data, Set<SavedItemData> existentData) {
@@ -87,19 +78,6 @@ abstract class SavedInspectionDataService {
 			imageDataService.delete(existentSavedData.imageId)
 		}
 		existentSavedItem.addToData(data)
-	}
-
-	void handleImages(SavedItem savedItem, List<Image> images) {
-		/* Se obtienen las imágenes asociadas al item */
-		List<Image> itemImages = images.findAll { it.itemCode == savedItem.code }
-		itemImages.each { Image image ->
-			/* Se comprueba si el item tiene asociada alguna imagen. Si no es así, significa que sacaron la foto pero
-			 * posteriormente la borraron, ya fuera para sacar otra o para dejarla vacía */
-			SavedItemData associatedData = savedItem.data.find { it.imageId == image.id }
-			if (!associatedData) {
-				imageDataService.delete(image.id)
-			}
-		}
 	}
 
 	static SavedInspection.State findState(SavedInspection savedInspection, List<Item> items) {
