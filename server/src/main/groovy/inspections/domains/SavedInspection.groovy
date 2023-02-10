@@ -18,6 +18,7 @@ class SavedInspection implements GormEntity<SavedInspection> {
 	String numberPlate
 	State state
 	boolean orderInspection
+	Integer duration
 
 	@JsonInclude
 	Set<SavedItem> items
@@ -27,6 +28,10 @@ class SavedInspection implements GormEntity<SavedInspection> {
 	static mapping = {
 		items fetch: 'join'
 		data fetch: 'join'
+	}
+
+	static constraints = {
+		duration nullable: true
 	}
 
 	enum State {
