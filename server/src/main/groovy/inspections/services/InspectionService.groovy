@@ -5,6 +5,7 @@ import inspections.clients.InspectionsManagementClient
 import inspections.domains.InspectionType
 import inspections.domains.InspectionVehicle
 import inspections.domains.SavedInspection
+import inspections.domains.SavedInspectionData
 import inspections.domains.fviberi.Order
 import inspections.domains.items.Item
 import inspections.domains.items.TextItem
@@ -175,6 +176,19 @@ class InspectionService {
 			slackService.sendMessage(Builder.Slack.buildSavedInspectionErrorMessage(savedInspection, centre, all))
 		}
 		return newSavedInspection
+	}
+
+	static Optional<Integer> findInspectionDuration(Set<SavedInspectionData> inspectionDataList) {
+		/* Se toma como referencia el primer registro de guardado, que corresponde con el momento en que abren la
+		 * revisión */
+		SavedInspectionData refItemData = inspectionDataList.find { it.reason == SavedInspectionData.Reason.SAVED }
+		/* Para calcular la revisión, se usan sólo los registros del mismo día */
+		SavedInspectionData lastUpdate = inspectionDataList.findAll {
+			it.reason == SavedInspectionData.Reason.UPDATED && it.saved.toLocalDate() == refItemData.saved.toLocalDate()
+		}.max { it.saved }
+
+		return Optional.ofNullable(lastUpdate)
+			.map { d -> (int) refItemData.saved.until(d.saved, ChronoUnit.SECONDS) }
 	}
 
 	/**

@@ -3,19 +3,12 @@ package inspections.services
 import inspections.clients.InspectionsManagementClient
 import inspections.domains.InspectionType
 import inspections.domains.InspectionVehicle
+import inspections.domains.SavedInspectionData
 import inspections.domains.fviberi.Order
 import inspections.domains.fviberi.OrderLine
-import inspections.domains.items.Item
-import inspections.domains.items.ItemVehicleData
-import inspections.domains.items.TextItem
-import inspections.domains.items.TextItemField
-import inspections.domains.items.TextItemFieldValue
+import inspections.domains.items.*
 import inspections.domains.savedItems.TextSavedItemDataField
-import inspections.services.data.InspectionVehicleDataService
-import inspections.services.data.ItemDataService
-import inspections.services.data.SavedInspectionDataService
-import inspections.services.data.TextItemDataService
-import inspections.services.data.TextItemFieldValueDataService
+import inspections.services.data.*
 import inspections.services.data.fviberi.CarDataService
 import inspections.services.data.fviberi.CentreDataService
 import inspections.services.data.fviberi.OrderDataService
@@ -26,6 +19,7 @@ import spock.lang.Specification
 
 import javax.inject.Inject
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @MicronautTest
 class InspectionServiceSpec extends Specification {
@@ -322,6 +316,40 @@ class InspectionServiceSpec extends Specification {
         values
         values.size() == 1
         values[0].value == "$refYear"[2..-1]
+    }
+
+    // endregion
+
+    // region Find inspection duration
+
+    void "test find inspection duration no updated field"() {
+        given:
+        Set<SavedInspectionData> data = [
+            new SavedInspectionData(reason: SavedInspectionData.Reason.SAVED, saved: LocalDateTime.now().minusMinutes(60))
+        ]
+
+        when:
+        Optional<Integer> durationOpt = InspectionService.findInspectionDuration(data)
+
+        then:
+        !durationOpt.isPresent()
+    }
+
+    void "test find inspection duration success"() {
+        given:
+        int secondsDiff = 3600
+        Set<SavedInspectionData> data = [
+            new SavedInspectionData(reason: SavedInspectionData.Reason.SAVED, saved: LocalDateTime.now().minusSeconds(secondsDiff)),
+            new SavedInspectionData(reason: SavedInspectionData.Reason.UPDATED, saved: LocalDateTime.now().minusMinutes(30)),
+            new SavedInspectionData(reason: SavedInspectionData.Reason.UPDATED, saved: LocalDateTime.now())
+        ]
+
+        when:
+        Optional<Integer> durationOpt = InspectionService.findInspectionDuration(data)
+
+        then:
+        durationOpt.isPresent()
+        durationOpt.get() == secondsDiff
     }
 
     // endregion

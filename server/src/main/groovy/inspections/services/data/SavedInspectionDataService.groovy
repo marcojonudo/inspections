@@ -7,6 +7,7 @@ import inspections.domains.items.Item
 import inspections.domains.savedItems.SavedItem
 import inspections.domains.savedItems.SavedItemData
 import inspections.pogos.logs.Log
+import inspections.services.InspectionService
 import inspections.utils.Constants
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -59,6 +60,8 @@ abstract class SavedInspectionDataService {
 			}
 		}
 		existentSavedInspection.state = findState(savedInspection, items)
+		existentSavedInspection.duration = InspectionService.findInspectionDuration(savedInspection.data)
+			.orElseGet { null }
 		return save(existentSavedInspection)
 	}
 
