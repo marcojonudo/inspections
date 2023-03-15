@@ -7,6 +7,7 @@ export class CountryHandlerType {
 	private static all: { [name: string]: CountryHandlerType } = {};
 
 	static readonly SPAIN = new CountryHandlerType('es', new SpainHandler());
+	static readonly CATALONIA = new CountryHandlerType('ca', new SpainHandler());
 	static readonly PORTUGAL = new CountryHandlerType('pt', new PortugalHandler());
 
 	id: string;

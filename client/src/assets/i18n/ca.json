@@ -1,0 +1,86 @@
+{
+	"init": {
+		"introduceEmployeeCode": "¿Cuál es tu código de empleado?",
+		"employeeCode": "Código de empleado",
+		"requiredEmployeeCode": "Debes introducir un código de empleado",
+		"employeeCodeMinLength": "Longitud mínima de 7 dígitos",
+		"introduceShortCode": "¿Cuál es el código corto de la orden?",
+		"shortCode": "Código corto",
+		"requiredShortCode": "Debes introducir un código de orden"
+	},
+	"inspection": {
+		"changelog": "Histórico de cambios",
+		"updateVersion": "Actualizar versión",
+		"clearData": "Restablecer datos de la aplicación",
+		"type": {
+			"AD": "Anomalías detectadas"
+		}
+	},
+	"order": {
+		"numberPlate": "Matrícula",
+		"brandModel": "Marca y modelo",
+		"cylinder": "Cilindrada",
+		"engineCode": "Código motor",
+		"power": "Potencia",
+		"registrationYear": "Matriculación",
+		"description": "Descripción",
+		"units": "Uds."
+	},
+	"bottomPanel": {
+		"introduceEmployeeCode": "Introduce un nuevo código de empleado"
+	},
+	"dialog": {
+		"header": "¡Atención!",
+		"cancel": "Cancelar",
+		"accept": "Aceptar"
+	},
+	"message": {
+		"NONEXISTENT_ORDER": "No se encuentra ninguna orden asociada al código corto",
+		"NONEXISTENT_INSPECTIONS": "No se encuentran revisiones asociadas a la orden",
+		"UPDATE_EMPLOYEE_MESSAGE": "¿Quieres cambiar el empleado {{employeeCode}} por el {{newEmployeeCode}}?",
+		"ERROR_SAVING_INSPECTION": "Error al guardar la revisión. Por favor, inténtalo de nuevo",
+		"SAVED_INSPECTION": "Revisión guardada correctamente",
+		"NON_COMPLETE_INSPECTION": "Revisión no terminada. Por favor, rellena todos los elementos",
+		"WARNING_GOING_BACK": "¿Seguro que quieres volver a la pantalla de inicio?",
+		"ERROR_FINDING_EMPLOYEES": "Error obteniendo empleados. Inténtalo de nuevo en unos instantes, o envía un correo a informática",
+		"CLEARED_LOCAL_STORAGE": "Datos del navegador borrados",
+		"WARNING_RESETTING_INSPECTION": "¿Seguro que quieres borrar la revisión?",
+		"EMPLOYEE_NOT_FOUND": "Empleado no encontrado. Accede a la aplicación de horarios para sincronizarlos y prueba de nuevo",
+		"ERROR_SAVING_IMAGE": "No se ha podido guardar la imagen. ¡Inténtalo de nuevo!",
+		"ERROR_REMOVING_IMAGE": "No se ha podido borrar la imagen. ¡Inténtalo de nuevo!",
+		"UPDATE_CLEAR_DATA": "Se ha instalado una nueva versión. ¡Es necesario refrescar la página!"
+	},
+	"print": {
+		"info": "Información",
+		"adviser": "Asesor",
+		"mechanic": "Mecánico",
+		"mechanics": "Mecánicos",
+		"day": "Día",
+		"orderNumber": "Nº orden",
+		"centre": "Centro",
+		"vehicle": "Vehículo",
+		"client": "Cliente",
+		"summary": "Resumen",
+		"numberPlate": "Matrícula",
+		"model": "Modelo",
+		"cylinder": "Cilindrada",
+		"engine": "Motor",
+		"power": "Potencia",
+		"registration": "Matriculación",
+		"tyre": "Neumático",
+		"tyreState": "Estado neumático",
+		"tyreMin": "1.6mm mínimo legal",
+		"tyreDepth": "Profundidad neumático",
+		"tyreAge": "Edad neumático",
+		"category": {
+			"N": "Neumáticos"
+		},
+		"item": {
+			"CVGN": "Control visual geometría",
+			"PPN": "Puesta a presión"
+		}
+	},
+	"resetEmployee": {
+		"introduceEmployeeCode": "Introduce de nuevo el código de empleado"
+	}
+}
