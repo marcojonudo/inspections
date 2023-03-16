@@ -1,5 +1,4 @@
 import { CountryHandler } from './country-handler';
-import { ValidatorFn, Validators } from '@angular/forms';
 import { Constants } from '../constants';
 
 export class SpainHandler implements CountryHandler {
@@ -14,10 +13,6 @@ export class SpainHandler implements CountryHandler {
 
 	findEmployeeCodePlaceholder(): string {
 		return '1234567';
-	}
-
-	findEmployeeCodeCustomValidations(): ValidatorFn[] {
-		return [Validators.minLength(Constants.SPAIN_EMPLOYEE_CODE_MAX_LENGTH)];
 	}
 
 }
