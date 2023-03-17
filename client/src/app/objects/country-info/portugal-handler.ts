@@ -1,5 +1,4 @@
 import { CountryHandler } from './country-handler';
-import { ValidatorFn } from '@angular/forms';
 import { Constants } from '../constants';
 
 export class PortugalHandler implements CountryHandler {
@@ -16,10 +15,6 @@ export class PortugalHandler implements CountryHandler {
 
 	findEmployeeCodePlaceholder(): string {
 		return 'mg';
-	}
-
-	findEmployeeCodeCustomValidations(): ValidatorFn[] {
-		return [];
 	}
 
 }

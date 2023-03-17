@@ -1,13 +1,11 @@
 export class Constants {
 
-	static readonly SPAIN_EMPLOYEE_CODE_MAX_LENGTH: number = 7;
+	static readonly SPAIN_EMPLOYEE_CODE_MAX_LENGTH: number = 9;
 	static readonly SPLASH_SCREEN_DURATION: number = 1.5;
 	static readonly RESET_EMPLOYEE_INTERVAL: number = 24220;
 	static readonly CHECK_VERSION_INTERVAL: number = 300000;
 	static readonly MENU_TOGGLE: string = 'menu-toggle';
-	static readonly REQUIRED: string = 'required';
 	static readonly REQUIRED_EMPLOYEE_CODE: string = 'requiredEmployeeCode';
-	static readonly EMPLOYEE_CODE_MIN_LENGTH: string = 'employeeCodeMinLength';
 	static readonly DEFAULT_LANGUAGE: string = 'es';
 	static readonly TEXT_ITEM_MAX_LENGTH = 10;
 	static readonly DETECTED_FAULTS_CODE = 'AD';

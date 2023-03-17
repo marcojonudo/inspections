@@ -63,10 +63,7 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		clearTimeout(InspectionService.lockTimeout);
 		this.employee = EmployeeService.employee;
 		const employeeCode = this.employee ? this.employee.code : '';
-		this.employeeCode = new FormControl(
-			employeeCode,
-			[Validators.required].concat(InspectionService.countryHandler.findEmployeeCodeCustomValidations())
-		);
+		this.employeeCode = new FormControl(employeeCode, [Validators.required]);
 		this.orderCode = new FormControl('', [Validators.required]);
 		this.clearStorageCounter = 0;
 		this.refHeight = window.innerHeight;
@@ -129,10 +126,8 @@ export class InitialDataComponent implements OnInit, AfterViewInit {
 		return InspectionService.countryHandler.findEmployeeCodeLength();
 	}
 
-	getEmployeeCodeErrorMessage(employeeCode: FormControl = this.employeeCode): Observable<string> {
-		const messageCode = employeeCode.hasError(Constants.REQUIRED) ?
-			Constants.REQUIRED_EMPLOYEE_CODE : Constants.EMPLOYEE_CODE_MIN_LENGTH;
-		return this.translateService.get(`init.${messageCode}`);
+	getEmployeeCodeErrorMessage(): Observable<string> {
+		return this.translateService.get(`init.${Constants.REQUIRED_EMPLOYEE_CODE}`);
 	}
 
 	searchEmployee(employeeCode: FormControl = this.employeeCode): void {

@@ -3,7 +3,6 @@
 		"introduceEmployeeCode": "Qual é o seu código de empregado?",
 		"employeeCode": "Código de empregado",
 		"requiredEmployeeCode": "Deve inserir um código de empregado",
-		"employeeCodeMinLength": "Longitud mínima de 7 dígitos",
 		"introduceShortCode": "Qual é o código curto do ordem de reparação",
 		"shortCode": "Código curto",
 		"requiredShortCode": "Deve inserir um código curto do ordem"
