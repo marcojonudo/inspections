@@ -6,7 +6,7 @@
 			<li><span class="item-label" translate>order.brandModel</span>: {{order.vehicle.brand}} {{order.vehicle.model}}</li>
 			<li><span class="item-label" translate>order.cylinder</span>: {{findCar(order.vehicle).cylinder}}</li>
 			<li><span class="item-label" translate>order.engineCode</span>: {{findCar(order.vehicle).engineCode ? findCar(order.vehicle).engineCode : '-'}}</li>
-			<li><span class="item-label" translate>order.power</span>: {{findCar(order.vehicle).power ? findCar(order.vehicle).power + 'cv' : '-'}}</li>
+			<li><span class="item-label" translate>order.power</span>: {{findCar(order.vehicle).power ? (findCar(order.vehicle).power | number: '1.0-0') + ' CV' : '-' }}</li>
 			<li><span class="item-label" translate>order.registrationYear</span>: {{findCar(order.vehicle).registrationYear ? findCar(order.vehicle).registrationYear : '-' }}</li>
 		</ul>
 	</mat-card-content>

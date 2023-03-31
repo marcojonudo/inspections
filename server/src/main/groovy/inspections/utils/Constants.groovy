@@ -7,6 +7,7 @@ class Constants {
 
     static final String SPAIN_TIMEZONE = "Europe/Madrid"
     static final List<String> TYRE_AGE_CODES = [Item.FNDI, Item.FNDD, Item.FNTI, Item.FNTD]
+    static final float KW_TO_CV_FACTOR = 1.35962
 
     static class DataSource {
 
@@ -45,6 +46,7 @@ class Constants {
         static final String SAVED_INSPECTION = "Saved inspection!"
         static final String SLACK_WRONG_REQUEST = "Error sending Slack notification"
         static final String WRONG_FPITV_FIELD = "Wrong FPITV item field"
+        static final String CALC_POWER_ERROR = "Error calculating vehicle power"
 
     }
 
