@@ -152,8 +152,9 @@ export class PrintComponent {
 	buildGroupedCategories(categories: CategoryItems[]): CategoryItems[][] {
 		const sortedCategories = this.sortCategories(categories);
 		const i = sortedCategories.findIndex(cat => cat.category?.code === 'F');
-		return i !== -1 ?
-			[sortedCategories.slice(0, i + 1), sortedCategories.slice(i + 1, sortedCategories.length)] :
+		const breakIndex = i !== -1 ? i : sortedCategories.findIndex(cat => cat.category?.code === 'G');
+		return breakIndex !== -1 ?
+			[sortedCategories.slice(0, breakIndex + 1), sortedCategories.slice(breakIndex + 1, sortedCategories.length)] :
 			[sortedCategories];
 	}
 
