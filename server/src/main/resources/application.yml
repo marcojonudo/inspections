@@ -5,6 +5,9 @@ micronaut:
         cors:
             enabled: true
         port: 8095
+    http:
+        client:
+            read-timeout: 20s
     router:
         static-resources:
             default:
@@ -73,6 +76,12 @@ services:
     inspections-management:
         port: ${INSPECTIONS_MANAGEMENT_PORT:8096}
         url: http://localhost:${services.inspections-management.port}/realTime
+    orders-management:
+        port: ${ORDERS_MANAGEMENT_PORT:8098}
+        url: http://${host.ip}:${services.orders-management.port}
+    db-api:
+        port: ${DB_API_PORT:8082}
+        url: http://${host.ip}:${services.db-api.port}
 
 dataSource:
     dbCreate: validate

@@ -12,6 +12,7 @@ export class Constants {
 	static readonly ROW_IMAGES = 4;
 	static readonly TYRE_ITEM_CODES = ['EN', 'FN', 'PN'];
 	static readonly DEPTH_ITEM_CODE = 'PN';
+	static readonly TYRE_MEASUREMENT_ITEM_CODE = 'PN';
 
 	static readonly HEADER_CARD: { [key: string]: string } = {
 		INFO: 'INFO',
@@ -42,7 +43,8 @@ export class Constants {
 		EMPLOYEE_NOT_FOUND: 'EMPLOYEE_NOT_FOUND',
 		ERROR_SAVING_IMAGE: 'ERROR_SAVING_IMAGE',
 		ERROR_REMOVING_IMAGE: 'ERROR_REMOVING_IMAGE',
-		UPDATE_CLEAR_DATA: 'UPDATE_CLEAR_DATA'
+		UPDATE_CLEAR_DATA: 'UPDATE_CLEAR_DATA',
+		PENDING_TYRE_MEASUREMENT_FIELDS: 'PENDING_TYRE_MEASUREMENT_FIELDS'
 	};
 
 	static readonly PATH: any = {

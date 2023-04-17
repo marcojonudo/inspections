@@ -30,6 +30,10 @@ class SavedItem implements GormEntity<SavedItem> {
 		data fetch: 'join'
 	}
 
+	SavedItemData findData() {
+		return data.max { it.saved }
+	}
+
 	SavedItem fill() {
 		data.each { it.fill(this) }
 		return this
