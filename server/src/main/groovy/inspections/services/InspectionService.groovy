@@ -60,6 +60,7 @@ class InspectionService {
 	@Inject TextItemFieldValueDataService textItemFieldValueDataService
 	@Inject OrdersManagementClient ordersManagementClient
 	@Inject DbApiClient dbApiClient
+	@Inject BudgetService budgetService
 
 	/**
 	 * Busca una orden asociada al código corto
@@ -249,17 +250,31 @@ class InspectionService {
 	 * @return Lista de códigos de artículo
 	 */
 	Budget handleBudgetCreation(SavedInspection savedInspection) {
-		/* Se comprueba que en la revisión haya información necesaria para crear el presupuesto */
-		BudgetData budgetData = findBudgetFields(savedInspection)
-		if (!budgetData) { return null }
+		Budget budget = null
+		boolean alreadySavingBudget = budgetService.checkSavingOrderNumberBudget(savedInspection.orderNumber)
+		if (!alreadySavingBudget) {
+			try {
+				budgetService.addSavingBudgetOrderNumber(savedInspection.orderNumber)
+				/* Se comprueba que en la revisión haya información necesaria para crear el presupuesto */
+				BudgetData budgetData = findBudgetFields(savedInspection)
+				if (!budgetData) { return null }
 
-		/* Se buscan los códigos de artículo a presupuestar */
-		List<Article> budgetArticles = findBudgetArticles(budgetData.tyreData, budgetData.units, savedInspection.orderNumber)
-		if (!budgetArticles) { return null }
+				/* Se buscan los códigos de artículo a presupuestar */
+				List<Article> budgetArticles = findBudgetArticles(
+					budgetData.tyreData, budgetData.units, savedInspection.orderNumber
+				)
+				if (!budgetArticles) { return null }
 
-		/* Se comprueba que no exista otro presupuesto para esos mismos artículos en BD */
-		boolean create = checkCreateBudget(savedInspection.orderNumber, budgetArticles.code)
-		return create ? createBudget(budgetArticles, savedInspection.orderNumber, budgetData.units) : null
+				/* Se comprueba que no exista otro presupuesto para esos mismos artículos en BD */
+				boolean create = checkCreateBudget(savedInspection.orderNumber, budgetArticles.code)
+				budget = create ? createBudget(budgetArticles, savedInspection.orderNumber, budgetData.units) : null
+			} catch (all) {
+				all.printStackTrace()
+			} finally {
+				budgetService.removeSavingBudgetOrderNumber(savedInspection.orderNumber)
+			}
+		}
+		return budget
 	}
 
 	/**
