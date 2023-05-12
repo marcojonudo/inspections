@@ -5,12 +5,16 @@ import { Car } from './orders/vehicles/car';
 import { Scooter } from './orders/vehicles/scooter';
 import { Vehicle } from './orders/vehicles/vehicle';
 import { SavedItem } from './inspections/saved-items/saved-item';
+import { Motorbike } from './orders/vehicles/motorbike';
+import { Bike } from './orders/vehicles/bike';
 
 export class Builder {
 
 	static vehicleBuilder: { [key: string]: ((vehicle: any) => Vehicle) } = {
 		CAR: (vehicle: any) => new Car(vehicle),
-		SCOOTER: (vehicle: any) => new Scooter(vehicle)
+		MOTORBIKE: (vehicle: any) => new Motorbike(vehicle),
+		E_SCOOTER: (vehicle: any) => new Scooter(vehicle),
+		E_BIKE: (vehicle: any) => new Bike(vehicle)
 	};
 
 	static loadSavedInspection(savedInspection: any, items: Item[], employeeCode: string): SavedInspection {

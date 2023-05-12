@@ -110,7 +110,9 @@ export class Constants {
 
 	static readonly VEHICLE_TYPE: any = {
 		CAR: 'CAR',
-		SCOOTER: 'SCOOTER'
+		MOTORBIKE: 'MOTORBIKE',
+		E_SCOOTER: 'E_SCOOTER',
+		E_BIKE: 'E_BIKE'
 	};
 
 	static readonly ORIGIN: any = {

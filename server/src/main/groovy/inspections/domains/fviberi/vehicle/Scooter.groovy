@@ -3,6 +3,7 @@ package inspections.domains.fviberi.vehicle
 import grails.gorm.annotation.Entity
 import inspections.pogos.vehicles.ScooterVehicle
 import inspections.pogos.vehicles.Vehicle
+import inspections.pogos.vehicles.VehicleType
 import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
 
@@ -29,7 +30,7 @@ class Scooter implements GormEntity<Scooter>, IVehicle {
     }
 
     Vehicle buildVehicle() {
-        return new ScooterVehicle(Type.SCOOTER, this.serialNumber, this.brand, this.model)
+        return new ScooterVehicle(VehicleType.E_SCOOTER, this.serialNumber, this.brand, this.model)
     }
 
 }
