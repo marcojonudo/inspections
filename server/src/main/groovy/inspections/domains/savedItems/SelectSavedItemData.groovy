@@ -11,8 +11,8 @@ class SelectSavedItemData extends SavedItemData implements GormEntity<SelectSave
 
 	String value
 
-	boolean isCorrect() {
-		return value == Constants.CORRECT_SELECT_OPTION
+	boolean isWrong() {
+		return value in Constants.WRONG_ITEM_OPTIONS
 	}
 
 	SavedItemData fill(SavedItem savedItem) {
