@@ -316,7 +316,7 @@ class InspectionService {
 			.findAll { it.code in tyreCodes }
 			.findAll {
 				SelectSavedItemData data = (SelectSavedItemData) it.findData()
-				return data.value != Constants.PENDING_SELECT_OPTION && !data.isCorrect()
+				return data.value != Constants.PENDING_SELECT_OPTION && data.isWrong()
 			}
 	}
 

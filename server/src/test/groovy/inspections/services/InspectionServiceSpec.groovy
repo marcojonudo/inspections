@@ -392,8 +392,8 @@ class InspectionServiceSpec extends Specification {
         Set<SavedItem> savedItems = [
             new SavedItem(code: Constants.Item.ENDI, data: [new SelectSavedItemData(value: "SN")]),
             new SavedItem(code: Constants.Item.ENDD, data: [new SelectSavedItemData(value: Constants.CORRECT_SELECT_OPTION)]),
-            new SavedItem(code: Constants.Item.ENTI, data: [new SelectSavedItemData(value: "SN")]),
-            new SavedItem(code: Constants.Item.ENTD, data: [new SelectSavedItemData(value: Constants.CORRECT_SELECT_OPTION)]),
+            new SavedItem(code: Constants.Item.ENTI, data: [new SelectSavedItemData(value: "PS")]),
+            new SavedItem(code: Constants.Item.ENTD, data: [new SelectSavedItemData(value: "RA")])
         ]
 
         when:

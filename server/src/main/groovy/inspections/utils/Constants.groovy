@@ -11,6 +11,7 @@ class Constants {
     static final List<String> TYRE_STATE_CODES = [Item.ENDI, Item.ENDD, Item.ENTI, Item.ENTD]
     static final List<String> FRONT_TYRE_CODES = [Item.ENDI, Item.ENDD]
     static final List<String> BACK_TYRE_CODES = [Item.ENTI, Item.ENTD]
+    static final List<String> WRONG_ITEM_OPTIONS = ["SN", "PS"]
     static final String PENDING_SELECT_OPTION = "P"
     static final String CORRECT_SELECT_OPTION = "C"
 
