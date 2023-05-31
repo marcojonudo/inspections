@@ -113,6 +113,10 @@ export class Constants {
 		SCOOTER: 'SCOOTER'
 	};
 
+	static readonly ORIGIN: any = {
+		INSPECTIONS: 'INSPECTIONS'
+	};
+
 	static readonly REASON: any = {
 		UPDATED: 'UPDATED'
 	};

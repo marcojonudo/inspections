@@ -2,9 +2,7 @@ package inspections.domains
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import grails.gorm.annotation.Entity
 import groovy.transform.TupleConstructor
@@ -21,6 +19,7 @@ class SavedInspectionData implements GormEntity<SavedInspectionData> {
 	SavedInspection savedInspection
 
 	String employeeCode
+	Origin origin
 
 	// TODO Plantear eliminar
 	Reason reason = Reason.UPDATED
@@ -30,6 +29,17 @@ class SavedInspectionData implements GormEntity<SavedInspectionData> {
 	LocalDateTime saved
 
 	static belongsTo = SavedInspection
+
+	static constraints = {
+		origin nullable: true
+	}
+
+	enum Origin {
+
+		INSPECTIONS,
+		INSPECTIONS_MANAGEMENT
+
+	}
 
 	enum Reason {
 

@@ -49,7 +49,12 @@ class Builder {
 			SavedInspection.State.STARTED,
 			orderInspection
 		).tap {
-			addToData(new SavedInspectionData(employeeCode, SavedInspectionData.Reason.SAVED, LocalDateTime.now()))
+			addToData(new SavedInspectionData(
+				employeeCode,
+				SavedInspectionData.Origin.INSPECTIONS,
+				SavedInspectionData.Reason.SAVED,
+				LocalDateTime.now())
+			)
 			items = (Set<SavedItem>) []
 		}
 	}

@@ -34,7 +34,10 @@ abstract class SavedInspectionDataService {
 		savedInspection.orderInspection = orderInspection
 
 		SavedInspectionData newData = new SavedInspectionData(
-			employeeCode, SavedInspectionData.Reason.UPDATED_ORDER, LocalDateTime.now()
+			employeeCode,
+			SavedInspectionData.Origin.INSPECTIONS,
+			SavedInspectionData.Reason.UPDATED_ORDER,
+			LocalDateTime.now()
 		)
 		savedInspection.addToData(newData)
 		return save(savedInspection)
