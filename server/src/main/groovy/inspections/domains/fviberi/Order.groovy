@@ -1,15 +1,21 @@
 package inspections.domains.fviberi
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import grails.gorm.annotation.Entity
 import inspections.pogos.vehicles.Vehicle
 import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
+
+import java.time.LocalDate
 
 @Entity
 class Order implements GormEntity<Order> {
 
 	int number
 	String code
+
+	@JsonFormat(pattern = Constants.DateFormat.yyyy_MM_dd, timezone = Constants.SPAIN_TIMEZONE)
+	LocalDate day
 	String state
 	String carIdentifier
 	Client client
@@ -27,6 +33,7 @@ class Order implements GormEntity<Order> {
 		table 'fvcabord'
 
 		number column: 'nuordrep'
+		day column: 'feordrep'
 		state column: 'clsituac'
 		carIdentifier column: 'numatric'
 		client column: 'coclient', fetch: 'join'
