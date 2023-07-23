@@ -16,7 +16,7 @@ import {
 	map,
 	tap,
 	buffer,
-	mergeMap
+	mergeMap, toArray, mergeAll
 } from 'rxjs/operators';
 import { SelectSavedItemData } from '../objects/inspections/saved-items/select-saved-item-data';
 import { Builder } from '../objects/builder';
@@ -44,6 +44,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { VersionService } from './version.service';
 import { SaveError } from '../objects/save-error';
 import { CountryHandlerType } from '../objects/country-info/country-handler-type';
+import { Utils } from '../objects/utils';
 
 @Injectable({
 	providedIn: 'root'
@@ -218,7 +219,7 @@ export class InspectionService {
 		const savedItems = savedInspection.items.filter(savedItem =>
 			!savedItem.isHidden() && itemNames.find(name => name === savedItem.item.name)
 		);
-		return !(savedItems.find(savedItem => !savedItem.isFilled()) !== undefined);
+		return savedItems.find(savedItem => !savedItem.isFilled()) === undefined;
 	}
 
 	static handleCategoryComplete(category: Category, savedInspection: SavedInspection = this.savedInspection): void {
@@ -283,9 +284,36 @@ export class InspectionService {
 	): Observable<void> {
 		return from(relations).pipe(
 			filter(r => r.match(newValue)),
+			toArray(),
+			map(r => this.filterPriorityRelations(r)),
+			mergeAll(),
 			mergeMap(r => combineLatest([of(r), of(this.findSavedItem(r.targetItemCode))])),
 			map(([relation, targetSavedItem]) => relation.apply(targetSavedItem, employeeCode))
 		);
+	}
+
+	static filterPriorityRelations(relations: ItemRelation[]): ItemRelation[] {
+		const groupedTargetItemCodes = Utils.groupBy(relations, r => r.targetItemCode);
+		/* Se obtienen aquellas relaciones cuyo target item es el mismo. Se hace para poder determinar si las acciones
+		 * a llevar a cabo son contradictorias; por ejemplo, el item ENTI actúa sobre FNTI de 2 formas: por un lado,
+		 * si el texto es igual a RA, lo oculta; pero si es distinto a NA, lo muestra. Es necesario establecer un
+		 * sistema de prioridades (teniendo preferencia el texto concreto, con differentMatchText = true) para evitar
+		 * estos casos */
+		const severalActionsGroupedRelations = Object.values(groupedTargetItemCodes)
+			.filter(v => v.length > 1);
+
+		/* Se obtienen las relaciones prioritarias, que son aquellas en las que el texto debe coincidir (frente a
+		 * aquellas en las que debe ser diferente a lo establecido en BD) */
+		const priorityRelations = [].concat(...severalActionsGroupedRelations
+			.map(v => v.filter(rel => !rel.differentMatchText)));
+		/* Si existen relaciones prioritarias, será necesario eliminar las no prioritarias de la lista final. Por tanto
+		 * se obtienen para poder filtrar más adelante */
+		const nonPriorityRelations = [].concat(...severalActionsGroupedRelations.map(v => {
+			return v.filter(rel => rel.differentMatchText);
+		}));
+		return priorityRelations.length
+			? relations.filter(r => nonPriorityRelations.find(rel => rel === r) === undefined)
+			: relations;
 	}
 
 	static updateTextItem(
