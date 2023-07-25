@@ -438,15 +438,20 @@ export class InspectionService {
 		} catch (error) {
 			console.error('Error loading data', error);
 			console.log('Clearing local storage');
-			LocalStorageService.clear();
+			this.clearStorage(true, true, Constants.MESSAGE_CODE.ERROR_LOADING_DATA, Constants.SNACK_BAR.TYPE.WARNING);
 		}
 		return loaded;
 	}
 
-	clearStorage(goBack: boolean, showSnack: boolean = true): void {
+	clearStorage(
+		goBack: boolean,
+		showSnack: boolean = true,
+		message: string = Constants.MESSAGE_CODE.CLEARED_LOCAL_STORAGE,
+		snackType: string = Constants.SNACK_BAR.TYPE.SUCCESS
+	): void {
 		LocalStorageService.clear();
 		if (showSnack) {
-			this.snackBarService.open(Constants.MESSAGE_CODE.CLEARED_LOCAL_STORAGE);
+			this.snackBarService.open(message, snackType);
 		}
 		if (goBack) {
 			this.goBack();
