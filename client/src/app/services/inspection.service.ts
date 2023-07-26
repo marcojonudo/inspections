@@ -610,13 +610,6 @@ export class InspectionService {
 		);
 	}
 
-	// findTyreMeasurementPendingFields(savedItem: SavedItem): TextItemField[] {
-	// 	const savedFields = (savedItem.findData() as TextSavedItemData).fields;
-	// 	return (savedItem.item as TextItem).fields.filter(f =>
-	// 		savedFields.find(savedField => savedField.order === f.order && savedField.isEmpty()) !== undefined
-	// 	);
-	// }
-
 	handleUpdatedVersion(): Observable<string> {
 		return this.versionService.findNewVersion().pipe(
 			tap(newVersion => {

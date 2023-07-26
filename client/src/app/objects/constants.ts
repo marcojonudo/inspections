@@ -84,7 +84,8 @@ export class Constants {
 		Constants.LOCAL_STORAGE.SAVED_INSPECTION,
 		Constants.LOCAL_STORAGE.ORDER,
 		Constants.LOCAL_STORAGE.RESET_EMPLOYEE,
-		Constants.LOCAL_STORAGE.MANUAL_EXIT
+		Constants.LOCAL_STORAGE.MANUAL_EXIT,
+		Constants.LOCAL_STORAGE.RELATIONS
 	];
 
 	static readonly EVENT: any = {
