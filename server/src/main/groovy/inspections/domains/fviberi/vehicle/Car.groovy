@@ -2,13 +2,16 @@ package inspections.domains.fviberi.vehicle
 
 import grails.gorm.annotation.Entity
 import inspections.pogos.vehicles.CarVehicle
+import inspections.pogos.vehicles.MotorbikeVehicle
 import inspections.pogos.vehicles.Vehicle
+import inspections.pogos.vehicles.VehicleType
 import inspections.utils.Constants
 import org.grails.datastore.gorm.GormEntity
 
 @Entity
 class Car implements GormEntity<Car>, IVehicle {
 
+    String vehicleType
     String numberPlate
     String model
     String cylinder
@@ -29,6 +32,7 @@ class Car implements GormEntity<Car>, IVehicle {
         datasource Constants.DataSource.FVIBERI
         table 'fvvehicu'
 
+        vehicleType column: 'tipovehicu'
         numberPlate column: 'numatric'
         model column: 'nomodelo'
         cylinder column: 'nucilind'
@@ -42,16 +46,8 @@ class Car implements GormEntity<Car>, IVehicle {
     }
 
     Vehicle buildVehicle() {
-        return new CarVehicle(
-            Type.CAR,
-            this.numberPlate,
-            this.brand,
-            this.model,
-            this.cylinder,
-            this.engineCode,
-            this.power,
-            this.registrationYear
-        )
+        VehicleType type = VehicleType.values().find { it.type == vehicleType }
+        return type == VehicleType.CAR ? new CarVehicle(this) : new MotorbikeVehicle(this)
     }
 
 }

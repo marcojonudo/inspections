@@ -6,6 +6,7 @@ import grails.gorm.transactions.Transactional
 import inspections.domains.fviberi.Order
 import inspections.domains.fviberi.OrderTime
 import inspections.domains.fviberi.vehicle.IVehicle
+import inspections.pogos.vehicles.VehicleType
 import inspections.utils.Constants
 
 import javax.inject.Inject
@@ -17,6 +18,7 @@ abstract class OrderDataService {
 	@Inject OrderTimeDataService orderTimeDataService
 	@Inject CarDataService carDataService
 	@Inject ScooterDataService scooterDataService
+	@Inject BikeDataService bikeDataService
 
 	abstract Order findOrder(int number)
 
@@ -36,8 +38,10 @@ abstract class OrderDataService {
 			OrderTime orderTime = orderTimeDataService.find(number)
 
 			order.code = orderTime.shortCode
-			order.vehicleType = Order.VehicleType.valueOf(order.vehicleType).type
-			IVehicle vehicle = carDataService.find(order.carIdentifier) ?: scooterDataService.find(order.carIdentifier)
+
+			VehicleType vehicleType = VehicleType.values().find { it.type == order.vehicleType }
+			order.vehicleType = vehicleType.type
+			IVehicle vehicle = ((Closure<IVehicle>) vehicleType.find)(this, order.carIdentifier)
 			order.vehicle = vehicle.buildVehicle()
 		}
 		return order

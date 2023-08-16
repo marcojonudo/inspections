@@ -77,7 +77,9 @@ export class SavedItem {
 	}
 
 	updateHidden(employeeCode: string, hidden: boolean): void {
-		this.findData().updateHidden(employeeCode, hidden);
+		if (this.findData().hidden !== hidden) {
+			this.findData().updateHidden(employeeCode, hidden);
+		}
 	}
 
 	updateRestrictive(restrictive: boolean, employeeCode: string): void {

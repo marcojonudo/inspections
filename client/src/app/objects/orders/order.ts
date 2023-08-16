@@ -23,7 +23,7 @@ export class Order {
 		this.vehicle = Builder.buildVehicle(order.vehicle);
 		this.client = new Client(order.client);
 		this.sellerCode = order.sellerCode;
-		this.vehicleType = order.vehicleType;
+		this.vehicleType = this.vehicle.type;
 		this.lines = order.lines.map(line => new OrderLine(line));
 	}
 

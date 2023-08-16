@@ -324,7 +324,7 @@ export class InspectionComponent implements OnInit, AfterViewInit, OnDestroy {
 		const selectedIndex = this.findOptionIndex(item.code, item.options);
 		const newIndex = InspectionService.inspectionHandler.findSelectOptionIndex(selectedIndex, item.options.length);
 
-		InspectionService.updateSelectItem(item, item.options[newIndex].code).subscribe();
+		InspectionService.updateSelectItem(item, item.options[newIndex].code);
 	}
 
 	updateTextFields(item: Item): void {

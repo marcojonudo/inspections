@@ -20,4 +20,13 @@ export class Utils {
 		});
 	}
 
+	static groupBy(array: any[], criteria: any): any[] {
+		return array.reduce((group, item) => {
+			const criteriaValue = criteria(item);
+			group[criteriaValue] = group[criteriaValue] ?? [];
+			group[criteriaValue].push(item);
+			return group;
+		}, {});
+	}
+
 }

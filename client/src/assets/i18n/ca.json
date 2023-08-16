@@ -38,6 +38,7 @@
 		"NONEXISTENT_INSPECTIONS": "No se encuentran revisiones asociadas a la orden",
 		"UPDATE_EMPLOYEE_MESSAGE": "¿Quieres cambiar el empleado {{employeeCode}} por el {{newEmployeeCode}}?",
 		"ERROR_SAVING_INSPECTION": "Error al guardar la revisión. Por favor, inténtalo de nuevo",
+		"ERROR_LOADING_DATA": "Error al cargar la revisión. Se han borrado los datos del navegador",
 		"SAVED_INSPECTION": "Revisión guardada correctamente",
 		"NON_COMPLETE_INSPECTION": "Revisión no terminada. Por favor, rellena todos los elementos",
 		"WARNING_GOING_BACK": "¿Seguro que quieres volver a la pantalla de inicio?",

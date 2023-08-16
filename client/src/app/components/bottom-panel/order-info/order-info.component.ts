@@ -21,8 +21,16 @@ export class OrderInfoComponent {
 		return Constants.VEHICLE_TYPE.CAR;
 	}
 
-	get scooterType(): string {
-		return Constants.VEHICLE_TYPE.SCOOTER;
+	get motorbikeType(): string {
+		return Constants.VEHICLE_TYPE.MOTORBIKE;
+	}
+
+	get eScooterType(): string {
+		return Constants.VEHICLE_TYPE.E_SCOOTER;
+	}
+
+	get eBikeType(): string {
+		return Constants.VEHICLE_TYPE.E_BIKE;
 	}
 
 	findCar(vehicle: Vehicle): Car {
