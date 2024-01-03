@@ -4,8 +4,8 @@ slack.channel.id.inspections: C030E5NV08K
 
 database:
     credentials:
-        username: ${DB_USER:inspections}
-        password: ${DB_PASS:gDwXYI4a@G3^qZ#kCQ0l5xI1ukIW#W3p}
+        username: ${DB_USER:pdv}
+        password: ${DB_PASS:carusso}
 
 dataSource:
     logSql: false
