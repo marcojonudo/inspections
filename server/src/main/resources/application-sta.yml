@@ -1,7 +1,7 @@
 database:
     credentials:
-        username: ${DB_USER:inspections_sta}
-        password: ${DB_PASS:dCe1zJQccSRk043@K&o@jA8JN8zEdPSx}
+        username: ${DB_USER:pdv}
+        password: ${DB_PASS:carusso}
 
 dataSource:
     logSql: false
