@@ -4,10 +4,7 @@ import groovy.transform.CompileStatic
 import inspections.pogos.budgets.Article
 import inspections.pogos.budgets.Budget
 import io.micronaut.http.HttpResponse
-import io.micronaut.http.annotation.Body
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.Post
-import io.micronaut.http.annotation.QueryValue
+import io.micronaut.http.annotation.*
 import io.micronaut.http.client.annotation.Client
 
 import javax.inject.Singleton
@@ -28,6 +25,8 @@ interface OrdersManagementClient {
     )
 
     @Post("/budgets/tyres")
-    HttpResponse<Budget> createBudget(@Body List<Article> articles, @QueryValue int orderNumber)
+    HttpResponse<Budget> createBudget(
+        @Header('Accept-Language') String language, @Body List<Article> articles, @QueryValue int orderNumber
+    )
 
 }

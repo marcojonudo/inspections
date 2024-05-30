@@ -25,4 +25,8 @@ class Utils {
 		return power * Constants.KW_TO_CV_FACTOR
 	}
 
+	static String findLanguage(int centreCode) {
+		return centreCode >= 800 ? 'pt' : 'es'
+	}
+
 }

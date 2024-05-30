@@ -180,7 +180,9 @@ class InspectionService {
 
 			updateItvDate(savedInspection)
 			CompletableFuture.runAsync({
-				handleBudgetCreation(savedInspection)
+				String lang = Utils.findLanguage(centre)
+				LOG.info(new Log((Map) [message: Constants.Message.CHECK_BUDGET_CREATION_CENTRE, centre: centre, lang: lang]).toString())
+				handleBudgetCreation(savedInspection, lang)
 			})
 			inspectionsManagementClient.notifySavedInspection(newSavedInspection).subscribe()
 
@@ -247,9 +249,10 @@ class InspectionService {
 	/**
 	 * Gestiona la creación de un presupuesto de neumáticos
 	 * @param savedInspection Revisión guardada
+	 * @param centreCode Código de centro
 	 * @return Lista de códigos de artículo
 	 */
-	Budget handleBudgetCreation(SavedInspection savedInspection) {
+	Budget handleBudgetCreation(SavedInspection savedInspection, String language) {
 		Budget budget = null
 		boolean alreadySavingBudget = budgetService.checkSavingOrderNumberBudget(savedInspection.orderNumber)
 		if (!alreadySavingBudget) {
@@ -267,7 +270,7 @@ class InspectionService {
 
 				/* Se comprueba que no exista otro presupuesto para esos mismos artículos en BD */
 				boolean create = checkCreateBudget(savedInspection.orderNumber, budgetArticles.code)
-				budget = create ? createBudget(budgetArticles, savedInspection.orderNumber, budgetData.units) : null
+				budget = create ? createBudget(budgetArticles, savedInspection.orderNumber, budgetData.units, language) : null
 			} catch (all) {
 				all.printStackTrace()
 			} finally {
@@ -410,11 +413,11 @@ class InspectionService {
 		tyreAgeItems.each { handleTextItemYearValue(it, "$today.year"[2..-1] as int) }
 	}
 
-	Budget createBudget(List<Article> budgetArticles, int orderNumber, float units) {
+	Budget createBudget(List<Article> budgetArticles, int orderNumber, float units, String language) {
 		Budget budget = null
 		try {
 			HttpResponse response = ordersManagementClient.createBudget(
-				budgetArticles.collect { it.clone(units) }, orderNumber
+				language, budgetArticles.collect { it.clone(units) }, orderNumber
 			)
 			budget = response.body()
 			LOG.info(new Log((Map) [orderNumber: orderNumber, budget: budget.number, message: Constants.Message.CREATED_BUDGET]).toString())
