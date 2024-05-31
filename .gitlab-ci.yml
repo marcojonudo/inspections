@@ -32,6 +32,8 @@ stages:
 
 .get_version_template: &get_version_template
     image: registry.gitlab.com/marco_fv/ci-scripts:groovy
+    tags:
+        - intranet
     before_script:
         - *fetch_ci_scripts
     artifacts:
