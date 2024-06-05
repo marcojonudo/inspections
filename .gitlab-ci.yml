@@ -32,6 +32,8 @@ stages:
 
 .get_version_template: &get_version_template
     image: registry.gitlab.com/marco_fv/ci-scripts:groovy
+    tags:
+        - intranet
     before_script:
         - *fetch_ci_scripts
     artifacts:
@@ -144,6 +146,21 @@ build:docker:
         variables:
             - $CI_COMMIT_BRANCH == "deploy"
 
+deploy:upload:
+    stage: deploy
+    image: registry.gitlab.com/marco_fv/ci-scripts:groovy
+    tags:
+        - intranet
+    dependencies:
+        - build:docker
+    before_script:
+        - *fetch_ci_scripts
+    script:
+        - groovy -cp $SCRIPTS_DIR/groovy $SCRIPTS_DIR/groovy/upload.groovy
+    when: manual
+    only:
+        - branches
+
 deploy:manual:sta:
     <<: *deploy_template
     only:
@@ -154,13 +171,6 @@ deploy:manual:sta:
         ENVIRONMENT: sta
     when: manual
 
-deploy:scheduled:sta:
-    <<: *deploy_template
-    only:
-        - schedules
-    variables:
-        ENVIRONMENT: sta
-
 deploy:manual:prod:
     <<: *deploy_template
     only:
@@ -170,6 +180,13 @@ deploy:manual:prod:
     variables:
         ENVIRONMENT: prod
     when: manual
+
+deploy:scheduled:sta:
+    <<: *deploy_template
+    only:
+        - schedules
+    variables:
+        ENVIRONMENT: sta
 
 deploy:scheduled:prod:
     <<: *deploy_template

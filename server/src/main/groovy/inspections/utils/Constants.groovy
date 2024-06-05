@@ -49,6 +49,7 @@ class Constants {
         static final String UPDATED_ORDER = "Updated order!"
         static final String FINISHED_SEARCHING_SAVED_INSPECTION = "Finished searching saved inspection!"
         static final String SAVING_INSPECTION = "Saving inspection"
+        static final String CHECK_BUDGET_CREATION_CENTRE = "Checking budget creation with centre and lang"
         static final String SAVE_INSPECTION_DURATION = "Save inspection duration"
         static final String ERROR_SAVING_INSPECTION = "Error saving inspection"
         static final String SAVED_INSPECTION = "Saved inspection!"
